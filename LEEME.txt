@@ -1,0 +1,11 @@
+BUSCADOR DE MATERIALES SAP
+
+1. Abra index.html con Chrome o Edge.
+2. Busque por matrícula, descripción o alias de campo.
+3. Presione “Agregar”.
+4. Ingrese cantidad y complete destinatario, supervisor, unidad y movimiento.
+5. Use “Copiar para SAP” para pegar la tabla, o “Exportar Excel” para generar un archivo .xls compatible con Excel.
+6. En Configuración puede agregar supervisores, unidades y nuevos alias.
+
+Esta primera versión funciona sin servidor y guarda sus cambios en el navegador mediante almacenamiento local.
+Para uso multiusuario, historial centralizado y acceso desde varios equipos, la siguiente etapa debe conectarse a Supabase o a la base de datos de la empresa.
