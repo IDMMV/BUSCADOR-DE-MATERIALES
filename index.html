@@ -19,76 +19,52 @@
   <main class="layout">
     <section class="panel search-panel">
       <div class="section-title">
-        <div>
-          <span class="step">1</span>
-          <h2>Buscar materiales</h2>
-        </div>
+        <div><span class="step">1</span><h2>Buscar materiales</h2></div>
         <span id="resultCount" class="badge">0 resultados</span>
       </div>
-
-      <div class="searchbox">
-        <span>⌕</span>
-        <input id="searchInput" autocomplete="off" placeholder="Ej.: abrazadera chica, fusible 10A, 8001887..." />
-        <button id="clearSearch" title="Limpiar">×</button>
-      </div>
-
-      <div class="filters">
-        <label><input id="priorityOnly" type="checkbox"> Solo prioridad P</label>
-        <select id="unitFilter"><option value="">Todas las unidades</option></select>
-      </div>
-
+      <div class="searchbox"><span>⌕</span><input id="searchInput" autocomplete="off" placeholder="Ej.: abrazadera chica, fusible 10A, 8001887..." /><button id="clearSearch" title="Limpiar">×</button></div>
+      <div class="filters"><label><input id="priorityOnly" type="checkbox"> Solo prioridad P</label><select id="unitFilter"><option value="">Todas las unidades</option></select></div>
       <div id="results" class="results"></div>
     </section>
 
     <section class="panel cart-panel">
-      <div class="section-title">
-        <div><span class="step">2</span><h2>Pedido seleccionado</h2></div>
-        <span id="cartCount" class="badge green">0 materiales</span>
-      </div>
-
+      <div class="section-title"><div><span class="step">2</span><h2>Pedido seleccionado</h2></div><span id="cartCount" class="badge green">0 materiales</span></div>
       <div class="order-fields">
         <label>Destinatario<select id="destinatario"></select></label>
-        <label>Puesto de descarga<input id="puestoDescarga" /></label>
+        <label>Puesto de descarga (movimiento)<select id="puestoDescarga"><option value="PEDIDO">PEDIDO</option><option value="RECUPERO">RECUPERO</option><option value="DEVOLUCION">DEVOLUCIÓN</option></select></label>
         <label>Ubicación final<input id="ubicacionFinal" placeholder="Opcional" /></label>
         <label>Supervisor<select id="supervisor"></select></label>
         <label>Unidad móvil<select id="unidadMovil"></select></label>
-        <label>Movimiento<select id="movimiento"></select></label>
+        <label>ALIM<select id="alim"><option>GG01</option><option>GG02</option></select></label>
+        <label>CE<select id="ce"><option>1003</option><option>1004</option></select></label>
       </div>
 
+      <div class="quantity-help"><span class="dot pending-dot"></span> Cantidad en 0: falta editar &nbsp; <span class="dot ready-dot"></span> Cantidad mayor a 0: lista</div>
       <div class="table-wrap">
-        <table>
-          <thead><tr><th>Matrícula</th><th>Descripción</th><th>Cant.</th><th>Unidad</th><th></th></tr></thead>
-          <tbody id="cartBody"></tbody>
-        </table>
+        <table><thead><tr><th>Matrícula</th><th>Descripción</th><th>Cant.</th><th>Unidad</th><th></th></tr></thead><tbody id="cartBody"></tbody></table>
         <div id="emptyCart" class="empty">Agrega materiales desde el buscador.</div>
       </div>
-
-      <div class="actions">
-        <button id="copySap" class="btn secondary">Copiar para SAP</button>
-        <button id="exportCsv" class="btn secondary">Exportar CSV</button>
-        <button id="exportExcel" class="btn primary">Exportar Excel</button>
-        <button id="clearCart" class="btn danger">Limpiar</button>
-      </div>
+      <div class="actions"><button id="copySap" class="btn secondary">Copiar para SAP</button><button id="exportCsv" class="btn secondary">Exportar CSV</button><button id="exportExcel" class="btn primary">Exportar Excel</button><button id="clearCart" class="btn danger">Limpiar</button></div>
       <p id="status" class="status"></p>
     </section>
   </main>
 
   <dialog id="configDialog">
     <form method="dialog" class="dialog-card">
-      <div class="dialog-head"><div><p class="eyebrow">ADMINISTRACIÓN</p><h2>Listas editables</h2></div><button class="icon-btn">×</button></div>
-      <p class="help">Puedes agregar o eliminar supervisores, unidades y alias. Los cambios quedan guardados en este navegador.</p>
-      <div class="tabs">
-        <button type="button" class="tab active" data-tab="sup">Supervisores</button>
-        <button type="button" class="tab" data-tab="units">Unidades</button>
-        <button type="button" class="tab" data-tab="aliases">Alias</button>
-      </div>
+      <div class="dialog-head"><div><p class="eyebrow">ADMINISTRACIÓN</p><h2>Configuración y base de materiales</h2></div><button class="icon-btn">×</button></div>
+      <p class="help">Agrega o elimina supervisores, unidades y alias. También puedes cargar un Excel actualizado para reemplazar o ampliar la base.</p>
+      <div class="tabs"><button type="button" class="tab active" data-tab="sup">Supervisores</button><button type="button" class="tab" data-tab="units">Unidades</button><button type="button" class="tab" data-tab="aliases">Alias</button><button type="button" class="tab" data-tab="excel">Cargar Excel</button></div>
       <div id="tab-sup" class="tabpage active"><div class="adder"><input id="newSupervisor" placeholder="Nombre o código"><button type="button" id="addSupervisor" class="btn primary">Agregar</button></div><div id="supervisorList" class="chip-list"></div></div>
       <div id="tab-units" class="tabpage"><div class="adder"><input id="newUnit" placeholder="Ej.: F5X-999"><button type="button" id="addUnit" class="btn primary">Agregar</button></div><div id="unitList" class="chip-list"></div></div>
       <div id="tab-aliases" class="tabpage"><div class="alias-grid"><input id="aliasCode" placeholder="Matrícula SAP"><input id="aliasText" placeholder="Nuevo alias de campo"><button type="button" id="addAlias" class="btn primary">Agregar alias</button></div><p id="aliasMsg" class="status"></p></div>
+      <div id="tab-excel" class="tabpage">
+        <div class="upload-box"><strong>Actualizar base desde Excel</strong><p>Selecciona un archivo .xlsx, .xls o .csv. El sistema detectará matrícula, descripción, unidad, prioridad y alias.</p><input id="excelFile" type="file" accept=".xlsx,.xls,.csv" /><div class="upload-actions"><select id="importMode"><option value="merge">Agregar y actualizar materiales</option><option value="replace">Reemplazar toda la base</option></select><button type="button" id="importExcel" class="btn primary">Cargar archivo</button></div><p id="importMsg" class="status"></p></div>
+      </div>
       <div class="dialog-actions"><button value="cancel" class="btn secondary">Cerrar</button><button type="button" id="resetData" class="btn danger">Restablecer datos</button></div>
     </form>
   </dialog>
 
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
   <script src="data.js"></script>
   <script src="app.js"></script>
 </body>

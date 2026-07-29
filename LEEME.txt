@@ -1,11 +1,16 @@
-BUSCADOR DE MATERIALES SAP
+BUSCADOR DE MATERIALES SAP V2
 
 1. Abra index.html con Chrome o Edge.
-2. Busque por matrícula, descripción o alias de campo.
-3. Presione “Agregar”.
-4. Ingrese cantidad y complete destinatario, supervisor, unidad y movimiento.
-5. Use “Copiar para SAP” para pegar la tabla, o “Exportar Excel” para generar un archivo .xls compatible con Excel.
-6. En Configuración puede agregar supervisores, unidades y nuevos alias.
+2. Busque materiales y pulse Agregar.
+3. Toda cantidad inicia en 0 y se muestra amarilla. Al colocar una cantidad mayor a 0 cambia a verde.
+4. Seleccione Puesto de descarga (movimiento), ALIM y CE.
+5. Exporte a Excel, CSV o copie para SAP.
+6. En Configuración > Cargar Excel puede actualizar la base usando .xlsx, .xls o .csv.
 
-Esta primera versión funciona sin servidor y guarda sus cambios en el navegador mediante almacenamiento local.
-Para uso multiusuario, historial centralizado y acceso desde varios equipos, la siguiente etapa debe conectarse a Supabase o a la base de datos de la empresa.
+Cambios V2:
+- Se retiró la referencia visual a MiZona.
+- CE: 1003 o 1004.
+- ALIM: GG01 o GG02.
+- Puesto de descarga (movimiento): PEDIDO, RECUPERO o DEVOLUCIÓN.
+- Cantidad inicial 0 con semáforo de edición.
+- Importación de Excel para actualizar o reemplazar la base.
