@@ -1,10 +1,10 @@
-BUSCADOR DE MATERIALES SAP V11
+Buscador de Materiales SAP V12
 
-1. Abre index.html para probar localmente.
-2. Los cambios de alias, imágenes, matrículas, destinatarios y unidades se guardan en el navegador.
-3. En Configuración > Guardar para GitHub:
-   - Descarga data.js actualizado.
-   - Pulsa “Subir archivos a GitHub”.
-   - Arrastra data.js y confirma “Commit changes”.
-4. El botón “Sugerir alias” genera hasta 6 propuestas según la descripción oficial; revísalas antes de guardar.
-5. Para publicar una versión completa, reemplaza todos los archivos del repositorio.
+Cambios:
+- Destinatario ahora se muestra como Supervisor.
+- El supervisor se exporta en la columna DESTINATARIO.
+- Puesto de descarga exporta la unidad y movimiento, por ejemplo F5X-815 (R).
+- UBICACION FINAL queda vacía para evitar duplicar la placa.
+- Agregar material permite incluir imagen y alias desde el mismo formulario.
+- El formulario se titula Agregar material y no Agregar nueva matrícula.
+- OPERACION se conserva como 0010 y Copiar para SAP no incluye encabezados.
