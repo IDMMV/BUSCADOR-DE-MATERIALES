@@ -1,21 +1,11 @@
-BUSCADOR DE MATERIALES SAP V6
+BUSCADOR DE MATERIALES SAP V9
 
-CAMBIOS PRINCIPALES
-- Ícono BM seleccionado integrado en la aplicación.
-- Íconos PWA de 192x192 y 512x512.
-- Ícono maskable para Android.
-- Apple Touch Icon para iPhone/iPad.
-- Favicon para navegador.
-- Diseño adaptado para computadora, tablet y celular.
-- En celular, los materiales seleccionados se muestran como tarjetas legibles.
-- Botones y campos más grandes para uso táctil.
-- Editor de matrículas y alias optimizado para pantalla pequeña.
-- Se conserva la búsqueda y escritura por voz.
+- OPERACIÓN se conserva como 0010.
+- UBICACIÓN FINAL toma automáticamente la unidad móvil elegida.
+- Copiar para SAP no incluye encabezados.
+- Alias en lista vertical, editables y eliminables.
+- Imágenes por matrícula comprimidas automáticamente a WebP (máx. 700 x 700, calidad 70%).
+- Las imágenes se guardan en el navegador y se incluyen en data.js al descargar para GitHub.
+- Diseño responsive para PC, tablet y celular.
 
-PARA PUBLICAR EN GITHUB
-Sube TODOS los archivos de esta carpeta al mismo nivel del repositorio.
-No subas únicamente index.html.
-
-IMPORTANTE
-Después de reemplazar una versión anterior en GitHub, abre la web y actualiza una vez.
-Si aún aparece el ícono antiguo, elimina el acceso directo anterior e instala nuevamente la app.
+Sube todos los archivos de esta carpeta a GitHub Pages.
