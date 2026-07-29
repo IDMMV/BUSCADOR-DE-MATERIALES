@@ -1,10 +1,10 @@
-Buscador de Materiales SAP V10
+BUSCADOR DE MATERIALES SAP V11
 
-Cambios principales:
-- Puesto de descarga exportado como UNIDAD (P/R/D).
-- Destinatario vacío en SAP, CSV y Excel.
-- Cantidad inicia vacía con marcador 0 y se sobrescribe fácilmente.
-- Agregar material abre un formulario simplificado.
-- Edición muestra claramente el botón de guardado.
-- Sugerencias automáticas de alias para revisión.
-- Imágenes comprimidas WebP y exportables mediante data.js.
+1. Abre index.html para probar localmente.
+2. Los cambios de alias, imágenes, matrículas, destinatarios y unidades se guardan en el navegador.
+3. En Configuración > Guardar para GitHub:
+   - Descarga data.js actualizado.
+   - Pulsa “Subir archivos a GitHub”.
+   - Arrastra data.js y confirma “Commit changes”.
+4. El botón “Sugerir alias” genera hasta 6 propuestas según la descripción oficial; revísalas antes de guardar.
+5. Para publicar una versión completa, reemplaza todos los archivos del repositorio.
