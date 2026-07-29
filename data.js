@@ -3,7 +3,7 @@ window.APP_DATA = {
     {
       "code": "3004042",
       "description": "ABRAZADERA DE ACERO GALV. 160 - 190MM DIAM. C.4 PERNOS DE AJUSTE P.SOPORTE DEL BRAZO DE APOYO",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "ABRAZADERA CHICA"
       ],
@@ -13,7 +13,7 @@ window.APP_DATA = {
     {
       "code": "3004045",
       "description": "ABRAZADERA DE ACERO GALV. 190 - 225MM DIAM. C.4 PERNOS DE AJUSTE P.SOPORTE DEL BRAZO DE APOYO",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "ABRAZADERA MEDIANA"
       ],
@@ -23,7 +23,7 @@ window.APP_DATA = {
     {
       "code": "3004005",
       "description": "ABRAZADERA DE ACERO GALV. 230 - 267MM DIAM. C.4 PERNOS DE AJUSTE P.SOPORTE DEL BRAZO DE APOYO",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "ABRAZADERA GRANDE"
       ],
@@ -33,7 +33,7 @@ window.APP_DATA = {
     {
       "code": "3004041",
       "description": "ABRAZADERA DE ACERO GALV. P.CABLE 120MM2 C.ARCO CENTRAL 80MM DIAM. EN PLATINA DE ACERO 40X140X3MM",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "ABRAZADERA"
       ],
@@ -43,7 +43,7 @@ window.APP_DATA = {
     {
       "code": "3004040",
       "description": "ABRAZADERA DE ACERO GALV. P.CABLE 25MM2 C.ARCO CENTRAL 36MM DIAM. EN PLATINA DE ACERO 90X130X6,35MM",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "ABRAZADERA"
       ],
@@ -53,7 +53,7 @@ window.APP_DATA = {
     {
       "code": "3004039",
       "description": "ABRAZADERA METALICA P.CABLE UNIPOLAR 40.5-43.5MM C.ARCO CENTRAL 32MM RADIO EN PLATINA DE 90X148X4MM",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "ABRAZADERA PARA CABLE"
       ],
@@ -63,7 +63,7 @@ window.APP_DATA = {
     {
       "code": "3004038",
       "description": "ABRAZADERA METALICA PARA CABLE UNIPOLAR 31.2-38MM C.ARCO CENTRAL 25MM RADIO EN PLATINA DE 90X130X4MM",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "ABRAZADERA PARA CABLE"
       ],
@@ -73,7 +73,7 @@ window.APP_DATA = {
     {
       "code": "3004044",
       "description": "ABRAZADERA METALICA PARA CABLE UNIPOLAR 47.1-49MM C.ARCO CENTRAL 38MM RADIO EN PLATINA DE 90X150X4MM",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "ABRAZADERA"
       ],
@@ -83,9 +83,10 @@ window.APP_DATA = {
     {
       "code": "3004020",
       "description": "ABRAZADERA PARA VIENTO AC.GALV. 120-160MMD.M.T.",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
-        "ABRAZADERA PARA VIENTO PEQUEÑA"
+        "ABRAZADERA PARA VIENTO PEQUEÑA",
+        "ABRAZADERA PARA VIENTO CHICA"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -93,7 +94,7 @@ window.APP_DATA = {
     {
       "code": "3004023",
       "description": "ABRAZADERA PARA VIENTO AC.GALV. 170-245MMD. M.T.",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "ABRAZADERA PARA VIENTO GRANDE"
       ],
@@ -103,7 +104,7 @@ window.APP_DATA = {
     {
       "code": "8002821",
       "description": "ACEITE 3 EN 1",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "ACEITE"
       ],
@@ -113,7 +114,7 @@ window.APP_DATA = {
     {
       "code": "3000907",
       "description": "AISLADOR POLIMERICO EXTENSOR 24KV P/CUT-OUT",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "AISLADOR EXTENSOR"
       ],
@@ -123,7 +124,7 @@ window.APP_DATA = {
     {
       "code": "3000942",
       "description": "AISLADOR POLIMERICO TP. LINE POST (CON LINEA FUGA PROTEGIDA) PARA LINEAS DE 10 KV.",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "AISLADOR PIN 10KV"
       ],
@@ -133,7 +134,7 @@ window.APP_DATA = {
     {
       "code": "3000944",
       "description": "AISLADOR POLIMERICO TP.LINE POST P/LINEAS AEREAS 22,9KV.",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "AISLADOR PIN 22,9KV"
       ],
@@ -143,7 +144,7 @@ window.APP_DATA = {
     {
       "code": "3000935",
       "description": "AISLADOR POLIMERICO TP.SUSPENSION / ANCLAJE 10KV 400MM LONG. L.F. 600MM 45KN C.ACCESORIOS",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "AISLADOR SUSPENSION 10KV"
       ],
@@ -153,7 +154,7 @@ window.APP_DATA = {
     {
       "code": "3000971",
       "description": "AISLADOR SUSP.POLIMERICO P.REDES DISTRIB. DE 22,9KV.",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "AISLADOR SUSPENSION  22,9KV"
       ],
@@ -173,9 +174,10 @@ window.APP_DATA = {
     {
       "code": "8002193",
       "description": "AMARRE PREFORMADO P.SUJECION CABLE DE VIENTO DE ACERO GALV. 5/16\" DIAM. CLASE C",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
-        "PREFORMADO PARA VIENTO"
+        "PREFORMADO PARA VIENTO",
+        "PREFORMADO VIENTO"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -183,9 +185,12 @@ window.APP_DATA = {
     {
       "code": "8002189",
       "description": "AMARRE SIMPLE DE ALUMINIO 4 AWG 1000MM LONG. P.AISLADOR PIN C.CONDUCTOR ALUMINIO HASTA 70MM2 EN M.T.",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
-        "AMARRE SIMPLE PARA AISLADOR"
+        "AMARRE SIMPLE PARA AISLADOR",
+        "AMARRE SIMPLE",
+        "AMARRE AL-BLANDO",
+        "AMARRE BLANDO"
       ],
       "priority": "P",
       "source": "ALIAS"
@@ -204,7 +209,7 @@ window.APP_DATA = {
     {
       "code": "8000564",
       "description": "ARANDELA CUADRADA PLANA DE ACERO GALV. 55 X 4,5MM C.AGUJERO 17,5MM DIAM",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "ARANDELA PLANA",
         "ARANDELAS"
@@ -215,7 +220,7 @@ window.APP_DATA = {
     {
       "code": "8000568",
       "description": "ARANDELA PLANA AC.GALV. PERNO 1/2\"",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "ARANDELA 1/2",
         "ARANDELAS"
@@ -226,7 +231,7 @@ window.APP_DATA = {
     {
       "code": "8000566",
       "description": "ARANDELA PLANA AC.GALV. PERNO 3/8\"",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "ARANDELA 3/8",
         "ARANDELAS"
@@ -259,7 +264,7 @@ window.APP_DATA = {
     {
       "code": "8002027",
       "description": "BRAZO DE APOYO TP.VIOLIN DE ACERO GALV. 2\" X 875MM C.ACCESORIOS",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "VIOLIN PARA RETENIDA"
       ],
@@ -271,7 +276,8 @@ window.APP_DATA = {
       "description": "CABLE AO.GO.TIPO \"B\" DE 5/16\".5080KG.MANO IZQ.7 HILOS.P.RETENIDA",
       "unit": "M",
       "aliases": [
-        "CABLE PARA RETENIDA"
+        "CABLE PARA RETENIDA",
+        "CABLE VIENTO"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -279,9 +285,10 @@ window.APP_DATA = {
     {
       "code": "8002023",
       "description": "CANALETA PROTECTORA ACERO GALV. 2200MM P.PROTEGER CABLE P.VIENTO",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
-        "CANALETA PARA RETENIDA"
+        "CANALETA PARA RETENIDA",
+        "CANALETA"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -289,7 +296,7 @@ window.APP_DATA = {
     {
       "code": "8001058",
       "description": "CARTEL DE SENALIZACION LIMITACION / INTERDICCION - PELIGRO DE MUERTE 230 X 265 X 2MM",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "CARTEL PARA DMS"
       ],
@@ -299,7 +306,7 @@ window.APP_DATA = {
     {
       "code": "3001107",
       "description": "CINTA AISLANTE ANTITRACKING AUTOFUNDENTE DE SILICONA COLOR GRIS 15KV DE 50MM X 11M",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "CINTA GRIS"
       ],
@@ -309,7 +316,7 @@ window.APP_DATA = {
     {
       "code": "3001339",
       "description": "CINTA AISLANTE TERMOPLASTICA DE PVC ALTA PERFORMANCE 38MM X 33M X 0,18MM 600V COLOR NEGRO",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "CINTA ANCHA",
         "CINTA NEGRA ANCHA"
@@ -350,7 +357,7 @@ window.APP_DATA = {
     {
       "code": "3001316",
       "description": "CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,15MM 600V COLOR BLANCO USO EN INTERIORES",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "CINTA BLANCA"
       ],
@@ -360,7 +367,7 @@ window.APP_DATA = {
     {
       "code": "3001318",
       "description": "CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,15MM 600V COLOR ROJO USO EN INTERIORES",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "CINTA ROJA"
       ],
@@ -370,7 +377,7 @@ window.APP_DATA = {
     {
       "code": "3001319",
       "description": "CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,15MM 600V COLOR VERDE USO EN INTERIORES",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "CINTA VERDE"
       ],
@@ -380,31 +387,37 @@ window.APP_DATA = {
     {
       "code": "3001323",
       "description": "CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,18MM 600V COLOR BLANCO USO EN INTERIORES",
-      "unit": "UN",
-      "aliases": [],
+      "unit": "UND",
+      "aliases": [
+        "CINTA BLANCA"
+      ],
       "priority": "",
       "source": "DRE"
     },
     {
       "code": "3001327",
       "description": "CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,18MM 600V COLOR ROJO USO EN INTERIORES",
-      "unit": "UN",
-      "aliases": [],
+      "unit": "UND",
+      "aliases": [
+        "CINTA ROJA"
+      ],
       "priority": "",
       "source": "DRE"
     },
     {
       "code": "3001329",
       "description": "CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,18MM 600V COLOR VERDE USO EN INTERIORES",
-      "unit": "UN",
-      "aliases": [],
+      "unit": "UND",
+      "aliases": [
+        "CINTA VERDE"
+      ],
       "priority": "",
       "source": "DRE"
     },
     {
       "code": "8002548",
       "description": "CINTILLO DE NYLON COLOR NEGRO 14 1/2\" (368MM) LONG., 7,6MM (0,30\") ANCHO, 54.4KG (120LB) DE TENSION",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "10",
         "UND",
@@ -446,11 +459,10 @@ window.APP_DATA = {
     {
       "code": "3001671",
       "description": "CONDUCTOR CABLEADO TW 750V.UNIP.AMARI. 1X 35 MM2",
-      "unit": "UN",
+      "unit": "M",
       "aliases": [
-        "3",
-        "UND",
-        "L"
+        "TW 35",
+        "CONDUCTOR TW 35MM2"
       ],
       "priority": "GG01",
       "source": "ALIAS"
@@ -480,7 +492,7 @@ window.APP_DATA = {
     {
       "code": "3001624",
       "description": "CONDUCTOR CABLEADO TW 750V.UNIP.AMARI. 1X185 MM2",
-      "unit": "UND",
+      "unit": "M",
       "aliases": [
         "TW 185",
         "CONDUCTOR TW 185MM2"
@@ -491,9 +503,10 @@ window.APP_DATA = {
     {
       "code": "8002506",
       "description": "CONECTOR BIMETALICO DE DERIVACION A COMPRESION TIPO H P.CONDUCTOR 120-185 / 120-185MM2 P.RED AEREA",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
-        "H 450"
+        "H 450",
+        "CONECTOR H 450"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -501,9 +514,10 @@ window.APP_DATA = {
     {
       "code": "8002503",
       "description": "CONECTOR BIMETALICO DE DERIVACION A COMPRESION TIPO H P.CONDUCTOR 120-185/16-70MM2 P.RED AEREA",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
-        "H 500"
+        "H 500",
+        "CONECTOR H 500"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -511,11 +525,10 @@ window.APP_DATA = {
     {
       "code": "8002504",
       "description": "CONECTOR BIMETALICO DE DERIVACION A COMPRESION TIPO H P.CONDUCTOR 120-240 / 120-240MM2 P.RED AEREA",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
-        "3",
-        "UND",
-        "L"
+        "H 525",
+        "CONECTOR H 525"
       ],
       "priority": "GG01",
       "source": "ALIAS"
@@ -523,9 +536,10 @@ window.APP_DATA = {
     {
       "code": "8002500",
       "description": "CONECTOR BIMETALICO DE DERIVACION A COMPRESION TIPO H P.CONDUCTOR 70 / 16-35MM2 P.RED AEREA",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
-        "H 200"
+        "H 200",
+        "CONECTOR H 200"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -533,9 +547,10 @@ window.APP_DATA = {
     {
       "code": "8002502",
       "description": "CONECTOR BIMETALICO DE DERIVACION A COMPRESION TIPO H P.CONDUCTOR 70 / 50-70MM2 P.RED AEREA",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
-        "H 300"
+        "H 300",
+        "CONECTOR H 300"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -543,9 +558,11 @@ window.APP_DATA = {
     {
       "code": "3001371",
       "description": "CONECTOR DE DERIVACION A COMPRESION TIPO C P.CONDUCTOR 35-70 / 35-70MM2 P.REDES M.T.Y B.T.",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
-        "G PARA TIERRA"
+        "G PARA TIERRA",
+        "C PARA TIERRA",
+        "CONECTOR C PARA TIERRA"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -553,11 +570,10 @@ window.APP_DATA = {
     {
       "code": "8002494",
       "description": "CONECTOR DE DERIVACION A COMPRESION TIPO G P.CONDUCTOR DE COBRE 16-35 / 16-35MM2 P.RED AEREA",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
-        "0",
-        "UND",
-        "L"
+        "G 35/35",
+        "CONECTOR G 35/35"
       ],
       "priority": "GG01",
       "source": "ALIAS"
@@ -565,10 +581,11 @@ window.APP_DATA = {
     {
       "code": "8002496",
       "description": "CONECTOR DE DERIVACION A COMPRESION TIPO G P.CONDUCTOR DE COBRE 70 / 35MM2 P.RED AEREA",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "G 70/35",
-        "CONECTORES G 70/35MM"
+        "CONECTORES G 70/35MM",
+        "CONECTOR G 70/35"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -576,10 +593,12 @@ window.APP_DATA = {
     {
       "code": "8002495",
       "description": "CONECTOR DE DERIVACION A COMPRESION TIPO G P.CONDUCTOR DE COBRE 70 / 70MM2 P.RED AEREA",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "G 70",
-        "CONECTORES G 70MM"
+        "CONECTORES G 70MM",
+        "G 70/70",
+        "CONECTOR G 70/70"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -587,7 +606,7 @@ window.APP_DATA = {
     {
       "code": "8002350",
       "description": "CONECTOR DE DOBLE PERNO DE AJUSTE RANGO 120-185 MM2, DISTANCIA ENTRE EJES DE PERNOS 44,45MM (1 3/4\")",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "BORNE"
       ],
@@ -597,7 +616,7 @@ window.APP_DATA = {
     {
       "code": "8002349",
       "description": "CONECTOR DE DOBLE PERNO DE AJUSTE RANGO 35-70 MM2, DISTANCIA ENTRE EJES DE PERNOS 44,45MM (1 3/4\")",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "BORNE"
       ],
@@ -607,10 +626,11 @@ window.APP_DATA = {
     {
       "code": "3001406",
       "description": "CONECTOR TERMINAL A COMPRESION DE COBRE P.CABLE 120MM2, SIMPLE FIJACION",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "TERMINAL 120",
-        "CONECTORES TERMINALES DE 120MM2"
+        "CONECTORES TERMINALES DE 120MM2",
+        "TERMINAL 120 MM2"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -618,10 +638,11 @@ window.APP_DATA = {
     {
       "code": "3001393",
       "description": "CONECTOR TERMINAL A COMPRESION DE COBRE P.CABLE 35MM2, SIMPLE FIJACION",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "TERMINAL 35",
-        "CONECTORES TERMINALES DE 35MM2 (PARA SECCIONADORES Y RIGIDOS)"
+        "CONECTORES TERMINALES DE 35MM2 (PARA SECCIONADORES Y RIGIDOS)",
+        "TERMINAL 35 MM2"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -629,10 +650,11 @@ window.APP_DATA = {
     {
       "code": "3001402",
       "description": "CONECTOR TERMINAL A COMPRESION DE COBRE P.CABLE 35MM2, SIMPLE FIJACION P.PERNO 1/2\" DIAM.",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "TERMINAL 35 AGUJERO GRANDE",
-        "CONECTORES TERMINALES DE 35MM2 (PARA ANCLAJE, PINES, VARILLAS)"
+        "CONECTORES TERMINALES DE 35MM2 (PARA ANCLAJE, PINES, VARILLAS)",
+        "TERMINAL 35 GRANDE"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -640,10 +662,11 @@ window.APP_DATA = {
     {
       "code": "3001404",
       "description": "CONECTOR TERMINAL A COMPRESION DE COBRE P.CABLE 70MM2, SIMPLE FIJACION",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "TERMINAL 70",
-        "CONECTORES TERMINALES DE 70MM2"
+        "CONECTORES TERMINALES DE 70MM2",
+        "TERMINAL 70 MM2"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -661,7 +684,7 @@ window.APP_DATA = {
     {
       "code": "3000677",
       "description": "CRUCETA ASIMETRICA DE MADERA DE 4\" X 5\" X 6,6 PIES CON TRATAMIENTO CCB",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "CRUCETA 7 PIES"
       ],
@@ -671,7 +694,7 @@ window.APP_DATA = {
     {
       "code": "3000727",
       "description": "CRUCETA DE MADERA 4\" X 5\" X 9 PIES CON TRATAMIENTO CCB",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "CRUCETA 9 PIES"
       ],
@@ -681,7 +704,7 @@ window.APP_DATA = {
     {
       "code": "3000719",
       "description": "CRUCETA SIMETRICA DE MADERA DE 4\" X 4\" X 1,3 PIES CON TRATAMIENTO CCB",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "CRUCETA PARA TACO"
       ],
@@ -731,7 +754,7 @@ window.APP_DATA = {
     {
       "code": "3000689",
       "description": "DIAGONAL ACERO GALV. 45MM X 45MM X 1,07M X 4MM",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "DIAGONAL PEQUEÑA"
       ],
@@ -741,7 +764,7 @@ window.APP_DATA = {
     {
       "code": "3000690",
       "description": "DIAGONAL ACERO GALV. 45MM X 45MM X 1,48M X 4MM",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "DIAGONAL GRANDE"
       ],
@@ -751,9 +774,11 @@ window.APP_DATA = {
     {
       "code": "8002200",
       "description": "EMPALME PREFORM. DE ALUMOWELD P.COND.AA. 70MM2.",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
-        "PREFORMADO 70"
+        "PREFORMADO 70",
+        "PREFORMADO 70 MM2",
+        "PREFORMADO 70 MM2 MARRON"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -761,9 +786,12 @@ window.APP_DATA = {
     {
       "code": "8002202",
       "description": "EMPALME PREFORMADO DE ALEACION DE ALUMINIO P.CONDUCTOR AAAC 120MM2 / 13,84 - 14,41MM DIAM.",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
-        "PREFORMADO120"
+        "PREFORMADO120",
+        "PREFORMADO 120",
+        "PREFORMADO 120 MM2",
+        "PREFORMADO 120 MM2 ROJO"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -771,9 +799,11 @@ window.APP_DATA = {
     {
       "code": "8002206",
       "description": "EMPALME PREFORMADO DE ALEACION DE ALUMINIO P.CONDUCTOR AAAC 185MM2 / 17,06 - 17,79MM DIAM.",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
-        "PREFORMADO 185"
+        "PREFORMADO 185",
+        "PREFORMADO 185 MM2",
+        "PREFORMADO 185 MM2 NARANJA"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -781,7 +811,7 @@ window.APP_DATA = {
     {
       "code": "8002076",
       "description": "ESLABON DOBLE TP.8 GIRATORIO DE ACERO GALV. P.FIJAR CONDUCTORES A AISLADORES EN LINEAS AREAS M.T.",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "ESLABON"
       ],
@@ -801,7 +831,7 @@ window.APP_DATA = {
     {
       "code": "8001828",
       "description": "FUSI.SEC.UNIP.AE.22.9KV.100A.12KA.600MM.L.FUG.MIN",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "CUT OUT 22.9KV",
         "CUT-OUT DE 22.9KV",
@@ -813,10 +843,11 @@ window.APP_DATA = {
     {
       "code": "8001850",
       "description": "FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 100A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "FUSIBLE 100A",
-        "FUSIBLE DE 100A"
+        "FUSIBLE DE 100A",
+        "FUSIBLE 100K"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -824,10 +855,11 @@ window.APP_DATA = {
     {
       "code": "8001887",
       "description": "FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 10A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "FUSIBLE 10A",
-        "FUSIBLE DE 10A"
+        "FUSIBLE DE 10A",
+        "FUSIBLE 10K"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -835,10 +867,11 @@ window.APP_DATA = {
     {
       "code": "8001888",
       "description": "FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 12A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "FUSIBLE 12A",
-        "FUSIBLE DE 12A"
+        "FUSIBLE DE 12A",
+        "FUSIBLE 12K"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -846,11 +879,11 @@ window.APP_DATA = {
     {
       "code": "8001889",
       "description": "FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 15A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
-        "3",
-        "UND",
-        "L"
+        "FUSIBLE 15A",
+        "FUSIBLE DE 15A",
+        "FUSIBLE 15K"
       ],
       "priority": "GG01",
       "source": "ALIAS"
@@ -858,10 +891,11 @@ window.APP_DATA = {
     {
       "code": "8001891",
       "description": "FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 20A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "FUSIBLE 20A",
-        "FUSIBLE DE 20A"
+        "FUSIBLE DE 20A",
+        "FUSIBLE 20K"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -869,10 +903,11 @@ window.APP_DATA = {
     {
       "code": "8001895",
       "description": "FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 30A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "FUSIBLE 30A",
-        "FUSIBLE DE 30A"
+        "FUSIBLE DE 30A",
+        "FUSIBLE 30K"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -880,10 +915,11 @@ window.APP_DATA = {
     {
       "code": "8001882",
       "description": "FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 3A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "FUSIBLE 3A",
-        "FUSIBLE DE 3A"
+        "FUSIBLE DE 3A",
+        "FUSIBLE 3K"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -891,10 +927,11 @@ window.APP_DATA = {
     {
       "code": "8001847",
       "description": "FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 65A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "FUSIBLE 65A",
-        "FUSIBLE DE 65A"
+        "FUSIBLE DE 65A",
+        "FUSIBLE 65K"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -902,10 +939,11 @@ window.APP_DATA = {
     {
       "code": "8001883",
       "description": "FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 6A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "FUSIBLE 6A",
-        "FUSIBLE DE 6A"
+        "FUSIBLE DE 6A",
+        "FUSIBLE 6K"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -913,10 +951,11 @@ window.APP_DATA = {
     {
       "code": "8001886",
       "description": "FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 8A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "FUSIBLE 8A",
-        "FUSIBLE DE 8A"
+        "FUSIBLE DE 8A",
+        "FUSIBLE 8K"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -924,9 +963,11 @@ window.APP_DATA = {
     {
       "code": "8001845",
       "description": "FUSIBLE EXPULSION 10KV. 50A.P.FUS.SECC.UNIP.INTEMP",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
-        "FUSIBLE"
+        "FUSIBLE",
+        "FUSIBLE 50A",
+        "FUSIBLE 50K"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -934,11 +975,11 @@ window.APP_DATA = {
     {
       "code": "8001817",
       "description": "FUSIBLE SECC.UNIP. AEREO 10KV, 100A, MINIMO 95KV BIL, 12KA",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
-        "3",
-        "UND",
-        "L"
+        "CUT OUT 10KV",
+        "CUTOUT 10KV",
+        "SECCIONADOR FUSIBLE 10KV"
       ],
       "priority": "GG01",
       "source": "ALIAS"
@@ -946,7 +987,7 @@ window.APP_DATA = {
     {
       "code": "8002097",
       "description": "GRAPA DE ANCLAJE TP.PISTOLA DE ACERO GALV. P.CONDUCTOR CU 16 - 70MM2",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "GRAPA"
       ],
@@ -956,7 +997,7 @@ window.APP_DATA = {
     {
       "code": "8002140",
       "description": "GRAPA DE ANCLAJE TP.PISTOLA DE ALEACION DE ALUMINIO P.CONDUCTOR AAAC 120MM2",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "GRAPA 120"
       ],
@@ -966,7 +1007,7 @@ window.APP_DATA = {
     {
       "code": "8002083",
       "description": "GRAPA DE ANCLAJE TP.PISTOLA DE ALEACION DE ALUMINIO P.CONDUCTOR AAAC 185MM2",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "GRAPA 185"
       ],
@@ -976,7 +1017,7 @@ window.APP_DATA = {
     {
       "code": "8002136",
       "description": "GRAPA DE ANCLAJE TP.PISTOLA DE ALEACION DE ALUMINIO P.CONDUCTOR AAAC 70MM2",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "GRAPA 70"
       ],
@@ -986,7 +1027,7 @@ window.APP_DATA = {
     {
       "code": "8002118",
       "description": "GRAPA FIN DE LINEA 360MML 12,6MMD P.CAB.AUTOP.MT",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "GRAPA PARA AUTOSOPORTADO"
       ],
@@ -1006,7 +1047,7 @@ window.APP_DATA = {
     {
       "code": "8002153",
       "description": "GRAPA SUSPENS. DE ALEAC.AL.P.COND.185MM2. C/VAR. ARMADO",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "GRAPA SUSPENCION 185"
       ],
@@ -1036,7 +1077,7 @@ window.APP_DATA = {
     {
       "code": "2000388",
       "description": "GUANTE DE NITRILO DESECHABLE TALLA XL DE 23CM X 0,13MM C.PUÑO REFORZADO, PUNTAS TEXTURIZADAS",
-      "unit": "PR",
+      "unit": "UND",
       "aliases": [
         "GUANTE NITRILO GRANDE"
       ],
@@ -1046,9 +1087,10 @@ window.APP_DATA = {
     {
       "code": "8000687",
       "description": "GUARDACABO DE ACERO GALV. P.CABLE 13MM DIAM. 1,5MM ESPESOR P.PROTEGER CABLE PORTANTE",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
-        "GUARDACABO PARA VIENTO"
+        "GUARDACABO PARA VIENTO",
+        "GUARDACABO"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -1056,7 +1098,7 @@ window.APP_DATA = {
     {
       "code": "8000535",
       "description": "HEBILLA (HEBILLA) DE ACERO INOXIDABLE TIPO AISI 316 P.FLEJES DE 19MM (3/4\") ANCHO P.ALTA CORROSION",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "HEBILLAS"
       ],
@@ -1066,9 +1108,10 @@ window.APP_DATA = {
     {
       "code": "8003160",
       "description": "HOJA DE SIERRA SANFLEX 12\", 18 DIENTES POR PULG. 3806-300-18-100P",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
-        "HOJA DE SIERRA"
+        "HOJA DE SIERRA",
+        "HOJA SIERRA"
       ],
       "priority": "P",
       "source": "ALIAS"
@@ -1076,7 +1119,7 @@ window.APP_DATA = {
     {
       "code": "3001051",
       "description": "MANTA AISLANTE ANTITRACKING AUTOFUNDENTE C.CAPA EPR DE 102MM X 3M COLOR NEGRO 15KV",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "PAD"
       ],
@@ -1106,7 +1149,7 @@ window.APP_DATA = {
     {
       "code": "3000687",
       "description": "MENSULA DE MADERA DE 4\" X 5\" X 7 PIES CON TRATAMIENTO CCB",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "CRUCETA 7PIES"
       ],
@@ -1116,7 +1159,7 @@ window.APP_DATA = {
     {
       "code": "8001981",
       "description": "OJAL ROSCADO AC.GALV.,DE 3/4PULG.D. X86MML. P.L.A.",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "OJAL 3/4"
       ],
@@ -1126,7 +1169,7 @@ window.APP_DATA = {
     {
       "code": "8001977",
       "description": "OJAL ROSCADO AC.GALV.,DE 5/8PULG.D. X80MML. P.L.A.",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "OJAL 5/8"
       ],
@@ -1136,7 +1179,7 @@ window.APP_DATA = {
     {
       "code": "8002663",
       "description": "PASTA ANTICORROSIVA CONDUCTORA DE USO ELECTRICO PENETROX E.EN ENVASE DE 8 ONZAS",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "PENETROX"
       ],
@@ -1146,7 +1189,7 @@ window.APP_DATA = {
     {
       "code": "8000647",
       "description": "PERNO HO.GALV.CAB.EXAG. 1/2\" X 1.1/2 P.C/TUERCA SID-127",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "PERNO 1/2"
       ],
@@ -1166,7 +1209,7 @@ window.APP_DATA = {
     {
       "code": "8001124",
       "description": "PERNO HO.GALV.CAB.EXAG. 3/8\" X 1.1/2\" C/TUERCA",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "PERNO 3/8"
       ],
@@ -1176,7 +1219,7 @@ window.APP_DATA = {
     {
       "code": "8001126",
       "description": "PERNO HO.GALV.CAB.EXAG. 3/8\" X 2\" C/TUERCA",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "PERNO"
       ],
@@ -1186,7 +1229,7 @@ window.APP_DATA = {
     {
       "code": "8002003",
       "description": "PLANCHA DE COBRE P.LINEA A TIERRA C.AGUJERO 20MM DIAM.",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "PLANCHA J GRANDE",
         "CHAPAS DE TIERRA"
@@ -1197,7 +1240,7 @@ window.APP_DATA = {
     {
       "code": "8002007",
       "description": "PLANCHA DE COBRE PARA LINEA A TIERRA CON AGUJERO DE 13MM DE DIAMETRO",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "PLANCHA J PEQUEÑO",
         "CHAPAS DE TIERRA"
@@ -1218,7 +1261,7 @@ window.APP_DATA = {
     {
       "code": "3000809",
       "description": "PROTECTOR DE FIBRA DE VIDRIO P.SECCIONADOR AEREO EN PDS ASIMETRICO 1100 X 800 X 600MM",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "PROTECTOR PDS (TRIANGULO)"
       ],
@@ -1228,7 +1271,7 @@ window.APP_DATA = {
     {
       "code": "3000807",
       "description": "PROTECTOR DE FIBRA DE VIDRIO P.SECCIONADOR AEREO EN PDS PARALELO AL PREDIO 2100 X 1110MM",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "PROTECTOR PDS PARALELO PREDIO"
       ],
@@ -1238,7 +1281,7 @@ window.APP_DATA = {
     {
       "code": "3000808",
       "description": "PROTECTOR DE FIBRA DE VIDRIO P.SECCIONADOR AEREO EN PDS PERPENDICULAR AL PREDIO 1700 X 1110MM",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "PROTECTOR PDS PERPEND PREDIO"
       ],
@@ -1248,7 +1291,7 @@ window.APP_DATA = {
     {
       "code": "3000806",
       "description": "PROTECTOR DE FIBRA DE VIDRIO P.SECCIONADOR AEREO EN SAB 2200 X 1110MM",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "PROTECTOR DE SAB"
       ],
@@ -1258,7 +1301,7 @@ window.APP_DATA = {
     {
       "code": "3000802",
       "description": "PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P. SECCIONADOR RIGIDO PARA REDES AEREAS MT",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "AVES"
       ],
@@ -1268,7 +1311,7 @@ window.APP_DATA = {
     {
       "code": "3000797",
       "description": "PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P.MENSULA DE MADERA CON AISLADOR TIPO PIN PARA REDES AEREAS MT",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "AVES"
       ],
@@ -1278,7 +1321,7 @@ window.APP_DATA = {
     {
       "code": "3000795",
       "description": "PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P.MENSULAS DE CONCRETO DE 1 Y 0.60 METROS PARA REDES AEREAS MT",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "AVES"
       ],
@@ -1288,7 +1331,7 @@ window.APP_DATA = {
     {
       "code": "3000801",
       "description": "PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P.MENSULAS DE MADERA CON DIAGONAL EN PDS PARA REDES AEREAS MT",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "AVES"
       ],
@@ -1298,7 +1341,7 @@ window.APP_DATA = {
     {
       "code": "3000800",
       "description": "PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P.MENSULAS DE MADERA SIN DIAGONAL EN PDS PARA REDES AEREAS MT",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "AVES"
       ],
@@ -1308,7 +1351,7 @@ window.APP_DATA = {
     {
       "code": "3000803",
       "description": "PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P.PUNTA DE POSTE DE CONCRETO PARA REDES AEREAS MT",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "AVES"
       ],
@@ -1318,7 +1361,7 @@ window.APP_DATA = {
     {
       "code": "3000798",
       "description": "PROTECTOR DE PRFV DE 1.5MM DE ESPESOR PARA MENSULA DE MADERA SIN AISLADORES PARA REDES AEREAS DE MT",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "AVES"
       ],
@@ -1328,7 +1371,7 @@ window.APP_DATA = {
     {
       "code": "3000793",
       "description": "PROTECTOR DE PRFV DE 1.5MM DE ESPESOR PARA PALOMILLAS DE CONCRETO PARA REDES AEREAS DE MT",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "AVES"
       ],
@@ -1338,10 +1381,12 @@ window.APP_DATA = {
     {
       "code": "4000576",
       "description": "SECCIONADOR UNIP. AEREO 22,9KV 600A 25KA 150KVBIL LF 700MM ARCO 253MM EXT.CORROS.SEVERA SIN CONECTOR",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "RIGIDO 10KV",
-        "SECCIONADOR RIGIDO 10KV"
+        "SECCIONADOR RIGIDO 10KV",
+        "RIGIDO 22.9KV",
+        "SECCIONADOR RIGIDO 22.9KV"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -1349,10 +1394,12 @@ window.APP_DATA = {
     {
       "code": "4000578",
       "description": "SECCIONADOR UNIPOLAR AEREO 10KV 600A 25KA 95KV BIL LF 430MM EXTERIOR P.CORROSION SEVERA SIN CONECTOR",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
-        "RIGIDO 22,9KV",
-        "SECCIONADOR RIGIDO 22.9KV"
+        "RIGIDO 22.9KV",
+        "SECCIONADOR RIGIDO 22.9KV",
+        "RIGIDO 10KV",
+        "SECCIONADOR RIGIDO 10KV"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -1360,9 +1407,10 @@ window.APP_DATA = {
     {
       "code": "8002689",
       "description": "SOLVENTE DIELECTRICO ECOLOGICO NO CLORADO M.T.",
-      "unit": "GL",
+      "unit": "UND",
       "aliases": [
-        "SOLVENTE"
+        "SOLVENTE",
+        "SOLVENTE DIELECTRICO"
       ],
       "priority": "P",
       "source": "ALIAS"
@@ -1370,7 +1418,7 @@ window.APP_DATA = {
     {
       "code": "8002030",
       "description": "SOPORTE LATERAL DE ACERO GALV. P.AISLADOR TP.PIN HIBRIDO O POLIMERICO 22,9KV",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "LATERAL PARA 22,9KV"
       ],
@@ -1380,7 +1428,7 @@ window.APP_DATA = {
     {
       "code": "8002028",
       "description": "SOPORTE LATERAL PARA AISLADOR HIBRIDO PIN 10KV.",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "LATERAL PARA 10KV"
       ],
@@ -1400,7 +1448,7 @@ window.APP_DATA = {
     {
       "code": "8000856",
       "description": "TIRAFONDO HO.GALV. 3/8\" X 1.1/2\"",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "TIRAFON PEQUEÑO"
       ],
@@ -1410,7 +1458,7 @@ window.APP_DATA = {
     {
       "code": "8000858",
       "description": "TIRAFONDO HO.GALV. 3/8\" X 2\"",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "TIRAFON MEDIANO"
       ],
@@ -1420,7 +1468,7 @@ window.APP_DATA = {
     {
       "code": "8000860",
       "description": "TIRAFONDO HO.GALV. 3/8\" X 2.1/2\"",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "TIRAFON GRANDE"
       ],
@@ -1440,9 +1488,10 @@ window.APP_DATA = {
     {
       "code": "8002570",
       "description": "TOCUYO DE ALGODON 100% 0.60/0.80 X 1 M.",
-      "unit": "KG",
+      "unit": "UND",
       "aliases": [
-        "TOCUYO"
+        "TOCUYO",
+        "TOCUYO DE ALGODON"
       ],
       "priority": "P",
       "source": "ALIAS"
@@ -1452,7 +1501,8 @@ window.APP_DATA = {
       "description": "TRAPO INDUSTRIAL",
       "unit": "UND",
       "aliases": [
-        "TRAPO"
+        "TRAPO",
+        "TRAPO INDUSTRIAL"
       ],
       "priority": "P",
       "source": "ALIAS"
@@ -1460,10 +1510,11 @@ window.APP_DATA = {
     {
       "code": "8001781",
       "description": "TUBO PORTAFUSIBLE PARA SECC. UNIP. AEREO 100A, 10KV, CORR.SEVERA",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "PORTAFUSIBLE 10KV",
-        "CAÑA 10KV"
+        "CAÑA 10KV",
+        "TUBO PORTAFUSIBLE 10KV"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -1471,10 +1522,11 @@ window.APP_DATA = {
     {
       "code": "8001785",
       "description": "TUBO PORTAFUSIBLE PARA SECC. UNIP. AEREO 100A, 22,9KV, CORR.MODERADA",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
-        "PORTAFUSIBLE 22,9KV",
-        "CAÑA 22,9KV"
+        "PORTAFUSIBLE 22.9KV",
+        "CAÑA 22.9KV",
+        "TUBO PORTAFUSIBLE 22.9KV"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -1482,9 +1534,10 @@ window.APP_DATA = {
     {
       "code": "8002291",
       "description": "UNION P.EMPALME AUTOMATICO P.CONDUCTOR AAAC 120MM2",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
-        "AUTOMATICO 120"
+        "AUTOMATICO 120",
+        "AUTOMATICO 120 MM2"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -1492,9 +1545,10 @@ window.APP_DATA = {
     {
       "code": "8002235",
       "description": "UNION P.EMPALME AUTOMATICO P.CONDUCTOR AAAC 185MM2",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
-        "AUTOMATICO 185"
+        "AUTOMATICO 185",
+        "AUTOMATICO 185 MM2"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -1502,9 +1556,10 @@ window.APP_DATA = {
     {
       "code": "8002289",
       "description": "UNION P.EMPALME AUTOMATICO P.CONDUCTOR AAAC 70MM2",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
-        "AUTOMATICO 70"
+        "AUTOMATICO 70",
+        "AUTOMATICO 70 MM2"
       ],
       "priority": "",
       "source": "ALIAS"
@@ -1512,7 +1567,7 @@ window.APP_DATA = {
     {
       "code": "8002033",
       "description": "VARILLA ROSCADA AC.GALV. 16MMD. X 250MML. L.AEREAS",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "VARILLA 250"
       ],
@@ -1532,7 +1587,7 @@ window.APP_DATA = {
     {
       "code": "8002035",
       "description": "VARILLA ROSCADA AC.GALV. 16MMD. X 350MML. L.AEREAS",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "VARILLA 350"
       ],
@@ -1542,7 +1597,7 @@ window.APP_DATA = {
     {
       "code": "8002038",
       "description": "VARILLA ROSCADA AC.GALV. 16MMD. X 450MML. L.AEREAS",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "VARILLA 450"
       ],
@@ -1552,7 +1607,7 @@ window.APP_DATA = {
     {
       "code": "8002041",
       "description": "VARILLA ROSCADA AC.GALV. 16MMD. X 550MML. L.AEREAS",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "VARILLA 550"
       ],
@@ -1562,7 +1617,7 @@ window.APP_DATA = {
     {
       "code": "8002043",
       "description": "VARILLA ROSCADA AC.GALV. 16MMD. X 650MML. L.AEREAS",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
         "VARILLA 650"
       ],
@@ -1626,5 +1681,20 @@ window.APP_DATA = {
     "lote": "LDA-000000",
     "tipoAprovisionamiento": "Reserva para orden",
     "pos": "0"
+  },
+  "supervisorInitials": {
+    "EBLAS": "EB",
+    "HTORRES": "UT",
+    "BHIDALGO": "BH",
+    "ELIENDO": "EL",
+    "RDIAZ": "RD",
+    "OSOTELO": "OS",
+    "SLINARES": "SL",
+    "IDAMIAN": "ID",
+    "PLAZARO": "PL",
+    "DFERRE": "DF",
+    "GCANDIA": "GC",
+    "JQUISPE": "JQ",
+    "WCENTENO": "WC"
   }
 };
