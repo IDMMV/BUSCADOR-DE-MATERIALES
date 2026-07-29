@@ -1,0 +1,17 @@
+{
+  "name": "Buscador de Materiales SAP",
+  "short_name": "Materiales SAP",
+  "description": "Busca materiales por matrícula, descripción o alias y prepara pedidos para SAP.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f4f7fb",
+  "theme_color": "#0d1d3b",
+  "lang": "es-PE",
+  "icons": [
+    {"src":"icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
+    {"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"},
+    {"src":"icon-maskable-512.png","sizes":"512x512","type":"image/png","purpose":"maskable"}
+  ]
+}

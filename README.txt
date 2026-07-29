@@ -1,13 +1,21 @@
-BUSCADOR DE MATERIALES SAP V3
+BUSCADOR DE MATERIALES SAP V6
 
-USO DIRECTO
-1. Abra index.html. Aunque data.js no esté presente, la página usa una copia interna y funciona.
-2. Para GitHub, suba juntos index.html y data.js.
+CAMBIOS PRINCIPALES
+- Ícono BM seleccionado integrado en la aplicación.
+- Íconos PWA de 192x192 y 512x512.
+- Ícono maskable para Android.
+- Apple Touch Icon para iPhone/iPad.
+- Favicon para navegador.
+- Diseño adaptado para computadora, tablet y celular.
+- En celular, los materiales seleccionados se muestran como tarjetas legibles.
+- Botones y campos más grandes para uso táctil.
+- Editor de matrículas y alias optimizado para pantalla pequeña.
+- Se conserva la búsqueda y escritura por voz.
 
-ACTUALIZAR MATRÍCULAS Y ALIAS
-1. Entre a Configuración > Matrículas y alias.
-2. Agregue o edite los datos. Los cambios quedan guardados en ese navegador.
-3. Entre a Configuración > Guardar para GitHub y descargue data.js actualizado.
-4. Reemplace el data.js de su repositorio GitHub por el nuevo archivo. Así todos verán la base actualizada.
+PARA PUBLICAR EN GITHUB
+Sube TODOS los archivos de esta carpeta al mismo nivel del repositorio.
+No subas únicamente index.html.
 
-Sin una base de datos, una web estática no puede escribir directamente dentro de GitHub.
+IMPORTANTE
+Después de reemplazar una versión anterior en GitHub, abre la web y actualiza una vez.
+Si aún aparece el ícono antiguo, elimina el acceso directo anterior e instala nuevamente la app.
