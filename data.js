@@ -446,14 +446,15 @@ window.APP_DATA = {
     {
       "code": "3001671",
       "description": "CONDUCTOR CABLEADO TW 750V.UNIP.AMARI. 1X 35 MM2",
-      "unit": "UN",
+      "unit": "M",
       "aliases": [
         "3",
         "UND",
         "L"
       ],
-      "priority": "GG01",
-      "source": "ALIAS"
+      "priority": "",
+      "source": "ALIAS",
+      "image": ""
     },
     {
       "code": "3001673",
@@ -553,14 +554,13 @@ window.APP_DATA = {
     {
       "code": "8002494",
       "description": "CONECTOR DE DERIVACION A COMPRESION TIPO G P.CONDUCTOR DE COBRE 16-35 / 16-35MM2 P.RED AEREA",
-      "unit": "UN",
+      "unit": "UND",
       "aliases": [
-        "0",
-        "UND",
-        "L"
+        "G35"
       ],
-      "priority": "GG01",
-      "source": "ALIAS"
+      "priority": "",
+      "source": "ALIAS",
+      "image": ""
     },
     {
       "code": "8002496",
@@ -1154,16 +1154,6 @@ window.APP_DATA = {
       "source": "ALIAS"
     },
     {
-      "code": "8001122",
-      "description": "PERNO HO.GALV.CAB.EXAG. 3/8\" X 1\" C/TUERCA",
-      "unit": "UND",
-      "aliases": [
-        "PERNO"
-      ],
-      "priority": "",
-      "source": "ALIAS"
-    },
-    {
       "code": "8001124",
       "description": "PERNO HO.GALV.CAB.EXAG. 3/8\" X 1.1/2\" C/TUERCA",
       "unit": "UN",
@@ -1171,6 +1161,16 @@ window.APP_DATA = {
         "PERNO 3/8"
       ],
       "priority": "P",
+      "source": "ALIAS"
+    },
+    {
+      "code": "8001122",
+      "description": "PERNO HO.GALV.CAB.EXAG. 3/8\" X 1\" C/TUERCA",
+      "unit": "UND",
+      "aliases": [
+        "PERNO"
+      ],
+      "priority": "",
       "source": "ALIAS"
     },
     {
@@ -1408,16 +1408,6 @@ window.APP_DATA = {
       "source": "ALIAS"
     },
     {
-      "code": "8000858",
-      "description": "TIRAFONDO HO.GALV. 3/8\" X 2\"",
-      "unit": "UN",
-      "aliases": [
-        "TIRAFON MEDIANO"
-      ],
-      "priority": "",
-      "source": "ALIAS"
-    },
-    {
       "code": "8000860",
       "description": "TIRAFONDO HO.GALV. 3/8\" X 2.1/2\"",
       "unit": "UN",
@@ -1425,6 +1415,16 @@ window.APP_DATA = {
         "TIRAFON GRANDE"
       ],
       "priority": "P",
+      "source": "ALIAS"
+    },
+    {
+      "code": "8000858",
+      "description": "TIRAFONDO HO.GALV. 3/8\" X 2\"",
+      "unit": "UN",
+      "aliases": [
+        "TIRAFON MEDIANO"
+      ],
+      "priority": "",
       "source": "ALIAS"
     },
     {
