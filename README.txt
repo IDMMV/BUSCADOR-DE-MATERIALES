@@ -13,3 +13,5 @@ PUBLICACIÓN EN GITHUB
 2. Confirmar los cambios en la rama main.
 3. En PC usar Ctrl+F5.
 4. En celular cerrar por completo la PWA y volver a abrirla. Si aún aparece una versión anterior, desinstalar y volver a instalar.
+
+V29: al agregar un material, el buscador permanece abierto para continuar agregando.
