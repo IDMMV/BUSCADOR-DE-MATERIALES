@@ -84,7 +84,7 @@
 </style>
 </head>
 <body>
-<header class="top"><div class="brand"><img class="app-logo" src="icon-192.png" alt="Ícono Buscador de Materiales"><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V23</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button id="mobileMenu" class="btn secondary mobile-menu-btn">☰ Menú</button><a id="openSAP" class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" target="_blank" rel="noopener noreferrer" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button id="installApp" class="btn success hidden">⬇ Instalar app</button><button id="themeToggle" class="btn secondary theme-toggle">🌙 Modo nocturno</button><button id="config" class="btn secondary">⚙ Configuración</button></div></header>
+<header class="top"><div class="brand"><img class="app-logo" src="icon-192.png" alt="Ícono Buscador de Materiales"><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V27</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button id="mobileMenu" class="btn secondary mobile-menu-btn">☰ Menú</button><a id="openSAP" class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" target="_blank" rel="noopener noreferrer" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button id="installApp" class="btn success hidden">⬇ Instalar app</button><button id="themeToggle" class="btn secondary theme-toggle">🌙 Modo nocturno</button><button id="config" class="btn secondary">⚙ Configuración</button></div></header>
 
 <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 <div class="app-shell">
@@ -130,7 +130,7 @@
 <section id="p-mat" class="page active"><h3 id="matTitle">Agregar material</h3><div class="editor-grid"><div class="editor-col"><div class="editor-card"><h4>Datos principales</h4><div class="labeled-form admin"><label class="form-group">Matrícula SAP<div class="voice-wrap"><input id="mcode" inputmode="numeric" placeholder="Ej.: 8001828"><button class="voice-btn" data-voice="mcode">🎤</button></div></label><label class="form-group">Descripción oficial<div class="voice-wrap"><input id="mdesc" placeholder="Descripción del material"><button class="voice-btn" data-voice="mdesc">🎤</button></div></label><label class="form-group">Unidad<div class="voice-wrap"><input id="munit" placeholder="UND"><button class="voice-btn" data-voice="munit">🎤</button></div></label><label class="form-group">Prioridad<select id="mprio"><option value="">Normal</option><option value="P">Prioridad P</option></select></label></div></div><div id="imageEditor" class="editor-card image-editor"><h4>Imagen del material</h4><div class="image-preview-wrap"><div id="imagePreviewBox" class="material-placeholder">Sin imagen</div><div><input id="mimage" type="file" accept="image/*"><p class="small">La imagen se comprime automáticamente a WebP, máximo 700 × 700 px y calidad 70 %.</p><button id="removeImage" class="btn danger hidden" type="button">Eliminar imagen</button></div></div></div></div><div class="editor-col"><div id="aliasEditorBox" class="editor-card alias-box"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap"><h4>Alias del material</h4><button id="suggestAliases" class="btn secondary" type="button">✨ Sugerir alias</button></div><div id="aliasList" class="alias-list"><p class="small">Esta matrícula todavía no tiene alias.</p></div><h4 style="margin-top:14px">Agregar nuevo alias</h4><div class="new-alias-row"><input id="newAlias" placeholder="Escribe un nuevo alias"><button class="voice-btn" data-voice="newAlias">🎤</button><button id="addAlias" class="btn primary" type="button">Agregar alias</button></div></div><p id="saveHelp" class="note hidden"><b>Guardado:</b> descripción, unidad, prioridad, alias e imagen se guardan juntos al pulsar <b>Actualizar matrícula y alias</b>.</p><div id="materialActions" class="actions"><button id="saveMat" class="btn primary">Guardar material</button><button id="cancelEdit" class="btn secondary hidden">Cancelar edición</button></div></div></div><div id="materialBrowser"><h3>Buscar y modificar matrícula o alias</h3><div class="voice-wrap admin"><input id="adminSearch" placeholder="Buscar matrícula, descripción o alias"><button class="voice-btn" data-voice="adminSearch">🎤</button></div><div id="materialList" class="material-list"></div></div></section>
 <section id="p-sup" class="page"><p class="small">Registra el nombre y las iniciales que SAP mostrará junto con la fecha, por ejemplo <b>SL 29/07</b>.</p><div class="supervisor-add admin"><div class="voice-wrap"><input id="newSup" placeholder="Nombre del supervisor"><button class="voice-btn" data-voice="newSup">🎤</button></div><input id="newSupInitials" maxlength="4" placeholder="Iniciales"><button id="addSup" class="btn primary">Agregar</button></div><div id="supList" class="supervisor-list"></div></section>
 <section id="p-units" class="page"><div class="adminrow admin"><div class="voice-wrap"><input id="newUnit" placeholder="Ej.: F5X-999"><button class="voice-btn" data-voice="newUnit">🎤</button></div><button id="addUnit" class="btn primary">Agregar</button></div><div id="unitList" class="chips"></div></section>
-<section id="p-github" class="page"><h3>Sincronización con Google Drive</h3><p>Configura la URL <b>/exec</b> de tu Google Apps Script. Los cambios se guardan primero en este dispositivo y se sincronizan cuando haya internet.</p><div class="labeled-form drive-grid"><label class="form-group">URL de Apps Script<input id="scriptUrl" placeholder="https://script.google.com/macros/s/.../exec"></label><label class="form-group">Clave de acceso<input id="scriptToken" type="password" placeholder="Clave definida en Code.gs"></label><label class="form-group">Estado<input id="syncState" value="Sin configurar" readonly></label><label class="form-group">Última sincronización<input id="lastSync" readonly></label></div><div class="actions"><button id="saveScriptConfig" class="btn primary">Guardar conexión</button><button id="syncNow" class="btn success">Sincronizar ahora</button><button id="restoreDrive" class="btn secondary">Recuperar desde Drive</button><button id="downloadJson" class="btn secondary">Descargar respaldo JSON</button><button id="reset" class="btn danger">Restablecer datos originales</button></div><div class="drive-note"><b>Modo sin red:</b> alias, fotos, supervisores, unidades y pendientes se guardan localmente. Al volver internet, pulsa “Sincronizar ahora” o abre nuevamente la aplicación.</div></section><p id="adminStatus" class="status"></p></div></dialog>
+<section id="p-github" class="page"><h3>Sincronización con Google Drive</h3><p>Configura la URL <b>/exec</b> de tu Google Apps Script. Los cambios se guardan primero en este dispositivo y se sincronizan cuando haya internet.</p><div class="labeled-form drive-grid"><label class="form-group">URL de Apps Script<input id="scriptUrl" placeholder="https://script.google.com/macros/s/.../exec"></label><label class="form-group">Clave de acceso<input id="scriptToken" type="password" placeholder="Clave definida en Code.gs"></label><label class="form-group">Estado<input id="syncState" value="Sin configurar" readonly></label><label class="form-group">Última sincronización<input id="lastSync" readonly></label></div><div class="actions"><button id="saveScriptConfig" class="btn primary">Guardar conexión</button><button id="syncNow" class="btn success">Sincronizar ahora</button><button id="restoreDrive" class="btn secondary">Recuperar desde Drive</button><a id="openDriveLink" class="btn secondary" href="https://drive.google.com/drive/my-drive" target="_blank" rel="noopener">☁ Abrir Google Drive</a><button id="downloadJson" class="btn secondary">Descargar respaldo JSON</button><button id="reset" class="btn danger">Restablecer datos originales</button></div><div class="drive-note"><b>Modo sin red:</b> alias, fotos, supervisores, unidades y pendientes se guardan localmente. Al volver internet, pulsa “Sincronizar ahora” o abre nuevamente la aplicación.</div></section><p id="adminStatus" class="status"></p></div></dialog>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="data.js"></script>
 <script>
@@ -286,4 +286,86 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 })();
 </script>
 
+<style id="v27-final-fixes">
+.app-shell.v27-sidebar-hidden{grid-template-columns:0 minmax(0,1fr)!important}
+.app-shell.v27-sidebar-hidden .sidebar{display:none!important}
+.app-shell.v27-sidebar-hidden .app-content{grid-column:1/-1!important;display:block!important;visibility:visible!important;min-width:0!important}
+#v23ExpandSidebar.v27-visible{display:block!important}
+.stock-status .stock-upload-time{display:block;font-size:11px;margin-top:3px;opacity:.85}
+.stock-alt-note{display:block!important;margin-top:6px;padding:8px 10px;border-radius:8px;background:#fff3cd;color:#7a4c00;border:1px solid #edc86f;font-weight:800;font-size:12px}
+.stock-alt-note strong{color:#653d00}.stock-current-note{display:block;margin-top:5px;color:var(--muted);font-size:12px}
+html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-color:#806b24}
+.drive-actions-v27{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+@media(max-width:900px){#v23ExpandSidebar{top:78px!important;left:10px!important}.app-shell.v27-sidebar-hidden{display:block!important}}
+</style>
+<script id="v27-final-js">
+(function(){
+  const $q=s=>document.querySelector(s);
+  const escV27=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const centerLabel=c=>String(c)==='1003'?'1003 - San Juan':'1004 - Vitarte';
+  const otherCenterV27=c=>String(c)==='1003'?'1004':'1003';
+  const sumStock=(code,center)=>Array.isArray(stockRows)?stockRows.filter(r=>String(r.material)===String(code)&&String(r.centro)===String(center)).reduce((a,r)=>a+(Number(r.libre)||0),0):0;
+  const fmtDateTime=iso=>{if(!iso)return'';const d=new Date(iso);return Number.isNaN(d.getTime())?'':d.toLocaleString('es-PE',{dateStyle:'short',timeStyle:'short'});};
+
+  function renderStatusV27(){
+    const fresh=stockMeta?.date===todayKey()&&Array.isArray(stockRows)&&stockRows.length>0;
+    const uploaded=fmtDateTime(stockMeta?.loadedAt);
+    const html=fresh
+      ? `✓ Stock SAP actualizado: ${escV27(stockMeta.file||'archivo cargado')} · ${stockRows.length} registros<span class="stock-upload-time">Fecha y hora de carga: ${escV27(uploaded||stockMeta.date||'')}</span>`
+      : `⚠ Stock SAP desactualizado${stockMeta?.loadedAt?`<span class="stock-upload-time">Última carga: ${escV27(uploaded)}</span>`:'<span class="stock-upload-time">Carga el Excel diario para continuar.</span>'}`;
+    ['stockStatus','stockStatus2'].forEach(id=>{const el=document.getElementById(id);if(el){el.className='stock-status '+(fresh?'ok':'stale');el.innerHTML=html;}});
+  }
+
+  function renderCartV27(){
+    const count=$q('#cartCount'),empty=$q('#empty'),tbody=$q('#cart');if(!count||!empty||!tbody)return;
+    count.textContent=`${cart.length} material${cart.length===1?'':'es'}`;
+    const side=$q('#sideCartCount');if(side)side.textContent=cart.length;
+    empty.style.display=cart.length?'none':'block';
+    const current=String($q('#centroGlobal')?.value||'1003'),other=otherCenterV27(current);
+    tbody.innerHTML=cart.map((m,i)=>{
+      const qty=Number(m.qty)||0,cur=sumStock(m.code,current),alt=sumStock(m.code,other),bad=qty>cur;
+      let notice=`<span class="stock-current-note">Disponible en ${escV27(centerLabel(current))}: <b>${cur}</b> ${escV27(normalizedUnit(m))}</span>`;
+      if(bad){notice+=alt>0
+        ? `<span class="stock-alt-note">⚠ En <strong>${escV27(centerLabel(other))}</strong> hay <strong>${alt} ${escV27(normalizedUnit(m))}</strong> disponibles. Puedes coordinar el cambio de centro o dejar el faltante pendiente.</span>`
+        : `<span class="stock-none-note">Sin stock suficiente en ${escV27(centerLabel(other))}.</span>`;}
+      return `<tr class="${qty>0&&!bad?'':'row-pending'}"><td><b>${escV27(m.code)}</b></td><td>${escV27(m.description)}${notice}</td><td><div class="qty-wrap"><input class="qty ${qty>0&&!bad?'ready':''} ${bad?'insufficient':''}" type="number" min="0" step="0.01" value="${escV27(m.qty??'')}" placeholder="0" data-qty="${i}"><button class="voice-btn" data-voice-qty="${i}" title="Dictar cantidad">🎤</button></div>${bad?'<span class="stock-info" style="color:#c62828">Stock insuficiente en el centro seleccionado</span>':''}</td><td>${escV27(normalizedUnit(m))}</td><td><button class="btn danger" data-rm="${i}">Quitar</button></td></tr>`;
+    }).join('');
+    if(typeof renderSapPreview==='function')renderSapPreview();
+  }
+
+  function installAliasNavigation(){
+    const old=document.querySelector('.side-btn[data-view="aliasView"], .side-btn[data-config-page="mat"]');if(!old)return;
+    const clone=old.cloneNode(true);clone.removeAttribute('data-config-page');clone.dataset.view='aliasView';old.replaceWith(clone);
+    clone.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();showView('aliasView');if(typeof renderAliasTable==='function')renderAliasTable();});
+  }
+
+  function setSidebarV27(hidden){
+    const shell=$q('.app-shell'),sidebar=$q('#sidebar'),expand=$q('#v23ExpandSidebar');if(!shell)return;
+    shell.classList.toggle('v27-sidebar-hidden',hidden);shell.classList.remove('sidebar-collapsed');
+    if(sidebar){sidebar.classList.remove('collapsed','open');sidebar.style.display=hidden?'none':'';}
+    if(expand){expand.classList.toggle('v27-visible',hidden);expand.style.display=hidden?'block':'none';}
+    localStorage.setItem('bm_sidebar_collapsed',hidden?'1':'0');
+  }
+
+  function installSidebarControls(){
+    const oldCollapse=$q('#v23CollapseSidebar');if(oldCollapse){const c=oldCollapse.cloneNode(true);oldCollapse.replaceWith(c);c.innerHTML='⇤';c.title='Ocultar barra lateral';c.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();setSidebarV27(true);});}
+    const oldExpand=$q('#v23ExpandSidebar');if(oldExpand){const b=oldExpand.cloneNode(true);oldExpand.replaceWith(b);b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();setSidebarV27(false);});}
+    setSidebarV27(false);
+  }
+
+  function enhanceDrive(){
+    const page=$q('#p-github');if(!page)return;
+    if(!page.querySelector('.drive-actions-v27')){const box=document.createElement('div');box.className='drive-actions-v27';box.innerHTML='<a class="btn primary" href="https://drive.google.com/drive/my-drive" target="_blank" rel="noopener">☁ Abrir mi Google Drive</a><button type="button" class="btn secondary" id="v27RefreshDrive">↻ Recuperar datos desde Drive</button>';page.appendChild(box);box.querySelector('#v27RefreshDrive').addEventListener('click',()=>typeof restoreFromDrive==='function'&&restoreFromDrive());}
+  }
+
+  function initV27(){
+    window.renderStockStatus=renderStatusV27;window.renderCart=renderCartV27;
+    renderStatusV27();renderCartV27();installAliasNavigation();installSidebarControls();enhanceDrive();
+    $q('#centroGlobal')?.addEventListener('change',()=>setTimeout(renderCartV27,0));
+    $q('#loadStock')?.addEventListener('click',()=>setTimeout(renderStatusV27,1000));
+    $q('#restoreDrive')?.addEventListener('click',()=>setTimeout(()=>{renderStatusV27();renderCartV27();},1000));
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initV27);else initV27();
+})();
+</script>
 </body></html>
