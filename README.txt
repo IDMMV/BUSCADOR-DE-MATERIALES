@@ -1,3 +1,7 @@
+BUSCADOR DE MATERIALES SAP V24
+
+Correcciones verificadas: buscador, botones Agregar, Configuración, cierre de ventanas, barra lateral ocultar/mostrar y mensajes visibles al agregar materiales.
+
 BUSCADOR DE MATERIALES SAP V23
 
 - Alias y matrículas con diseño Opción 2.
