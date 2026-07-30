@@ -1,15 +1,14 @@
-BUSCADOR DE MATERIALES SAP V19
+BUSCADOR DE MATERIALES SAP V22
 
-Incluye:
-- Stock diario desde Excel SAP.
-- Distribución por lote y almacén.
-- Validación entre centros 1003 y 1004.
-- Materiales pendientes por coordinar.
-- Modo día/nocturno.
-- Trabajo sin red y cola de sincronización.
-- Conexión con Google Apps Script para guardar en Drive/Sheets.
+CORRECCIONES PRINCIPALES
+- Se corrigió el error que detenía los botones y el buscador.
+- Botones Configuración y cerrar X funcionales.
+- Barra lateral ocultable y recuperable.
+- Los accesos laterales a Drive, Supervisores, Unidades y Alias muestran únicamente su módulo.
+- Alias y matrículas se muestran en una grilla plana tipo Excel.
+- Pendientes visibles junto al pedido y con contador lateral.
+- El stock cargado se conserva localmente y se sincroniza con Google Drive/Sheets.
+- Se muestra la fecha y hora de la última actualización del stock.
 
-Sube todos los archivos a GitHub Pages. Luego configura la URL /exec y la clave desde Configuración > Google Drive / Apps Script.
-
-
-V21: se agregó el botón “Ir a SAP” en la cabecera. Abre el acceso de SAP en una pestaña nueva. Requiere conexión a la red/VPN corporativa y credenciales válidas.
+PUBLICACIÓN
+Sube todos los archivos de esta carpeta al repositorio de GitHub. Después usa Ctrl+F5 o elimina/reinstala la PWA para actualizar la caché.
