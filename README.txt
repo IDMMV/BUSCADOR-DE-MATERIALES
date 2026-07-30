@@ -12,4 +12,4 @@ Incluye:
 Sube todos los archivos a GitHub Pages. Luego configura la URL /exec y la clave desde Configuración > Google Drive / Apps Script.
 
 
-V20: se agregó el botón “Ir a SAP” en la cabecera. Abre el acceso de SAP en una pestaña nueva. Requiere conexión a la red/VPN corporativa y credenciales válidas.
+V21: se agregó el botón “Ir a SAP” en la cabecera. Abre el acceso de SAP en una pestaña nueva. Requiere conexión a la red/VPN corporativa y credenciales válidas.
