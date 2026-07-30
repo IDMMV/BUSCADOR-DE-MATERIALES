@@ -1,0 +1,11 @@
+1. Abre https://script.google.com y crea un proyecto nuevo.
+2. Copia Code.gs y appsscript.json.
+3. En Code.gs cambia CAMBIA_ESTA_CLAVE por una clave privada.
+4. Ejecuta setup() una vez y acepta permisos de Drive y Sheets.
+5. Implementar > Nueva implementación > Aplicación web.
+6. Ejecutar como: tú. Acceso: Cualquier usuario.
+7. Copia la URL que termina en /exec.
+8. En la app abre Configuración > Google Drive / Apps Script, pega URL y clave.
+9. Pulsa Sincronizar ahora.
+
+Sin internet, la app sigue trabajando con los datos locales y deja los cambios pendientes. Cuando vuelve la conexión, sincroniza automáticamente o al pulsar Sincronizar ahora.

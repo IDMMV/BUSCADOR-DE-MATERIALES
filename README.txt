@@ -1,6 +1,15 @@
-BUSCADOR DE MATERIALES SAP V17
+BUSCADOR DE MATERIALES SAP V19
 
-- Búsqueda ordenada por relevancia.
-- “G 70” muestra la familia relacionada y coloca primero el alias exacto.
-- “G 70/35” prioriza el material exacto.
-- En celular aparece un acceso fijo “Datos del pedido” para ir directamente a Supervisor, Fecha, Movimiento, Unidad, ALIM y CE.
+Incluye:
+- Stock diario desde Excel SAP.
+- Distribución por lote y almacén.
+- Validación entre centros 1003 y 1004.
+- Materiales pendientes por coordinar.
+- Modo día/nocturno.
+- Trabajo sin red y cola de sincronización.
+- Conexión con Google Apps Script para guardar en Drive/Sheets.
+
+Sube todos los archivos a GitHub Pages. Luego configura la URL /exec y la clave desde Configuración > Google Drive / Apps Script.
+
+
+V20: se agregó el botón “Ir a SAP” en la cabecera. Abre el acceso de SAP en una pestaña nueva. Requiere conexión a la red/VPN corporativa y credenciales válidas.
