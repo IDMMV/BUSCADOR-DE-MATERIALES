@@ -452,4 +452,109 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
   setTimeout(()=>{renderResults();renderSearchOrder()},100);
 })();
 </script>
+<style id="v30Styles">
+.order-data-search{margin:0 0 16px;border:1px solid var(--line);border-radius:14px;padding:15px;background:color-mix(in srgb,var(--primary) 4%,var(--card))}
+.order-data-search .v30-order-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:11px}.order-data-search h3{margin:0;color:var(--primary)}
+.order-data-search .fields{margin:0;grid-template-columns:repeat(4,minmax(170px,1fr))}
+.v30-source-buttons{display:flex;flex-wrap:wrap;gap:7px;align-items:center}.v30-source-btn{border:1px solid #aebdd1;background:#eef3f9;color:#24405f;border-radius:8px;padding:8px 10px;font-weight:800;cursor:pointer}.v30-source-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}.v30-source-btn .stock{font-weight:600;opacity:.85}.v30-source-help{display:block;margin-top:6px;color:var(--muted);font-size:11px}
+.v30-cart-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;align-items:center}.v30-cart-table{min-width:1120px}
+.v30-selected-note{padding:22px;text-align:center;color:var(--muted)}
+.v30-search-confirm{margin:8px 0;padding:9px 11px;border-radius:9px;background:#eaf8ef;color:#166534;border:1px solid #a9ddba;font-weight:700}
+.v30-control-export{background:#1b7f50!important;color:#fff!important}
+@media(max-width:980px){.order-data-search .fields{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.order-data-search{padding:12px}.order-data-search .fields{grid-template-columns:1fr}.v30-source-buttons{display:grid;grid-template-columns:1fr 1fr}.v30-cart-actions{justify-content:stretch}.v30-cart-actions .btn{flex:1}.v30-cart-table{min-width:980px}}
+</style>
+<script id="v30Enhancements">
+(function(){
+  const $30=s=>document.querySelector(s);
+  const esc30=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const centerLabel30=c=>String(c)==='1003'?'1003 - San Juan':'1004 - Vitarte';
+  const stock30=(code,center)=>stockRows.filter(x=>String(x.material)===String(code)&&String(x.centro)===String(center)).reduce((a,x)=>a+(Number(x.libre)||0),0);
+  function moveOrderFields(){
+    const fields=$30('#orderPanel .fields'),panel=$30('#searchView .panel');
+    if(!fields||!panel||$30('#v30OrderData'))return;
+    const box=document.createElement('section');box.id='v30OrderData';box.className='order-data-search';
+    box.innerHTML='<div class="v30-order-head"><h3>Datos del pedido</h3><span class="small">Completa estos datos antes de agregar materiales.</span></div>';
+    panel.insertBefore(box,panel.querySelector('.search'));
+    box.appendChild(fields);
+  }
+  function selectedCenters(item){
+    let arr=Array.isArray(item.centerChoices)?item.centerChoices.map(String):[];
+    if(!arr.length)arr=[String($30('#centroGlobal')?.value||'1003')];
+    return [...new Set(arr.filter(x=>x==='1003'||x==='1004'))];
+  }
+  function allocateByChoices(item){
+    const qty=Number(item.qty)||0, choices=selectedCenters(item), primary=String($30('#centroGlobal')?.value||'1003');
+    const ordered=[primary,...choices.filter(x=>x!==primary)].filter((x,i,a)=>choices.includes(x)&&a.indexOf(x)===i);
+    let left=qty,out=[];
+    for(const center of ordered){
+      const lots=stockFor(item.code,center).slice().sort((a,b)=>Number(b.libre)-Number(a.libre));
+      for(const x of lots){if(left<=0)break;const take=Math.min(left,Number(x.libre)||0);if(take>0)out.push({...x,qty:take});left-=take;}
+    }
+    item.centerChoices=choices;item.allocations=out;item.missing=Math.max(0,left);return {rows:out,missing:item.missing};
+  }
+  window.rows=function(){
+    const unidad=$30('#movil')?.value||'',out=[];
+    for(const m of cart){const a=allocateByChoices(m);for(const x of a.rows)out.push({MATRICULA:m.code,DESCRIPCION:m.description,C1:'',CANT:x.qty,UNIDAD:normalizedUnit(m),TP:'L',C2:'',C3:'',ALIM:x.almacen,CE:x.centro,OPERACION:'0010',LOTE:x.lote,'TIPO DE APROVISIONAMIENTO':'Reserva para orden',POS:0,DESTINATARIO:supervisorSAP(),'PUESTO DE DESCARGA':unidad?`${unidad} (${movementCode()})`:`(${movementCode()})`,'UBICACION FINAL':''});}
+    return out;
+  };
+  window.valid=function(){
+    if(stockMeta.date!==todayKey()){msg('Actualiza el stock SAP del día antes de continuar.',true);return false;}
+    if(!cart.length){msg('Agrega al menos un material.',true);return false;}
+    for(const m of cart){if(!(Number(m.qty)>0)){msg(`Completa la cantidad de ${m.code}.`,true);return false;}const a=allocateByChoices(m);if(a.missing>0){msg(`Faltan ${a.missing} ${normalizedUnit(m)} de ${m.code}. Selecciona otro centro o deja el faltante pendiente.`,true);return false;}}
+    return true;
+  };
+  window.renderCart=function(){
+    const tbody=$30('#cart'),empty=$30('#empty');if(!tbody)return;
+    $30('#cartCount').textContent=`${cart.length} material${cart.length===1?'':'es'}`;empty.style.display=cart.length?'none':'block';
+    const table=tbody.closest('table');table?.classList.add('v30-cart-table');
+    const hr=table?.querySelector('thead tr');if(hr)hr.innerHTML='<th>Matrícula</th><th>Descripción</th><th>Cant.</th><th>Unidad</th><th>Origen del stock</th><th></th>';
+    tbody.innerHTML=cart.map((m,i)=>{
+      const qty=Number(m.qty)||0,choices=selectedCenters(m),plan=allocateByChoices(m),s3=stock30(m.code,'1003'),s4=stock30(m.code,'1004');
+      const buttons=['1003','1004'].map(c=>`<button type="button" class="v30-source-btn ${choices.includes(c)?'active':''}" data-center-toggle="${i}" data-center="${c}">${choices.includes(c)?'✓ ':''}Usar ${c}<span class="stock"> · ${c==='1003'?s3:s4}</span></button>`).join('');
+      return `<tr class="${qty>0&&plan.missing===0?'':'row-pending'}"><td><b>${esc30(m.code)}</b></td><td>${esc30(m.description)}<span class="stock-info">Disponible: 1003 San Juan ${s3} · 1004 Vitarte ${s4} ${esc30(normalizedUnit(m))}</span>${plan.missing>0?`<span class="stock-alt-note">Faltan <strong>${plan.missing} ${esc30(normalizedUnit(m))}</strong>. Activa ambos centros o elige el centro que atenderá el pedido.</span>`:''}</td><td><div class="qty-wrap"><input class="qty ${qty>0&&plan.missing===0?'ready':''} ${plan.missing>0?'insufficient':''}" type="number" min="0" step="0.01" value="${esc30(m.qty??'')}" placeholder="0" data-qty="${i}"><button class="voice-btn" data-voice-qty="${i}" title="Dictar cantidad">🎤</button></div></td><td>${esc30(normalizedUnit(m))}</td><td><div class="v30-source-buttons">${buttons}</div><span class="v30-source-help">Puedes activar un centro o ambos.</span></td><td><button class="btn danger" data-rm="${i}">Quitar</button></td></tr>`;
+    }).join('');
+    renderSapPreview();if(typeof renderSearchOrder==='function')renderSearchOrder();
+  };
+  function exactFiltered(){
+    const q=searchText($30('#q')?.value||''),selected=new Set(cart.map(x=>String(x.code)));
+    if(q&&cart.some(m=>searchText(m.code)===q||searchText(m.description)===q||(m.aliases||[]).some(a=>searchText(a)===q)))return [];
+    let all=filtered().filter(m=>!selected.has(String(m.code)));
+    if(!q)return all;
+    const exact=all.filter(m=>searchText(m.code)===q||searchText(m.description)===q||(m.aliases||[]).some(a=>searchText(a)===q));
+    return exact.length?exact:all;
+  }
+  window.renderResults=function(){
+    const a=exactFiltered(),results=$30('#results'),primary=String($30('#centroGlobal')?.value||'1003'),other=primary==='1003'?'1004':'1003';
+    $30('#count').textContent=`${a.length} de ${state.materials.length}`;results.classList.add('v29-results');
+    if(!a.length){const q=($30('#q')?.value||'').trim();results.innerHTML=cart.some(m=>searchText(m.code)===searchText(q)||(m.aliases||[]).some(a=>searchText(a)===searchText(q)))?'<div class="v30-search-confirm">Este material ya fue agregado al pedido. Puedes continuar buscando otro.</div>':'<div class="v29-empty">No se encontraron materiales.</div>';return;}
+    results.innerHTML=`<div class="v29-table-wrap"><table class="v29-stock-table"><thead><tr><th>Matrícula SAP</th><th>Descripción oficial</th><th>Disponible 1003 San Juan</th><th>Disponible 1004 Vitarte</th><th>Unidad</th><th>Agregar</th></tr></thead><tbody>${a.map(m=>{const s3=stock30(m.code,'1003'),s4=stock30(m.code,'1004'),cur=primary==='1003'?s3:s4,alt=primary==='1003'?s4:s3,aliasCount=(m.aliases||[]).length,cls=n=>n>0?'good':'none';return `<tr><td class="v29-code">${esc30(m.code)}</td><td><b>${esc30(m.description)}</b><br><button class="v29-alias-link" data-quick-edit="${esc30(m.code)}">Alias: ${aliasCount} · Ver/editar</button>${cur<=0&&alt>0?`<div class="v29-warning">En ${centerLabel30(other)} hay ${alt} ${esc30(normalizedUnit(m))} disponibles.</div>`:''}</td><td><span class="v29-stock-pill ${cls(s3)}">${s3} ${esc30(normalizedUnit(m))}</span></td><td><span class="v29-stock-pill ${cls(s4)}">${s4} ${esc30(normalizedUnit(m))}</span></td><td>${esc30(normalizedUnit(m))}</td><td><div class="v29-add-box"><input type="number" min="0" step="0.01" placeholder="0" data-v29-qty="${esc30(m.code)}"><button class="btn primary" data-add="${esc30(m.code)}">＋</button></div></td></tr>`}).join('')}</tbody></table></div>`;
+  };
+  window.add=function(code){
+    const m=state.materials.find(x=>x.code===code);if(!m)return;if(stockMeta.date!==todayKey())return msg('Primero actualiza el stock SAP del día.',true);
+    const input=document.querySelector(`[data-v29-qty="${CSS.escape(String(code))}"]`),qty=Number(input?.value)||1,primary=String($30('#centroGlobal')?.value||'1003');
+    let item=cart.find(x=>x.code===code);if(!item){item={...clone(m),qty:String(qty),centerChoices:[primary]};cart.push(item)}else{item.qty=String(qty);item.centerChoices=item.centerChoices?.length?item.centerChoices:[primary];}
+    const plan=allocateByChoices(item);renderCart();renderResults();
+    msg(plan.missing===0?`Material ${code} agregado al pedido.`:`Material ${code} agregado. Faltan ${plan.missing} ${normalizedUnit(m)}; revisa los botones de centro en Pedido seleccionado.`,plan.missing>0);
+  };
+  function toggleCenter(i,c){const m=cart[i];if(!m)return;let arr=selectedCenters(m);if(arr.includes(c)){if(arr.length===1)return msg('Debe quedar al menos un centro seleccionado.',true);arr=arr.filter(x=>x!==c)}else arr.push(c);m.centerChoices=arr;allocateByChoices(m);renderCart();}
+  function exportControlOrder(){
+    if(!cart.length)return msg('Agrega materiales antes de generar el control del pedido.',true);if(!window.XLSX)return msg('No se cargó el generador de Excel.',true);
+    const date=$30('#fechaPedido')?.value||todayKey(),sup=$30('#dest')?.value||'',mov=$30('#movil')?.value||'',movement=$30('#puesto')?.value||'PEDIDO';
+    const allocations=rows(),centers=[...new Set(allocations.map(x=>String(x.CE)))];if(!centers.length)centers.push(String($30('#centroGlobal')?.value||'1003'));
+    const data=centers.map(center=>{const almacenes=[...new Set(allocations.filter(x=>String(x.CE)===center).map(x=>x.ALIM).filter(Boolean))].join(', ');return {'RESERVA':'','ALMACEN':center,'ENCARGADO':sup,'OM':'','FECHA PEDIDO':date,'UNIDAD (RECOJO)':movement==='RECUPERO'?'':mov,'CONDUCTOR':'','ALIM.':almacenes,'DISTRITO':'','STATUS':'','UNIDAD (RECUPERO)':movement==='RECUPERO'?mov:''};});
+    const ws=XLSX.utils.json_to_sheet(data,{header:['RESERVA','ALMACEN','ENCARGADO','OM','FECHA PEDIDO','UNIDAD (RECOJO)','CONDUCTOR','ALIM.','DISTRITO','STATUS','UNIDAD (RECUPERO)']});
+    ws['!cols']=[12,11,18,15,14,18,18,14,17,14,19].map(wch=>({wch}));ws['!autofilter']={ref:`A1:K${data.length+1}`};
+    const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'CONTROL PEDIDOS');XLSX.writeFile(wb,`Control_Pedido_${date}_${sup.replace(/\s+/g,'_')||'SUPERVISOR'}.xlsx`);msg('Archivo de control del pedido generado. Completa Reserva, OM, Conductor, Distrito y Status.');
+  }
+  function addControlButton(){const actions=$30('#orderPanel .actions');if(!actions||$30('#v30ControlExcel'))return;const b=document.createElement('button');b.id='v30ControlExcel';b.className='btn v30-control-export';b.textContent='📋 Exportar control pedido';b.addEventListener('click',exportControlOrder);actions.insertBefore(b,$30('#clean'));}
+  function init30(){moveOrderFields();addControlButton();$30('#v29CurrentOrder')?.remove();renderResults();renderCart();
+    $30('#cart')?.addEventListener('click',e=>{const b=e.target.closest('[data-center-toggle]');if(b){e.preventDefault();toggleCenter(Number(b.dataset.centerToggle),String(b.dataset.center));}},true);
+    $30('#cart')?.addEventListener('input',e=>{if(e.target.matches('[data-qty]')){const i=Number(e.target.dataset.qty);if(cart[i]){cart[i].qty=e.target.value;allocateByChoices(cart[i]);setTimeout(renderCart,0);}}},true);
+    ['dest','fechaPedido','puesto','movil'].forEach(id=>$30('#'+id)?.addEventListener('change',()=>{renderSapPreview();}));
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init30);else init30();
+})();
+</script>
+
 </body></html>

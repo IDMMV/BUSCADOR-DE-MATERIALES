@@ -14,4 +14,11 @@ PUBLICACIÓN EN GITHUB
 3. En PC usar Ctrl+F5.
 4. En celular cerrar por completo la PWA y volver a abrirla. Si aún aparece una versión anterior, desinstalar y volver a instalar.
 
-V29: al agregar un material, el buscador permanece abierto para continuar agregando.
+V30: al agregar un material, el buscador permanece abierto para continuar agregando.
+
+NOVEDADES V30
+- Los datos del pedido aparecen al inicio de Buscar materiales.
+- Un material agregado desaparece de los resultados para evitar duplicados.
+- En Pedido seleccionado puedes activar Usar 1003 y/o Usar 1004 por cada material.
+- Se añadió Exportar control pedido, con las columnas Reserva, Almacén, Encargado, OM, Fecha, Unidad, Conductor, ALIM, Distrito y Status.
+- Incluye PLANTILLA_CONTROL_PEDIDOS.xlsx como referencia editable.
