@@ -1,8 +1,8 @@
-BUSCADOR DE MATERIALES SAP V15
+BUSCADOR DE MATERIALES SAP V16
 
-1. Sube TODOS los archivos de esta carpeta al repositorio GitHub.
-2. Reemplaza los archivos existentes; no mezcles data.js de distintas ramas.
-3. Si GitHub muestra conflictos, cancela el merge y usa Add file > Upload files en la rama main.
-4. Después presiona Ctrl + F5. En celular elimina la app anterior y vuelve a instalarla.
+- Búsqueda ordenada por relevancia.
+- “G 70” muestra la familia relacionada y coloca primero el alias exacto.
+- “G 70/35” prioriza el material exacto.
+- En celular aparece un acceso fijo “Datos del pedido” para ir directamente a Supervisor, Fecha, Movimiento, Unidad, ALIM y CE.
 
-Mejoras V15: paquete completo sin conflictos y vista optimizada para celular/tablet.
+V17: incluye selector Modo día / Modo nocturno, recuerda la preferencia en el navegador y adapta la barra del celular.
