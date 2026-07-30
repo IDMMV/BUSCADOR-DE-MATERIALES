@@ -1,14 +1,12 @@
-BUSCADOR DE MATERIALES SAP V22
+BUSCADOR DE MATERIALES SAP V23
 
-CORRECCIONES PRINCIPALES
-- Se corrigió el error que detenía los botones y el buscador.
-- Botones Configuración y cerrar X funcionales.
+- Alias y matrículas con diseño Opción 2.
+- Alias editables directamente desde la fila.
+- Panel lateral para agregar o editar materiales.
+- Prioridad retirada de la gestión de materiales.
+- Descarga de la base en Excel y carga de una base actualizada.
 - Barra lateral ocultable y recuperable.
-- Los accesos laterales a Drive, Supervisores, Unidades y Alias muestran únicamente su módulo.
-- Alias y matrículas se muestran en una grilla plana tipo Excel.
-- Pendientes visibles junto al pedido y con contador lateral.
-- El stock cargado se conserva localmente y se sincroniza con Google Drive/Sheets.
-- Se muestra la fecha y hora de la última actualización del stock.
+- Sincronización automática con Google Drive al guardar o cargar stock.
+- El nuevo stock reemplaza al anterior en las pestañas Stock y StockMeta.
 
-PUBLICACIÓN
-Sube todos los archivos de esta carpeta al repositorio de GitHub. Después usa Ctrl+F5 o elimina/reinstala la PWA para actualizar la caché.
+Sube todos los archivos a GitHub Pages y actualiza con Ctrl+F5.
