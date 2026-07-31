@@ -23,10 +23,18 @@ NOVEDADES V30
 - Se añadió Exportar control pedido, con las columnas Reserva, Almacén, Encargado, OM, Fecha, Unidad, Conductor, ALIM, Distrito y Status.
 - Incluye PLANTILLA_CONTROL_PEDIDOS.xlsx como referencia editable.
 
-V31:
+V32:
 - Campo OM en los datos del pedido.
 - Se retiraron los micrófonos de las cantidades.
 - Al finalizar, descuenta el stock de cada centro/almacén/lote.
 - Genera historial separado por centro.
 - Unidad móvil siempre se exporta en UNIDAD (RECOJO).
 - Actualiza Code.gs para crear la pestaña Historial en Google Sheets.
+
+
+NOVEDADES V32:
+- Base fija de 412 emplazamientos/circuitos incorporada desde circuitos y alimentadores.xlsx.
+- Al seleccionar un emplazamiento (ej. M-A-15), ALIM se completa como A-15 y el distrito se completa automáticamente.
+- Si un emplazamiento abarca varios distritos, la web permite elegir el distrito correcto.
+- Los botones Usar 1003 y Usar 1004 aparecen junto a Quitar cuando falta stock; se puede usar uno o ambos centros.
+- El control Excel e historial guardan Emplazamiento, ALIM y Distrito.

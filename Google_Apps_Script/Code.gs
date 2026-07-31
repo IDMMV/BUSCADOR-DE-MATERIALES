@@ -78,7 +78,7 @@ function writeSheets_(data) {
   writeTable_(ss,'Pendientes',['MATRICULA','DESCRIPCION','SOLICITADO','PENDIENTE','CENTRO','OTRO_CENTRO','STOCK_CENTRO','STOCK_OTRO','SUPERVISOR','FECHA','MOTIVO','ESTADO'],(data.pending||[]).map(x=>[x.code,x.description,x.requested,x.pendingQty,x.center,x.other,x.availableCurrent,x.availableOther,x.supervisor,x.date,x.reason,x.status]));
   writeTable_(ss,'StockMeta',['FECHA_STOCK','ARCHIVO','CARGADO_EN','REGISTROS'],[[data.stockMeta&&data.stockMeta.date||'',data.stockMeta&&data.stockMeta.file||'',data.stockMeta&&data.stockMeta.loadedAt||'',(data.stockRows||[]).length]]);
   writeTable_(ss,'Stock',['MATERIAL','CENTRO','ALMACEN','LOTE','LIBRE','UNIDAD','TEXTO'],(data.stockRows||[]).map(x=>[x.material,x.centro,x.almacen,x.lote,x.libre,x.unidad,x.texto]));
-  writeTable_(ss,'Historial',['PEDIDO','FECHA','SUPERVISOR','OM','CENTRO','UNIDAD_RECOJO','MOVIMIENTO','CANTIDAD_TOTAL','MATERIALES','CREADO_EN'],(data.app&&data.app.orderHistory||[]).map(x=>[x.id,x.fecha,x.supervisor,x.om||'',x.centro,x.unidadRecojo,x.movimiento,x.total,(x.items||[]).map(i=>i.code+' x '+i.qty).join(' | '),x.createdAt]));
+  writeTable_(ss,'Historial',['PEDIDO','FECHA','SUPERVISOR','OM','CENTRO','EMPLAZAMIENTO','ALIM','DISTRITO','UNIDAD_RECOJO','MOVIMIENTO','CANTIDAD_TOTAL','MATERIALES','CREADO_EN'],(data.app&&data.app.orderHistory||[]).map(x=>[x.id,x.fecha,x.supervisor,x.om||'',x.centro,x.emplazamiento||'',x.alimentador||'',x.distrito||'',x.unidadRecojo,x.movimiento,x.total,(x.items||[]).map(i=>i.code+' x '+i.qty).join(' | '),x.createdAt]));
 }
 
 function writeTable_(ss,name,headers,rows) {
