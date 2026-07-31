@@ -1,0 +1,6 @@
+V42.2 - Correcciones puntuales
+- Supervisores abre únicamente Supervisores.
+- Unidades móviles abre únicamente Unidades.
+- Finalizar pedido usa color verde diferenciado.
+- Vista previa SAP usa encabezado azul y fondo diferenciado.
+- Se conserva la lógica funcional de V42.1.

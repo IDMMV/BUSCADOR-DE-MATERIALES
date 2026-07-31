@@ -1,5 +1,5 @@
 {
-  "name": "Buscador de Materiales SAP V42.1",
+  "name": "Buscador de Materiales SAP V42.2",
   "short_name": "Materiales SAP",
   "description": "Busca materiales por matrícula, descripción o alias y prepara pedidos para SAP.",
   "start_url": "./index.html",
