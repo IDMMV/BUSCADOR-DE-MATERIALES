@@ -22,3 +22,11 @@ NOVEDADES V30
 - En Pedido seleccionado puedes activar Usar 1003 y/o Usar 1004 por cada material.
 - Se añadió Exportar control pedido, con las columnas Reserva, Almacén, Encargado, OM, Fecha, Unidad, Conductor, ALIM, Distrito y Status.
 - Incluye PLANTILLA_CONTROL_PEDIDOS.xlsx como referencia editable.
+
+V31:
+- Campo OM en los datos del pedido.
+- Se retiraron los micrófonos de las cantidades.
+- Al finalizar, descuenta el stock de cada centro/almacén/lote.
+- Genera historial separado por centro.
+- Unidad móvil siempre se exporta en UNIDAD (RECOJO).
+- Actualiza Code.gs para crear la pestaña Historial en Google Sheets.
