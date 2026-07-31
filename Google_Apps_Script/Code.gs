@@ -33,6 +33,21 @@ function doPost(e) {
   try {
     const req = JSON.parse(e.postData.contents || '{}');
     validateToken_(req.token);
+    if (req.action === 'replaceStock') {
+      const rows = Array.isArray(req.stockRows) ? req.stockRows : [];
+      const meta = req.stockMeta || {};
+      replaceStock_(rows, meta);
+      SpreadsheetApp.flush();
+      const verified = readStockFromSheets_();
+      return json_({
+        ok:true,
+        savedAt:new Date().toISOString(),
+        stockRows:verified.stockRows.length,
+        stockDate:verified.stockMeta.date || '',
+        stockFile:verified.stockMeta.file || '',
+        stockRevision:verified.stockMeta.revision || ''
+      });
+    }
     if (req.action === 'syncAll') {
       const data = req.data || {};
       if (!Array.isArray(data.stockRows)) throw new Error('El envío no contiene stockRows');
@@ -56,15 +71,33 @@ function doPost(e) {
 }
 
 function setup() {
+  const props = PropertiesService.getScriptProperties();
+  const currentId = props.getProperty('SPREADSHEET_ID');
+  if (currentId) {
+    try {
+      const current = SpreadsheetApp.openById(currentId);
+      return 'Base vinculada: ' + current.getUrl();
+    } catch (_) {
+      props.deleteProperty('SPREADSHEET_ID');
+    }
+  }
   const folder = getFolder_();
   const files = folder.getFilesByName(CONFIG.SPREADSHEET_NAME);
-  if (!files.hasNext()) {
-    const ss = SpreadsheetApp.create(CONFIG.SPREADSHEET_NAME);
-    const file = DriveApp.getFileById(ss.getId());
-    folder.addFile(file);
-    DriveApp.getRootFolder().removeFile(file);
+  let chosen = null;
+  while (files.hasNext()) {
+    const file = files.next();
+    if (!chosen || file.getLastUpdated().getTime() > chosen.getLastUpdated().getTime()) chosen = file;
   }
-  return 'Configuración creada: ' + folder.getUrl();
+  if (chosen) {
+    props.setProperty('SPREADSHEET_ID', chosen.getId());
+    return 'Base vinculada: ' + SpreadsheetApp.openById(chosen.getId()).getUrl();
+  }
+  const ss = SpreadsheetApp.create(CONFIG.SPREADSHEET_NAME);
+  const file = DriveApp.getFileById(ss.getId());
+  folder.addFile(file);
+  try { DriveApp.getRootFolder().removeFile(file); } catch (_) {}
+  props.setProperty('SPREADSHEET_ID', ss.getId());
+  return 'Configuración creada: ' + ss.getUrl();
 }
 
 function validateToken_(token) {
@@ -72,15 +105,44 @@ function validateToken_(token) {
 }
 
 function getFolder_() {
+  const props = PropertiesService.getScriptProperties();
+  const saved = props.getProperty('FOLDER_ID');
+  if (saved) {
+    try { return DriveApp.getFolderById(saved); } catch (_) { props.deleteProperty('FOLDER_ID'); }
+  }
   const it = DriveApp.getFoldersByName(CONFIG.FOLDER_NAME);
-  return it.hasNext() ? it.next() : DriveApp.createFolder(CONFIG.FOLDER_NAME);
+  const folder = it.hasNext() ? it.next() : DriveApp.createFolder(CONFIG.FOLDER_NAME);
+  props.setProperty('FOLDER_ID', folder.getId());
+  return folder;
 }
 
 function getSpreadsheet_() {
-  const folder=getFolder_(), files=folder.getFilesByName(CONFIG.SPREADSHEET_NAME);
-  if (files.hasNext()) return SpreadsheetApp.open(files.next());
+  const props = PropertiesService.getScriptProperties();
+  const id = props.getProperty('SPREADSHEET_ID');
+  if (id) {
+    try { return SpreadsheetApp.openById(id); } catch (_) { props.deleteProperty('SPREADSHEET_ID'); }
+  }
   setup();
-  return getSpreadsheet_();
+  const newId = props.getProperty('SPREADSHEET_ID');
+  if (!newId) throw new Error('No se pudo vincular la base central de Google Sheets');
+  return SpreadsheetApp.openById(newId);
+}
+
+function replaceStock_(rows, meta) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  try {
+    const ss = getSpreadsheet_();
+    writeTable_(ss,'StockMeta',['FECHA_STOCK','ARCHIVO','CARGADO_EN','REGISTROS','REVISION'],[[
+      meta.date || '', meta.file || '', meta.loadedAt || new Date().toISOString(), rows.length, meta.revision || ''
+    ]]);
+    writeTable_(ss,'Stock',['MATERIAL','CENTRO','ALMACEN','LOTE','LIBRE','UNIDAD','TEXTO'],rows.map(x=>[
+      x.material,x.centro,x.almacen,x.lote,Number(x.libre)||0,x.unidad,x.texto
+    ]));
+    SpreadsheetApp.flush();
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 function saveBackup_(data) {

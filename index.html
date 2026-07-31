@@ -114,7 +114,7 @@ html,body{max-width:100%;overflow-x:hidden}body{font-size:14px}.topbar{padding:1
 </style>
 
 <style id="v421-mobile-horizontal-navigation">
-/* V43: corrección exclusivamente móvil para poder desplazar las tablas y acceder a Seleccionar/Agregar. */
+/* V43.1: corrección exclusivamente móvil para poder desplazar las tablas y acceder a Seleccionar/Agregar. */
 @media (max-width:760px){
   /* La página sigue desplazándose verticalmente; únicamente las tablas usan desplazamiento horizontal propio. */
   body{overflow-x:hidden!important;touch-action:pan-y pinch-zoom!important}
@@ -238,7 +238,7 @@ html,body{max-width:100%;overflow-x:hidden}body{font-size:14px}.topbar{padding:1
 
 </head>
 <body>
-<header class="top"><div class="brand"><img alt="Ícono Buscador de Materiales" class="app-logo" src="icon-192.png"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V43</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
+<header class="top"><div class="brand"><img alt="Ícono Buscador de Materiales" class="app-logo" src="icon-192.png"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V43.1</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
 <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 <div class="app-shell">
 <aside class="sidebar" id="sidebar">
@@ -314,7 +314,7 @@ function parseStockWorkbook(file){return new Promise((resolve,reject)=>{if(!wind
 function stockFor(code,center=$('#centroGlobal')?.value||$('#ce').value){return stockRows.filter(x=>x.material===String(code)&&x.centro===String(center)&&x.libre>0)}
 function availableStock(code){return stockFor(code).reduce((a,x)=>a+x.libre,0)}
 function allocateStock(code,qty){let left=Number(qty)||0,out=[];for(let x of stockFor(code).sort((a,b)=>b.libre-a.libre)){if(left<=0)break;let take=Math.min(left,x.libre);out.push({...x,qty:take});left-=take}return{rows:out,missing:Math.max(0,left)}}
-async function importStock(){let f=$('#stockFile').files[0];if(!f)return msg('Selecciona el Excel de stock SAP.',true);try{let rows=await parseStockWorkbook(f);if(!rows.length)throw new Error('No se encontraron filas con Material, Centro, Almacén, Lote y Libre utilización.');stockRows=rows;stockMeta={date:todayKey(),file:f.name,loadedAt:new Date().toISOString(),source:'EXCEL_SAP',revision:(crypto.randomUUID?crypto.randomUUID():(Date.now()+'-'+Math.random().toString(36).slice(2)))};saveStockCache();renderStockStatus();cart.forEach(m=>m.available=availableStock(m.code));renderCart();renderResults();msg(`Stock cargado: ${rows.length} registros. Guardando en Google Drive...`);let cfg=syncConfig();if(cfg.url&&cfg.token&&navigator.onLine){let ok=await syncToDrive({reason:'stock'});if(ok)msg(`Stock actualizado en Drive: ${rows.length} registros.`,false,'#adminStatus')}else{queueSync('stock');msg('Stock cargado localmente. Falta conexión o configuración de Drive para compartirlo.',true,'#adminStatus')}}catch(e){msg('No se pudo cargar el stock: '+e.message,true)}}
+async function importStock(){let f=$('#stockFile').files[0];if(!f)return msg('Selecciona el Excel de stock SAP.',true);try{let rows=await parseStockWorkbook(f);if(!rows.length)throw new Error('No se encontraron filas con Material, Centro, Almacén, Lote y Libre utilización.');stockRows=rows;stockMeta={date:todayKey(),file:f.name,loadedAt:new Date().toISOString(),source:'EXCEL_SAP',revision:(crypto.randomUUID?crypto.randomUUID():(Date.now()+'-'+Math.random().toString(36).slice(2)))};saveStockCache();renderStockStatus();cart.forEach(m=>m.available=availableStock(m.code));renderCart();renderResults();msg(`Stock cargado: ${rows.length} registros. Reemplazando el stock compartido en Drive...`);let cfg=syncConfig();if(cfg.url&&cfg.token&&navigator.onLine){let ok=await replaceStockInDrive();if(ok)msg(`Stock actualizado y verificado en Drive: ${rows.length} registros.`,false,'#adminStatus')}else{queueSync('stock');msg('Stock cargado en este dispositivo. Configura Drive para compartirlo con los demás equipos.',true,'#adminStatus')}}catch(e){msg('No se pudo cargar el stock: '+e.message,true)}}
 function searchText(v){return norm(v).replace(/\s*([\/-])\s*/g,'$1').replace(/\s+/g,' ').trim()}function filtered(){let q=searchText($('#q').value);if(!q)return state.materials.slice(0,300);let tokens=q.split(' ').filter(Boolean);return state.materials.map((m,index)=>{let code=searchText(m.code),desc=searchText(m.description),aliases=(m.aliases||[]).map(searchText),score=999;if(code===q)score=0;else if(aliases.some(a=>a===q))score=1;else if(aliases.some(a=>a.startsWith(q)))score=2;else if(desc.startsWith(q))score=3;else if(aliases.some(a=>a.includes(q)))score=4;else if(desc.includes(q))score=5;else{let words=searchText([m.code,m.description,...(m.aliases||[])].join(' ')).split(' ');let ok=tokens.every(t=>t.length===1?words.some(w=>w===t||w.startsWith(t+'-')||w.startsWith(t+'/')):words.some(w=>w.includes(t)));if(ok)score=6}return{m,index,score}}).filter(x=>x.score<999).sort((a,b)=>a.score-b.score||a.index-b.index).slice(0,300).map(x=>x.m)}
 function renderResults(){let a=filtered();$('#count').textContent=`${a.length} de ${state.materials.length}`;$('#results').innerHTML=a.length?a.map(m=>`<div class="card"><div class="material-main">${m.image?`<img class="material-thumb" src="${m.image}" alt="Imagen de ${esc(m.description)}">`:`<div class="material-placeholder">Sin imagen</div>`}<div><div class="code">${esc(m.code)} · ${esc(m.unit)}</div><div class="desc">${esc(m.description)}</div>${(m.aliases||[]).map(x=>`<span class="tag">${esc(x)}</span>`).join('')}${m.priority==='P'?'<span class="tag">PRIORIDAD P</span>':''}</div></div><div class="card-actions"><button class="btn edit-inline" data-quick-edit="${m.code}">✎ Alias / editar</button><button class="btn primary add" data-add="${m.code}">＋ Agregar</button></div></div>`).join(''):'<div class="empty">No se encontraron materiales.</div>'}
 function add(c){let m=state.materials.find(x=>x.code===c);if(!m)return;if(cart.some(x=>x.code===c))return msg('El material ya está agregado.',true);if(stockMeta.date!==todayKey())return msg('Primero actualiza el stock SAP del día.',true);let available=availableStock(c);if(available<=0)return msg(`No hay libre utilización para ${c} en el centro ${$('#centroGlobal').value}.`,true);cart.push({...clone(m),qty:'',available});renderCart();msg(`Material ${m.code} agregado al pedido. Disponible: ${available} ${normalizedUnit(m)}.`)}
@@ -349,6 +349,27 @@ function queueSync(type='app'){let cfg=JSON.parse(localStorage.getItem(SYNC_KEY)
 function syncConfig(){return JSON.parse(localStorage.getItem(SYNC_KEY)||'{}')}
 function saveSyncConfig(){let cfg=syncConfig();cfg.url=$('#scriptUrl').value.trim();cfg.token=$('#scriptToken').value.trim();localStorage.setItem(SYNC_KEY,JSON.stringify(cfg));renderSyncState();msg('Conexión guardada.',false,'#adminStatus')}
 function renderSyncState(){let cfg=syncConfig(),online=navigator.onLine;let text=!cfg.url?'Sin configurar':!online?'Sin conexión':cfg.pending?'Cambios pendientes':'Sincronizado';$('#syncState')&&($('#syncState').value=text);$('#lastSync')&&($('#lastSync').value=cfg.lastSync?new Date(cfg.lastSync).toLocaleString('es-PE'):'Nunca');}
+async function replaceStockInDrive(){
+  const cfg=syncConfig();
+  if(!cfg.url||!cfg.token){msg('Configura primero la URL y la clave de Apps Script.',true,'#adminStatus');return false}
+  if(!navigator.onLine){msg('No hay conexión a internet.',true,'#adminStatus');return false}
+  try{
+    const url=cfg.url.replace(/\?.*$/,'');
+    const payload={action:'replaceStock',token:cfg.token,stockRows,stockMeta};
+    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload),cache:'no-store',redirect:'follow'});
+    const raw=await r.text();let j;try{j=JSON.parse(raw)}catch(_){throw new Error('Apps Script devolvió una respuesta inválida.')}
+    if(!r.ok||!j.ok)throw new Error(j.error||('Error HTTP '+r.status));
+    if(Number(j.stockRows)!==stockRows.length||String(j.stockRevision||'')!==String(stockMeta.revision||'')){
+      throw new Error(`Drive no confirmó el reemplazo. Enviado: ${stockRows.length}; confirmado: ${j.stockRows||0}.`)
+    }
+    const fresh=await fetch(url+'?action=getStock&token='+encodeURIComponent(cfg.token)+'&_='+Date.now(),{cache:'no-store',redirect:'follow'});
+    const txt=await fresh.text();let v;try{v=JSON.parse(txt)}catch(_){throw new Error('No se pudo leer la verificación final desde Drive.')}
+    const vr=v?.data?.stockRows||[], vm=v?.data?.stockMeta||{};
+    if(!v.ok||vr.length!==stockRows.length||String(vm.revision||'')!==String(stockMeta.revision||'')) throw new Error('Drive aún devuelve otra versión del stock. Revisa la implementación activa de Apps Script.');
+    const next=syncConfig();next.pending=false;next.lastSync=new Date().toISOString();localStorage.setItem(SYNC_KEY,JSON.stringify(next));renderSyncState();
+    return true;
+  }catch(e){queueSync('stock');msg('No se pudo actualizar el stock compartido: '+(e?.message||e),true,'#adminStatus');return false}
+}
 async function syncToDrive(){
  let btn=document.getElementById('syncNow');
  try{
@@ -1365,7 +1386,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
 </script>
 
 <style id="v42-2-focused-admin-colors">
-/* V43: Supervisores y Unidades muestran exclusivamente su contenido. */
+/* V43.1: Supervisores y Unidades muestran exclusivamente su contenido. */
 #dlg.single-admin #appNote,#dlg.single-admin #configTabs,#dlg.single-admin #p-mat,#dlg.single-admin #p-github{display:none!important}
 #dlg.single-admin[data-single-page="sup"] #p-units{display:none!important}
 #dlg.single-admin[data-single-page="units"] #p-sup{display:none!important}
@@ -1421,7 +1442,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
 })();
 </script>
 <style id="v42-4-unified-dark-and-images">
-/* V43: cambios visuales aprobados; la lógica permanece intacta. */
+/* V43.1: cambios visuales aprobados; la lógica permanece intacta. */
 .v42-material-image{width:86px;min-width:86px;text-align:center}
 .v42-material-image img{display:block;width:72px;height:58px;object-fit:contain;margin:auto;border:1px solid var(--line);border-radius:9px;background:#fff}
 .v42-material-image span{display:flex;width:72px;height:58px;margin:auto;align-items:center;justify-content:center;border:1px dashed #aabbd0;border-radius:9px;color:var(--muted);font-size:11px;background:#f8fafc}
