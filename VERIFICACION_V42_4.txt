@@ -1,0 +1,1 @@
+V42.4 validada: modo nocturno uniforme, Finalizar antes de Vista previa SAP e imágenes restauradas en resultados. Base funcional V42.2 + aislamiento Drive.

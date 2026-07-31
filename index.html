@@ -114,7 +114,7 @@ html,body{max-width:100%;overflow-x:hidden}body{font-size:14px}.topbar{padding:1
 </style>
 
 <style id="v421-mobile-horizontal-navigation">
-/* V42.2: corrección exclusivamente móvil para poder desplazar las tablas y acceder a Seleccionar/Agregar. */
+/* V42.4: corrección exclusivamente móvil para poder desplazar las tablas y acceder a Seleccionar/Agregar. */
 @media (max-width:760px){
   /* La página sigue desplazándose verticalmente; únicamente las tablas usan desplazamiento horizontal propio. */
   body{overflow-x:hidden!important;touch-action:pan-y pinch-zoom!important}
@@ -238,7 +238,7 @@ html,body{max-width:100%;overflow-x:hidden}body{font-size:14px}.topbar{padding:1
 
 </head>
 <body>
-<header class="top"><div class="brand"><img alt="Ícono Buscador de Materiales" class="app-logo" src="icon-192.png"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V42.2</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
+<header class="top"><div class="brand"><img alt="Ícono Buscador de Materiales" class="app-logo" src="icon-192.png"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V42.4</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
 <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 <div class="app-shell">
 <aside class="sidebar" id="sidebar">
@@ -880,7 +880,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
     const results=$v('#results');if(!results)return;
     const count=$v('#count');if(count)count.textContent=`${list.length} de ${(state.materials||[]).length}`;
     if(!list.length){results.innerHTML='<div class="empty">No se encontraron materiales o ya fueron agregados al pedido.</div>';return}
-    results.innerHTML=`<div class="v29-table-wrap"><table class="v29-stock-table"><thead><tr><th>Matrícula SAP</th><th>Descripción oficial</th><th>Disponible 1003 San Juan</th><th>Disponible 1004 Vitarte</th><th>Unidad</th><th>Acción</th></tr></thead><tbody>${list.map(m=>{const s3=totalStock(m.code,'1003'),s4=totalStock(m.code,'1004'),sel=String(selectedCode)===String(m.code),aliases=(m.aliases||[]).length;return `<tr class="${sel?'v36-selected-row':''}"><td class="v29-code">${escv(m.code)}</td><td><b>${escv(m.description)}</b><br><button class="v29-alias-link" data-quick-edit="${escv(m.code)}">Alias: ${aliases} · Ver/editar</button>${sel?'<div class="v36-select-note">Material seleccionado. Ingresa la cantidad y confirma para agregarlo al pedido.</div>':''}</td><td><span class="v29-stock-pill ${s3>0?'good':'none'}">${s3} ${escv(normalizedUnit(m))}</span></td><td><span class="v29-stock-pill ${s4>0?'good':'none'}">${s4} ${escv(normalizedUnit(m))}</span></td><td>${escv(normalizedUnit(m))}</td><td>${sel?`<div class="v36-select-box"><input type="number" min="0" step="0.01" placeholder="Cantidad" data-v36-qty="${escv(m.code)}" autofocus><button type="button" class="btn primary" data-v36-confirm="${escv(m.code)}">Agregar al pedido</button><button type="button" class="btn secondary" data-v36-cancel>Cancelar</button></div>`:`<button type="button" class="btn primary" data-v36-select="${escv(m.code)}">Seleccionar</button>`}</td></tr>`}).join('')}</tbody></table></div>`;
+    results.innerHTML=`<div class="v29-table-wrap"><table class="v29-stock-table v42-material-image-table"><thead><tr><th>Imagen</th><th>Matrícula SAP</th><th>Descripción oficial</th><th>Disponible 1003 San Juan</th><th>Disponible 1004 Vitarte</th><th>Unidad</th><th>Acción</th></tr></thead><tbody>${list.map(m=>{const s3=totalStock(m.code,'1003'),s4=totalStock(m.code,'1004'),sel=String(selectedCode)===String(m.code),aliases=(m.aliases||[]).length,img=m.image?`<img src="${escv(m.image)}" alt="Imagen de ${escv(m.code)}" loading="lazy">`:'<span>Sin imagen</span>';return `<tr class="${sel?'v36-selected-row':''}"><td class="v42-material-image">${img}</td><td class="v29-code">${escv(m.code)}</td><td><b>${escv(m.description)}</b><br><button class="v29-alias-link" data-quick-edit="${escv(m.code)}">Alias: ${aliases} · Ver/editar</button>${sel?'<div class="v36-select-note">Material seleccionado. Ingresa la cantidad y confirma para agregarlo al pedido.</div>':''}</td><td><span class="v29-stock-pill ${s3>0?'good':'none'}">${s3} ${escv(normalizedUnit(m))}</span></td><td><span class="v29-stock-pill ${s4>0?'good':'none'}">${s4} ${escv(normalizedUnit(m))}</span></td><td>${escv(normalizedUnit(m))}</td><td>${sel?`<div class="v36-select-box"><input type="number" min="0" step="0.01" placeholder="Cantidad" data-v36-qty="${escv(m.code)}" autofocus><button type="button" class="btn primary" data-v36-confirm="${escv(m.code)}">Agregar al pedido</button><button type="button" class="btn secondary" data-v36-cancel>Cancelar</button></div>`:`<button type="button" class="btn primary" data-v36-select="${escv(m.code)}">Seleccionar</button>`}</td></tr>`}).join('')}</tbody></table></div>`;
     if(selectedCode)setTimeout(()=>$v(`[data-v36-qty="${CSS.escape(String(selectedCode))}"]`)?.focus(),0);
   };
   function addConfirmed(code){
@@ -1268,7 +1268,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
 </script>
 
 <style id="v42-2-focused-admin-colors">
-/* V42.2: Supervisores y Unidades muestran exclusivamente su contenido. */
+/* V42.4: Supervisores y Unidades muestran exclusivamente su contenido. */
 #dlg.single-admin #appNote,#dlg.single-admin #configTabs,#dlg.single-admin #p-mat,#dlg.single-admin #p-github{display:none!important}
 #dlg.single-admin[data-single-page="sup"] #p-units{display:none!important}
 #dlg.single-admin[data-single-page="units"] #p-sup{display:none!important}
@@ -1298,4 +1298,84 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
 }
 </style>
 
+
+<style id="v42-3-drive-isolation">
+/* Google Drive muestra exclusivamente su propio contenido. */
+#dlg.drive-only #p-mat,#dlg.drive-only #p-sup,#dlg.drive-only #p-units{display:none!important}
+#dlg.drive-only #p-github{display:block!important}
+#dlg.drive-only #configTabs,#dlg.drive-only #appNote{display:none!important}
+#dlg.drive-only.single-admin #p-sup,#dlg.drive-only.single-admin #p-units{display:none!important}
+#dlg.drive-only .modal{max-width:980px}
+</style>
+<script id="v42-3-drive-isolation-script">
+(function(){
+ const drive=document.getElementById('sideDriveOnly');
+ if(drive){drive.addEventListener('click',()=>{
+   const dlg=document.getElementById('dlg');
+   if(!dlg)return;
+   dlg.classList.remove('single-admin','add-only','edit-mode');
+   dlg.classList.add('drive-only');
+   dlg.dataset.singlePage='';
+   document.querySelectorAll('#dlg .page').forEach(p=>p.classList.remove('active'));
+   document.getElementById('p-github')?.classList.add('active');
+   const title=document.getElementById('modalTitle');
+   if(title)title.textContent='Google Drive';
+ },true)}
+})();
+</script>
+<style id="v42-4-unified-dark-and-images">
+/* V42.4: cambios visuales aprobados; la lógica permanece intacta. */
+.v42-material-image{width:86px;min-width:86px;text-align:center}
+.v42-material-image img{display:block;width:72px;height:58px;object-fit:contain;margin:auto;border:1px solid var(--line);border-radius:9px;background:#fff}
+.v42-material-image span{display:flex;width:72px;height:58px;margin:auto;align-items:center;justify-content:center;border:1px dashed #aabbd0;border-radius:9px;color:var(--muted);font-size:11px;background:#f8fafc}
+.order-finalize-top{justify-content:flex-start!important;margin:10px 0!important}
+#orderPanel .sap-preview-wrap{margin-top:0!important}
+html[data-theme="dark"]{--navy:#071426;--blue:#66a7ef;--blue-strong:#2f83d5;--line:#2c405c;--bg:#071426;--panel:#0f2036;--text:#f1f6ff;--yellow:#f6c515;--green:#153e2a;--red:#4b2028;--muted:#aebed2}
+html[data-theme="dark"] body{background:linear-gradient(180deg,#071426 0%,#0a1a2d 100%)}
+html[data-theme="dark"] .top,html[data-theme="dark"] .sidebar,html[data-theme="dark"] .panel,html[data-theme="dark"] .stock-toolbar,html[data-theme="dark"] dialog .modal{background:#0d1d32!important}
+html[data-theme="dark"] .panel,html[data-theme="dark"] .auto-fields-note,html[data-theme="dark"] .tablewrap,html[data-theme="dark"] .drive-note,html[data-theme="dark"] .v39-history,html[data-theme="dark"] .v39-history-card{border-color:#2b425f!important;box-shadow:none!important}
+html[data-theme="dark"] .auto-fields-note,html[data-theme="dark"] .small,html[data-theme="dark"] .sub,html[data-theme="dark"] .stock-info{color:#aebed2!important}
+html[data-theme="dark"] .badge{background:#102f59!important;color:#7fbdff!important}
+html[data-theme="dark"] .primary{background:#2179c7!important;color:#fff!important}
+html[data-theme="dark"] .secondary{background:#172d49!important;color:#e8f2ff!important;border:1px solid #304b6c!important}
+html[data-theme="dark"] .danger{background:#48222b!important;color:#ff9aa7!important}
+html[data-theme="dark"] .success,html[data-theme="dark"] #v31FinalizeOrder{background:#149447!important;color:#fff!important}
+html[data-theme="dark"] #orderPanel .tablewrap th{background:#f6c515!important;color:#111!important}
+html[data-theme="dark"] #orderPanel .tablewrap td{background:#102139!important;border-color:#2b425f!important}
+html[data-theme="dark"] #orderPanel .sap-preview-wrap{background:#0e2037!important;border-color:#2f5e92!important}
+html[data-theme="dark"] #orderPanel .sap-preview-title h3{color:#f2f6ff!important}
+html[data-theme="dark"] #orderPanel .sap-preview th{background:#f6c515!important;color:#101820!important;border-color:#d8a900!important}
+html[data-theme="dark"] #orderPanel .sap-preview td,html[data-theme="dark"] #orderPanel .sap-preview tr:nth-child(even) td{background:#102139!important;color:#edf5ff!important;border-color:#2b425f!important}
+html[data-theme="dark"] .v29-stock-table th{background:#152c48!important;color:#edf5ff!important}
+html[data-theme="dark"] .v29-stock-table td{background:#0f2036!important;color:#edf5ff!important;border-color:#2b425f!important}
+html[data-theme="dark"] .v29-stock-table tr:hover td{background:#142a45!important}
+html[data-theme="dark"] .v29-stock-pill.good{background:#153e2a!important;color:#77e3a4!important;border-color:#2d8050!important}
+html[data-theme="dark"] .v29-stock-pill.none{background:#48222b!important;color:#ff9aa7!important;border-color:#7b3745!important}
+html[data-theme="dark"] .v42-material-image span{background:#102139;color:#9fb0c5;border-color:#46617f}
+html[data-theme="dark"] .v42-material-image img{background:#fff;border-color:#46617f}
+@media(max-width:760px){
+ .v42-material-image{width:76px!important;min-width:76px!important}
+ .v42-material-image img,.v42-material-image span{width:64px;height:54px}
+ .v42-material-image-table{min-width:980px!important}
+ .order-finalize-top{margin:8px 0!important}
+}
+</style>
+<script id="v42-4-finalize-position">
+(function(){
+ function placeFinalizeBeforePreview(){
+  const panel=document.getElementById('orderPanel'),btn=document.getElementById('v31FinalizeOrder'),preview=panel?.querySelector('.sap-preview-wrap');
+  if(!panel||!btn||!preview)return;
+  let holder=panel.querySelector('.order-finalize-top');
+  if(!holder){holder=document.createElement('div');holder.className='order-finalize-top'}
+  if(holder.parentElement!==panel||holder.nextElementSibling!==preview)panel.insertBefore(holder,preview);
+  if(btn.parentElement!==holder)holder.appendChild(btn);
+ }
+ document.addEventListener('DOMContentLoaded',()=>{
+  placeFinalizeBeforePreview();
+  [50,200,600,1200].forEach(ms=>setTimeout(placeFinalizeBeforePreview,ms));
+  const panel=document.getElementById('orderPanel');
+  if(panel)new MutationObserver(placeFinalizeBeforePreview).observe(panel,{childList:true,subtree:true});
+ });
+})();
+</script>
 </body></html>
