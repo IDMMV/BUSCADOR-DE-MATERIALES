@@ -1,0 +1,21 @@
+BUSCADOR DE MATERIALES SAP V42.8
+
+CORRECCIÓN PRINCIPAL
+Google Sheets ahora es la fuente oficial del stock compartido.
+El sistema ya no recupera el stock antiguo que pueda existir dentro del respaldo JSON.
+
+PASOS OBLIGATORIOS
+1. Abre Google Apps Script.
+2. Copia TODO el archivo Google_Apps_Script/Code.gs de esta versión.
+3. Antes de guardar, reemplaza CAMBIA_ESTA_CLAVE por la MISMA clave privada que ya utilizas en la web.
+4. Guarda el proyecto.
+5. Implementar > Administrar implementaciones > Editar.
+6. Selecciona NUEVA VERSIÓN y pulsa Implementar.
+7. Conserva la URL terminada en /exec.
+8. Sube todos los archivos de la web a GitHub.
+9. En la laptop, carga el Excel diario. Debe aparecer: “Stock verificado en Drive: N registros”.
+10. En el celular, abre Google Drive dentro de la web y pulsa “Recuperar desde Drive”.
+
+IMPORTANTE
+No basta con subir solo index.html. También debes actualizar sw.js para eliminar la caché anterior.
+La cabecera debe mostrar V42.8.

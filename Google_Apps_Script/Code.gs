@@ -12,7 +12,9 @@ function doGet(e) {
       const backup = readLatestBackup_();
       const stock = readStockFromSheets_();
       const data = Object.assign({}, backup || {});
-      if ((!Array.isArray(data.stockRows) || !data.stockRows.length) && stock.stockRows.length) {
+      // Google Sheets es la fuente oficial del stock compartido.
+      // Nunca devolver el stock antiguo guardado dentro del respaldo JSON.
+      if (stock.stockRows.length) {
         data.stockRows = stock.stockRows;
         data.stockMeta = stock.stockMeta;
       }
@@ -37,11 +39,13 @@ function doPost(e) {
       saveBackup_(data);
       writeSheets_(data);
       saveImages_(data.app && data.app.materials || []);
+      const verified = readStockFromSheets_();
       return json_({
         ok:true,
         savedAt:new Date().toISOString(),
-        stockRows:data.stockRows.length,
-        stockDate:data.stockMeta && data.stockMeta.date || ''
+        stockRows:verified.stockRows.length,
+        stockDate:verified.stockMeta.date || '',
+        stockFile:verified.stockMeta.file || ''
       });
     }
     throw new Error('Acción no reconocida');
@@ -118,9 +122,36 @@ function readStockFromSheets_() {
   }
   if (metaSheet && metaSheet.getLastRow()>1) {
     const r=metaSheet.getRange(2,1,1,4).getValues()[0];
-    stockMeta={date:String(r[0]||''),file:String(r[1]||''),loadedAt:String(r[2]||''),records:Number(r[3])||stockRows.length,source:'GOOGLE_DRIVE'};
+    stockMeta={
+      date:normalizeDate_(r[0]),
+      file:String(r[1]||''),
+      loadedAt:normalizeDateTime_(r[2]),
+      records:Number(r[3])||stockRows.length,
+      source:'GOOGLE_DRIVE'
+    };
   }
   return {stockRows:stockRows,stockMeta:stockMeta};
+}
+
+function normalizeDate_(value) {
+  if (!value) return '';
+  if (Object.prototype.toString.call(value) === '[object Date]' && !isNaN(value)) {
+    return Utilities.formatDate(value, 'America/Lima', 'yyyy-MM-dd');
+  }
+  const text=String(value).trim();
+  const iso=text.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (iso) return iso[1]+'-'+iso[2]+'-'+iso[3];
+  const latam=text.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})/);
+  if (latam) return latam[3]+'-'+latam[2].padStart(2,'0')+'-'+latam[1].padStart(2,'0');
+  return text;
+}
+
+function normalizeDateTime_(value) {
+  if (!value) return '';
+  if (Object.prototype.toString.call(value) === '[object Date]' && !isNaN(value)) {
+    return Utilities.formatDate(value, 'America/Lima', "yyyy-MM-dd'T'HH:mm:ssXXX");
+  }
+  return String(value);
 }
 
 function writeSheets_(data) {
