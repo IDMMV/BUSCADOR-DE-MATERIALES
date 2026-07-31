@@ -1,0 +1,7 @@
+V42 - cambios solicitados únicamente
+- Se retiró visualmente Stock SAP de la barra lateral.
+- Se retiró visualmente Configuración.
+- Google Drive abre solo su panel.
+- Se retiró Exportar control pedido de Pedido seleccionado.
+- La vista previa SAP se compactó.
+- Finalizar pedido y descontar stock se movió debajo del encabezado Pedido seleccionado.

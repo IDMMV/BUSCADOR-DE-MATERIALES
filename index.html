@@ -114,7 +114,7 @@ html,body{max-width:100%;overflow-x:hidden}body{font-size:14px}.topbar{padding:1
 </style>
 </head>
 <body>
-<header class="top"><div class="brand"><img alt="Ícono Buscador de Materiales" class="app-logo" src="icon-192.png"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V41</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn secondary" id="config">⚙ Configuración</button></div></header>
+<header class="top"><div class="brand"><img alt="Ícono Buscador de Materiales" class="app-logo" src="icon-192.png"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V42</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
 <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 <div class="app-shell">
 <aside class="sidebar" id="sidebar">
@@ -125,10 +125,10 @@ html,body{max-width:100%;overflow-x:hidden}body{font-size:14px}.topbar{padding:1
 <button class="side-btn" data-config-page="mat">🏷 Alias y matrículas</button>
 <button class="side-btn" data-config-page="sup">👷 Supervisores</button>
 <button class="side-btn" data-config-page="units">🚚 Unidades móviles</button>
-<button class="side-btn" data-view="stockView">📦 Stock SAP</button>
+<button class="side-btn hidden" data-view="stockView" aria-hidden="true" tabindex="-1">📦 Stock SAP</button>
 <button class="side-btn" data-view="historyView">🕘 Historial <span class="side-count hidden" id="historyNewCount">0</span></button>
-<button class="side-btn" data-config-page="github">☁ Google Drive</button>
-<button class="side-btn" id="sideConfig">⚙ Configuración</button>
+<button class="side-btn" data-config-page="github" id="sideDriveOnly">☁ Google Drive</button>
+<button class="side-btn hidden" id="sideConfig" aria-hidden="true" tabindex="-1">⚙ Configuración</button>
 </nav>
 </aside>
 <div class="app-content">
@@ -152,7 +152,7 @@ html,body{max-width:100%;overflow-x:hidden}body{font-size:14px}.topbar{padding:1
 <section class="view" id="historyView"><div class="module-placeholder"><h2>🕘 Historial</h2><p>Aquí se mostrarán los pedidos guardados y sincronizados con Google Drive.</p><div class="empty">Todavía no hay pedidos guardados.</div></div></section>
 </div></div>
 <dialog id="stockDecision"><div class="modal decision-modal"><div class="modalhead"><div><div class="ey">VALIDACIÓN DE STOCK</div><h2 id="decisionTitle">Stock insuficiente</h2></div><button class="btn secondary" id="closeDecision">×</button></div><div class="decision-summary" id="decisionSummary"></div><div class="decision-options" id="decisionOptions"></div></div></dialog>
-<dialog id="dlg"><div class="modal"><div class="modalhead"><div><div class="ey">ADMINISTRACIÓN</div><h2 id="modalTitle">Configuración</h2></div><button class="btn secondary" id="close">×</button></div><div class="note" id="appNote"><b>Modo app:</b> al publicarla en GitHub Pages podrás instalarla en el celular. El micrófono funciona en Chrome/Edge mediante HTTPS y pedirá permiso la primera vez.</div><div class="tabs" id="configTabs"><button class="tab active" data-page="mat">Matrículas y alias</button><button class="tab" data-page="sup">Supervisores</button><button class="tab" data-page="units">Unidades</button><button class="tab" data-page="github">Google Drive / Apps Script</button></div>
+<dialog id="dlg"><div class="modal"><div class="modalhead"><div><div class="ey">ADMINISTRACIÓN</div><h2 id="modalTitle">Google Drive</h2></div><button class="btn secondary" id="close">×</button></div><div class="note" id="appNote"><b>Modo app:</b> al publicarla en GitHub Pages podrás instalarla en el celular. El micrófono funciona en Chrome/Edge mediante HTTPS y pedirá permiso la primera vez.</div><div class="tabs" id="configTabs"><button class="tab active" data-page="mat">Matrículas y alias</button><button class="tab" data-page="sup">Supervisores</button><button class="tab" data-page="units">Unidades</button><button class="tab" data-page="github">Google Drive / Apps Script</button></div>
 <section class="page active" id="p-mat"><h3 id="matTitle">Agregar material</h3><div class="editor-grid"><div class="editor-col"><div class="editor-card"><h4>Datos principales</h4><div class="labeled-form admin"><label class="form-group">Matrícula SAP<div class="voice-wrap"><input id="mcode" inputmode="numeric" placeholder="Ej.: 8001828"/><button class="voice-btn" data-voice="mcode">🎤</button></div></label><label class="form-group">Descripción oficial<div class="voice-wrap"><input id="mdesc" placeholder="Descripción del material"/><button class="voice-btn" data-voice="mdesc">🎤</button></div></label><label class="form-group">Unidad<div class="voice-wrap"><input id="munit" placeholder="UND"/><button class="voice-btn" data-voice="munit">🎤</button></div></label><label class="form-group">Prioridad<select id="mprio"><option value="">Normal</option><option value="P">Prioridad P</option></select></label></div></div><div class="editor-card image-editor" id="imageEditor"><h4>Imagen del material</h4><div class="image-preview-wrap"><div class="material-placeholder" id="imagePreviewBox">Sin imagen</div><div><input accept="image/*" id="mimage" type="file"/><p class="small">La imagen se comprime automáticamente a WebP, máximo 700 × 700 px y calidad 70 %.</p><button class="btn danger hidden" id="removeImage" type="button">Eliminar imagen</button></div></div></div></div><div class="editor-col"><div class="editor-card alias-box" id="aliasEditorBox"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap"><h4>Alias del material</h4><button class="btn secondary" id="suggestAliases" type="button">✨ Sugerir alias</button></div><div class="alias-list" id="aliasList"><p class="small">Esta matrícula todavía no tiene alias.</p></div><h4 style="margin-top:14px">Agregar nuevo alias</h4><div class="new-alias-row"><input id="newAlias" placeholder="Escribe un nuevo alias"/><button class="voice-btn" data-voice="newAlias">🎤</button><button class="btn primary" id="addAlias" type="button">Agregar alias</button></div></div><p class="note hidden" id="saveHelp"><b>Guardado:</b> descripción, unidad, prioridad, alias e imagen se guardan juntos al pulsar <b>Actualizar matrícula y alias</b>.</p><div class="actions" id="materialActions"><button class="btn primary" id="saveMat">Guardar material</button><button class="btn secondary hidden" id="cancelEdit">Cancelar edición</button></div></div></div><div id="materialBrowser"><h3>Buscar y modificar matrícula o alias</h3><div class="voice-wrap admin"><input id="adminSearch" placeholder="Buscar matrícula, descripción o alias"/><button class="voice-btn" data-voice="adminSearch">🎤</button></div><div class="material-list" id="materialList"></div></div></section>
 <section class="page" id="p-sup"><p class="small">Registra el nombre y las iniciales que SAP mostrará junto con la fecha, por ejemplo <b>SL 29/07</b>.</p><div class="supervisor-add admin"><div class="voice-wrap"><input id="newSup" placeholder="Nombre del supervisor"/><button class="voice-btn" data-voice="newSup">🎤</button></div><input id="newSupInitials" maxlength="4" placeholder="Iniciales"/><button class="btn primary" id="addSup">Agregar</button></div><div class="supervisor-list" id="supList"></div></section>
 <section class="page" id="p-units"><div class="adminrow admin"><div class="voice-wrap"><input id="newUnit" placeholder="Ej.: F5X-999"/><button class="voice-btn" data-voice="newUnit">🎤</button></div><button class="btn primary" id="addUnit">Agregar</button></div><div class="chips" id="unitList"></div></section>
@@ -558,7 +558,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
     ws['!cols']=[12,11,18,15,14,18,18,14,17,14,19].map(wch=>({wch}));ws['!autofilter']={ref:`A1:K${data.length+1}`};
     const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'CONTROL PEDIDOS');XLSX.writeFile(wb,`Control_Pedido_${date}_${sup.replace(/\s+/g,'_')||'SUPERVISOR'}.xlsx`);msg('Archivo de control del pedido generado. Completa Reserva, OM, Conductor, Distrito y Status.');
   }
-  function addControlButton(){const actions=$30('#orderPanel .actions');if(!actions||$30('#v30ControlExcel'))return;const b=document.createElement('button');b.id='v30ControlExcel';b.className='btn v30-control-export';b.textContent='📋 Exportar control pedido';b.addEventListener('click',exportControlOrder);actions.insertBefore(b,$30('#clean'));}
+  function addControlButton(){document.querySelector('#v30ControlExcel')?.remove();document.querySelector('#v31ControlExcel')?.remove();}
   function init30(){moveOrderFields();addControlButton();$30('#v29CurrentOrder')?.remove();renderResults();renderCart();
     $30('#cart')?.addEventListener('click',e=>{const b=e.target.closest('[data-center-toggle]');if(b){e.preventDefault();toggleCenter(Number(b.dataset.centerToggle),String(b.dataset.center));}},true);
     $30('#cart')?.addEventListener('input',e=>{if(e.target.matches('[data-qty]')){const i=Number(e.target.dataset.qty);if(cart[i]){cart[i].qty=e.target.value;allocateByChoices(cart[i]);setTimeout(renderCart,0);}}},true);
@@ -1086,4 +1086,61 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
   dialog .modal{max-height:92dvh!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch!important}
 }
 </style>
+
+<style id="v42-requested-layout">
+/* Se ocultan únicamente accesos redundantes; los elementos permanecen para compatibilidad interna. */
+#config,#sideConfig,.side-btn[data-view="stockView"],#v30ControlExcel,#v31ControlExcel{display:none!important}
+#dlg.drive-only #appNote,#dlg.drive-only #configTabs,#dlg.drive-only #p-mat,#dlg.drive-only #p-sup,#dlg.drive-only #p-units{display:none!important}
+#dlg.drive-only #p-github{display:block!important}
+#dlg.drive-only .modal{max-width:980px}
+#dlg.drive-only #modalTitle{margin-bottom:4px}
+.order-finalize-top{display:flex;justify-content:flex-end;align-items:center;margin:0 0 10px}
+.order-finalize-top .btn{min-height:44px;font-weight:800}
+#v26SaveRow:empty{display:none!important}
+#orderPanel .sap-preview-wrap{margin-top:8px}
+#orderPanel .sap-preview-title{margin-bottom:4px;gap:8px;align-items:center}
+#orderPanel .sap-preview-title h3{margin:0;font-size:19px}
+#orderPanel .sap-preview-title .small{margin:2px 0 0}
+#orderPanel .sap-preview{max-height:320px}
+#orderPanel .sap-preview table{border-spacing:0}
+#orderPanel .sap-preview th,#orderPanel .sap-preview td{padding:5px 7px!important;line-height:1.12}
+#orderPanel .actions{margin-top:8px}
+@media(max-width:760px){
+ .order-finalize-top{justify-content:stretch;margin-bottom:8px}
+ .order-finalize-top .btn{width:100%}
+ #orderPanel .sap-preview-title h3{font-size:18px}
+ #dlg.drive-only .modal{max-height:88vh}
+}
+</style>
+<script id="v42-requested-layout-script">
+(function(){
+ function clearDriveOnly(){document.getElementById('dlg')?.classList.remove('drive-only')}
+ function showDriveOnly(){
+   const dlg=document.getElementById('dlg'); if(!dlg)return;
+   dlg.classList.add('drive-only'); dlg.classList.remove('add-only','edit-mode');
+   const title=document.getElementById('modalTitle'); if(title)title.textContent='Google Drive';
+   document.querySelectorAll('#configTabs .tab,#dlg .page').forEach(x=>x.classList.remove('active'));
+   document.querySelector('#configTabs .tab[data-page="github"]')?.classList.add('active');
+   document.getElementById('p-github')?.classList.add('active');
+   if(!dlg.open)dlg.showModal();
+ }
+ function moveFinalize(){
+   const panel=document.getElementById('orderPanel'),btn=document.getElementById('v31FinalizeOrder');
+   if(!panel||!btn)return;
+   let holder=panel.querySelector('.order-finalize-top');
+   if(!holder){holder=document.createElement('div');holder.className='order-finalize-top';const head=panel.querySelector('.head');head?head.insertAdjacentElement('afterend',holder):panel.prepend(holder)}
+   if(btn.parentElement!==holder)holder.appendChild(btn);
+ }
+ function cleanup(){document.getElementById('v30ControlExcel')?.remove();document.getElementById('v31ControlExcel')?.remove();moveFinalize()}
+ document.addEventListener('DOMContentLoaded',()=>{
+   const drive=document.getElementById('sideDriveOnly');
+   drive?.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();showDriveOnly()},true);
+   document.addEventListener('click',e=>{if(e.target.closest('#newMaterialTop,[data-edit],[data-quick-edit],.side-btn[data-view="aliasView"]'))clearDriveOnly()},true);
+   document.getElementById('close')?.addEventListener('click',clearDriveOnly);
+   cleanup(); [50,200,600,1200].forEach(ms=>setTimeout(cleanup,ms));
+   const panel=document.getElementById('orderPanel'); if(panel)new MutationObserver(cleanup).observe(panel,{childList:true,subtree:true});
+ });
+})();
+</script>
+
 </body></html>
