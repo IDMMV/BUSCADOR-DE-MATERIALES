@@ -112,9 +112,133 @@ html,body{max-width:100%;overflow-x:hidden}body{font-size:14px}.topbar{padding:1
 .v41-control-note{margin:0 0 10px;padding:10px 12px;border-radius:9px;background:#eef6ff;color:#284c70}
 @media(max-width:760px){#historyNewCount{min-width:22px;height:22px}.v41-edit-input{min-width:130px}.v39-table table{min-width:1350px!important}}
 </style>
+
+<style id="v421-mobile-horizontal-navigation">
+/* V42.1: corrección exclusivamente móvil para poder desplazar las tablas y acceder a Seleccionar/Agregar. */
+@media (max-width:760px){
+  /* La página sigue desplazándose verticalmente; únicamente las tablas usan desplazamiento horizontal propio. */
+  body{overflow-x:hidden!important;touch-action:pan-y pinch-zoom!important}
+
+  /* Buscador: conservar la barra completa dentro del ancho del celular. */
+  .search{width:100%!important;max-width:100%!important;min-width:0!important}
+  .search input{width:100%!important;min-width:0!important}
+
+  /* Resultados del buscador: tabla horizontal deslizable con el dedo. */
+  #results .v29-table-wrap,
+  #results .v34-table-wrap{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    overflow-x:auto!important;
+    overflow-y:visible!important;
+    -webkit-overflow-scrolling:touch!important;
+    touch-action:pan-x pan-y!important;
+    overscroll-behavior-x:contain!important;
+    border:1px solid var(--line)!important;
+    border-radius:12px!important;
+    scrollbar-width:auto!important;
+  }
+  #results .v29-stock-table,
+  #results .v34-stock-table{
+    display:table!important;
+    width:max-content!important;
+    min-width:940px!important;
+    table-layout:auto!important;
+  }
+  #results .v29-stock-table thead,
+  #results .v34-stock-table thead{display:table-header-group!important}
+  #results .v29-stock-table tbody,
+  #results .v34-stock-table tbody{display:table-row-group!important}
+  #results .v29-stock-table tr,
+  #results .v34-stock-table tr{
+    display:table-row!important;
+    width:auto!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    background:var(--panel)!important;
+  }
+  #results .v29-stock-table th,
+  #results .v29-stock-table td,
+  #results .v34-stock-table th,
+  #results .v34-stock-table td{
+    display:table-cell!important;
+    width:auto!important;
+    min-width:110px!important;
+    padding:10px 9px!important;
+    border-bottom:1px solid var(--line)!important;
+    vertical-align:middle!important;
+    white-space:normal!important;
+  }
+  #results .v29-stock-table th:nth-child(1),
+  #results .v29-stock-table td:nth-child(1),
+  #results .v34-stock-table th:nth-child(1),
+  #results .v34-stock-table td:nth-child(1){
+    position:sticky!important;left:0!important;z-index:2!important;
+    min-width:105px!important;background:var(--panel)!important;
+  }
+  #results .v29-stock-table thead th:nth-child(1),
+  #results .v34-stock-table thead th:nth-child(1){z-index:3!important;background:#fff200!important;color:#111!important}
+  #results .v29-stock-table th:nth-child(2),
+  #results .v29-stock-table td:nth-child(2),
+  #results .v34-stock-table th:nth-child(2),
+  #results .v34-stock-table td:nth-child(2){min-width:360px!important}
+  #results .v29-stock-table th:last-child,
+  #results .v29-stock-table td:last-child,
+  #results .v34-stock-table th:last-child,
+  #results .v34-stock-table td:last-child{min-width:190px!important}
+  #results .v29-stock-table td::before,
+  #results .v34-stock-table td::before{content:none!important;display:none!important}
+  #results .v29-add-box,
+  #results .v34-add-box{
+    display:grid!important;grid-template-columns:100px 48px!important;
+    gap:7px!important;width:auto!important;align-items:center!important
+  }
+  #results .v29-add-box input,
+  #results .v34-add-box input{width:100px!important;min-height:44px!important;font-size:16px!important}
+  #results .v29-add-box .btn,
+  #results .v34-add-box .btn{width:48px!important;min-height:44px!important}
+
+  /* Pedido seleccionado: permitir llegar a cantidad, centro y Quitar desplazando horizontalmente. */
+  #orderPanel .tablewrap{
+    display:block!important;width:100%!important;max-width:100%!important;
+    overflow-x:auto!important;overflow-y:visible!important;
+    -webkit-overflow-scrolling:touch!important;touch-action:pan-x pan-y!important;
+    overscroll-behavior-x:contain!important;border:1px solid var(--line)!important;border-radius:12px!important
+  }
+  #orderPanel .tablewrap table{
+    display:table!important;width:max-content!important;min-width:980px!important;table-layout:auto!important
+  }
+  #orderPanel .tablewrap thead{display:table-header-group!important}
+  #orderPanel .tablewrap tbody{display:table-row-group!important}
+  #orderPanel .tablewrap tr{display:table-row!important;margin:0!important;padding:0!important;border:0!important;background:var(--panel)!important}
+  #orderPanel .tablewrap th,#orderPanel .tablewrap td{
+    display:table-cell!important;width:auto!important;min-width:110px!important;
+    padding:10px 9px!important;border-bottom:1px solid var(--line)!important;
+    vertical-align:middle!important;white-space:normal!important
+  }
+  #orderPanel .tablewrap th:nth-child(1),#orderPanel .tablewrap td:nth-child(1){
+    position:sticky!important;left:0!important;z-index:2!important;min-width:105px!important;background:var(--panel)!important
+  }
+  #orderPanel .tablewrap thead th:nth-child(1){z-index:3!important;background:#fff200!important;color:#111!important}
+  #orderPanel .tablewrap th:nth-child(2),#orderPanel .tablewrap td:nth-child(2){min-width:390px!important}
+  #orderPanel .tablewrap td::before{content:none!important;display:none!important}
+  #orderPanel .tablewrap td:last-child .btn{width:auto!important;min-width:92px!important}
+  #orderPanel .v36-center-actions{display:flex!important;grid-template-columns:none!important;flex-wrap:nowrap!important;min-width:330px!important;gap:6px!important}
+  #orderPanel .v36-center-btn{width:auto!important;min-width:100px!important;white-space:nowrap!important}
+
+  /* Señal visual de que se puede desplazar hacia los lados. */
+  #results .v29-table-wrap::after,#results .v34-table-wrap::after,#orderPanel .tablewrap::after{
+    content:'Desliza hacia los lados para ver Seleccionar, cantidad y acciones ↔';
+    display:block;position:sticky;left:0;width:max-content;max-width:calc(100vw - 42px);
+    padding:7px 10px;font-size:11px;color:var(--muted);background:var(--panel)
+  }
+}
+</style>
+
 </head>
 <body>
-<header class="top"><div class="brand"><img alt="Ícono Buscador de Materiales" class="app-logo" src="icon-192.png"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V42</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
+<header class="top"><div class="brand"><img alt="Ícono Buscador de Materiales" class="app-logo" src="icon-192.png"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V42.1</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
 <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 <div class="app-shell">
 <aside class="sidebar" id="sidebar">
