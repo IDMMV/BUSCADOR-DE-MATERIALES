@@ -114,7 +114,7 @@ html,body{max-width:100%;overflow-x:hidden}body{font-size:14px}.topbar{padding:1
 </style>
 
 <style id="v421-mobile-horizontal-navigation">
-/* V42.4: corrección exclusivamente móvil para poder desplazar las tablas y acceder a Seleccionar/Agregar. */
+/* V42.5: corrección exclusivamente móvil para poder desplazar las tablas y acceder a Seleccionar/Agregar. */
 @media (max-width:760px){
   /* La página sigue desplazándose verticalmente; únicamente las tablas usan desplazamiento horizontal propio. */
   body{overflow-x:hidden!important;touch-action:pan-y pinch-zoom!important}
@@ -238,7 +238,7 @@ html,body{max-width:100%;overflow-x:hidden}body{font-size:14px}.topbar{padding:1
 
 </head>
 <body>
-<header class="top"><div class="brand"><img alt="Ícono Buscador de Materiales" class="app-logo" src="icon-192.png"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V42.4</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
+<header class="top"><div class="brand"><img alt="Ícono Buscador de Materiales" class="app-logo" src="icon-192.png"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V42.5</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
 <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 <div class="app-shell">
 <aside class="sidebar" id="sidebar">
@@ -350,11 +350,32 @@ function syncConfig(){return JSON.parse(localStorage.getItem(SYNC_KEY)||'{}')}
 function saveSyncConfig(){let cfg=syncConfig();cfg.url=$('#scriptUrl').value.trim();cfg.token=$('#scriptToken').value.trim();localStorage.setItem(SYNC_KEY,JSON.stringify(cfg));renderSyncState();msg('Conexión guardada.',false,'#adminStatus')}
 function renderSyncState(){let cfg=syncConfig(),online=navigator.onLine;let text=!cfg.url?'Sin configurar':!online?'Sin conexión':cfg.pending?'Cambios pendientes':'Sincronizado';$('#syncState')&&($('#syncState').value=text);$('#lastSync')&&($('#lastSync').value=cfg.lastSync?new Date(cfg.lastSync).toLocaleString('es-PE'):'Nunca');}
 async function syncToDrive(){let cfg=syncConfig();if(!cfg.url||!cfg.token)return msg('Configura la URL y clave de Apps Script.',true,'#adminStatus');if(!navigator.onLine){queueSync();return msg('Sin red. Los cambios quedan guardados localmente.',true,'#adminStatus')}let payload={action:'syncAll',token:cfg.token,data:{app:state,pending:pendingItems,stockMeta,stockRows,updatedAt:new Date().toISOString()}};try{let r=await fetch(cfg.url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)}),j=await r.json();if(!j.ok)throw new Error(j.error||'Error de sincronización');cfg.pending=false;cfg.lastSync=new Date().toISOString();localStorage.setItem(SYNC_KEY,JSON.stringify(cfg));renderSyncState();msg('Datos sincronizados con Google Drive.',false,'#adminStatus')}catch(e){queueSync();msg('No se pudo sincronizar: '+e.message,true,'#adminStatus')}}
-async function restoreFromDrive(){let cfg=syncConfig();if(!cfg.url||!cfg.token)return msg('Configura Apps Script.',true,'#adminStatus');try{let r=await fetch(cfg.url+'?action=getAll&token='+encodeURIComponent(cfg.token)),j=await r.json();if(!j.ok)throw new Error(j.error||'No disponible');if(j.data?.app){state=j.data.app;save()}if(Array.isArray(j.data?.pending)){pendingItems=j.data.pending;savePending()}if(Array.isArray(j.data?.stockRows)){stockRows=j.data.stockRows;stockMeta=j.data.stockMeta||{};saveStockCache()}renderAll();renderPending();renderStockStatus();msg('Datos recuperados desde Drive.',false,'#adminStatus')}catch(e){msg('No se pudo recuperar: '+e.message,true,'#adminStatus')}}
+function renderRecoveredData(){
+  try{if(typeof populateSelectors==='function')populateSelectors()}catch(e){console.warn('populateSelectors',e)}
+  try{if(typeof renderResults==='function')renderResults()}catch(e){console.warn('renderResults',e)}
+  try{if(typeof renderCart==='function')renderCart()}catch(e){console.warn('renderCart',e)}
+  try{if(typeof renderAliasTable==='function')renderAliasTable()}catch(e){console.warn('renderAliasTable',e)}
+  try{if(typeof renderHistory37==='function')renderHistory37();else if(typeof renderHistory34==='function')renderHistory34();else if(typeof renderHistory==='function')renderHistory()}catch(e){console.warn('renderHistory',e)}
+  try{if(typeof renderPending==='function')renderPending()}catch(e){console.warn('renderPending',e)}
+  try{if(typeof renderStockStatus==='function')renderStockStatus()}catch(e){console.warn('renderStockStatus',e)}
+  try{if(typeof renderStatusV27==='function')renderStatusV27()}catch(e){console.warn('renderStatusV27',e)}
+  try{if(typeof renderSyncState==='function')renderSyncState()}catch(e){console.warn('renderSyncState',e)}
+}
+async function restoreFromDrive(options={}){let cfg=syncConfig();const silent=!!options.silent;if(!cfg.url||!cfg.token){if(!silent)msg('Configura Apps Script.',true,'#adminStatus');return false}try{let r=await fetch(cfg.url+'?action=getAll&token='+encodeURIComponent(cfg.token)+'&_='+Date.now(),{cache:'no-store'}),j=await r.json();if(!j.ok)throw new Error(j.error||'No disponible');if(j.data?.app){state=j.data.app;localStorage.setItem(KEY,JSON.stringify(state))}if(Array.isArray(j.data?.pending)){pendingItems=j.data.pending;localStorage.setItem(PENDING_KEY,JSON.stringify(pendingItems))}if(Array.isArray(j.data?.stockRows)){stockRows=j.data.stockRows;stockMeta=j.data.stockMeta||{};saveStockCache()}cfg.lastSync=new Date().toISOString();cfg.pending=false;localStorage.setItem(SYNC_KEY,JSON.stringify(cfg));renderRecoveredData();if(!silent)msg('Datos y stock recuperados desde Drive.',false,'#adminStatus');return true}catch(e){if(!silent)msg('No se pudo recuperar: '+e.message,true,'#adminStatus');else console.warn('Actualización automática desde Drive:',e);return false}}
 const _save=save;save=function(){_save();queueSync('app')}
 const _importStock=importStock;importStock=async function(){await _importStock();if(stockRows.length)queueSync('stock')}
 window.addEventListener('online',()=>{renderSyncState();let cfg=syncConfig();if(cfg.pending&&cfg.url)syncToDrive()});window.addEventListener('offline',renderSyncState);
-setTimeout(()=>{let cfg=syncConfig();if($('#scriptUrl')){$('#scriptUrl').value=cfg.url||'';$('#scriptToken').value=cfg.token||''}renderSyncState();renderPending();$('#saveScriptConfig')?.addEventListener('click',saveSyncConfig);$('#syncNow')?.addEventListener('click',syncToDrive);$('#restoreDrive')?.addEventListener('click',restoreFromDrive);$('#closeDecision')?.addEventListener('click',()=>$('#stockDecision').close());$('#decisionOptions')?.addEventListener('click',e=>{let b=e.target.closest('[data-decision]');if(!b||!currentDecision)return;let {index,m,a}=currentDecision,choice=b.dataset.decision;if(choice==='switch-all'){let old=$('#centroGlobal').value;$('#centroGlobal').value=a.other;$('#ce').value=a.other;m.allocations=allocateStock(m.code,m.qty).rows;$('#centroGlobal').value=old;$('#ce').value=old}else if(choice==='split-centers'){let first=stockFor(m.code,a.center).sort((x,y)=>y.libre-x.libre),second=stockFor(m.code,a.other).sort((x,y)=>y.libre-x.libre),left=a.requested,alloc=[];for(let x of [...first,...second]){if(left<=0)break;let take=Math.min(left,x.libre);alloc.push({...x,qty:take});left-=take}m.allocations=alloc}else if(choice==='partial-pending'){m.qty=String(a.current);m.allocations=allocateStock(m.code,a.current).rows;addPending(m,a,a.currentMissing,'Stock parcial; falta coordinar')}else if(choice==='pending-all'){addPending(m,a,a.requested,'Sin stock suficiente');cart.splice(index,1)}else if(choice==='remove-item'){cart.splice(index,1)}$('#stockDecision').close();currentDecision=null;renderCart();renderPending()});$('#pendingList')?.addEventListener('click',e=>{let del=e.target.closest('[data-delete-pending]');if(del){pendingItems.splice(+del.dataset.deletePending,1);savePending()}let rev=e.target.closest('[data-review-pending]');if(rev){let x=pendingItems[+rev.dataset.reviewPending],m=state.materials.find(y=>y.code===x.code);if(m&&!cart.some(y=>y.code===m.code)){cart.push({...clone(m),qty:String(x.pendingQty)});renderCart();let idx=cart.length-1;openStockDecision(idx)}}});},0);
+setTimeout(()=>{let cfg=syncConfig();if($('#scriptUrl')){$('#scriptUrl').value=cfg.url||'';$('#scriptToken').value=cfg.token||''}renderSyncState();renderPending();$('#saveScriptConfig')?.addEventListener('click',saveSyncConfig);$('#syncNow')?.addEventListener('click',syncToDrive);$('#restoreDrive')?.addEventListener('click',restoreFromDrive);$('#closeDecision')?.addEventListener('click',()=>$('#stockDecision').close());$('#decisionOptions')?.addEventListener('click',e=>{let b=e.target.closest('[data-decision]');if(!b||!currentDecision)return;let {index,m,a}=currentDecision,choice=b.dataset.decision;if(choice==='switch-all'){let old=$('#centroGlobal').value;$('#centroGlobal').value=a.other;$('#ce').value=a.other;m.allocations=allocateStock(m.code,m.qty).rows;$('#centroGlobal').value=old;$('#ce').value=old}else if(choice==='split-centers'){let first=stockFor(m.code,a.center).sort((x,y)=>y.libre-x.libre),second=stockFor(m.code,a.other).sort((x,y)=>y.libre-x.libre),left=a.requested,alloc=[];for(let x of [...first,...second]){if(left<=0)break;let take=Math.min(left,x.libre);alloc.push({...x,qty:take});left-=take}m.allocations=alloc}else if(choice==='partial-pending'){m.qty=String(a.current);m.allocations=allocateStock(m.code,a.current).rows;addPending(m,a,a.currentMissing,'Stock parcial; falta coordinar')}else if(choice==='pending-all'){addPending(m,a,a.requested,'Sin stock suficiente');cart.splice(index,1)}else if(choice==='remove-item'){cart.splice(index,1)}$('#stockDecision').close();currentDecision=null;renderCart();renderPending()});$('#pendingList')?.addEventListener('click',e=>{let del=e.target.closest('[data-delete-pending]');if(del){pendingItems.splice(+del.dataset.deletePending,1);savePending()}let rev=e.target.closest('[data-review-pending]');if(rev){let x=pendingItems[+rev.dataset.reviewPending],m=state.materials.find(y=>y.code===x.code);if(m&&!cart.some(y=>y.code===m.code)){cart.push({...clone(m),qty:String(x.pendingQty)});renderCart();let idx=cart.length-1;openStockDecision(idx)}}});
+  cfg=syncConfig();
+  if(navigator.onLine&&cfg.url&&cfg.token){
+    if(cfg.pending)syncToDrive().then(()=>restoreFromDrive({silent:true}));
+    else restoreFromDrive({silent:true});
+  }
+},0);
+let lastDriveRefresh=0;
+async function refreshDriveWhenReturning(){const cfg=syncConfig();if(!navigator.onLine||!cfg.url||!cfg.token||cfg.pending||Date.now()-lastDriveRefresh<60000)return;lastDriveRefresh=Date.now();await restoreFromDrive({silent:true})}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refreshDriveWhenReturning()});
+window.addEventListener('focus',refreshDriveWhenReturning);
 
 try{init();updateMobileOrderSummary()}catch(err){console.error('Core init error',err);setTimeout(()=>msg('Error al iniciar la web: '+err.message,true),0)}
 </script>
@@ -862,7 +883,8 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
   const normv=v=>String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim();
   function totalStock(code,center){try{return (stockFor(String(code),String(center))||[]).reduce((a,x)=>a+(Number(x.libre)||0),0)}catch{return 0}}
   function currentMaterials(){
-    const q=normv($v('#q')?.value||''),already=new Set((cart||[]).map(x=>String(x.code)));
+    const q=normv($v('#q')?.value||''),primary=String($v('#centroGlobal')?.value||'1003');
+    const already=new Set((cart||[]).filter(x=>String(x.centerMode||primary)===primary||String(x.centerMode)==='both').map(x=>String(x.code)));
     let all=(state.materials||[]).filter(m=>!already.has(String(m.code)));
     if(!q)return all;
     const score=m=>{
@@ -880,7 +902,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
     const results=$v('#results');if(!results)return;
     const count=$v('#count');if(count)count.textContent=`${list.length} de ${(state.materials||[]).length}`;
     if(!list.length){results.innerHTML='<div class="empty">No se encontraron materiales o ya fueron agregados al pedido.</div>';return}
-    results.innerHTML=`<div class="v29-table-wrap"><table class="v29-stock-table v42-material-image-table"><thead><tr><th>Imagen</th><th>Matrícula SAP</th><th>Descripción oficial</th><th>Disponible 1003 San Juan</th><th>Disponible 1004 Vitarte</th><th>Unidad</th><th>Acción</th></tr></thead><tbody>${list.map(m=>{const s3=totalStock(m.code,'1003'),s4=totalStock(m.code,'1004'),sel=String(selectedCode)===String(m.code),aliases=(m.aliases||[]).length,img=m.image?`<img src="${escv(m.image)}" alt="Imagen de ${escv(m.code)}" loading="lazy">`:'<span>Sin imagen</span>';return `<tr class="${sel?'v36-selected-row':''}"><td class="v42-material-image">${img}</td><td class="v29-code">${escv(m.code)}</td><td><b>${escv(m.description)}</b><br><button class="v29-alias-link" data-quick-edit="${escv(m.code)}">Alias: ${aliases} · Ver/editar</button>${sel?'<div class="v36-select-note">Material seleccionado. Ingresa la cantidad y confirma para agregarlo al pedido.</div>':''}</td><td><span class="v29-stock-pill ${s3>0?'good':'none'}">${s3} ${escv(normalizedUnit(m))}</span></td><td><span class="v29-stock-pill ${s4>0?'good':'none'}">${s4} ${escv(normalizedUnit(m))}</span></td><td>${escv(normalizedUnit(m))}</td><td>${sel?`<div class="v36-select-box"><input type="number" min="0" step="0.01" placeholder="Cantidad" data-v36-qty="${escv(m.code)}" autofocus><button type="button" class="btn primary" data-v36-confirm="${escv(m.code)}">Agregar al pedido</button><button type="button" class="btn secondary" data-v36-cancel>Cancelar</button></div>`:`<button type="button" class="btn primary" data-v36-select="${escv(m.code)}">Seleccionar</button>`}</td></tr>`}).join('')}</tbody></table></div>`;
+    results.innerHTML=`<div class="v29-table-wrap"><table class="v29-stock-table v42-material-image-table"><thead><tr><th>Imagen</th><th>Matrícula SAP</th><th>Descripción oficial</th><th>Disponible 1003 San Juan</th><th>Disponible 1004 Vitarte</th><th>Unidad</th><th>Acción</th></tr></thead><tbody>${list.map(m=>{const s3=totalStock(m.code,'1003'),s4=totalStock(m.code,'1004'),sel=String(selectedCode)===String(m.code),aliases=(m.aliases||[]).length,img=m.image?`<img src="${escv(m.image)}" alt="Imagen de ${escv(m.code)}" loading="lazy">`:'<span>Sin imagen</span>';return `<tr class="${sel?'v36-selected-row':''}"><td class="v42-material-image">${img}</td><td class="v29-code">${escv(m.code)}</td><td><b>${escv(m.description)}</b><br><button class="v29-alias-link" data-quick-edit="${escv(m.code)}">Alias: ${aliases} · Ver/editar</button>${sel?'<div class="v36-select-note">Material seleccionado para el centro actual. Ingresa una cantidad que no supere su stock y confirma.</div>':''}</td><td><span class="v29-stock-pill ${s3>0?'good':'none'}">${s3} ${escv(normalizedUnit(m))}</span></td><td><span class="v29-stock-pill ${s4>0?'good':'none'}">${s4} ${escv(normalizedUnit(m))}</span></td><td>${escv(normalizedUnit(m))}</td><td>${sel?`<div class="v36-select-box"><input type="number" min="0" step="0.01" placeholder="Cantidad" data-v36-qty="${escv(m.code)}" max="${totalStock(m.code,String($v('#centroGlobal')?.value||'1003'))}" autofocus><button type="button" class="btn primary" data-v36-confirm="${escv(m.code)}">Agregar al pedido</button><button type="button" class="btn secondary" data-v36-cancel>Cancelar</button></div>`:`<button type="button" class="btn primary" data-v36-select="${escv(m.code)}">Seleccionar</button>`}</td></tr>`}).join('')}</tbody></table></div>`;
     if(selectedCode)setTimeout(()=>$v(`[data-v36-qty="${CSS.escape(String(selectedCode))}"]`)?.focus(),0);
   };
   function addConfirmed(code){
@@ -888,10 +910,11 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
     if(stockMeta.date!==todayKey())return msg('Primero actualiza el stock SAP del día.',true);
     const input=$v(`[data-v36-qty="${CSS.escape(String(code))}"]`),qty=Number(input?.value)||0;
     if(qty<=0)return msg('Ingresa una cantidad mayor a 0 antes de agregar el material.',true);
-    if((cart||[]).some(x=>String(x.code)===String(code)))return msg('El material ya fue agregado.',true);
-    const primary=String($v('#centroGlobal')?.value||'1003');
-    cart.push({...clone(m),qty:String(qty),centerChoices:[primary],centerMode:primary});
-    selectedCode='';renderCart();renderResults();msg(`Material ${code} agregado al pedido con cantidad ${qty}.`);
+    const primary=String($v('#centroGlobal')?.value||'1003'),available=totalStock(code,primary);
+    if(qty>available){if(input){input.classList.add('insufficient');input.focus()}return msg(`No puedes agregar ${qty} ${normalizedUnit(m)}. En ${primary==='1003'?'1003 - San Juan':'1004 - Vitarte'} solo hay ${available} disponibles. Corrige la cantidad.`,true)}
+    if((cart||[]).some(x=>String(x.code)===String(code)&&(String(x.centerMode||primary)===primary||String(x.centerMode)==='both')))return msg(`Este material ya fue agregado para el centro ${primary}. Puedes cambiar el Centro de trabajo y agregarlo también desde el otro centro.`,true);
+    cart.push({...clone(m),qty:String(qty),centerChoices:[primary],centerMode:primary,cartLineId:`${code}-${primary}-${Date.now()}`});
+    selectedCode='';renderCart();renderResults();msg(`Material ${code} agregado desde el centro ${primary} con cantidad ${qty}.`);
   }
   function lots(code,center){try{return (stockFor(String(code),String(center))||[]).slice().sort((a,b)=>(Number(b.libre)||0)-(Number(a.libre)||0))}catch{return []}}
   function modeFor(m){return m.centerMode==='1004'||m.centerMode==='both'?' '+m.centerMode:m.centerMode==='1003'?'1003':String($v('#centroGlobal')?.value||'1003')}
@@ -919,9 +942,10 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
     const sel=e.target.closest('[data-v36-select]');if(sel){e.preventDefault();e.stopImmediatePropagation();selectedCode=sel.dataset.v36Select;renderResults();return}
     const cancel=e.target.closest('[data-v36-cancel]');if(cancel){e.preventDefault();e.stopImmediatePropagation();selectedCode='';renderResults();return}
     const confirm=e.target.closest('[data-v36-confirm]');if(confirm){e.preventDefault();e.stopImmediatePropagation();addConfirmed(confirm.dataset.v36Confirm);return}
-    const mode=e.target.closest('[data-v36-mode]');if(mode){e.preventDefault();e.stopImmediatePropagation();const i=Number(mode.dataset.v36Index);if(cart[i]){cart[i].centerMode=mode.dataset.v36Mode;allocate36(cart[i]);renderCart();msg(`Origen actualizado para ${cart[i].code}: ${mode.dataset.v36Mode==='both'?'1003 y 1004':mode.dataset.v36Mode}.`)}return}
+    const mode=e.target.closest('[data-v36-mode]');if(mode){e.preventDefault();e.stopImmediatePropagation();const i=Number(mode.dataset.v36Index),newMode=mode.dataset.v36Mode;if(cart[i]){const same=(cart||[]).some((x,j)=>j!==i&&String(x.code)===String(cart[i].code));if(same&&newMode==='both')return msg('Este material ya está dividido en filas por centro. Para usar Ambos, primero quita la otra fila del mismo material.',true);if((newMode==='1003'||newMode==='1004')&&(cart||[]).some((x,j)=>j!==i&&String(x.code)===String(cart[i].code)&&(String(x.centerMode)===newMode||String(x.centerMode)==='both')))return msg(`Ya existe otra fila de este material usando el centro ${newMode}.`,true);cart[i].centerMode=newMode;allocate36(cart[i]);renderCart();renderResults();msg(`Origen actualizado para ${cart[i].code}: ${newMode==='both'?'1003 y 1004':newMode}.`)}return}
   },true);
   document.addEventListener('input',e=>{if(e.target.matches('#q')){selectedCode='';setTimeout(renderResults,0)}},true);
+  $v('#centroGlobal')?.addEventListener('change',()=>{selectedCode='';renderResults();renderCart()});
   setTimeout(()=>{selectedCode='';renderResults();renderCart()},250);
 })();
 </script>
@@ -1268,7 +1292,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
 </script>
 
 <style id="v42-2-focused-admin-colors">
-/* V42.4: Supervisores y Unidades muestran exclusivamente su contenido. */
+/* V42.5: Supervisores y Unidades muestran exclusivamente su contenido. */
 #dlg.single-admin #appNote,#dlg.single-admin #configTabs,#dlg.single-admin #p-mat,#dlg.single-admin #p-github{display:none!important}
 #dlg.single-admin[data-single-page="sup"] #p-units{display:none!important}
 #dlg.single-admin[data-single-page="units"] #p-sup{display:none!important}
@@ -1324,7 +1348,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
 })();
 </script>
 <style id="v42-4-unified-dark-and-images">
-/* V42.4: cambios visuales aprobados; la lógica permanece intacta. */
+/* V42.5: cambios visuales aprobados; la lógica permanece intacta. */
 .v42-material-image{width:86px;min-width:86px;text-align:center}
 .v42-material-image img{display:block;width:72px;height:58px;object-fit:contain;margin:auto;border:1px solid var(--line);border-radius:9px;background:#fff}
 .v42-material-image span{display:flex;width:72px;height:58px;margin:auto;align-items:center;justify-content:center;border:1px dashed #aabbd0;border-radius:9px;color:var(--muted);font-size:11px;background:#f8fafc}

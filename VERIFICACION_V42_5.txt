@@ -1,0 +1,1 @@
+V42.5: recuperación Drive corregida sin renderAll; carga automática del stock central al abrir/volver; validación de cantidad contra stock antes de agregar; mismo material permitido en 1003 y 1004 como filas independientes.

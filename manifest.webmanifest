@@ -1,6 +1,6 @@
 {
-  "name": "Buscador de Materiales SAP V42.4",
-  "short_name": "Materiales SAP",
+  "name": "Buscador de Materiales SAP V42.5",
+  "short_name": "Materiales V42.5",
   "description": "Busca materiales por matrícula, descripción o alias y prepara pedidos para SAP.",
   "start_url": "./index.html",
   "scope": "./",
@@ -10,8 +10,23 @@
   "theme_color": "#0d1d3b",
   "lang": "es-PE",
   "icons": [
-    {"src":"icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
-    {"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"},
-    {"src":"icon-maskable-512.png","sizes":"512x512","type":"image/png","purpose":"maskable"}
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }
