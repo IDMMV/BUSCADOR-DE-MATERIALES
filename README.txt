@@ -23,7 +23,7 @@ NOVEDADES V30
 - Se añadió Exportar control pedido, con las columnas Reserva, Almacén, Encargado, OM, Fecha, Unidad, Conductor, ALIM, Distrito y Status.
 - Incluye PLANTILLA_CONTROL_PEDIDOS.xlsx como referencia editable.
 
-V34:
+V35:
 - Campo OM en los datos del pedido.
 - Se retiraron los micrófonos de las cantidades.
 - Al finalizar, descuenta el stock de cada centro/almacén/lote.
@@ -32,7 +32,7 @@ V34:
 - Actualiza Code.gs para crear la pestaña Historial en Google Sheets.
 
 
-NOVEDADES V34:
+NOVEDADES V35:
 - Base fija de 412 emplazamientos/circuitos incorporada desde circuitos y alimentadores.xlsx.
 - Al seleccionar un emplazamiento (ej. M-A-15), ALIM se completa como A-15 y el distrito se completa automáticamente.
 - Si un emplazamiento abarca varios distritos, la web permite elegir el distrito correcto.
