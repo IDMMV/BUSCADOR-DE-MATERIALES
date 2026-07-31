@@ -103,9 +103,18 @@ html,body{max-width:100%;overflow-x:hidden}body{font-size:14px}.topbar{padding:1
 }
 @media(min-width:761px){.sidebar-backdrop{display:none!important}}
 </style>
+
+<style id="v41-history-control-style">
+#historyNewCount{margin-left:auto;background:#ffcf33;color:#17233a;min-width:24px;height:24px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;padding:0 7px}
+#historyNewCount.hidden{display:none!important}
+.v41-edit-input{width:100%;min-width:110px;border:1px solid #a9bdd4;border-radius:7px;padding:7px 8px;background:#fff;color:#17233a;font:inherit}
+.v41-edit-input:focus{outline:2px solid #67a3dd;border-color:#397cb7}
+.v41-control-note{margin:0 0 10px;padding:10px 12px;border-radius:9px;background:#eef6ff;color:#284c70}
+@media(max-width:760px){#historyNewCount{min-width:22px;height:22px}.v41-edit-input{min-width:130px}.v39-table table{min-width:1350px!important}}
+</style>
 </head>
 <body>
-<header class="top"><div class="brand"><img alt="Ícono Buscador de Materiales" class="app-logo" src="icon-192.png"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V40.1</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn secondary" id="config">⚙ Configuración</button></div></header>
+<header class="top"><div class="brand"><img alt="Ícono Buscador de Materiales" class="app-logo" src="icon-192.png"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V41</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn secondary" id="config">⚙ Configuración</button></div></header>
 <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 <div class="app-shell">
 <aside class="sidebar" id="sidebar">
@@ -116,9 +125,8 @@ html,body{max-width:100%;overflow-x:hidden}body{font-size:14px}.topbar{padding:1
 <button class="side-btn" data-config-page="mat">🏷 Alias y matrículas</button>
 <button class="side-btn" data-config-page="sup">👷 Supervisores</button>
 <button class="side-btn" data-config-page="units">🚚 Unidades móviles</button>
-<button class="side-btn" data-view="pendingView">⏳ Pendientes por coordinar</button>
 <button class="side-btn" data-view="stockView">📦 Stock SAP</button>
-<button class="side-btn" data-view="historyView">🕘 Historial</button>
+<button class="side-btn" data-view="historyView">🕘 Historial <span class="side-count hidden" id="historyNewCount">0</span></button>
 <button class="side-btn" data-config-page="github">☁ Google Drive</button>
 <button class="side-btn" id="sideConfig">⚙ Configuración</button>
 </nav>
@@ -133,7 +141,6 @@ html,body{max-width:100%;overflow-x:hidden}body{font-size:14px}.topbar{padding:1
 <div class="stock-help">Columnas reconocidas: Material, Texto breve de material, Centro, Almacén, Lote, Libre utilización y Unidad medida base. ALIM, CE y LOTE se completan automáticamente al copiar o exportar.</div>
 </section><section class="panel"><div class="head"><h2>1. Buscar materiales</h2><div class="head-actions"><button class="btn primary" id="newMaterialTop">＋ Agregar material</button><span class="badge" id="count"></span></div></div><div class="search"><input id="q" placeholder="Buscar por matrícula, descripción o alias..."/><button aria-label="Buscar por voz" class="mic" id="voiceSearch" title="Buscar por voz">🎤</button><button aria-label="Limpiar búsqueda" id="clear" title="Limpiar búsqueda">×</button></div><div class="results" id="results"></div></section></section>
 <section class="view" id="orderView"><main class="layout"><section class="panel" id="orderPanel"><div class="head"><h2>2. Pedido seleccionado</h2><span class="badge" id="cartCount">0 materiales</span></div><div class="fields"><label class="field">Supervisor<select id="dest"></select></label><label class="field">Fecha<input id="fechaPedido" type="date"/></label><label class="field">Puesto de descarga (movimiento)<select id="puesto"><option value="PEDIDO">PEDIDO</option><option value="RECUPERO">RECUPERO</option><option value="DEVOLUCION">DEVOLUCIÓN</option></select></label><label class="field">Unidad móvil<select id="movil"></select></label></div><select class="hidden" id="ce"><option value="1003">1003 - San Juan</option><option value="1004">1004 - Vitarte</option></select><div class="auto-fields-note">El Centro se toma del selector superior. ALIM, CE y LOTE se completan automáticamente desde el Excel diario de stock SAP.</div><p class="small">La cantidad inicia en 0 (amarillo). Al colocar un valor mayor a 0 cambia a verde. Puedes dictar cantidades con el micrófono.</p><div class="tablewrap"><table><thead><tr><th>Matrícula</th><th>Descripción</th><th>Cant.</th><th>Unidad</th><th></th></tr></thead><tbody id="cart"></tbody></table><div class="empty" id="empty">Agrega materiales desde el buscador.</div></div><div class="sap-preview-wrap"><div class="sap-preview-title"><div><h3>Vista previa exacta para SAP / Excel</h3><p class="small">Muestra almacén, centro y lote de donde se obtiene cada cantidad.</p></div><span class="badge" id="previewRowsCount">0 filas</span></div><div class="sap-preview"><table><thead><tr><th>MATRÍCULA</th><th>DESCRIPCIÓN</th><th>C1</th><th>CANT</th><th>UNIDAD</th><th>TP</th><th>C2</th><th>C3</th><th>ALIM</th><th>CE</th><th>OPERACIÓN</th><th>LOTE</th><th>TIPO DE APROVISIONAMIENTO</th><th>POS</th><th>DESTINATARIO</th><th>PUESTO DE DESCARGA</th><th>UBICACIÓN FINAL</th></tr></thead><tbody id="sapPreviewBody"></tbody></table><div class="preview-empty" id="sapPreviewEmpty">Agrega materiales y completa sus cantidades para generar la vista previa.</div></div></div><div class="actions"><button class="btn secondary" id="copy">Copiar para SAP</button><button class="btn secondary" id="csv">Exportar CSV</button><button class="btn primary" id="excel">Exportar Excel</button><button class="btn danger" id="clean">Limpiar</button></div><div class="pending-panel hidden" id="pendingPanel"><div class="head"><h3>⏳ Pendientes por coordinar</h3><span class="badge" id="pendingCount">0</span></div><div id="pendingList"></div></div><p class="status" id="status"></p></section></main></section>
-<section class="view" id="pendingView"><div class="module-placeholder"><h2>⏳ Pendientes por coordinar</h2><p>Los materiales sin stock suficiente aparecerán aquí para revisarlos, cambiar de centro o solicitarlos después.</p><div id="pendingStandalone"></div></div></section>
 <section class="view" id="stockView"><section class="stock-toolbar">
 <label>Centro de trabajo<select id="centroGlobal2"><option value="1003">1003 - San Juan</option><option value="1004">1004 - Vitarte</option></select></label>
 <div class="stock-file-wrap"><label>Excel diario de stock SAP<input accept=".xlsx,.xls,.csv" id="stockFile2" type="file"/></label></div>
@@ -605,7 +612,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
   function finaliseOrder(){
     if(!valid())return;const allocs=allocationRows31();if(!allocs.length)return msg('No se generaron filas de stock para finalizar.',true);
     if(!confirm('¿Finalizar el pedido? El stock será descontado y se guardará en el historial.'))return;
-    try{const records=groupHistory(allocs);deductStock(allocs);ensureHistory().push(...records);save();renderHistory();renderStockStatus();cart=[];renderCart();renderResults();if(typeof renderSearchOrder==='function')renderSearchOrder();if(typeof queueSync==='function')queueSync('order');if(navigator.onLine&&typeof syncToDrive==='function'&&syncConfig().url)syncToDrive();msg(`Pedido finalizado. Se descontó el stock y se crearon ${records.length} registro${records.length===1?'':'s'} en el historial.`)}catch(e){msg('No se pudo finalizar el pedido: '+e.message,true)}
+    try{const records=groupHistory(allocs);const addedDetails=records.reduce((n,r)=>n+(Array.isArray(r.items)?r.items.length:0),0);deductStock(allocs);ensureHistory().push(...records);state.historyUnread=(Number(state.historyUnread)||0)+addedDetails;save();if(typeof window.updateHistoryBadgeV41==='function')window.updateHistoryBadgeV41();renderHistory();renderStockStatus();cart=[];renderCart();renderResults();if(typeof renderSearchOrder==='function')renderSearchOrder();if(typeof queueSync==='function')queueSync('order');if(navigator.onLine&&typeof syncToDrive==='function'&&syncConfig().url)syncToDrive();msg(`Pedido finalizado. Se descontó el stock y se agregaron ${addedDetails} registro${addedDetails===1?'':'s'} de material al historial.`)}catch(e){msg('No se pudo finalizar el pedido: '+e.message,true)}
   }
   function replaceButtons(){
     const old=$31('#v26SaveOrder');if(old){const n=old.cloneNode(true);old.replaceWith(n);n.id='v31FinalizeOrder';n.className='btn v31-finalize';n.textContent='💾 Finalizar pedido y descontar stock';n.addEventListener('click',finaliseOrder)}
@@ -862,13 +869,16 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
   }
 
   function controlRows37(){
-    return (state.orderHistory||[]).slice().sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt))).map(o=>({
-      pedido:o.id||'',om:o.om||'',fecha:o.fecha||'',supervisor:o.supervisor||'',
-      centro:String(o.centro||''),unidadRecojo:o.unidadRecojo||'',
-      alimentador:o.alimentador||'',distrito:o.distrito||'',
-      movimiento:o.movimiento||'',total:Number(o.total||0),
-      createdAt:o.createdAt||''
-    }));
+    state.controlEdits=state.controlEdits&&typeof state.controlEdits==='object'?state.controlEdits:{};
+    return (state.orderHistory||[]).slice().sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt))).map(o=>{
+      const key=String(o.id||''); const edit=state.controlEdits[key]||{};
+      return {
+        key,pedido:o.id||'',reserva:edit.reserva||'',almacen:String(o.centro||''),
+        encargado:o.supervisor||'',om:o.om||'',fecha:o.fecha||'',unidadRecojo:o.unidadRecojo||'',
+        conductor:edit.conductor||'',alimentador:o.alimentador||'',distrito:o.distrito||'',
+        status:o.movimiento||'',unidadRecupero:'',total:Number(o.total||0),createdAt:o.createdAt||''
+      };
+    });
   }
 
   function exportDetail37(){
@@ -891,14 +901,16 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
   function exportControl37(){
     if(!window.XLSX)return msg('No se cargó el generador de Excel.',true);
     const data=controlRows37().map(r=>({
-      'RESERVA':'','ALMACEN':r.centro,'ENCARGADO':r.supervisor,'OM':r.om,
-      'FECHA PEDIDO':r.fecha,'UNIDAD (RECOJO)':r.unidadRecojo,'CONDUCTOR':'',
-      'ALIM.':r.alimentador,'DISTRITO':r.distrito,'STATUS':r.movimiento,
-      'UNIDAD (RECUPERO)':''
+      'RESERVA':r.reserva,'ALMACEN':r.almacen,'ENCARGADO':r.encargado,'OM':r.om,
+      'FECHA PEDIDO':r.fecha,'UNIDAD (RECOJO)':r.unidadRecojo,'CONDUCTOR':r.conductor,
+      'ALIM.':r.alimentador,'DISTRITO':r.distrito,'STATUS':r.status,
+      'UNIDAD (RECUPERO)':r.unidadRecupero
     }));
     if(!data.length)return msg('Todavía no hay solicitudes registradas.',true);
-    const ws=XLSX.utils.json_to_sheet(data);
+    const headers=['RESERVA','ALMACEN','ENCARGADO','OM','FECHA PEDIDO','UNIDAD (RECOJO)','CONDUCTOR','ALIM.','DISTRITO','STATUS','UNIDAD (RECUPERO)'];
+    const ws=XLSX.utils.json_to_sheet(data,{header:headers});
     ws['!cols']=[12,11,20,15,14,18,18,14,20,14,19].map(wch=>({wch}));
+    ws['!autofilter']={ref:`A1:K${data.length+1}`};
     const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'CONTROL PEDIDOS');
     XLSX.writeFile(wb,`Control_Solicitudes_${new Date().toISOString().slice(0,10)}.xlsx`);
   }
@@ -917,10 +929,11 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
       <td>${esc(r.alimentador)}</td><td>${esc(r.distrito)}</td><td>${esc(r.movimiento)}</td>
     </tr>`).join('');
     const controlHtml=controls.map(r=>`<tr>
-      <td>${esc(r.pedido)}</td><td><b>${esc(r.om)}</b></td><td>${esc(r.fecha)}</td>
-      <td>${esc(r.supervisor)}</td><td>${esc(r.centro==='1003'?'1003 - San Juan':r.centro==='1004'?'1004 - Vitarte':r.centro)}</td>
-      <td>${esc(r.unidadRecojo)}</td><td>${esc(r.alimentador)}</td><td>${esc(r.distrito)}</td>
-      <td>${esc(r.movimiento)}</td><td>${esc(r.total)}</td>
+      <td><input class="v41-edit-input" data-control-key="${esc(r.key)}" data-control-field="reserva" value="${esc(r.reserva)}" placeholder="Reserva"></td>
+      <td>${esc(r.almacen)}</td><td>${esc(r.encargado)}</td><td><b>${esc(r.om)}</b></td><td>${esc(r.fecha)}</td>
+      <td>${esc(r.unidadRecojo)}</td>
+      <td><input class="v41-edit-input" data-control-key="${esc(r.key)}" data-control-field="conductor" value="${esc(r.conductor)}" placeholder="Conductor"></td>
+      <td>${esc(r.alimentador)}</td><td>${esc(r.distrito)}</td><td>${esc(r.status)}</td><td>${esc(r.unidadRecupero)}</td>
     </tr>`).join('');
     view.innerHTML=`<div class="v39-history">
       <div class="v39-history-head"><div><h2>🕘 Historial y control de solicitudes</h2>
@@ -932,20 +945,33 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
       <div>Cantidad retirada<b>${totalQty}</b></div><div>Supervisores<b>${supervisors}</b></div></div>
       <div class="v39-history-tabs"><button data-v39-tab="detail" class="${historyMode37==='detail'?'active':''}">Retiro de materiales por OM</button>
       <button data-v39-tab="control" class="${historyMode37==='control'?'active':''}">Control de solicitudes</button></div>
-      <div class="v39-table"><table><thead>${historyMode37==='detail'
+      ${historyMode37==='control'?'<p class="v41-control-note">Completa directamente <b>RESERVA</b> y <b>CONDUCTOR</b>. Los cambios quedan guardados y se incluyen al exportar el Excel.</p>':''}<div class="v39-table"><table><thead>${historyMode37==='detail'
         ?'<tr><th>OM</th><th>Fecha</th><th>Matrícula</th><th>Descripción</th><th>Cantidad</th><th>Unidad</th><th>Retirado por</th><th>Centro</th><th>Almacén</th><th>Lote</th><th>Unidad de recojo</th><th>Alimentador</th><th>Distrito / destino</th><th>Movimiento</th></tr>'
-        :'<tr><th>Pedido</th><th>OM</th><th>Fecha</th><th>Supervisor</th><th>Centro</th><th>Unidad de recojo</th><th>Alimentador</th><th>Distrito</th><th>Movimiento</th><th>Cantidad total</th></tr>'}
+        :'<tr><th>RESERVA</th><th>ALMACEN</th><th>ENCARGADO</th><th>OM</th><th>FECHA PEDIDO</th><th>UNIDAD (RECOJO)</th><th>CONDUCTOR</th><th>ALIM.</th><th>DISTRITO</th><th>STATUS</th><th>UNIDAD (RECUPERO)</th></tr>'}
       </thead><tbody>${historyMode37==='detail'?detailHtml:controlHtml}</tbody></table>
       ${((historyMode37==='detail'&&!details.length)||(historyMode37==='control'&&!controls.length))?'<div class="v39-empty">Todavía no hay pedidos finalizados.</div>':''}</div></div>`;
     $('#v39ExportDetail')?.addEventListener('click',exportDetail37);
     $('#v39ExportControl')?.addEventListener('click',exportControl37);
+    view.querySelectorAll('[data-control-key]').forEach(input=>input.addEventListener('input',()=>{
+      state.controlEdits=state.controlEdits&&typeof state.controlEdits==='object'?state.controlEdits:{};
+      const key=input.dataset.controlKey,field=input.dataset.controlField;
+      state.controlEdits[key]=state.controlEdits[key]||{};state.controlEdits[key][field]=input.value;save();
+      if(typeof queueSync==='function')queueSync('control');
+    }));
     view.querySelectorAll('[data-v39-tab]').forEach(b=>b.addEventListener('click',()=>{historyMode37=b.dataset.v39Tab;renderHistory37()}));
   }
 
+  function updateHistoryBadgeV41(){
+    const badge=document.getElementById('historyNewCount');if(!badge)return;
+    const count=Math.max(0,Number(state.historyUnread)||0);badge.textContent=String(count);badge.classList.toggle('hidden',count===0);
+  }
+  window.updateHistoryBadgeV41=updateHistoryBadgeV41;
   function init37(){
-    ensurePreloadedStock37();
-    document.querySelector('[data-view="historyView"]')?.addEventListener('click',()=>setTimeout(renderHistory37,80));
-    setTimeout(()=>{ensurePreloadedStock37();renderHistory37();},500);
+    ensurePreloadedStock37();updateHistoryBadgeV41();
+    document.querySelector('[data-view="historyView"]')?.addEventListener('click',()=>{
+      state.historyUnread=0;save();updateHistoryBadgeV41();setTimeout(renderHistory37,80);
+    });
+    setTimeout(()=>{ensurePreloadedStock37();renderHistory37();updateHistoryBadgeV41();},500);
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init37);else init37();
 })();

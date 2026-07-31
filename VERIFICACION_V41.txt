@@ -1,0 +1,8 @@
+VERSIÓN 41 - CAMBIOS VERIFICADOS
+
+- Se eliminó la pestaña Pendientes por coordinar de la barra lateral.
+- Historial muestra una burbuja con los registros nuevos de material; se limpia al abrir Historial.
+- Control de solicitudes usa las columnas exactas del modelo Excel.
+- RESERVA y CONDUCTOR son editables en la tabla y se conservan para exportación.
+- La exportación de Control de solicitudes incluye los valores editados.
+- Caché PWA actualizada a V41.
