@@ -1,0 +1,12 @@
+VERIFICACIÓN V40.1
+
+Correcciones realizadas:
+- Se corrigieron dos errores de sintaxis JavaScript que detenían toda la aplicación.
+- Se corrigió una referencia incorrecta en el historial.
+- Se conservaron únicamente los ajustes de presentación móvil de V40.
+- Se actualizó la caché PWA a buscador-materiales-v40-1.
+
+Pruebas realizadas:
+- Sintaxis validada con node --check en todos los scripts internos.
+- Sintaxis validada en data.js, preloaded-stock.js y sw.js.
+- Confirmada la presencia de la base de materiales y del stock precargado.
