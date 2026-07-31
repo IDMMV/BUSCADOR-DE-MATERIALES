@@ -1,0 +1,8 @@
+VERIFICACIÓN V39
+- Sintaxis validada con Node.js para todos los scripts internos.
+- Sin identificadores HTML duplicados.
+- Flujo de finalización revisado: no genera ni descarga Excel automáticamente.
+- Exportación detallada disponible solo en Historial > Retiro de materiales por OM.
+- Exportación de control disponible solo en Historial > Control de solicitudes.
+- Diseño móvil reorganizado: menú lateral deslizable, campos a una columna, tarjetas, botones táctiles y tablas con desplazamiento horizontal.
+- Base de 153 materiales y stock precargado conservados desde V37.
