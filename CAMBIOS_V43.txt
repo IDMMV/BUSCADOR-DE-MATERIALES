@@ -1,0 +1,6 @@
+BUSCADOR DE MATERIALES SAP V43
+
+- El botón Respaldo para Drive de la pantalla principal fue reemplazado por Actualizar stock desde Drive.
+- El botón recupera el stock compartido más reciente sin abrir la ventana de Google Drive.
+- No es necesario volver a publicar Apps Script ni GitHub cada vez que se actualiza el Excel diario.
+- Apps Script/GitHub solo se actualizan cuando cambia el código de la aplicación.

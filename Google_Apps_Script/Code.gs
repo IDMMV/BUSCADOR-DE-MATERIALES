@@ -45,7 +45,8 @@ function doPost(e) {
         savedAt:new Date().toISOString(),
         stockRows:verified.stockRows.length,
         stockDate:verified.stockMeta.date || '',
-        stockFile:verified.stockMeta.file || ''
+        stockFile:verified.stockMeta.file || '',
+        stockRevision:verified.stockMeta.revision || ''
       });
     }
     throw new Error('Acción no reconocida');
@@ -121,12 +122,13 @@ function readStockFromSheets_() {
     });
   }
   if (metaSheet && metaSheet.getLastRow()>1) {
-    const r=metaSheet.getRange(2,1,1,4).getValues()[0];
+    const r=metaSheet.getRange(2,1,1,5).getValues()[0];
     stockMeta={
       date:normalizeDate_(r[0]),
       file:String(r[1]||''),
       loadedAt:normalizeDateTime_(r[2]),
       records:Number(r[3])||stockRows.length,
+      revision:String(r[4]||''),
       source:'GOOGLE_DRIVE'
     };
   }
@@ -160,7 +162,7 @@ function writeSheets_(data) {
   const initials=(data.app&&data.app.supervisorInitials)||{};
   writeTable_(ss,'Supervisores',['NOMBRE','INICIALES'],(data.app&&data.app.supervisors||[]).map(x=>[x,initials[x]||'']));
   writeTable_(ss,'Unidades',['UNIDAD'],(data.app&&data.app.units||[]).map(x=>[x]));
-  writeTable_(ss,'StockMeta',['FECHA_STOCK','ARCHIVO','CARGADO_EN','REGISTROS'],[[data.stockMeta&&data.stockMeta.date||'',data.stockMeta&&data.stockMeta.file||'',data.stockMeta&&data.stockMeta.loadedAt||'',(data.stockRows||[]).length]]);
+  writeTable_(ss,'StockMeta',['FECHA_STOCK','ARCHIVO','CARGADO_EN','REGISTROS','REVISION'],[[data.stockMeta&&data.stockMeta.date||'',data.stockMeta&&data.stockMeta.file||'',data.stockMeta&&data.stockMeta.loadedAt||'',(data.stockRows||[]).length,data.stockMeta&&data.stockMeta.revision||'']]);
   writeTable_(ss,'Stock',['MATERIAL','CENTRO','ALMACEN','LOTE','LIBRE','UNIDAD','TEXTO'],(data.stockRows||[]).map(x=>[x.material,x.centro,x.almacen,x.lote,x.libre,x.unidad,x.texto]));
   const history=(data.app&&data.app.orderHistory||[]);
   const detailRows=[];

@@ -1,0 +1,6 @@
+V42.9
+- La sincronización del stock se verifica por cantidad, fecha, archivo y REVISION única.
+- Si Drive sigue devolviendo el archivo anterior, la web muestra un error explícito y no anuncia éxito.
+- StockMeta usa las columnas FECHA_STOCK, ARCHIVO, CARGADO_EN, REGISTROS y REVISION.
+- Es obligatorio actualizar Code.gs y publicar una nueva versión de Apps Script.
+- JavaScript validado con node --check.
