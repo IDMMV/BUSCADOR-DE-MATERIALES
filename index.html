@@ -303,7 +303,7 @@ body:not(.v439-admin-mode) .app-content{grid-column:1/-1!important;width:100%!im
 </style>
 </head>
 <body><script id="v442EarlyAdminShell">try{if(sessionStorage.getItem('bm_admin_session_v1')==='1')document.body.classList.add('v439-admin-mode')}catch(e){}</script>
-<header class="top"><div class="brand"><img alt="Ícono Buscador de Materiales" class="app-logo" src="icon-192.png"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V44.6</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn admin-access-btn" id="adminAccessBtn" type="button">🔐 Administrador</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
+<header class="top"><div class="brand"><img alt="Ícono Buscador de Materiales" class="app-logo" src="icon-192.png"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V44.7</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn admin-access-btn" id="adminAccessBtn" type="button">🔐 Administrador</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
 <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 <div class="app-shell">
 <aside class="sidebar" id="sidebar">
@@ -1879,130 +1879,37 @@ html[data-theme="dark"] #v439SearchOrderCount{background:#173a60;color:#d9ecff}
 })();
 </script>
 
-<style id="v444OrderAttentionAndCancelStyles">
-@keyframes v444OrderPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(245,158,11,.55)}50%{transform:scale(1.025);box-shadow:0 0 0 8px rgba(245,158,11,0)}}
-#v439GoToOrder.v444-has-items{background:#f59e0b!important;color:#fff!important;border-color:#d97706!important;animation:v444OrderPulse 1.15s ease-in-out infinite;font-weight:900!important}
-#v444CancelOrder{background:#fee2e2!important;color:#b91c1c!important;border:1px solid #fca5a5!important}
-#v444CancelOrder:disabled{opacity:.45!important;cursor:not-allowed!important;animation:none!important}
-html[data-theme="dark"] #v439GoToOrder.v444-has-items{background:#f59e0b!important;color:#101828!important;border-color:#fbbf24!important}
-html[data-theme="dark"] #v444CancelOrder{background:#4a2027!important;color:#fecaca!important;border-color:#7f1d1d!important}
-@media(max-width:820px){#v444CancelOrder{grid-column:1/-1!important;width:100%!important}}
+<style id="v447-order-flow-styles">
+@keyframes v447OrderPulse{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,.55)}50%{box-shadow:0 0 0 8px rgba(245,158,11,0)}}
+#v439GoToOrder.v447-has-items{background:#f59e0b!important;color:#fff!important;border-color:#d97706!important;animation:v447OrderPulse 1.15s ease-in-out infinite;font-weight:900!important}
+#orderPanel:not(.v447-recorded) .sap-preview-wrap,#orderPanel:not(.v447-recorded)>.actions{display:none!important}
+#orderPanel.v447-recorded .sap-preview-wrap{display:block!important}
+#orderPanel.v447-recorded>.actions{display:flex!important}
+#v31FinalizeOrder{background:#169447!important;color:#fff!important;border-color:#117a3a!important}
+#v447CancelOrder{background:#fee2e2!important;color:#b91c1c!important;border:1px solid #fca5a5!important}
+#v447CancelOrder:disabled{opacity:.45!important;cursor:not-allowed!important}
+.v447-order-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0}
+html[data-theme="dark"] #v447CancelOrder{background:#4a2027!important;color:#fecaca!important;border-color:#7f1d1d!important}
+@media(max-width:820px){.v447-order-actions{display:grid;grid-template-columns:1fr 1fr}.v447-order-actions .btn{width:100%}}
 </style>
-<script id="v444SearchGuardOrderAttentionAndCancel">
+<script id="v447-order-flow-script">
 (function(){
  'use strict';
- const BAD=/^(?:https?:\/\/|www\.)|script\.google\.com\/macros\//i;
- const q=()=>document.getElementById('q');
- function cleanSearch(force){
-   const el=q(); if(!el)return;
-   el.type='search';
-   el.name='material_catalog_search_v444';
-   el.autocomplete='off';
-   el.setAttribute('autocorrect','off');
-   el.setAttribute('autocapitalize','off');
-   el.setAttribute('spellcheck','false');
-   el.setAttribute('data-lpignore','true');
-   el.setAttribute('data-1p-ignore','true');
-   el.setAttribute('data-form-type','other');
-   const value=(el.value||'').trim();
-   if(BAD.test(value)){
-     el.value='';
-     if(force!==false){el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}))}
-   }
- }
- function cartCount(){try{return Array.isArray(cart)?cart.length:0}catch(_){return 0}}
- function updateButtons(){
-   const n=cartCount(),go=document.getElementById('v439GoToOrder'),badge=document.getElementById('v439SearchOrderCount'),cancel=document.getElementById('v444CancelOrder');
-   if(go){go.classList.toggle('v444-has-items',n>0);go.setAttribute('aria-live','polite');go.textContent=n?`📋 Ir a pedido seleccionado (${n})`:'📋 Ir a pedido seleccionado'}
-   if(badge)badge.textContent=String(n);
-   if(cancel){cancel.disabled=n===0;cancel.title=n?'Eliminar todos los materiales del pedido actual':'No hay materiales para cancelar'}
- }
- function ensureCancelButton(){
-   const actions=document.querySelector('#searchView>.panel>.head>.head-actions');
-   if(!actions||document.getElementById('v444CancelOrder'))return;
-   const b=document.createElement('button');b.id='v444CancelOrder';b.type='button';b.className='btn danger';b.textContent='✕ Cancelar pedido';
-   const add=document.getElementById('newMaterialTop');actions.insertBefore(b,add||null);
-   b.addEventListener('click',()=>{
-     const n=cartCount();if(!n)return;
-     if(!confirm(`¿Cancelar el pedido actual y quitar ${n} material${n===1?'':'es'}?`))return;
-     try{cart=[]}catch(_){while(Array.isArray(window.cart)&&window.cart.length)window.cart.pop()}
-     try{if(typeof selectedCode!=='undefined')selectedCode=''}catch(_){ }
-     try{if(typeof renderCart==='function')renderCart()}catch(_){ }
-     try{if(typeof renderResults==='function')renderResults()}catch(_){ }
-     try{if(typeof renderSearchOrder==='function')renderSearchOrder()}catch(_){ }
-     try{if(typeof save==='function')save()}catch(_){ }
-     updateButtons();
-     if(typeof msg==='function')msg('Pedido cancelado. Se retiraron todos los materiales.');
-   });
- }
- function start(){ensureCancelButton();cleanSearch();updateButtons();let checks=0;const timer=setInterval(()=>{cleanSearch();ensureCancelButton();updateButtons();if(++checks>30)clearInterval(timer)},300)}
+ const BAD=/^(?:https?:\/\/|www\.|script\.google\.com\/macros\/)/i;
+ let recordedPreview=null;
+ function q(){return document.getElementById('q')}
+ function cleanSearch(){const el=q();if(!el)return;el.type='search';el.name='material_catalog_search_v447';el.autocomplete='off';el.setAttribute('autocorrect','off');el.setAttribute('autocapitalize','off');el.setAttribute('spellcheck','false');el.setAttribute('data-lpignore','true');el.setAttribute('data-1p-ignore','true');if(BAD.test((el.value||'').trim())){el.value='';el.dispatchEvent(new Event('input',{bubbles:true}))}}
+ function count(){try{return Array.isArray(cart)?cart.length:0}catch(_){return 0}}
+ function resetRecorded(){const panel=document.getElementById('orderPanel');if(panel)panel.classList.remove('v447-recorded')}
+ function updateAttention(){const n=count(),go=document.getElementById('v439GoToOrder'),badge=document.getElementById('v439SearchOrderCount'),cancel=document.getElementById('v447CancelOrder');if(go){go.classList.toggle('v447-has-items',n>0);go.textContent=n?`📋 Ir a pedido seleccionado (${n})`:'📋 Ir a pedido seleccionado'}if(badge)badge.textContent=String(n);if(cancel)cancel.disabled=n===0}
+ function cancelOrder(){const n=count();if(!n)return;if(!confirm(`¿Cancelar el pedido actual y quitar ${n} material${n===1?'':'es'}?`))return;cart.splice(0,cart.length);try{if(typeof selectedCode!=='undefined')selectedCode=''}catch(_){}if(typeof renderCart==='function')renderCart();if(typeof renderResults==='function')renderResults();if(typeof renderSearchOrder==='function')renderSearchOrder();if(typeof save==='function')save();resetRecorded();updateAttention();if(typeof msg==='function')msg('Pedido cancelado. Se retiraron todos los materiales.')}
+ function placeActions(){const panel=document.getElementById('orderPanel'),saveBtn=document.getElementById('v31FinalizeOrder');if(!panel||!saveBtn)return;let holder=panel.querySelector('.v447-order-actions');if(!holder){holder=document.createElement('div');holder.className='v447-order-actions';const preview=panel.querySelector('.sap-preview-wrap');preview?panel.insertBefore(holder,preview):panel.appendChild(holder)}saveBtn.textContent='💾 Grabar pedido';saveBtn.title='Grabar el pedido, descontar el stock y generar la vista previa SAP';if(saveBtn.parentElement!==holder)holder.appendChild(saveBtn);let cancel=document.getElementById('v447CancelOrder');if(!cancel){cancel=document.createElement('button');cancel.id='v447CancelOrder';cancel.type='button';cancel.className='btn danger';cancel.textContent='✕ Cancelar pedido';cancel.addEventListener('click',cancelOrder)}if(cancel.parentElement!==holder)holder.appendChild(cancel);if(!saveBtn.dataset.v447){saveBtn.dataset.v447='1';saveBtn.addEventListener('click',()=>{const body=document.getElementById('sapPreviewBody'),rows=document.getElementById('previewRowsCount');recordedPreview={html:body?.innerHTML||'',count:rows?.textContent||'0 filas'};setTimeout(()=>{if(count()===0&&recordedPreview?.html){if(body)body.innerHTML=recordedPreview.html;document.getElementById('sapPreviewEmpty')?.classList.add('hidden');if(rows)rows.textContent=recordedPreview.count;panel.classList.add('v447-recorded')}updateAttention()},220)},true)}updateAttention()}
+ function start(){cleanSearch();placeActions();resetRecorded();updateAttention()}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
  window.addEventListener('pageshow',start);
- document.addEventListener('input',e=>{if(e.target?.id==='q'&&BAD.test((e.target.value||'').trim()))cleanSearch();},true);
- document.addEventListener('focusin',e=>{if(e.target?.id==='q')cleanSearch(false)},true);
- document.addEventListener('click',e=>{if(e.target.closest('[data-v36-confirm],[data-rm],#clean,#v31FinalizeOrder,#v444CancelOrder'))setTimeout(updateButtons,80)},true);
- document.addEventListener('change',e=>{if(e.target.matches?.('[data-qty]'))setTimeout(updateButtons,30)},true);
-})();
-</script>
-
-
-<style id="v446-order-recording-fix">
-/* Vista previa SAP solo después de grabar correctamente. */
-#orderPanel:not(.v446-recorded) .sap-preview-wrap,
-#orderPanel:not(.v446-recorded) > .actions{display:none!important}
-#orderPanel.v446-recorded .sap-preview-wrap{display:block!important}
-#orderPanel.v446-recorded > .actions{display:flex!important}
-#v31FinalizeOrder{background:#169447!important;color:#fff!important;border-color:#117a3a!important}
-#v444CancelOrder{background:#fee2e2!important;color:#b91c1c!important;border:1px solid #fca5a5!important}
-.v446-order-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0}
-@media(max-width:820px){.v446-order-actions{display:grid;grid-template-columns:1fr 1fr}.v446-order-actions .btn{width:100%}}
-</style>
-<script id="v446-order-recording-script">
-(function(){
- const BAD=/^(https?:\/\/|www\.|script\.google\.com\/)/i;
- let savedPreview=null;
- function cleanSearch(){
-   const q=document.getElementById('q');if(!q)return;
-   q.type='search';q.name='material-search-'+location.pathname.replace(/\W/g,'');
-   q.autocomplete='new-password';q.setAttribute('autocorrect','off');q.setAttribute('autocapitalize','off');q.setAttribute('spellcheck','false');q.setAttribute('data-lpignore','true');q.setAttribute('data-1p-ignore','true');
-   if(BAD.test((q.value||'').trim())){q.value='';q.dispatchEvent(new Event('input',{bubbles:true}));}
- }
- function getCount(){try{return Array.isArray(cart)?cart.length:0}catch(_){return 0}}
- function resetRecorded(){const p=document.getElementById('orderPanel');if(p)p.classList.remove('v446-recorded')}
- function placeButtons(){
-   const panel=document.getElementById('orderPanel'),save=document.getElementById('v31FinalizeOrder'),cancel=document.getElementById('v444CancelOrder');
-   if(!panel||!save)return;
-   save.textContent='💾 Grabar pedido';save.title='Grabar el pedido, descontar el stock y generar la vista previa SAP';
-   let holder=panel.querySelector('.v446-order-actions');
-   if(!holder){holder=document.createElement('div');holder.className='v446-order-actions';const preview=panel.querySelector('.sap-preview-wrap');preview?panel.insertBefore(holder,preview):panel.appendChild(holder)}
-   if(save.parentElement!==holder)holder.appendChild(save);
-   if(cancel&&cancel.parentElement!==holder)holder.appendChild(cancel);
-   if(!save.dataset.v446){
-     save.dataset.v446='1';
-     save.addEventListener('click',()=>{
-       const body=document.getElementById('sapPreviewBody'),count=document.getElementById('previewRowsCount');
-       savedPreview={html:body?.innerHTML||'',count:count?.textContent||'0 filas'};
-       setTimeout(()=>{
-         if(getCount()===0&&savedPreview?.html){
-           if(body)body.innerHTML=savedPreview.html;
-           const empty=document.getElementById('sapPreviewEmpty');if(empty)empty.classList.add('hidden');
-           if(count)count.textContent=savedPreview.count;
-           panel.classList.add('v446-recorded');
-         }
-       },180);
-     },true);
-   }
- }
- function start(){cleanSearch();placeButtons();resetRecorded();}
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
- [100,350,800,1500,3000].forEach(ms=>setTimeout(()=>{cleanSearch();placeButtons()},ms));
- setInterval(cleanSearch,1200);
  document.addEventListener('focusin',e=>{if(e.target?.id==='q')cleanSearch()},true);
  document.addEventListener('input',e=>{if(e.target?.id==='q')cleanSearch();if(e.target?.matches?.('[data-qty]'))resetRecorded()},true);
- document.addEventListener('click',e=>{
-   if(e.target.closest('[data-add],[data-rm],#clean,#v444CancelOrder,#v438BackToSearch'))setTimeout(()=>{resetRecorded();placeButtons()},50);
- },true);
- const panel=document.getElementById('orderPanel');if(panel)new MutationObserver(()=>placeButtons()).observe(panel,{childList:true,subtree:true});
+ document.addEventListener('click',e=>{if(e.target.closest('[data-add],[data-v36-confirm],[data-rm],#clean,#v438BackToSearch'))setTimeout(()=>{resetRecorded();updateAttention()},60)},true);
 })();
 </script>
 </body></html>
