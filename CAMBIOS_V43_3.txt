@@ -1,0 +1,5 @@
+V43.3
+- Se eliminó el parpadeo al actualizar stock desde Drive: solo se refrescan stock, estado, resultados y pedido.
+- Centro de trabajo queda oculto en la barra de carga desde el primer render y aparece solo en Datos del pedido.
+- Se conserva la posición vertical al actualizar.
+- Sin cambios en pedidos, historial, alias ni Apps Script.
