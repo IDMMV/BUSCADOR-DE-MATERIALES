@@ -114,7 +114,7 @@ html,body{max-width:100%;overflow-x:hidden}body{font-size:14px}.topbar{padding:1
 </style>
 
 <style id="v421-mobile-horizontal-navigation">
-/* V43.4: corrección exclusivamente móvil para poder desplazar las tablas y acceder a Seleccionar/Agregar. */
+/* V43.5: corrección exclusivamente móvil para poder desplazar las tablas y acceder a Seleccionar/Agregar. */
 @media (max-width:760px){
   /* La página sigue desplazándose verticalmente; únicamente las tablas usan desplazamiento horizontal propio. */
   body{overflow-x:hidden!important;touch-action:pan-y pinch-zoom!important}
@@ -244,7 +244,7 @@ html,body{max-width:100%;overflow-x:hidden}body{font-size:14px}.topbar{padding:1
 </style>
 
 <style id="v434-polish">
-/* V43.4: cabecera de stock compacta, orden de datos e imagen ampliada */
+/* V43.5: cabecera de stock compacta, orden de datos e imagen ampliada */
 .stock-toolbar{margin-top:6px!important;padding-top:4px!important;padding-bottom:4px!important;gap:8px!important;align-items:center!important}
 .stock-toolbar .stock-file-wrap label,.stock-toolbar>label{margin:0!important}
 .stock-toolbar input[type="file"]{padding:8px!important;margin-top:3px!important}
@@ -297,7 +297,7 @@ html[data-theme="dark"] .stock-status.stale{background:#493a16!important;color:#
 </style>
 </head>
 <body>
-<header class="top"><div class="brand"><img alt="Ícono Buscador de Materiales" class="app-logo" src="icon-192.png"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V43.4</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
+<header class="top"><div class="brand"><img alt="Ícono Buscador de Materiales" class="app-logo" src="icon-192.png"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V43.5</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn admin-access-btn" id="adminAccessBtn" type="button">🔐 Administrador</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
 <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 <div class="app-shell">
 <aside class="sidebar" id="sidebar">
@@ -341,6 +341,7 @@ html[data-theme="dark"] .stock-status.stale{background:#493a16!important;color:#
 <section class="page" id="p-units"><div class="adminrow admin"><div class="voice-wrap"><input id="newUnit" placeholder="Ej.: F5X-999"/><button class="voice-btn" data-voice="newUnit">🎤</button></div><button class="btn primary" id="addUnit">Agregar</button></div><div class="chips" id="unitList"></div></section>
 <section class="page" id="p-github"><h3>Sincronización con Google Drive</h3><p>Configura la URL <b>/exec</b> de tu Google Apps Script. Los cambios se guardan primero en este dispositivo y se sincronizan cuando haya internet.</p><div class="labeled-form drive-grid"><label class="form-group">URL de Apps Script<input id="scriptUrl" placeholder="https://script.google.com/macros/s/.../exec"/></label><label class="form-group">Clave de acceso<input id="scriptToken" placeholder="Clave definida en Code.gs" type="password"/></label><label class="form-group">Estado<input id="syncState" readonly="" value="Sin configurar"/></label><label class="form-group">Última sincronización<input id="lastSync" readonly=""/></label></div><div class="actions"><button type="button" class="btn primary" id="saveScriptConfig" onclick="saveSyncConfig(); return false;">Guardar conexión</button><button type="button" class="btn success" id="syncNow" onclick="syncToDrive(); return false;">Sincronizar ahora</button><button type="button" class="btn secondary" id="restoreDrive" onclick="restoreFromDrive(); return false;">Recuperar desde Drive</button><a class="btn secondary" href="https://drive.google.com/drive/my-drive" id="openDriveLink" rel="noopener" target="_blank">☁ Abrir Google Drive</a><button class="btn secondary" id="downloadJson">Descargar respaldo JSON</button><button class="btn danger" id="reset">Restablecer datos originales</button></div><div class="drive-note"><b>Modo sin red:</b> alias, fotos, supervisores, unidades y pendientes se guardan localmente. Al volver internet, pulsa “Sincronizar ahora” o abre nuevamente la aplicación.</div></section><p class="status" id="adminStatus"></p></div></dialog>
 
+<dialog id="adminLoginDialog" aria-label="Acceso de administrador"><div class="admin-login-card"><div class="admin-login-head"><div><div class="ey">ACCESO RESTRINGIDO</div><h2>Administrador</h2></div><button type="button" class="btn secondary" id="adminLoginClose">×</button></div><p>Ingresa la contraseña para editar matrículas y alias, supervisores, unidades móviles y Google Drive.</p><label class="form-group">Contraseña<input id="adminPasswordInput" type="password" autocomplete="current-password" placeholder="Contraseña de administrador"></label><p class="status" id="adminLoginStatus"></p><div class="admin-login-actions"><button type="button" class="btn primary" id="adminLoginSubmit">Ingresar</button><button type="button" class="btn secondary" id="adminLogoutBtn">Cerrar sesión administrativa</button></div></div></dialog>
 <dialog id="materialImageViewer" aria-label="Visualizador de imágenes de materiales"><div class="image-viewer-shell"><div class="image-viewer-head"><div class="image-viewer-title"><b id="imageViewerCode">Material</b><span id="imageViewerDesc"></span></div><button type="button" class="btn image-viewer-close" id="imageViewerClose">Cerrar</button></div><div class="image-viewer-stage"><button type="button" class="image-viewer-nav image-viewer-prev" id="imageViewerPrev" aria-label="Imagen anterior">‹</button><img id="imageViewerImg" alt="Imagen ampliada del material"><button type="button" class="image-viewer-nav image-viewer-next" id="imageViewerNext" aria-label="Imagen siguiente">›</button></div><div class="image-viewer-foot" id="imageViewerCounter"></div></div></dialog>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="data.js"></script>
@@ -385,38 +386,7 @@ function renderCart(){$('#cartCount').textContent=`${cart.length} material${cart
 function movementCode(){return $('#puesto').value==='PEDIDO'?'P':$('#puesto').value==='RECUPERO'?'R':'D'}function formattedOrderDate(){let v=$('#fechaPedido').value;if(!v)return'';let [y,m,d]=v.split('-');return `${d}/${m}`}
 function supervisorSAP(){let supervisor=$('#dest').value||'',ini=(state.supervisorInitials?.[supervisor]||deriveInitials(supervisor)).toUpperCase(),date=formattedOrderDate();return [ini,date].filter(Boolean).join(' ')}
 function rows(){let unidad=$('#movil').value||'',out=[];for(let m of cart){let a=allocateStock(m.code,m.qty);for(let x of a.rows)out.push({MATRICULA:m.code,DESCRIPCION:m.description,C1:'',CANT:x.qty,UNIDAD:normalizedUnit(m),TP:'L',C2:'',C3:'',ALIM:x.almacen,CE:x.centro,OPERACION:'0010',LOTE:x.lote,'TIPO DE APROVISIONAMIENTO':'Reserva para orden',POS:0,DESTINATARIO:supervisorSAP(),'PUESTO DE DESCARGA':unidad?`${unidad} (${movementCode()})`:`(${movementCode()})`,'UBICACION FINAL':''})}return out}
-function valid(){if(stockMeta.date!==todayKey()){msg(expiredStockMessage(),true);return false}if(!cart.length){msg('Agrega al menos un material.',true);return false}if(cart.some(x=>!(Number(x.qty)>0))){msg('Completa las cantidades amarillas antes de exportar.',true);return false}let bad=cart.find(x=>allocateStock(x.code,x.qty).missing>0);if(bad){msg(`Stock insuficiente para ${bad.code}. Disponible: ${availableStock(bad.code)}.`,true);return false}return true}function tsv(){let r=rows(),h=Object.keys(r[0]);return r.map(x=>h.map(k=>x[k]).join('\t')).join('\n')}function csvText(){let r=rows(),h=Object.keys(r[0]),e=v=>'"'+String(v??'').replace(/"/g,'""')+'"';return '\ufeff'+[h.map(e).join(';'),...r.map(x=>h.map(k=>e(x[k])).join(';'))].join('\r\n')}function dl(txt,name,type='text/plain'){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}function excel(){if(!valid())return;let r=rows(),h=Object.keys(r[0]),table=`<table border="1"><tr>${h.map(x=>`<th style="background:#fff500">${esc(x)}</th>`).join('')}</tr>${r.map(x=>`<tr>${h.map(k=>`<td style="mso-number-format:'\@'">${esc(String(x[k]))}</td>`).join('')}</tr>`).join('')}</table>`;dl('\ufeff<html><meta charset="utf-8"><body>'+table+'
-<script id="v434-behavior">
-(function(){
- const $=s=>document.querySelector(s);
- function reorderOrderFields(){
-   const fields=$('#v30OrderData .fields'); if(!fields)return false;
-   const ids=['omPedido','dest','puesto','movil','centroGlobal','fechaPedido','alimentadorPedido','distritoPedido'];
-   const labels=ids.map(id=>$('#'+id)?.closest('label.field, label')).filter(Boolean);
-   if(labels.length<8)return false;
-   labels.forEach(l=>fields.appendChild(l));
-   const note=fields.querySelector('.v34-district-note'); if(note)fields.appendChild(note);
-   return true;
- }
- let attempts=0;const timer=setInterval(()=>{attempts++;if(reorderOrderFields()||attempts>30)clearInterval(timer)},120);
- window.addEventListener('load',()=>setTimeout(reorderOrderFields,250));
-
- const dlg=$('#materialImageViewer'),img=$('#imageViewerImg'),code=$('#imageViewerCode'),desc=$('#imageViewerDesc'),counter=$('#imageViewerCounter');
- let gallery=[],index=0;
- function buildGallery(){gallery=(window.state?.materials||[]).filter(m=>m&&m.image).map(m=>({code:String(m.code||''),description:String(m.description||''),image:m.image}));}
- function showAt(i){if(!gallery.length)return;index=(i+gallery.length)%gallery.length;const m=gallery[index];img.src=m.image;code.textContent=m.code||'Material';desc.textContent=m.description||'';counter.textContent=`${index+1} de ${gallery.length}`;}
- document.addEventListener('click',e=>{
-   const target=e.target.closest('.v42-material-image img');if(!target)return;
-   e.preventDefault();buildGallery();const row=target.closest('tr'),mat=row?.querySelector('.v29-code')?.textContent?.trim();const found=gallery.findIndex(m=>m.code===mat);showAt(found>=0?found:0);dlg?.showModal();
- });
- $('#imageViewerClose')?.addEventListener('click',()=>dlg.close());
- $('#imageViewerPrev')?.addEventListener('click',()=>showAt(index-1));
- $('#imageViewerNext')?.addEventListener('click',()=>showAt(index+1));
- dlg?.addEventListener('click',e=>{if(e.target===dlg)dlg.close()});
- document.addEventListener('keydown',e=>{if(!dlg?.open)return;if(e.key==='ArrowLeft')showAt(index-1);if(e.key==='ArrowRight')showAt(index+1);if(e.key==='Escape')dlg.close()});
-})();
-</script>
-</body></html>','Pedido_Materiales.xls','application/vnd.ms-excel')}function msg(t,e=false,id='#status'){let x=$(id);if(x){x.textContent=t;x.style.color=e?'#c62828':'#15803d';setTimeout(()=>x.textContent='',5000)}let toast=document.getElementById('appToast');if(!toast){toast=document.createElement('div');toast.id='appToast';toast.className='app-toast';document.body.appendChild(toast)}toast.textContent=t;toast.className='app-toast show '+(e?'error':'success');clearTimeout(window.__bmToastTimer);window.__bmToastTimer=setTimeout(()=>toast.className='app-toast',3500)}
+function valid(){if(stockMeta.date!==todayKey()){msg(expiredStockMessage(),true);return false}if(!cart.length){msg('Agrega al menos un material.',true);return false}if(cart.some(x=>!(Number(x.qty)>0))){msg('Completa las cantidades amarillas antes de exportar.',true);return false}let bad=cart.find(x=>allocateStock(x.code,x.qty).missing>0);if(bad){msg(`Stock insuficiente para ${bad.code}. Disponible: ${availableStock(bad.code)}.`,true);return false}return true}function tsv(){let r=rows(),h=Object.keys(r[0]);return r.map(x=>h.map(k=>x[k]).join('\t')).join('\n')}function csvText(){let r=rows(),h=Object.keys(r[0]),e=v=>'"'+String(v??'').replace(/"/g,'""')+'"';return '\ufeff'+[h.map(e).join(';'),...r.map(x=>h.map(k=>e(x[k])).join(';'))].join('\r\n')}function dl(txt,name,type='text/plain'){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}function excel(){if(!valid())return;let r=rows(),h=Object.keys(r[0]),table=`<table border="1"><tr>${h.map(x=>`<th style="background:#fff500">${esc(x)}</th>`).join('')}</tr>${r.map(x=>`<tr>${h.map(k=>`<td style="mso-number-format:'\@'">${esc(String(x[k]))}</td>`).join('')}</tr>`).join('')}</table>`;dl('\ufeff<html><meta charset="utf-8"><body>'+table+'</body></html>','Pedido_Materiales.xls','application/vnd.ms-excel')}function msg(t,e=false,id='#status'){let x=$(id);if(x){x.textContent=t;x.style.color=e?'#c62828':'#15803d';setTimeout(()=>x.textContent='',5000)}let toast=document.getElementById('appToast');if(!toast){toast=document.createElement('div');toast.id='appToast';toast.className='app-toast';document.body.appendChild(toast)}toast.textContent=t;toast.className='app-toast show '+(e?'error':'success');clearTimeout(window.__bmToastTimer);window.__bmToastTimer=setTimeout(()=>toast.className='app-toast',3500)}
 function renderAdmin(){fill($('#dest'),state.supervisors);fill($('#movil'),state.units);$('#supList').innerHTML=state.supervisors.map((x,i)=>`<div class="supervisor-row"><input value="${esc(x)}" data-sup-name="${i}" aria-label="Nombre del supervisor"><input class="initials" maxlength="4" value="${esc(state.supervisorInitials?.[x]||deriveInitials(x))}" data-sup-initials="${i}" aria-label="Iniciales"><div class="supervisor-actions"><button class="btn secondary" data-save-sup="${i}">Guardar</button><button class="btn danger" data-dsup="${i}">Quitar</button></div></div>`).join('');$('#unitList').innerHTML=state.units.map((x,i)=>`<span class="chip">${esc(x)} <button data-dunit="${i}">×</button></span>`).join('');renderMaterialList()}function renderMaterialList(){let q=norm($('#adminSearch').value),a=state.materials.filter(m=>!q||norm([m.code,m.description,...(m.aliases||[])].join(' ')).includes(q)).slice(0,120);$('#materialList').innerHTML=a.map(m=>`<div class="material-item"><b>${esc(m.code)}</b><div>${esc(m.description)}<br><span class="small">${esc((m.aliases||[]).join(' · ')||'Sin alias')}</span></div><button class="btn secondary" data-edit="${m.code}">Editar</button></div>`).join('')}
 function activateMatTab(){document.querySelectorAll('.tab,.page').forEach(x=>x.classList.remove('active'));document.querySelector('.tab[data-page="mat"]').classList.add('active');$('#p-mat').classList.add('active')}function renderAliasEditor(){let box=$('#aliasList');if(!currentAliases.length){box.innerHTML='<p class="small">Esta matrícula todavía no tiene alias.</p>';return}box.innerHTML=currentAliases.map((a,i)=>`<div class="alias-row"><input value="${esc(a)}" data-alias-index="${i}"><button type="button" data-save-alias="${i}">✓</button><button type="button" class="remove-alias" data-remove-alias="${i}">🗑</button></div>`).join('')}function renderImagePreview(){let box=$('#imagePreviewBox');if(currentImage){box.className='';box.innerHTML=`<img class="image-preview" src="${currentImage}" alt="Vista previa">`;$('#removeImage').classList.remove('hidden')}else{box.className='material-placeholder';box.textContent='Sin imagen';$('#removeImage').classList.add('hidden')}}function clearMaterialForm(){editingCode=null;currentAliases=[];currentImage='';['mcode','mdesc','munit','newAlias','mimage'].forEach(id=>$('#'+id).value='');$('#mprio').value='';$('#mcode').disabled=false;$('#saveMat').textContent='Guardar material';$('#cancelEdit').classList.add('hidden');$('#matTitle').textContent='Agregar material';renderAliasEditor();renderImagePreview()}function setMaterialMode(mode){$('#dlg').classList.toggle('add-only',mode==='add');$('#dlg').classList.toggle('edit-mode',mode==='edit');$('#modalTitle').textContent=mode==='add'?'Agregar material':mode==='edit'?'Editar material':'Configuración'}function openNewMaterial(){clearMaterialForm();setMaterialMode('add');activateMatTab();$('#dlg').showModal();setTimeout(()=>$('#mcode').focus(),50)}function openMaterialEditor(c){setMaterialMode('edit');let m=state.materials.find(x=>x.code===c);if(!m)return;editingCode=c;currentAliases=[...(m.aliases||[])];currentImage=m.image||'';$('#mcode').value=m.code;$('#mdesc').value=m.description;$('#munit').value=m.unit||'UN';$('#mprio').value=m.priority||'';$('#mcode').disabled=true;$('#saveMat').textContent='Actualizar matrícula y alias';$('#cancelEdit').classList.remove('hidden');$('#matTitle').textContent='Editar material y alias';renderAliasEditor();renderImagePreview();activateMatTab();if(!$('#dlg').open)$('#dlg').showModal();setTimeout(()=>$('#newAlias').focus(),50)}function addCurrentAlias(){let v=$('#newAlias').value.trim().toUpperCase();if(!v)return;if(!currentAliases.includes(v))currentAliases.push(v);$('#newAlias').value='';renderAliasEditor()}function saveMaterial(){let c=(editingCode||$('#mcode').value.trim()),d=$('#mdesc').value.trim().toUpperCase(),u=$('#munit').value.trim().toUpperCase()||'UND',aliases=[...new Set(currentAliases.map(x=>x.trim().toUpperCase()).filter(Boolean))],p=$('#mprio').value;if(!/^\d{5,}$/.test(c)||!d)return msg('Ingresa matrícula numérica y descripción.',true,'#adminStatus');let m=state.materials.find(x=>x.code===c);if(m){m.description=d;m.unit=u;m.priority=p;m.aliases=aliases;m.image=currentImage}else state.materials.push({code:c,description:d,unit:u,aliases,priority:p,image:currentImage,source:'MANUAL'});state.materials.sort((x,y)=>x.description.localeCompare(y.description,'es'));save();renderResults();renderAdmin();clearMaterialForm();msg(m?'Cambios guardados en este dispositivo. Genera un respaldo para Google Drive.':'Nuevo material guardado en este navegador.',false,'#adminStatus')}function buildAliasSuggestions(){let d=$('#mdesc').value.trim().toUpperCase();if(!d)return msg('Primero ingresa o conserva la descripción oficial.',true,'#adminStatus');let volts=(d.match(/\b\d+(?:[.,]\d+)?\s*KV\b/g)||[]).map(x=>x.replace(/\s+/g,''));let amps=(d.match(/\b\d+\s*A\b/g)||[]).map(x=>x.replace(/\s+/g,''));let mm=(d.match(/\b\d+(?:[.,]\d+)?\s*MM(?:2|²)?\b/g)||[]).map(x=>x.replace(/\s+/g,''));let ranges=(d.match(/\b\d+\s*[-–]\s*\d+\s*MM\b/g)||[]);let out=[];const add=x=>{x=(x||'').replace(/\s+/g,' ').replace(/\s+([,.;])/g,'$1').trim();if(x.length>=3&&!currentAliases.includes(x)&&!out.includes(x))out.push(x)};const v=volts[0]||'',a=amps[0]||'',m=mm[0]||'',r=ranges[0]||'';if(/CUT[ -]?OUT|CUTOUT/.test(d)){add(['CUT OUT',v,a].filter(Boolean).join(' '));add(['CUTOUT',v,a].filter(Boolean).join(' '));add(['FUSIBLE CUT OUT',v,a].filter(Boolean).join(' '));add(['SECCIONADOR FUSIBLE',v].filter(Boolean).join(' '))}if(/AISLADOR/.test(d)){let tipo=/SUSPENSION|ANCLAJE/.test(d)?'AISLADOR SUSPENSION':/LINE POST|PIN/.test(d)?'AISLADOR PIN':/EXTENSOR/.test(d)?'AISLADOR EXTENSOR':'AISLADOR';add([tipo,v].filter(Boolean).join(' '));if(/POLIMER/.test(d))add(['AISLADOR POLIMERICO',v].filter(Boolean).join(' '))}if(/ABRAZADERA/.test(d)){add(['ABRAZADERA',r||m].filter(Boolean).join(' '));add('ABRAZADERA PARA CABLE');if(/VIENTO/.test(d))add('ABRAZADERA PARA VIENTO')}if(/FUSIBLE/.test(d)){add(['FUSIBLE',v,a].filter(Boolean).join(' '));if(/EXPULSION/.test(d))add(['FUSIBLE DE EXPULSION',v,a].filter(Boolean).join(' '));if(/UNIPOLAR|SEC/.test(d))add(['FUSIBLE UNIPOLAR',v,a].filter(Boolean).join(' '))}if(/CONECTOR/.test(d)){let tipo=/BIMETAL/.test(d)?'CONECTOR BIMETALICO':/PERFOR/.test(d)?'CONECTOR PERFORANTE':'CONECTOR';add([tipo,m].filter(Boolean).join(' '));if(/TIPO H|\bH\s*\d+/.test(d))add(['CONECTOR TIPO H',m].filter(Boolean).join(' '))}if(/CABLE/.test(d)){add(['CABLE',m,v].filter(Boolean).join(' '));if(/PREENSAMBL/.test(d))add(['CABLE PREENSAMBLADO',m].filter(Boolean).join(' '))}if(/PERNO/.test(d)){add(['PERNO',m].filter(Boolean).join(' '));if(/GALV/.test(d))add('PERNO GALVANIZADO')}if(/ARANDELA/.test(d)){add(['ARANDELA',m].filter(Boolean).join(' '));if(/PLANA/.test(d))add('ARANDELA PLANA');if(/PRESION/.test(d))add('ARANDELA DE PRESION')}if(/AMARRE/.test(d)){add(['AMARRE',m].filter(Boolean).join(' '));if(/PREFORM/.test(d))add(['AMARRE PREFORMADO',m].filter(Boolean).join(' '))}if(/GRAPA/.test(d)){add(['GRAPA',m].filter(Boolean).join(' '));if(/SUSPENSION/.test(d))add('GRAPA DE SUSPENSION');if(/ANCLAJE/.test(d))add('GRAPA DE ANCLAJE')}if(/SECCIONADOR/.test(d)){add(['SECCIONADOR',v,a].filter(Boolean).join(' '));if(/UNIPOLAR/.test(d))add(['SECCIONADOR UNIPOLAR',v,a].filter(Boolean).join(' '))}let clean=d.replace(/[.,;:()\/]/g,' ').replace(/\b(PARA|CON|DEL|DE|LA|EL|EN|POR|TIPO|TP|P|RED|AEREA|AEREAS)\b/g,' ').replace(/\s+/g,' ').trim();add(clean.split(' ').filter(w=>w.length>2).slice(0,7).join(' '));out.slice(0,6).forEach(x=>currentAliases.push(x));renderAliasEditor();msg(out.length?out.length+' alias sugeridos agregados temporalmente. Revísalos y pulsa Actualizar matrícula y alias.':'No se encontraron alias nuevos; puedes escribirlos manualmente.',!out.length,'#adminStatus')}async function compressImage(file){return new Promise((resolve,reject)=>{let img=new Image(),url=URL.createObjectURL(file);img.onload=()=>{let max=700,scale=Math.min(1,max/Math.max(img.width,img.height)),w=Math.max(1,Math.round(img.width*scale)),h=Math.max(1,Math.round(img.height*scale)),c=document.createElement('canvas');c.width=w;c.height=h;let ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);ctx.drawImage(img,0,0,w,h);URL.revokeObjectURL(url);resolve(c.toDataURL('image/webp',0.7))};img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('Imagen inválida'))};img.src=url})}function exportData(){dl('window.APP_DATA = '+JSON.stringify(state,null,2)+';','data.js','text/javascript;charset=utf-8')}
 function speechSupported(){return !!(window.SpeechRecognition||window.webkitSpeechRecognition)}function numberWordsToDigits(t){const map={cero:0,uno:1,una:1,dos:2,tres:3,cuatro:4,cinco:5,seis:6,siete:7,ocho:8,nueve:9};let parts=norm(t).split(' '),digits=parts.map(x=>map[x]??(x.match(/^\d+$/)?x:'')).join('');return digits||t.match(/[\d.,]+/)?.[0]||''}function cleanDictation(text,target){let t=text.trim().replace(/punto y coma/gi,';').replace(/coma/gi,',');if(target.id==='mcode'||target.type==='number')return numberWordsToDigits(t).replace(',','.');if(target.id==='munit'||target.id==='newUnit')return t.toUpperCase().replace(/\s+/g,'');return t}function startVoice(target,button,append=false){if(!speechSupported()){msg('El reconocimiento de voz no está disponible en este navegador. Usa Chrome o Edge.',true,target.closest('dialog')?'#adminStatus':'#status');return}if(activeRecognition)try{activeRecognition.abort()}catch{}const SR=window.SpeechRecognition||window.webkitSpeechRecognition,r=new SR();activeRecognition=r;r.lang='es-PE';r.interimResults=false;r.maxAlternatives=1;button.classList.add('listening');button.textContent='⏹';r.onresult=e=>{let value=cleanDictation(e.results[0][0].transcript,target);target.value=append&&target.value?target.value.replace(/\s*;?\s*$/,'')+'; '+value:value;target.dispatchEvent(new Event('input',{bubbles:true}));target.dispatchEvent(new Event('change',{bubbles:true}));target.focus()};r.onerror=e=>msg(e.error==='not-allowed'?'Permite el acceso al micrófono para usar la voz.':'No se pudo reconocer la voz. Inténtalo nuevamente.',true,target.closest('dialog')?'#adminStatus':'#status');r.onend=()=>{button.classList.remove('listening');button.textContent='🎤';activeRecognition=null};r.start()}
@@ -1488,7 +1458,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
 </script>
 
 <style id="v42-2-focused-admin-colors">
-/* V43.4: Supervisores y Unidades muestran exclusivamente su contenido. */
+/* V43.5: Supervisores y Unidades muestran exclusivamente su contenido. */
 #dlg.single-admin #appNote,#dlg.single-admin #configTabs,#dlg.single-admin #p-mat,#dlg.single-admin #p-github{display:none!important}
 #dlg.single-admin[data-single-page="sup"] #p-units{display:none!important}
 #dlg.single-admin[data-single-page="units"] #p-sup{display:none!important}
@@ -1544,7 +1514,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
 })();
 </script>
 <style id="v42-4-unified-dark-and-images">
-/* V43.4: cambios visuales aprobados; la lógica permanece intacta. */
+/* V43.5: cambios visuales aprobados; la lógica permanece intacta. */
 .v42-material-image{width:86px;min-width:86px;text-align:center}
 .v42-material-image img{display:block;width:72px;height:58px;object-fit:contain;margin:auto;border:1px solid var(--line);border-radius:9px;background:#fff}
 .v42-material-image span{display:flex;width:72px;height:58px;margin:auto;align-items:center;justify-content:center;border:1px dashed #aabbd0;border-radius:9px;color:var(--muted);font-size:11px;background:#f8fafc}
@@ -1596,6 +1566,67 @@ html[data-theme="dark"] .v42-material-image img{background:#fff;border-color:#46
   const panel=document.getElementById('orderPanel');
   if(panel)new MutationObserver(placeFinalizeBeforePreview).observe(panel,{childList:true,subtree:true});
  });
+})();
+</script>
+
+<style id="v435-admin-style">
+.admin-access-btn{background:#6b46c1;color:#fff}.admin-access-btn.active{background:#15803d}
+.admin-only-hidden{display:none!important}
+#adminLoginDialog{border:0;padding:0;background:transparent;max-width:520px;width:calc(100% - 24px)}
+#adminLoginDialog::backdrop{background:#071426aa;backdrop-filter:blur(3px)}
+.admin-login-card{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 24px 70px #0005}
+.admin-login-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.admin-login-head h2{margin:4px 0 0}
+.admin-login-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.admin-login-actions .btn{flex:1;min-width:180px}
+html[data-theme="dark"] .admin-login-card{background:#102139;border-color:#355273}
+@media(max-width:760px){.admin-access-btn{grid-column:1/-1}.admin-login-actions{display:grid;grid-template-columns:1fr}.admin-login-actions .btn{width:100%;min-width:0}}
+</style>
+<script id="v435-behavior">
+(function(){
+ const qs=s=>document.querySelector(s);
+ function reorderOrderFields(){
+   const fields=qs('#v30OrderData .fields'); if(!fields)return false;
+   const ids=['omPedido','dest','puesto','movil','centroGlobal','fechaPedido','alimentadorPedido','distritoPedido'];
+   const labels=ids.map(id=>qs('#'+id)?.closest('label.field, label')).filter(Boolean);
+   if(labels.length<8)return false;
+   labels.forEach(l=>fields.appendChild(l));
+   const note=fields.querySelector('.v34-district-note'); if(note)fields.appendChild(note);
+   return true;
+ }
+ let attempts=0;const timer=setInterval(()=>{attempts++;if(reorderOrderFields()||attempts>40)clearInterval(timer)},120);
+ window.addEventListener('load',()=>setTimeout(reorderOrderFields,250));
+
+ const viewer=qs('#materialImageViewer'),viewerImg=qs('#imageViewerImg'),viewerCode=qs('#imageViewerCode'),viewerDesc=qs('#imageViewerDesc'),viewerCounter=qs('#imageViewerCounter');
+ let gallery=[],galleryIndex=0;
+ function buildGallery(){gallery=(window.state?.materials||[]).filter(m=>m&&m.image).map(m=>({code:String(m.code||''),description:String(m.description||''),image:m.image}));}
+ function showAt(i){if(!gallery.length)return;galleryIndex=(i+gallery.length)%gallery.length;const m=gallery[galleryIndex];viewerImg.src=m.image;viewerCode.textContent=m.code||'Material';viewerDesc.textContent=m.description||'';viewerCounter.textContent=(galleryIndex+1)+' de '+gallery.length;}
+ document.addEventListener('click',e=>{const target=e.target.closest('.v42-material-image img,.material-thumb');if(!target)return;e.preventDefault();buildGallery();const row=target.closest('tr,.card');const mat=(row?.querySelector('.v29-code,.code')?.textContent||'').trim().split(' ')[0].replace('·','');const found=gallery.findIndex(m=>m.code===mat);if(gallery.length){showAt(found>=0?found:0);viewer?.showModal();}});
+ qs('#imageViewerClose')?.addEventListener('click',()=>viewer.close());
+ qs('#imageViewerPrev')?.addEventListener('click',()=>showAt(galleryIndex-1));
+ qs('#imageViewerNext')?.addEventListener('click',()=>showAt(galleryIndex+1));
+ viewer?.addEventListener('click',e=>{if(e.target===viewer)viewer.close()});
+ document.addEventListener('keydown',e=>{if(!viewer?.open)return;if(e.key==='ArrowLeft')showAt(galleryIndex-1);if(e.key==='ArrowRight')showAt(galleryIndex+1);if(e.key==='Escape')viewer.close()});
+
+ const ADMIN_SESSION='bm_admin_session_v1',ADMIN_PASS_KEY='bm_admin_password_v1';
+ function expectedPassword(){return localStorage.getItem(ADMIN_PASS_KEY)||'1234'}
+ function isAdmin(){return sessionStorage.getItem(ADMIN_SESSION)==='1'}
+ function protectedElements(){return [
+   ...document.querySelectorAll('[data-config-page="mat"],[data-config-page="sup"],[data-config-page="units"],[data-config-page="github"]'),
+   qs('#addMaterial'),qs('#newMaterial'),qs('#sideDriveOnly')
+ ].filter(Boolean)}
+ function applyAdminVisibility(){
+   const admin=isAdmin();
+   protectedElements().forEach(el=>el.classList.toggle('admin-only-hidden',!admin));
+   const btn=qs('#adminAccessBtn');if(btn){btn.classList.toggle('active',admin);btn.textContent=admin?'🔓 Administrador activo':'🔐 Administrador'}
+ }
+ function openLogin(){const d=qs('#adminLoginDialog'),input=qs('#adminPasswordInput'),status=qs('#adminLoginStatus');if(status)status.textContent='';if(input)input.value='';d?.showModal();setTimeout(()=>input?.focus(),50)}
+ function login(){const input=qs('#adminPasswordInput'),status=qs('#adminLoginStatus');if((input?.value||'')!==expectedPassword()){if(status){status.textContent='Contraseña incorrecta.';status.style.color='#c62828'}return}sessionStorage.setItem(ADMIN_SESSION,'1');applyAdminVisibility();qs('#adminLoginDialog')?.close();}
+ qs('#adminAccessBtn')?.addEventListener('click',()=>isAdmin()?(sessionStorage.removeItem(ADMIN_SESSION),applyAdminVisibility()):openLogin());
+ qs('#adminLoginSubmit')?.addEventListener('click',login);
+ qs('#adminPasswordInput')?.addEventListener('keydown',e=>{if(e.key==='Enter')login()});
+ qs('#adminLoginClose')?.addEventListener('click',()=>qs('#adminLoginDialog')?.close());
+ qs('#adminLogoutBtn')?.addEventListener('click',()=>{sessionStorage.removeItem(ADMIN_SESSION);applyAdminVisibility();qs('#adminLoginDialog')?.close()});
+ const obs=new MutationObserver(()=>applyAdminVisibility());obs.observe(document.body,{childList:true,subtree:true});
+ applyAdminVisibility();
 })();
 </script>
 </body></html>

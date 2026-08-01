@@ -1,0 +1,6 @@
+V43.5
+- Reparado error JavaScript que bloqueaba toda la web.
+- Acceso de administrador en barra superior.
+- Alias/matrículas, supervisores, unidades y Google Drive ocultos para usuarios normales.
+- Contraseña inicial: 1234.
+- Orden de campos y visualizador de imágenes conservados.
