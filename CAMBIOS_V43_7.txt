@@ -1,0 +1,5 @@
+V43.7
+- Enter agrega el material seleccionado.
+- X y Escape limpian el filtro.
+- Pedido actual se mantiene en Buscar materiales.
+- Botón Volver a buscar materiales en Pedido seleccionado.
