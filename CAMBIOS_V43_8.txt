@@ -1,0 +1,7 @@
+V43.8 CORREGIDA
+
+- Corregidos los errores de sintaxis introducidos en V43.7.
+- Enter agrega el material seleccionado.
+- X y Escape limpian el filtro.
+- Botón Volver a buscar materiales en Pedido seleccionado.
+- Se conserva la navegación y toda la lógica estable de V43.6.
