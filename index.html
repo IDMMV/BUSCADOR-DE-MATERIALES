@@ -297,7 +297,7 @@ html[data-theme="dark"] .stock-status.stale{background:#493a16!important;color:#
 </style>
 </head>
 <body>
-<header class="top"><div class="brand"><img alt="Ícono Buscador de Materiales" class="app-logo" src="icon-192.png"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V43.8</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn admin-access-btn" id="adminAccessBtn" type="button">🔐 Administrador</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
+<header class="top"><div class="brand"><img alt="Ícono Buscador de Materiales" class="app-logo" src="icon-192.png"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V43.9</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn admin-access-btn" id="adminAccessBtn" type="button">🔐 Administrador</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
 <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 <div class="app-shell">
 <aside class="sidebar" id="sidebar">
@@ -322,7 +322,7 @@ html[data-theme="dark"] .stock-status.stale{background:#493a16!important;color:#
 <div class="stock-status stale" id="stockStatus">⚠ Stock no actualizado hoy. Carga el Excel diario de SAP.</div>
 <button class="btn success" id="driveBackup" type="button">🔄 Actualizar stock desde Drive</button>
 <div class="stock-help">Columnas reconocidas: Material, Texto breve de material, Centro, Almacén, Lote, Libre utilización y Unidad medida base. ALIM, CE y LOTE se completan automáticamente al copiar o exportar.</div><div class="stock-help drive-refresh-help">Cuando otra persona actualice el stock, pulsa <b>Actualizar stock desde Drive</b>. No necesitas volver a publicar Apps Script ni GitHub.</div>
-</section><section class="panel"><div class="head"><h2>1. Buscar materiales</h2><div class="head-actions"><button class="btn primary" id="newMaterialTop">＋ Agregar material</button><span class="badge" id="count"></span></div></div><div class="search"><input id="q" placeholder="Buscar por matrícula, descripción o alias..."/><button aria-label="Buscar por voz" class="mic" id="voiceSearch" title="Buscar por voz">🎤</button><button aria-label="Limpiar búsqueda" id="clear" title="Limpiar búsqueda">×</button></div><div class="results" id="results"></div></section></section>
+</section><section class="panel"><div class="head"><h2>1. Buscar materiales</h2><div class="head-actions"><button class="btn secondary" id="v439GoToOrder" type="button">📋 Ir a pedido seleccionado</button><span class="badge" id="v439SearchOrderCount">0</span><button class="btn primary" id="newMaterialTop">＋ Agregar material</button><span class="badge" id="count"></span></div></div><div class="search"><input id="q" placeholder="Buscar por matrícula, descripción o alias..."/><button aria-label="Buscar por voz" class="mic" id="voiceSearch" title="Buscar por voz">🎤</button><button aria-label="Limpiar búsqueda" id="clear" title="Limpiar búsqueda">×</button></div><div class="results" id="results"></div></section></section>
 <section class="view" id="orderView"><main class="layout"><section class="panel" id="orderPanel"><div class="head"><h2>2. Pedido seleccionado</h2><span class="badge" id="cartCount">0 materiales</span></div><div class="v438-back-row"><button type="button" class="btn secondary v438-back-btn" id="v438BackToSearch">← Volver a buscar materiales</button></div><div class="fields"><label class="field">Supervisor<select id="dest"></select></label><label class="field">Fecha<input id="fechaPedido" type="date"/></label><label class="field">Puesto de descarga (movimiento)<select id="puesto"><option value="PEDIDO">PEDIDO</option><option value="RECUPERO">RECUPERO</option><option value="DEVOLUCION">DEVOLUCIÓN</option></select></label><label class="field">Unidad móvil<select id="movil"></select></label></div><select class="hidden" id="ce"><option value="1003">1003 - San Juan</option><option value="1004">1004 - Vitarte</option></select><div class="auto-fields-note">El Centro se toma del selector superior. ALIM, CE y LOTE se completan automáticamente desde el Excel diario de stock SAP.</div><p class="small">La cantidad inicia en 0 (amarillo). Al colocar un valor mayor a 0 cambia a verde. Puedes dictar cantidades con el micrófono.</p><div class="tablewrap"><table><thead><tr><th>Matrícula</th><th>Descripción</th><th>Cant.</th><th>Unidad</th><th></th></tr></thead><tbody id="cart"></tbody></table><div class="empty" id="empty">Agrega materiales desde el buscador.</div></div><div class="sap-preview-wrap"><div class="sap-preview-title"><div><h3>Vista previa exacta para SAP / Excel</h3><p class="small">Muestra almacén, centro y lote de donde se obtiene cada cantidad.</p></div><span class="badge" id="previewRowsCount">0 filas</span></div><div class="sap-preview"><table><thead><tr><th>MATRÍCULA</th><th>DESCRIPCIÓN</th><th>C1</th><th>CANT</th><th>UNIDAD</th><th>TP</th><th>C2</th><th>C3</th><th>ALIM</th><th>CE</th><th>OPERACIÓN</th><th>LOTE</th><th>TIPO DE APROVISIONAMIENTO</th><th>POS</th><th>DESTINATARIO</th><th>PUESTO DE DESCARGA</th><th>UBICACIÓN FINAL</th></tr></thead><tbody id="sapPreviewBody"></tbody></table><div class="preview-empty" id="sapPreviewEmpty">Agrega materiales y completa sus cantidades para generar la vista previa.</div></div></div><div class="actions"><button class="btn secondary" id="copy">Copiar para SAP</button><button class="btn secondary" id="csv">Exportar CSV</button><button class="btn primary" id="excel">Exportar Excel</button><button class="btn danger" id="clean">Limpiar</button></div><div class="pending-panel hidden" id="pendingPanel"><div class="head"><h3>⏳ Pendientes por coordinar</h3><span class="badge" id="pendingCount">0</span></div><div id="pendingList"></div></div><p class="status" id="status"></p></section></main></section>
 <section class="view" id="stockView"><section class="stock-toolbar">
 <label>Centro de trabajo<select id="centroGlobal2"><option value="1003">1003 - San Juan</option><option value="1004">1004 - Vitarte</option></select></label>
@@ -1687,4 +1687,55 @@ html[data-theme="dark"] .v438-back-btn{background:#17324f;color:#fff;border-colo
   },true);
 })();
 </script>
+
+<style id="v439AdminSidebarStyles">
+/* V43.9: la barra lateral es exclusiva del administrador. */
+body:not(.v439-admin-mode) .sidebar,
+body:not(.v439-admin-mode) #v23ExpandSidebar,
+body:not(.v439-admin-mode) .mobile-menu-btn,
+body:not(.v439-admin-mode) #sidebarBackdrop{display:none!important}
+body:not(.v439-admin-mode) .app-shell{grid-template-columns:minmax(0,1fr)!important;display:block!important}
+body:not(.v439-admin-mode) .app-content{grid-column:1/-1!important;width:100%!important;min-width:0!important}
+#v439GoToOrder{background:#eaf2fb;color:#17395f;border:1px solid #bfd3e8}
+#v439SearchOrderCount{background:#e8f2ff;color:#075ab8;min-width:34px;text-align:center}
+html[data-theme="dark"] #v439GoToOrder{background:#17324f;color:#fff;border-color:#31577c}
+html[data-theme="dark"] #v439SearchOrderCount{background:#173a60;color:#d9ecff}
+@media(max-width:760px){#searchView .head-actions{grid-template-columns:1fr auto!important}#v439GoToOrder{grid-column:1/2;min-height:48px}#v439SearchOrderCount{grid-column:2/3}#newMaterialTop{grid-column:1/2}}
+</style>
+<script id="v439AdminSidebarAndOrderAccess">
+(function(){
+  'use strict';
+  const ADMIN_SESSION_KEY='bm_admin_session_v1';
+  const byId=id=>document.getElementById(id);
+  function adminActive(){return sessionStorage.getItem(ADMIN_SESSION_KEY)==='1'}
+  function syncAdminShell(){
+    const active=adminActive();
+    document.body.classList.toggle('v439-admin-mode',active);
+    if(!active){
+      byId('sidebar')?.classList.remove('open','collapsed');
+      byId('sidebarBackdrop')?.classList.remove('open');
+      document.querySelector('.app-shell')?.classList.remove('sidebar-collapsed','v27-sidebar-hidden');
+    }
+  }
+  function cartLength(){try{return Array.isArray(cart)?cart.length:0}catch(_){return 0}}
+  function updateOrderAccess(){
+    const count=cartLength();
+    const badge=byId('v439SearchOrderCount');
+    const button=byId('v439GoToOrder');
+    if(badge)badge.textContent=String(count);
+    if(button)button.textContent='📋 Ir a pedido seleccionado'+(count?' ('+count+')':'');
+  }
+  byId('v439GoToOrder')?.addEventListener('click',function(){
+    if(typeof showView==='function')showView('orderView');
+  });
+  document.addEventListener('click',function(event){
+    if(event.target.closest('#adminAccessBtn,#adminLoginSubmit,#adminLogoutBtn'))setTimeout(syncAdminShell,0);
+    if(event.target.closest('[data-v36-confirm],#add,#clean,[data-rm],#v26SaveOrder,#finalizeOrder'))setTimeout(updateOrderAccess,60);
+  },true);
+  const start=function(){syncAdminShell();updateOrderAccess();setInterval(updateOrderAccess,1000)};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+  window.addEventListener('pageshow',function(){syncAdminShell();updateOrderAccess()});
+})();
+</script>
+
 </body></html>

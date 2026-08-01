@@ -1,0 +1,5 @@
+V43.9
+- Botón visible en Buscar materiales para abrir Pedido seleccionado.
+- Contador del pedido visible junto al botón.
+- Barra lateral visible únicamente cuando el administrador inicia sesión.
+- Usuarios normales mantienen acceso a Buscar materiales y Pedido seleccionado mediante botones.
