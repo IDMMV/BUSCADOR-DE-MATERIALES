@@ -1,0 +1,6 @@
+V44.2
+- Datos del pedido arriba.
+- Buscador y botones alineados en una sola fila.
+- Pedido actual debajo de los resultados.
+- Corrección del autocompletado de URL.
+- Barra lateral solo para administrador sin parpadeo.
