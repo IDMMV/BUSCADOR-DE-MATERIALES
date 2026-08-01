@@ -303,7 +303,7 @@ body:not(.v439-admin-mode) .app-content{grid-column:1/-1!important;width:100%!im
 </style>
 </head>
 <body><script id="v442EarlyAdminShell">try{if(sessionStorage.getItem('bm_admin_session_v1')==='1')document.body.classList.add('v439-admin-mode')}catch(e){}</script>
-<header class="top"><div class="brand"><img alt="Ícono Buscador de Materiales" class="app-logo" src="icon-192.png"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V44.2</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn admin-access-btn" id="adminAccessBtn" type="button">🔐 Administrador</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
+<header class="top"><div class="brand"><img alt="Ícono Buscador de Materiales" class="app-logo" src="icon-192.png"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V44.4</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn admin-access-btn" id="adminAccessBtn" type="button">🔐 Administrador</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
 <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 <div class="app-shell">
 <aside class="sidebar" id="sidebar">
@@ -1876,6 +1876,72 @@ html[data-theme="dark"] #v439SearchOrderCount{background:#173a60;color:#d9ecff}
  window.addEventListener('pageshow',start);
  document.addEventListener('focusin',e=>{if(['q','omPedido','alimentadorPedido'].includes(e.target?.id))clean(e.target)},true);
  const obs=new MutationObserver(()=>{const current=document.getElementById('v34CurrentOrder');if(current&&!current.dataset.v442Placed){current.dataset.v442Placed='1';arrange()}});obs.observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
+
+<style id="v444OrderAttentionAndCancelStyles">
+@keyframes v444OrderPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(245,158,11,.55)}50%{transform:scale(1.025);box-shadow:0 0 0 8px rgba(245,158,11,0)}}
+#v439GoToOrder.v444-has-items{background:#f59e0b!important;color:#fff!important;border-color:#d97706!important;animation:v444OrderPulse 1.15s ease-in-out infinite;font-weight:900!important}
+#v444CancelOrder{background:#fee2e2!important;color:#b91c1c!important;border:1px solid #fca5a5!important}
+#v444CancelOrder:disabled{opacity:.45!important;cursor:not-allowed!important;animation:none!important}
+html[data-theme="dark"] #v439GoToOrder.v444-has-items{background:#f59e0b!important;color:#101828!important;border-color:#fbbf24!important}
+html[data-theme="dark"] #v444CancelOrder{background:#4a2027!important;color:#fecaca!important;border-color:#7f1d1d!important}
+@media(max-width:820px){#v444CancelOrder{grid-column:1/-1!important;width:100%!important}}
+</style>
+<script id="v444SearchGuardOrderAttentionAndCancel">
+(function(){
+ 'use strict';
+ const BAD=/^(?:https?:\/\/|www\.)|script\.google\.com\/macros\//i;
+ const q=()=>document.getElementById('q');
+ function cleanSearch(force){
+   const el=q(); if(!el)return;
+   el.type='search';
+   el.name='material_catalog_search_v444';
+   el.autocomplete='off';
+   el.setAttribute('autocorrect','off');
+   el.setAttribute('autocapitalize','off');
+   el.setAttribute('spellcheck','false');
+   el.setAttribute('data-lpignore','true');
+   el.setAttribute('data-1p-ignore','true');
+   el.setAttribute('data-form-type','other');
+   const value=(el.value||'').trim();
+   if(BAD.test(value)){
+     el.value='';
+     if(force!==false){el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}))}
+   }
+ }
+ function cartCount(){try{return Array.isArray(cart)?cart.length:0}catch(_){return 0}}
+ function updateButtons(){
+   const n=cartCount(),go=document.getElementById('v439GoToOrder'),badge=document.getElementById('v439SearchOrderCount'),cancel=document.getElementById('v444CancelOrder');
+   if(go){go.classList.toggle('v444-has-items',n>0);go.setAttribute('aria-live','polite');go.textContent=n?`📋 Ir a pedido seleccionado (${n})`:'📋 Ir a pedido seleccionado'}
+   if(badge)badge.textContent=String(n);
+   if(cancel){cancel.disabled=n===0;cancel.title=n?'Eliminar todos los materiales del pedido actual':'No hay materiales para cancelar'}
+ }
+ function ensureCancelButton(){
+   const actions=document.querySelector('#searchView>.panel>.head>.head-actions');
+   if(!actions||document.getElementById('v444CancelOrder'))return;
+   const b=document.createElement('button');b.id='v444CancelOrder';b.type='button';b.className='btn danger';b.textContent='✕ Cancelar pedido';
+   const add=document.getElementById('newMaterialTop');actions.insertBefore(b,add||null);
+   b.addEventListener('click',()=>{
+     const n=cartCount();if(!n)return;
+     if(!confirm(`¿Cancelar el pedido actual y quitar ${n} material${n===1?'':'es'}?`))return;
+     try{cart=[]}catch(_){while(Array.isArray(window.cart)&&window.cart.length)window.cart.pop()}
+     try{if(typeof selectedCode!=='undefined')selectedCode=''}catch(_){ }
+     try{if(typeof renderCart==='function')renderCart()}catch(_){ }
+     try{if(typeof renderResults==='function')renderResults()}catch(_){ }
+     try{if(typeof renderSearchOrder==='function')renderSearchOrder()}catch(_){ }
+     try{if(typeof save==='function')save()}catch(_){ }
+     updateButtons();
+     if(typeof msg==='function')msg('Pedido cancelado. Se retiraron todos los materiales.');
+   });
+ }
+ function start(){ensureCancelButton();cleanSearch();updateButtons();let checks=0;const timer=setInterval(()=>{cleanSearch();ensureCancelButton();updateButtons();if(++checks>30)clearInterval(timer)},300)}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+ window.addEventListener('pageshow',start);
+ document.addEventListener('input',e=>{if(e.target?.id==='q'&&BAD.test((e.target.value||'').trim()))cleanSearch();},true);
+ document.addEventListener('focusin',e=>{if(e.target?.id==='q')cleanSearch(false)},true);
+ document.addEventListener('click',e=>{if(e.target.closest('[data-v36-confirm],[data-rm],#clean,#v31FinalizeOrder,#v444CancelOrder'))setTimeout(updateButtons,80)},true);
+ document.addEventListener('change',e=>{if(e.target.matches?.('[data-qty]'))setTimeout(updateButtons,30)},true);
 })();
 </script>
 

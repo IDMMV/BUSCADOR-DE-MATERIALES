@@ -1,0 +1,6 @@
+V44.4
+- Se cancela la integración de Rutas de Inspección y se mantiene la web normal de materiales.
+- Se elimina automáticamente cualquier URL de Apps Script que Chrome coloque en el buscador.
+- El botón Ir a pedido seleccionado cambia a color ámbar y parpadea cuando hay materiales.
+- Se agrega el botón Cancelar pedido para retirar todos los materiales con confirmación.
+- Caché PWA actualizada.
