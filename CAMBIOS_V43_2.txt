@@ -1,0 +1,6 @@
+BUSCADOR DE MATERIALES SAP V43.2
+
+- El stock vence a las 00:00 del día siguiente a su carga.
+- Al vencer, se bloquea la generación de pedidos.
+- El aviso indica cuánto tiempo ha pasado desde el vencimiento, en días, horas y minutos.
+- Recuperar datos desde Drive conserva la fecha original del Excel; no renueva la vigencia.
