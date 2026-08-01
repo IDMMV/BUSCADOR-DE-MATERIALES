@@ -114,7 +114,7 @@ html,body{max-width:100%;overflow-x:hidden}body{font-size:14px}.topbar{padding:1
 </style>
 
 <style id="v421-mobile-horizontal-navigation">
-/* V43.5: corrección exclusivamente móvil para poder desplazar las tablas y acceder a Seleccionar/Agregar. */
+/* V43.6: corrección exclusivamente móvil para poder desplazar las tablas y acceder a Seleccionar/Agregar. */
 @media (max-width:760px){
   /* La página sigue desplazándose verticalmente; únicamente las tablas usan desplazamiento horizontal propio. */
   body{overflow-x:hidden!important;touch-action:pan-y pinch-zoom!important}
@@ -244,7 +244,7 @@ html,body{max-width:100%;overflow-x:hidden}body{font-size:14px}.topbar{padding:1
 </style>
 
 <style id="v434-polish">
-/* V43.5: cabecera de stock compacta, orden de datos e imagen ampliada */
+/* V43.6: cabecera de stock compacta, orden de datos e imagen ampliada */
 .stock-toolbar{margin-top:6px!important;padding-top:4px!important;padding-bottom:4px!important;gap:8px!important;align-items:center!important}
 .stock-toolbar .stock-file-wrap label,.stock-toolbar>label{margin:0!important}
 .stock-toolbar input[type="file"]{padding:8px!important;margin-top:3px!important}
@@ -297,7 +297,7 @@ html[data-theme="dark"] .stock-status.stale{background:#493a16!important;color:#
 </style>
 </head>
 <body>
-<header class="top"><div class="brand"><img alt="Ícono Buscador de Materiales" class="app-logo" src="icon-192.png"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V43.5</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn admin-access-btn" id="adminAccessBtn" type="button">🔐 Administrador</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
+<header class="top"><div class="brand"><img alt="Ícono Buscador de Materiales" class="app-logo" src="icon-192.png"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V43.6</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn admin-access-btn" id="adminAccessBtn" type="button">🔐 Administrador</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
 <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 <div class="app-shell">
 <aside class="sidebar" id="sidebar">
@@ -1458,7 +1458,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
 </script>
 
 <style id="v42-2-focused-admin-colors">
-/* V43.5: Supervisores y Unidades muestran exclusivamente su contenido. */
+/* V43.6: Supervisores y Unidades muestran exclusivamente su contenido. */
 #dlg.single-admin #appNote,#dlg.single-admin #configTabs,#dlg.single-admin #p-mat,#dlg.single-admin #p-github{display:none!important}
 #dlg.single-admin[data-single-page="sup"] #p-units{display:none!important}
 #dlg.single-admin[data-single-page="units"] #p-sup{display:none!important}
@@ -1514,7 +1514,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
 })();
 </script>
 <style id="v42-4-unified-dark-and-images">
-/* V43.5: cambios visuales aprobados; la lógica permanece intacta. */
+/* V43.6: cambios visuales aprobados; la lógica permanece intacta. */
 .v42-material-image{width:86px;min-width:86px;text-align:center}
 .v42-material-image img{display:block;width:72px;height:58px;object-fit:contain;margin:auto;border:1px solid var(--line);border-radius:9px;background:#fff}
 .v42-material-image span{display:flex;width:72px;height:58px;margin:auto;align-items:center;justify-content:center;border:1px dashed #aabbd0;border-radius:9px;color:var(--muted);font-size:11px;background:#f8fafc}
@@ -1625,8 +1625,10 @@ html[data-theme="dark"] .admin-login-card{background:#102139;border-color:#35527
  qs('#adminPasswordInput')?.addEventListener('keydown',e=>{if(e.key==='Enter')login()});
  qs('#adminLoginClose')?.addEventListener('click',()=>qs('#adminLoginDialog')?.close());
  qs('#adminLogoutBtn')?.addEventListener('click',()=>{sessionStorage.removeItem(ADMIN_SESSION);applyAdminVisibility();qs('#adminLoginDialog')?.close()});
- const obs=new MutationObserver(()=>applyAdminVisibility());obs.observe(document.body,{childList:true,subtree:true});
+ // Evita un bucle infinito de MutationObserver: applyAdminVisibility modifica el texto del botón.
+ // La visibilidad se aplica al iniciar y cada vez que se abre/cierra la sesión.
  applyAdminVisibility();
+ window.addEventListener('pageshow', applyAdminVisibility);
 })();
 </script>
 </body></html>

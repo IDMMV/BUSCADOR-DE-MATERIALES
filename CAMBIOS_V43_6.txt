@@ -1,0 +1,4 @@
+V43.6 CORREGIDA
+- Eliminado bucle infinito del MutationObserver del modo administrador.
+- La aplicación deja de quedarse cargando.
+- Conserva acceso administrador y funciones aprobadas.
