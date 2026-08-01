@@ -303,7 +303,7 @@ body:not(.v439-admin-mode) .app-content{grid-column:1/-1!important;width:100%!im
 </style>
 </head>
 <body><script id="v442EarlyAdminShell">try{if(sessionStorage.getItem('bm_admin_session_v1')==='1')document.body.classList.add('v439-admin-mode')}catch(e){}</script>
-<header class="top"><div class="brand"><img alt="Ícono Buscador de Materiales" class="app-logo" src="icon-192.png"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V44.4</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn admin-access-btn" id="adminAccessBtn" type="button">🔐 Administrador</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
+<header class="top"><div class="brand"><img alt="Ícono Buscador de Materiales" class="app-logo" src="icon-192.png"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V44.5</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn admin-access-btn" id="adminAccessBtn" type="button">🔐 Administrador</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
 <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 <div class="app-shell">
 <aside class="sidebar" id="sidebar">
@@ -392,7 +392,53 @@ function renderCart(){$('#cartCount').textContent=`${cart.length} material${cart
 function movementCode(){return $('#puesto').value==='PEDIDO'?'P':$('#puesto').value==='RECUPERO'?'R':'D'}function formattedOrderDate(){let v=$('#fechaPedido').value;if(!v)return'';let [y,m,d]=v.split('-');return `${d}/${m}`}
 function supervisorSAP(){let supervisor=$('#dest').value||'',ini=(state.supervisorInitials?.[supervisor]||deriveInitials(supervisor)).toUpperCase(),date=formattedOrderDate();return [ini,date].filter(Boolean).join(' ')}
 function rows(){let unidad=$('#movil').value||'',out=[];for(let m of cart){let a=allocateStock(m.code,m.qty);for(let x of a.rows)out.push({MATRICULA:m.code,DESCRIPCION:m.description,C1:'',CANT:x.qty,UNIDAD:normalizedUnit(m),TP:'L',C2:'',C3:'',ALIM:x.almacen,CE:x.centro,OPERACION:'0010',LOTE:x.lote,'TIPO DE APROVISIONAMIENTO':'Reserva para orden',POS:0,DESTINATARIO:supervisorSAP(),'PUESTO DE DESCARGA':unidad?`${unidad} (${movementCode()})`:`(${movementCode()})`,'UBICACION FINAL':''})}return out}
-function valid(){if(stockMeta.date!==todayKey()){msg(expiredStockMessage(),true);return false}if(!cart.length){msg('Agrega al menos un material.',true);return false}if(cart.some(x=>!(Number(x.qty)>0))){msg('Completa las cantidades amarillas antes de exportar.',true);return false}let bad=cart.find(x=>allocateStock(x.code,x.qty).missing>0);if(bad){msg(`Stock insuficiente para ${bad.code}. Disponible: ${availableStock(bad.code)}.`,true);return false}return true}function tsv(){let r=rows(),h=Object.keys(r[0]);return r.map(x=>h.map(k=>x[k]).join('\t')).join('\n')}function csvText(){let r=rows(),h=Object.keys(r[0]),e=v=>'"'+String(v??'').replace(/"/g,'""')+'"';return '\ufeff'+[h.map(e).join(';'),...r.map(x=>h.map(k=>e(x[k])).join(';'))].join('\r\n')}function dl(txt,name,type='text/plain'){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}function excel(){if(!valid())return;let r=rows(),h=Object.keys(r[0]),table=`<table border="1"><tr>${h.map(x=>`<th style="background:#fff500">${esc(x)}</th>`).join('')}</tr>${r.map(x=>`<tr>${h.map(k=>`<td style="mso-number-format:'\@'">${esc(String(x[k]))}</td>`).join('')}</tr>`).join('')}</table>`;dl('\ufeff<html><meta charset="utf-8"><body>'+table+'</body></html>','Pedido_Materiales.xls','application/vnd.ms-excel')}function msg(t,e=false,id='#status'){let x=$(id);if(x){x.textContent=t;x.style.color=e?'#c62828':'#15803d';setTimeout(()=>x.textContent='',5000)}let toast=document.getElementById('appToast');if(!toast){toast=document.createElement('div');toast.id='appToast';toast.className='app-toast';document.body.appendChild(toast)}toast.textContent=t;toast.className='app-toast show '+(e?'error':'success');clearTimeout(window.__bmToastTimer);window.__bmToastTimer=setTimeout(()=>toast.className='app-toast',3500)}
+function valid(){if(stockMeta.date!==todayKey()){msg(expiredStockMessage(),true);return false}if(!cart.length){msg('Agrega al menos un material.',true);return false}if(cart.some(x=>!(Number(x.qty)>0))){msg('Completa las cantidades amarillas antes de exportar.',true);return false}let bad=cart.find(x=>allocateStock(x.code,x.qty).missing>0);if(bad){msg(`Stock insuficiente para ${bad.code}. Disponible: ${availableStock(bad.code)}.`,true);return false}return true}function tsv(){let r=rows(),h=Object.keys(r[0]);return r.map(x=>h.map(k=>x[k]).join('\t')).join('\n')}function csvText(){let r=rows(),h=Object.keys(r[0]),e=v=>'"'+String(v??'').replace(/"/g,'""')+'"';return '\ufeff'+[h.map(e).join(';'),...r.map(x=>h.map(k=>e(x[k])).join(';'))].join('\r\n')}function dl(txt,name,type='text/plain'){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}function excel(){if(!valid())return;let r=rows(),h=Object.keys(r[0]),table=`<table border="1"><tr>${h.map(x=>`<th style="background:#fff500">${esc(x)}</th>`).join('')}</tr>${r.map(x=>`<tr>${h.map(k=>`<td style="mso-number-format:'\@'">${esc(String(x[k]))}</td>`).join('')}</tr>`).join('')}</table>`;dl('\ufeff<html><meta charset="utf-8"><body>'+table+'
+<style id="v445RecordedPreviewStyles">
+#v26SaveRow{display:flex!important;align-items:center!important;gap:10px!important;flex-wrap:wrap!important}
+#orderPanel:not(.v445-recorded) .sap-preview-wrap,#orderPanel:not(.v445-recorded)>.actions{display:none!important}
+#orderPanel.v445-recorded .sap-preview-wrap,#orderPanel.v445-recorded>.actions{display:block!important}
+#orderPanel.v445-recorded #cart input,#orderPanel.v445-recorded #cart button[data-center-toggle],#orderPanel.v445-recorded #cart button[data-rm]{pointer-events:none!important;opacity:.62!important}
+#v31FinalizeOrder:disabled{opacity:.6!important;cursor:not-allowed!important}
+#v444CancelOrder{margin-left:0!important}
+@media(max-width:820px){#v26SaveRow{display:grid!important;grid-template-columns:1fr 1fr!important}#v26SaveRow .btn{width:100%!important}}
+</style>
+<script id="v445RecordedPreviewFlow">
+(function(){
+ 'use strict';
+ window.v445OrderRecorded=false;window.v445RecordedRows=[];
+ const originalPreview=window.renderSapPreview;
+ window.renderSapPreview=function(){
+   const panel=document.getElementById('orderPanel');
+   if(!window.v445OrderRecorded){
+     panel?.classList.remove('v445-recorded');
+     const body=document.getElementById('sapPreviewBody'),empty=document.getElementById('sapPreviewEmpty'),count=document.getElementById('previewRowsCount');
+     if(body)body.innerHTML='';if(empty){empty.style.display='block';empty.textContent='Presiona Grabar pedido para generar la vista previa SAP.'}if(count)count.textContent='0 filas';
+     return;
+   }
+   panel?.classList.add('v445-recorded');
+   const body=document.getElementById('sapPreviewBody'),empty=document.getElementById('sapPreviewEmpty'),count=document.getElementById('previewRowsCount');
+   const data=Array.isArray(window.v445RecordedRows)?window.v445RecordedRows:[];
+   if(body)body.innerHTML=data.map(x=>`<tr>${Object.values(x).map(v=>`<td>${typeof esc==='function'?esc(v):String(v??'')}</td>`).join('')}</tr>`).join('');
+   if(empty)empty.style.display=data.length?'none':'block';if(count)count.textContent=`${data.length} fila${data.length===1?'':'s'}`;
+ };
+ window.v445ApplyRecordedState=function(){
+   const panel=document.getElementById('orderPanel'),grab=document.getElementById('v31FinalizeOrder'),cancel=document.getElementById('v444CancelOrder');
+   panel?.classList.toggle('v445-recorded',!!window.v445OrderRecorded);
+   if(grab){grab.disabled=!!window.v445OrderRecorded;grab.textContent=window.v445OrderRecorded?'✓ Pedido grabado':'💾 Grabar pedido'}
+   if(cancel)cancel.disabled=!Array.isArray(cart)||cart.length===0||!!window.v445OrderRecorded;
+   window.renderSapPreview();
+ };
+ function resetRecorded(){window.v445OrderRecorded=false;window.v445RecordedRows=[];window.v445ApplyRecordedState()}
+ function init(){
+   setTimeout(()=>{const b=document.getElementById('v31FinalizeOrder');if(b)b.textContent='💾 Grabar pedido';window.v445ApplyRecordedState()},120);
+   document.addEventListener('click',e=>{if(e.target.closest('#clean'))setTimeout(resetRecorded,30)},true);
+   document.addEventListener('input',e=>{if(e.target.matches?.('[data-qty]')&&!window.v445OrderRecorded)window.renderSapPreview()},true);
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
+</script>
+
+</body></html>','Pedido_Materiales.xls','application/vnd.ms-excel')}function msg(t,e=false,id='#status'){let x=$(id);if(x){x.textContent=t;x.style.color=e?'#c62828':'#15803d';setTimeout(()=>x.textContent='',5000)}let toast=document.getElementById('appToast');if(!toast){toast=document.createElement('div');toast.id='appToast';toast.className='app-toast';document.body.appendChild(toast)}toast.textContent=t;toast.className='app-toast show '+(e?'error':'success');clearTimeout(window.__bmToastTimer);window.__bmToastTimer=setTimeout(()=>toast.className='app-toast',3500)}
 function renderAdmin(){fill($('#dest'),state.supervisors);fill($('#movil'),state.units);$('#supList').innerHTML=state.supervisors.map((x,i)=>`<div class="supervisor-row"><input value="${esc(x)}" data-sup-name="${i}" aria-label="Nombre del supervisor"><input class="initials" maxlength="4" value="${esc(state.supervisorInitials?.[x]||deriveInitials(x))}" data-sup-initials="${i}" aria-label="Iniciales"><div class="supervisor-actions"><button class="btn secondary" data-save-sup="${i}">Guardar</button><button class="btn danger" data-dsup="${i}">Quitar</button></div></div>`).join('');$('#unitList').innerHTML=state.units.map((x,i)=>`<span class="chip">${esc(x)} <button data-dunit="${i}">×</button></span>`).join('');renderMaterialList()}function renderMaterialList(){let q=norm($('#adminSearch').value),a=state.materials.filter(m=>!q||norm([m.code,m.description,...(m.aliases||[])].join(' ')).includes(q)).slice(0,120);$('#materialList').innerHTML=a.map(m=>`<div class="material-item"><b>${esc(m.code)}</b><div>${esc(m.description)}<br><span class="small">${esc((m.aliases||[]).join(' · ')||'Sin alias')}</span></div><button class="btn secondary" data-edit="${m.code}">Editar</button></div>`).join('')}
 function activateMatTab(){document.querySelectorAll('.tab,.page').forEach(x=>x.classList.remove('active'));document.querySelector('.tab[data-page="mat"]').classList.add('active');$('#p-mat').classList.add('active')}function renderAliasEditor(){let box=$('#aliasList');if(!currentAliases.length){box.innerHTML='<p class="small">Esta matrícula todavía no tiene alias.</p>';return}box.innerHTML=currentAliases.map((a,i)=>`<div class="alias-row"><input value="${esc(a)}" data-alias-index="${i}"><button type="button" data-save-alias="${i}">✓</button><button type="button" class="remove-alias" data-remove-alias="${i}">🗑</button></div>`).join('')}function renderImagePreview(){let box=$('#imagePreviewBox');if(currentImage){box.className='';box.innerHTML=`<img class="image-preview" src="${currentImage}" alt="Vista previa">`;$('#removeImage').classList.remove('hidden')}else{box.className='material-placeholder';box.textContent='Sin imagen';$('#removeImage').classList.add('hidden')}}function clearMaterialForm(){editingCode=null;currentAliases=[];currentImage='';['mcode','mdesc','munit','newAlias','mimage'].forEach(id=>$('#'+id).value='');$('#mprio').value='';$('#mcode').disabled=false;$('#saveMat').textContent='Guardar material';$('#cancelEdit').classList.add('hidden');$('#matTitle').textContent='Agregar material';renderAliasEditor();renderImagePreview()}function setMaterialMode(mode){$('#dlg').classList.toggle('add-only',mode==='add');$('#dlg').classList.toggle('edit-mode',mode==='edit');$('#modalTitle').textContent=mode==='add'?'Agregar material':mode==='edit'?'Editar material':'Configuración'}function openNewMaterial(){clearMaterialForm();setMaterialMode('add');activateMatTab();$('#dlg').showModal();setTimeout(()=>$('#mcode').focus(),50)}function openMaterialEditor(c){setMaterialMode('edit');let m=state.materials.find(x=>x.code===c);if(!m)return;editingCode=c;currentAliases=[...(m.aliases||[])];currentImage=m.image||'';$('#mcode').value=m.code;$('#mdesc').value=m.description;$('#munit').value=m.unit||'UN';$('#mprio').value=m.priority||'';$('#mcode').disabled=true;$('#saveMat').textContent='Actualizar matrícula y alias';$('#cancelEdit').classList.remove('hidden');$('#matTitle').textContent='Editar material y alias';renderAliasEditor();renderImagePreview();activateMatTab();if(!$('#dlg').open)$('#dlg').showModal();setTimeout(()=>$('#newAlias').focus(),50)}function addCurrentAlias(){let v=$('#newAlias').value.trim().toUpperCase();if(!v)return;if(!currentAliases.includes(v))currentAliases.push(v);$('#newAlias').value='';renderAliasEditor()}function saveMaterial(){let c=(editingCode||$('#mcode').value.trim()),d=$('#mdesc').value.trim().toUpperCase(),u=$('#munit').value.trim().toUpperCase()||'UND',aliases=[...new Set(currentAliases.map(x=>x.trim().toUpperCase()).filter(Boolean))],p=$('#mprio').value;if(!/^\d{5,}$/.test(c)||!d)return msg('Ingresa matrícula numérica y descripción.',true,'#adminStatus');let m=state.materials.find(x=>x.code===c);if(m){m.description=d;m.unit=u;m.priority=p;m.aliases=aliases;m.image=currentImage}else state.materials.push({code:c,description:d,unit:u,aliases,priority:p,image:currentImage,source:'MANUAL'});state.materials.sort((x,y)=>x.description.localeCompare(y.description,'es'));save();renderResults();renderAdmin();clearMaterialForm();msg(m?'Cambios guardados en este dispositivo. Genera un respaldo para Google Drive.':'Nuevo material guardado en este navegador.',false,'#adminStatus')}function buildAliasSuggestions(){let d=$('#mdesc').value.trim().toUpperCase();if(!d)return msg('Primero ingresa o conserva la descripción oficial.',true,'#adminStatus');let volts=(d.match(/\b\d+(?:[.,]\d+)?\s*KV\b/g)||[]).map(x=>x.replace(/\s+/g,''));let amps=(d.match(/\b\d+\s*A\b/g)||[]).map(x=>x.replace(/\s+/g,''));let mm=(d.match(/\b\d+(?:[.,]\d+)?\s*MM(?:2|²)?\b/g)||[]).map(x=>x.replace(/\s+/g,''));let ranges=(d.match(/\b\d+\s*[-–]\s*\d+\s*MM\b/g)||[]);let out=[];const add=x=>{x=(x||'').replace(/\s+/g,' ').replace(/\s+([,.;])/g,'$1').trim();if(x.length>=3&&!currentAliases.includes(x)&&!out.includes(x))out.push(x)};const v=volts[0]||'',a=amps[0]||'',m=mm[0]||'',r=ranges[0]||'';if(/CUT[ -]?OUT|CUTOUT/.test(d)){add(['CUT OUT',v,a].filter(Boolean).join(' '));add(['CUTOUT',v,a].filter(Boolean).join(' '));add(['FUSIBLE CUT OUT',v,a].filter(Boolean).join(' '));add(['SECCIONADOR FUSIBLE',v].filter(Boolean).join(' '))}if(/AISLADOR/.test(d)){let tipo=/SUSPENSION|ANCLAJE/.test(d)?'AISLADOR SUSPENSION':/LINE POST|PIN/.test(d)?'AISLADOR PIN':/EXTENSOR/.test(d)?'AISLADOR EXTENSOR':'AISLADOR';add([tipo,v].filter(Boolean).join(' '));if(/POLIMER/.test(d))add(['AISLADOR POLIMERICO',v].filter(Boolean).join(' '))}if(/ABRAZADERA/.test(d)){add(['ABRAZADERA',r||m].filter(Boolean).join(' '));add('ABRAZADERA PARA CABLE');if(/VIENTO/.test(d))add('ABRAZADERA PARA VIENTO')}if(/FUSIBLE/.test(d)){add(['FUSIBLE',v,a].filter(Boolean).join(' '));if(/EXPULSION/.test(d))add(['FUSIBLE DE EXPULSION',v,a].filter(Boolean).join(' '));if(/UNIPOLAR|SEC/.test(d))add(['FUSIBLE UNIPOLAR',v,a].filter(Boolean).join(' '))}if(/CONECTOR/.test(d)){let tipo=/BIMETAL/.test(d)?'CONECTOR BIMETALICO':/PERFOR/.test(d)?'CONECTOR PERFORANTE':'CONECTOR';add([tipo,m].filter(Boolean).join(' '));if(/TIPO H|\bH\s*\d+/.test(d))add(['CONECTOR TIPO H',m].filter(Boolean).join(' '))}if(/CABLE/.test(d)){add(['CABLE',m,v].filter(Boolean).join(' '));if(/PREENSAMBL/.test(d))add(['CABLE PREENSAMBLADO',m].filter(Boolean).join(' '))}if(/PERNO/.test(d)){add(['PERNO',m].filter(Boolean).join(' '));if(/GALV/.test(d))add('PERNO GALVANIZADO')}if(/ARANDELA/.test(d)){add(['ARANDELA',m].filter(Boolean).join(' '));if(/PLANA/.test(d))add('ARANDELA PLANA');if(/PRESION/.test(d))add('ARANDELA DE PRESION')}if(/AMARRE/.test(d)){add(['AMARRE',m].filter(Boolean).join(' '));if(/PREFORM/.test(d))add(['AMARRE PREFORMADO',m].filter(Boolean).join(' '))}if(/GRAPA/.test(d)){add(['GRAPA',m].filter(Boolean).join(' '));if(/SUSPENSION/.test(d))add('GRAPA DE SUSPENSION');if(/ANCLAJE/.test(d))add('GRAPA DE ANCLAJE')}if(/SECCIONADOR/.test(d)){add(['SECCIONADOR',v,a].filter(Boolean).join(' '));if(/UNIPOLAR/.test(d))add(['SECCIONADOR UNIPOLAR',v,a].filter(Boolean).join(' '))}let clean=d.replace(/[.,;:()\/]/g,' ').replace(/\b(PARA|CON|DEL|DE|LA|EL|EN|POR|TIPO|TP|P|RED|AEREA|AEREAS)\b/g,' ').replace(/\s+/g,' ').trim();add(clean.split(' ').filter(w=>w.length>2).slice(0,7).join(' '));out.slice(0,6).forEach(x=>currentAliases.push(x));renderAliasEditor();msg(out.length?out.length+' alias sugeridos agregados temporalmente. Revísalos y pulsa Actualizar matrícula y alias.':'No se encontraron alias nuevos; puedes escribirlos manualmente.',!out.length,'#adminStatus')}async function compressImage(file){return new Promise((resolve,reject)=>{let img=new Image(),url=URL.createObjectURL(file);img.onload=()=>{let max=700,scale=Math.min(1,max/Math.max(img.width,img.height)),w=Math.max(1,Math.round(img.width*scale)),h=Math.max(1,Math.round(img.height*scale)),c=document.createElement('canvas');c.width=w;c.height=h;let ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);ctx.drawImage(img,0,0,w,h);URL.revokeObjectURL(url);resolve(c.toDataURL('image/webp',0.7))};img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('Imagen inválida'))};img.src=url})}function exportData(){dl('window.APP_DATA = '+JSON.stringify(state,null,2)+';','data.js','text/javascript;charset=utf-8')}
 function speechSupported(){return !!(window.SpeechRecognition||window.webkitSpeechRecognition)}function numberWordsToDigits(t){const map={cero:0,uno:1,una:1,dos:2,tres:3,cuatro:4,cinco:5,seis:6,siete:7,ocho:8,nueve:9};let parts=norm(t).split(' '),digits=parts.map(x=>map[x]??(x.match(/^\d+$/)?x:'')).join('');return digits||t.match(/[\d.,]+/)?.[0]||''}function cleanDictation(text,target){let t=text.trim().replace(/punto y coma/gi,';').replace(/coma/gi,',');if(target.id==='mcode'||target.type==='number')return numberWordsToDigits(t).replace(',','.');if(target.id==='munit'||target.id==='newUnit')return t.toUpperCase().replace(/\s+/g,'');return t}function startVoice(target,button,append=false){if(!speechSupported()){msg('El reconocimiento de voz no está disponible en este navegador. Usa Chrome o Edge.',true,target.closest('dialog')?'#adminStatus':'#status');return}if(activeRecognition)try{activeRecognition.abort()}catch{}const SR=window.SpeechRecognition||window.webkitSpeechRecognition,r=new SR();activeRecognition=r;r.lang='es-PE';r.interimResults=false;r.maxAlternatives=1;button.classList.add('listening');button.textContent='⏹';r.onresult=e=>{let value=cleanDictation(e.results[0][0].transcript,target);target.value=append&&target.value?target.value.replace(/\s*;?\s*$/,'')+'; '+value:value;target.dispatchEvent(new Event('input',{bubbles:true}));target.dispatchEvent(new Event('change',{bubbles:true}));target.focus()};r.onerror=e=>msg(e.error==='not-allowed'?'Permite el acceso al micrófono para usar la voz.':'No se pudo reconocer la voz. Inténtalo nuevamente.',true,target.closest('dialog')?'#adminStatus':'#status');r.onend=()=>{button.classList.remove('listening');button.textContent='🎤';activeRecognition=null};r.start()}
@@ -596,7 +642,53 @@ html[data-theme="dark"] .alias-v23-table th{background:#263951;color:#e9f2ff}htm
  function addDrawerAlias(){let v=($v('#v23NewAlias').value||'').trim().toUpperCase();if(v&&!drawerAliases.includes(v))drawerAliases.push(v);$v('#v23NewAlias').value='';renderDrawerAliases()}
  function suggestDrawer(){let d=($v('#v23Desc').value||'').toUpperCase();if(!d)return alert('Ingresa primero la descripción.');let out=[];const add=x=>{x=x.replace(/\s+/g,' ').trim();if(x.length>2&&!drawerAliases.includes(x)&&!out.includes(x))out.push(x)};let kv=(d.match(/\d+(?:[.,]\d+)?\s*KV/)||[])[0]||'',a=(d.match(/\d+\s*A\b/)||[])[0]||'',mm=(d.match(/\d+(?:[.,]\d+)?\s*MM(?:2|²)?/)||[])[0]||'';if(/CUT[ -]?OUT|CUTOUT/.test(d)){add(`CUT OUT ${kv} ${a}`);add(`FUSIBLE CUT OUT ${kv}`)}if(/CONECTOR/.test(d)){add(`CONECTOR ${mm}`);if(/TIPO G/.test(d))add('CONECTOR TIPO G');if(/TIPO H/.test(d))add('CONECTOR TIPO H')}if(/AISLADOR/.test(d))add(`AISLADOR ${kv}`);if(/CABLE|CONDUCTOR/.test(d))add(`CABLE ${mm}`);add(d.replace(/[.,;:()\/]/g,' ').split(' ').filter(x=>x.length>2).slice(0,7).join(' '));drawerAliases.push(...out.slice(0,5));drawerAliases=[...new Set(drawerAliases)];renderDrawerAliases()}
  async function saveDrawer(){let code=(editingDrawerCode||$v('#v23Code').value.trim()),desc=$v('#v23Desc').value.trim().toUpperCase(),unit=$v('#v23Unit').value.trim().toUpperCase();if(!/^\d{5,}$/.test(code)||!desc)return alert('Completa una matrícula numérica y la descripción.');document.querySelectorAll('[data-drawer-alias]').forEach(i=>drawerAliases[+i.dataset.drawerAlias]=i.value.trim().toUpperCase());drawerAliases=[...new Set(drawerAliases.filter(Boolean))];let m=state.materials.find(x=>x.code===code);if(m){m.description=desc;m.unit=unit;m.aliases=drawerAliases;m.image=drawerImage;m.priority=''}else state.materials.push({code,description:desc,unit,aliases:drawerAliases,image:drawerImage,priority:'',source:'MANUAL'});state.materials.sort((a,b)=>a.description.localeCompare(b.description,'es'));save();renderAliasTable();renderResults();closeDrawer();syncChanged('Base actualizada correctamente.')}
- function downloadBase(){let rows=(state.materials||[]).map(m=>({MATRICULA:m.code,DESCRIPCION:m.description,UNIDAD:typeof normalizedUnit==='function'?normalizedUnit(m):m.unit,ALIAS:(m.aliases||[]).join(' | ')})),h=Object.keys(rows[0]||{MATRICULA:'',DESCRIPCION:'',UNIDAD:'',ALIAS:''}),table=`<table border="1"><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr>${rows.map(r=>`<tr>${h.map(k=>`<td style="mso-number-format:'\\@'">${escV(r[k])}</td>`).join('')}</tr>`).join('')}</table>`;dl('\ufeff<html><meta charset="utf-8"><body>'+table+'</body></html>','Base_Materiales_SAP.xls','application/vnd.ms-excel')}
+ function downloadBase(){let rows=(state.materials||[]).map(m=>({MATRICULA:m.code,DESCRIPCION:m.description,UNIDAD:typeof normalizedUnit==='function'?normalizedUnit(m):m.unit,ALIAS:(m.aliases||[]).join(' | ')})),h=Object.keys(rows[0]||{MATRICULA:'',DESCRIPCION:'',UNIDAD:'',ALIAS:''}),table=`<table border="1"><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr>${rows.map(r=>`<tr>${h.map(k=>`<td style="mso-number-format:'\\@'">${escV(r[k])}</td>`).join('')}</tr>`).join('')}</table>`;dl('\ufeff<html><meta charset="utf-8"><body>'+table+'
+<style id="v445RecordedPreviewStyles">
+#v26SaveRow{display:flex!important;align-items:center!important;gap:10px!important;flex-wrap:wrap!important}
+#orderPanel:not(.v445-recorded) .sap-preview-wrap,#orderPanel:not(.v445-recorded)>.actions{display:none!important}
+#orderPanel.v445-recorded .sap-preview-wrap,#orderPanel.v445-recorded>.actions{display:block!important}
+#orderPanel.v445-recorded #cart input,#orderPanel.v445-recorded #cart button[data-center-toggle],#orderPanel.v445-recorded #cart button[data-rm]{pointer-events:none!important;opacity:.62!important}
+#v31FinalizeOrder:disabled{opacity:.6!important;cursor:not-allowed!important}
+#v444CancelOrder{margin-left:0!important}
+@media(max-width:820px){#v26SaveRow{display:grid!important;grid-template-columns:1fr 1fr!important}#v26SaveRow .btn{width:100%!important}}
+</style>
+<script id="v445RecordedPreviewFlow">
+(function(){
+ 'use strict';
+ window.v445OrderRecorded=false;window.v445RecordedRows=[];
+ const originalPreview=window.renderSapPreview;
+ window.renderSapPreview=function(){
+   const panel=document.getElementById('orderPanel');
+   if(!window.v445OrderRecorded){
+     panel?.classList.remove('v445-recorded');
+     const body=document.getElementById('sapPreviewBody'),empty=document.getElementById('sapPreviewEmpty'),count=document.getElementById('previewRowsCount');
+     if(body)body.innerHTML='';if(empty){empty.style.display='block';empty.textContent='Presiona Grabar pedido para generar la vista previa SAP.'}if(count)count.textContent='0 filas';
+     return;
+   }
+   panel?.classList.add('v445-recorded');
+   const body=document.getElementById('sapPreviewBody'),empty=document.getElementById('sapPreviewEmpty'),count=document.getElementById('previewRowsCount');
+   const data=Array.isArray(window.v445RecordedRows)?window.v445RecordedRows:[];
+   if(body)body.innerHTML=data.map(x=>`<tr>${Object.values(x).map(v=>`<td>${typeof esc==='function'?esc(v):String(v??'')}</td>`).join('')}</tr>`).join('');
+   if(empty)empty.style.display=data.length?'none':'block';if(count)count.textContent=`${data.length} fila${data.length===1?'':'s'}`;
+ };
+ window.v445ApplyRecordedState=function(){
+   const panel=document.getElementById('orderPanel'),grab=document.getElementById('v31FinalizeOrder'),cancel=document.getElementById('v444CancelOrder');
+   panel?.classList.toggle('v445-recorded',!!window.v445OrderRecorded);
+   if(grab){grab.disabled=!!window.v445OrderRecorded;grab.textContent=window.v445OrderRecorded?'✓ Pedido grabado':'💾 Grabar pedido'}
+   if(cancel)cancel.disabled=!Array.isArray(cart)||cart.length===0||!!window.v445OrderRecorded;
+   window.renderSapPreview();
+ };
+ function resetRecorded(){window.v445OrderRecorded=false;window.v445RecordedRows=[];window.v445ApplyRecordedState()}
+ function init(){
+   setTimeout(()=>{const b=document.getElementById('v31FinalizeOrder');if(b)b.textContent='💾 Grabar pedido';window.v445ApplyRecordedState()},120);
+   document.addEventListener('click',e=>{if(e.target.closest('#clean'))setTimeout(resetRecorded,30)},true);
+   document.addEventListener('input',e=>{if(e.target.matches?.('[data-qty]')&&!window.v445OrderRecorded)window.renderSapPreview()},true);
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
+</script>
+
+</body></html>','Base_Materiales_SAP.xls','application/vnd.ms-excel')}
  async function uploadBase(e){let f=e.target.files[0];if(!f)return;if(!window.XLSX)return alert('No se cargó el lector de Excel. Abre la web con internet una vez.');try{let buf=await f.arrayBuffer(),wb=XLSX.read(buf,{type:'array'}),arr=[];wb.SheetNames.forEach(sn=>arr.push(...XLSX.utils.sheet_to_json(wb.Sheets[sn],{defval:''})));let changed=0,added=0;for(let r of arr){let keys=Object.keys(r),pick=names=>{let k=keys.find(k=>names.some(n=>String(k).toUpperCase().includes(n)));return k?r[k]:''},code=String(pick(['MATRICULA','MATERIAL'])).trim().replace(/\.0$/,''),desc=String(pick(['DESCRIPCION','TEXTO BREVE'])).trim().toUpperCase(),unit=String(pick(['UNIDAD'])).trim().toUpperCase()||'UND',aliases=String(pick(['ALIAS'])).split(/[|;]/).map(x=>x.trim().toUpperCase()).filter(Boolean);if(!code||!desc)continue;let m=state.materials.find(x=>x.code===code);if(m){m.description=desc;m.unit=unit;m.aliases=[...new Set([...(m.aliases||[]),...aliases])];m.priority='';changed++}else{state.materials.push({code,description:desc,unit,aliases,image:'',priority:'',source:'EXCEL'});added++}}state.materials.sort((a,b)=>a.description.localeCompare(b.description,'es'));save();renderAliasTable();renderResults();syncChanged('Base importada y enviada a sincronización.');alert(`Base procesada. Actualizados: ${changed}. Nuevos: ${added}.`)}catch(err){alert('No se pudo cargar la base: '+err.message)}finally{e.target.value=''}}
  function wireDrawer(){$v('#v23CloseDrawer').onclick=closeDrawer;$v('#v23CancelDrawer').onclick=closeDrawer;$v('#v23DrawerBackdrop').onclick=closeDrawer;$v('#v23AddAlias').onclick=addDrawerAlias;$v('#v23NewAlias').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();addDrawerAlias()}};$v('#v23Suggest').onclick=suggestDrawer;$v('#v23SaveMaterial').onclick=saveDrawer;$v('#v23DrawerAliases').onclick=e=>{let b=e.target.closest('[data-drawer-remove]');if(b){drawerAliases.splice(+b.dataset.drawerRemove,1);renderDrawerAliases()}};$v('#v23DrawerAliases').oninput=e=>{if(e.target.matches('[data-drawer-alias]'))drawerAliases[+e.target.dataset.drawerAlias]=e.target.value.toUpperCase()};$v('#v23Image').onchange=async e=>{let f=e.target.files[0];if(!f)return;drawerImage=typeof compressImage==='function'?await compressImage(f):'';renderDrawerImage()};$v('#v23RemoveImage').onclick=()=>{drawerImage='';$v('#v23Image').value='';renderDrawerImage()}}
  function improveCore(){let top=$v('#newMaterialTop');if(top)top.onclick=()=>openDrawer();let config=$v('#config');if(config)config.onclick=()=>{setMaterialMode('config');$v('#dlg').showModal()};let close=$v('#close');if(close)close.onclick=()=>{if($v('#dlg').open)$v('#dlg').close()};let sideConfig=$v('#sideConfig');if(sideConfig)sideConfig.onclick=()=>{setMaterialMode('config');$v('#dlg').showModal()};let oldRender=window.renderPending;if(oldRender)window.renderPending=function(){oldRender();let n=pendingItems.length;let side=document.querySelector('.side-btn[data-view="pendingView"]');if(side&&!side.querySelector('.side-count'))side.insertAdjacentHTML('beforeend',`<span class="side-count">${n}</span>`);else if(side?.querySelector('.side-count'))side.querySelector('.side-count').textContent=n};
@@ -927,12 +1019,21 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
     const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'CONTROL PEDIDOS');const sup=($31('#dest')?.value||'SUPERVISOR').replace(/\s+/g,'_'),date=$31('#fechaPedido')?.value||todayKey();XLSX.writeFile(wb,`Control_Pedido_${date}_${sup}.xlsx`);if(!silent)msg('Control de pedido generado: una fila por centro, con la unidad siempre en Unidad (recojo).');
   }
   function finaliseOrder(){
-    if(!valid())return;const allocs=allocationRows31();if(!allocs.length)return msg('No se generaron filas de stock para finalizar.',true);
-    if(!confirm('¿Finalizar el pedido? El stock será descontado y se guardará en el historial.'))return;
-    try{const records=groupHistory(allocs);const addedDetails=records.reduce((n,r)=>n+(Array.isArray(r.items)?r.items.length:0),0);deductStock(allocs);ensureHistory().push(...records);state.historyUnread=(Number(state.historyUnread)||0)+addedDetails;save();if(typeof window.updateHistoryBadgeV41==='function')window.updateHistoryBadgeV41();renderHistory();renderStockStatus();cart=[];renderCart();renderResults();if(typeof renderSearchOrder==='function')renderSearchOrder();if(typeof queueSync==='function')queueSync('order');if(navigator.onLine&&typeof syncToDrive==='function'&&syncConfig().url)syncToDrive();msg(`Pedido finalizado. Se descontó el stock y se agregaron ${addedDetails} registro${addedDetails===1?'':'s'} de material al historial.`)}catch(e){msg('No se pudo finalizar el pedido: '+e.message,true)}
+    if(window.v445OrderRecorded)return msg('Este pedido ya fue grabado. Usa Limpiar para iniciar uno nuevo.',true);
+    if(!valid())return;const allocs=allocationRows31();if(!allocs.length)return msg('No se generaron filas de stock para grabar.',true);
+    if(!confirm('¿Grabar el pedido? Se descontará el stock y se guardará en el historial.'))return;
+    try{
+      const records=groupHistory(allocs),addedDetails=records.reduce((n,r)=>n+(Array.isArray(r.items)?r.items.length:0),0);
+      deductStock(allocs);ensureHistory().push(...records);state.historyUnread=(Number(state.historyUnread)||0)+addedDetails;save();
+      window.v445OrderRecorded=true;window.v445RecordedRows=allocs.map(x=>({...x}));
+      if(typeof window.updateHistoryBadgeV41==='function')window.updateHistoryBadgeV41();renderHistory();renderStockStatus();
+      if(typeof window.v445ApplyRecordedState==='function')window.v445ApplyRecordedState();
+      if(typeof queueSync==='function')queueSync('order');if(navigator.onLine&&typeof syncToDrive==='function'&&syncConfig().url)syncToDrive();
+      msg(`Pedido grabado. Se descontó el stock y se agregaron ${addedDetails} registro${addedDetails===1?'':'s'} de material al historial.`)
+    }catch(e){msg('No se pudo grabar el pedido: '+e.message,true)}
   }
   function replaceButtons(){
-    const old=$31('#v26SaveOrder');if(old){const n=old.cloneNode(true);old.replaceWith(n);n.id='v31FinalizeOrder';n.className='btn v31-finalize';n.textContent='💾 Finalizar pedido y descontar stock';n.addEventListener('click',finaliseOrder)}
+    const old=$31('#v26SaveOrder');if(old){const n=old.cloneNode(true);old.replaceWith(n);n.id='v31FinalizeOrder';n.className='btn v31-finalize';n.textContent='💾 Grabar pedido';n.addEventListener('click',finaliseOrder)}
     const ctrl=$31('#v30ControlExcel');if(ctrl){const n=ctrl.cloneNode(true);ctrl.replaceWith(n);n.id='v31ControlExcel';n.addEventListener('click',()=>exportControl31())}
   }
   function removeQuantityMics(){document.querySelectorAll('[data-voice-qty]').forEach(x=>x.remove());const p=[...document.querySelectorAll('#orderPanel p.small')].find(x=>x.textContent.includes('micrófono'));if(p)p.textContent='La cantidad inicia en 0 (amarillo). Al colocar un valor mayor a 0 cambia a verde.'}
@@ -1915,22 +2016,25 @@ html[data-theme="dark"] #v444CancelOrder{background:#4a2027!important;color:#fec
    const n=cartCount(),go=document.getElementById('v439GoToOrder'),badge=document.getElementById('v439SearchOrderCount'),cancel=document.getElementById('v444CancelOrder');
    if(go){go.classList.toggle('v444-has-items',n>0);go.setAttribute('aria-live','polite');go.textContent=n?`📋 Ir a pedido seleccionado (${n})`:'📋 Ir a pedido seleccionado'}
    if(badge)badge.textContent=String(n);
-   if(cancel){cancel.disabled=n===0;cancel.title=n?'Eliminar todos los materiales del pedido actual':'No hay materiales para cancelar'}
+   if(cancel){cancel.disabled=n===0||!!window.v445OrderRecorded;cancel.title=window.v445OrderRecorded?'El pedido ya fue grabado':(n?'Eliminar todos los materiales del pedido actual':'No hay materiales para cancelar')}
  }
  function ensureCancelButton(){
-   const actions=document.querySelector('#searchView>.panel>.head>.head-actions');
-   if(!actions||document.getElementById('v444CancelOrder'))return;
+   const saveRow=document.getElementById('v26SaveRow');
+   if(!saveRow||document.getElementById('v444CancelOrder'))return;
    const b=document.createElement('button');b.id='v444CancelOrder';b.type='button';b.className='btn danger';b.textContent='✕ Cancelar pedido';
-   const add=document.getElementById('newMaterialTop');actions.insertBefore(b,add||null);
+   const grab=document.getElementById('v31FinalizeOrder');if(grab&&grab.parentNode===saveRow)grab.insertAdjacentElement('afterend',b);else saveRow.appendChild(b);
    b.addEventListener('click',()=>{
      const n=cartCount();if(!n)return;
+     if(window.v445OrderRecorded)return msg('El pedido ya fue grabado y no puede cancelarse. Usa Limpiar para iniciar uno nuevo.',true);
      if(!confirm(`¿Cancelar el pedido actual y quitar ${n} material${n===1?'':'es'}?`))return;
      try{cart=[]}catch(_){while(Array.isArray(window.cart)&&window.cart.length)window.cart.pop()}
      try{if(typeof selectedCode!=='undefined')selectedCode=''}catch(_){ }
+     window.v445OrderRecorded=false;window.v445RecordedRows=[];
      try{if(typeof renderCart==='function')renderCart()}catch(_){ }
      try{if(typeof renderResults==='function')renderResults()}catch(_){ }
      try{if(typeof renderSearchOrder==='function')renderSearchOrder()}catch(_){ }
      try{if(typeof save==='function')save()}catch(_){ }
+     if(typeof window.v445ApplyRecordedState==='function')window.v445ApplyRecordedState();
      updateButtons();
      if(typeof msg==='function')msg('Pedido cancelado. Se retiraron todos los materiales.');
    });
@@ -1942,6 +2046,52 @@ html[data-theme="dark"] #v444CancelOrder{background:#4a2027!important;color:#fec
  document.addEventListener('focusin',e=>{if(e.target?.id==='q')cleanSearch(false)},true);
  document.addEventListener('click',e=>{if(e.target.closest('[data-v36-confirm],[data-rm],#clean,#v31FinalizeOrder,#v444CancelOrder'))setTimeout(updateButtons,80)},true);
  document.addEventListener('change',e=>{if(e.target.matches?.('[data-qty]'))setTimeout(updateButtons,30)},true);
+})();
+</script>
+
+
+<style id="v445RecordedPreviewStyles">
+#v26SaveRow{display:flex!important;align-items:center!important;gap:10px!important;flex-wrap:wrap!important}
+#orderPanel:not(.v445-recorded) .sap-preview-wrap,#orderPanel:not(.v445-recorded)>.actions{display:none!important}
+#orderPanel.v445-recorded .sap-preview-wrap,#orderPanel.v445-recorded>.actions{display:block!important}
+#orderPanel.v445-recorded #cart input,#orderPanel.v445-recorded #cart button[data-center-toggle],#orderPanel.v445-recorded #cart button[data-rm]{pointer-events:none!important;opacity:.62!important}
+#v31FinalizeOrder:disabled{opacity:.6!important;cursor:not-allowed!important}
+#v444CancelOrder{margin-left:0!important}
+@media(max-width:820px){#v26SaveRow{display:grid!important;grid-template-columns:1fr 1fr!important}#v26SaveRow .btn{width:100%!important}}
+</style>
+<script id="v445RecordedPreviewFlow">
+(function(){
+ 'use strict';
+ window.v445OrderRecorded=false;window.v445RecordedRows=[];
+ const originalPreview=window.renderSapPreview;
+ window.renderSapPreview=function(){
+   const panel=document.getElementById('orderPanel');
+   if(!window.v445OrderRecorded){
+     panel?.classList.remove('v445-recorded');
+     const body=document.getElementById('sapPreviewBody'),empty=document.getElementById('sapPreviewEmpty'),count=document.getElementById('previewRowsCount');
+     if(body)body.innerHTML='';if(empty){empty.style.display='block';empty.textContent='Presiona Grabar pedido para generar la vista previa SAP.'}if(count)count.textContent='0 filas';
+     return;
+   }
+   panel?.classList.add('v445-recorded');
+   const body=document.getElementById('sapPreviewBody'),empty=document.getElementById('sapPreviewEmpty'),count=document.getElementById('previewRowsCount');
+   const data=Array.isArray(window.v445RecordedRows)?window.v445RecordedRows:[];
+   if(body)body.innerHTML=data.map(x=>`<tr>${Object.values(x).map(v=>`<td>${typeof esc==='function'?esc(v):String(v??'')}</td>`).join('')}</tr>`).join('');
+   if(empty)empty.style.display=data.length?'none':'block';if(count)count.textContent=`${data.length} fila${data.length===1?'':'s'}`;
+ };
+ window.v445ApplyRecordedState=function(){
+   const panel=document.getElementById('orderPanel'),grab=document.getElementById('v31FinalizeOrder'),cancel=document.getElementById('v444CancelOrder');
+   panel?.classList.toggle('v445-recorded',!!window.v445OrderRecorded);
+   if(grab){grab.disabled=!!window.v445OrderRecorded;grab.textContent=window.v445OrderRecorded?'✓ Pedido grabado':'💾 Grabar pedido'}
+   if(cancel)cancel.disabled=!Array.isArray(cart)||cart.length===0||!!window.v445OrderRecorded;
+   window.renderSapPreview();
+ };
+ function resetRecorded(){window.v445OrderRecorded=false;window.v445RecordedRows=[];window.v445ApplyRecordedState()}
+ function init(){
+   setTimeout(()=>{const b=document.getElementById('v31FinalizeOrder');if(b)b.textContent='💾 Grabar pedido';window.v445ApplyRecordedState()},120);
+   document.addEventListener('click',e=>{if(e.target.closest('#clean'))setTimeout(resetRecorded,30)},true);
+   document.addEventListener('input',e=>{if(e.target.matches?.('[data-qty]')&&!window.v445OrderRecorded)window.renderSapPreview()},true);
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
 </script>
 

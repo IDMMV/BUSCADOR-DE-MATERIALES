@@ -1,0 +1,7 @@
+BUSCADOR DE MATERIALES SAP V44.5
+
+- El botón se renombra a Grabar pedido.
+- Cancelar pedido se coloca junto a Grabar pedido dentro de Pedido seleccionado.
+- La vista previa SAP y los botones de exportación permanecen ocultos hasta grabar el pedido.
+- Al grabar, se descuenta el stock, se registra el historial y aparece la vista previa SAP.
+- El pedido grabado queda bloqueado para evitar duplicidad.
