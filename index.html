@@ -297,7 +297,7 @@ html[data-theme="dark"] .stock-status.stale{background:#493a16!important;color:#
 </style>
 </head>
 <body>
-<header class="top"><div class="brand"><img alt="Ícono Buscador de Materiales" class="app-logo" src="icon-192.png"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V43.9</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn admin-access-btn" id="adminAccessBtn" type="button">🔐 Administrador</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
+<header class="top"><div class="brand"><img alt="Ícono Buscador de Materiales" class="app-logo" src="icon-192.png"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V44.0</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn admin-access-btn" id="adminAccessBtn" type="button">🔐 Administrador</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
 <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 <div class="app-shell">
 <aside class="sidebar" id="sidebar">
@@ -1689,7 +1689,7 @@ html[data-theme="dark"] .v438-back-btn{background:#17324f;color:#fff;border-colo
 </script>
 
 <style id="v439AdminSidebarStyles">
-/* V43.9: la barra lateral es exclusiva del administrador. */
+/* V44.0: la barra lateral es exclusiva del administrador. */
 body:not(.v439-admin-mode) .sidebar,
 body:not(.v439-admin-mode) #v23ExpandSidebar,
 body:not(.v439-admin-mode) .mobile-menu-btn,
@@ -1735,6 +1735,60 @@ html[data-theme="dark"] #v439SearchOrderCount{background:#173a60;color:#d9ecff}
   const start=function(){syncAdminShell();updateOrderAccess();setInterval(updateOrderAccess,1000)};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
   window.addEventListener('pageshow',function(){syncAdminShell();updateOrderAccess()});
+})();
+</script>
+
+<style id="v440CompactSearchStyles">
+/* V44.0: buscador junto al título y formulario del pedido más compacto. */
+#searchView>.panel>.head{display:grid!important;grid-template-columns:auto minmax(360px,1fr) auto!important;gap:14px!important;align-items:center!important}
+#searchView>.panel>.head h2{white-space:nowrap!important}
+#searchView>.panel>.head>.search{margin:0!important;width:100%!important;min-width:0!important}
+#searchView>.panel>.head>.head-actions{justify-content:flex-end!important;width:auto!important;flex-wrap:nowrap!important}
+.order-data-search{padding:8px 12px!important;margin:8px 0!important}
+.order-data-search .v30-order-head{margin-bottom:5px!important}
+.order-data-search .v30-order-head h3{font-size:18px!important;margin:0!important}
+.order-data-search .fields{gap:6px 9px!important}
+.order-data-search .field label,.order-data-search label{font-size:11px!important}
+.order-data-search .field input,.order-data-search .field select{padding:7px 9px!important;min-height:35px!important;font-size:13px!important}
+.order-data-search .v34-district-note{padding:5px 9px!important;font-size:12px!important}
+.stock-toolbar{margin-top:6px!important;padding-top:0!important;padding-bottom:0!important;gap:8px!important}
+.stock-toolbar input,.stock-toolbar select,.stock-toolbar .btn,.stock-status{min-height:38px!important;padding-top:7px!important;padding-bottom:7px!important}
+#searchView>.panel{margin-top:6px!important;padding-top:12px!important}
+@media(max-width:1100px){#searchView>.panel>.head{grid-template-columns:auto minmax(260px,1fr)!important}#searchView>.panel>.head>.head-actions{grid-column:1/-1!important;justify-content:flex-start!important;flex-wrap:wrap!important}}
+@media(max-width:760px){#searchView>.panel>.head{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:8px!important}#searchView>.panel>.head>.search{order:2!important}#searchView>.panel>.head>.head-actions{order:3!important;display:grid!important;grid-template-columns:1fr auto!important;width:100%!important}.order-data-search .fields{grid-template-columns:1fr 1fr!important}.order-data-search .field input,.order-data-search .field select{font-size:16px!important;min-height:42px!important}}
+@media(max-width:520px){.order-data-search .fields{grid-template-columns:1fr!important}}
+</style>
+<script id="v440SearchPlacementAndAutocompleteFix">
+(function(){
+  'use strict';
+  function sanitizeSearch(){
+    const q=document.getElementById('q');
+    if(!q)return;
+    q.type='search';
+    q.name='material_search_query';
+    q.autocomplete='off';
+    q.setAttribute('autocapitalize','off');
+    q.setAttribute('spellcheck','false');
+    q.setAttribute('data-lpignore','true');
+    q.setAttribute('data-form-type','other');
+    const value=(q.value||'').trim();
+    if(/^https?:\/\//i.test(value)||/script\.google\.com\/macros\//i.test(value)){
+      q.value='';
+      q.dispatchEvent(new Event('input',{bubbles:true}));
+    }
+  }
+  function arrange(){
+    const panel=document.querySelector('#searchView>.panel');
+    const head=panel?.querySelector(':scope>.head');
+    const search=panel?.querySelector(':scope>.search');
+    const actions=head?.querySelector(':scope>.head-actions');
+    if(head&&search&&actions&&search.parentElement!==head)head.insertBefore(search,actions);
+    sanitizeSearch();
+  }
+  const start=function(){arrange();setTimeout(sanitizeSearch,120);setTimeout(sanitizeSearch,700)};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+  window.addEventListener('pageshow',start);
+  document.addEventListener('focusin',function(e){if(e.target?.id==='q')sanitizeSearch()},true);
 })();
 </script>
 

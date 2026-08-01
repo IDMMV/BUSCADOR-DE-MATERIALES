@@ -1,0 +1,4 @@
+V44.0
+- Corrige autocompletado de URL de Apps Script en el buscador.
+- Coloca el buscador a la altura de Buscar materiales.
+- Compacta datos del pedido y barra superior de stock.
