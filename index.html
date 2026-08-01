@@ -295,9 +295,15 @@ html[data-theme="dark"] .stock-status.stale{background:#493a16!important;color:#
  .image-viewer-shell{padding:10px}.image-viewer-stage{padding:10px 36px}.image-viewer-nav{width:34px;height:50px}.image-viewer-close{min-width:82px;padding:9px 10px!important}
 }
 </style>
+
+<style id="v441CriticalNoFlicker">
+body:not(.v439-admin-mode) .sidebar,body:not(.v439-admin-mode) #v23ExpandSidebar,body:not(.v439-admin-mode) .mobile-menu-btn,body:not(.v439-admin-mode) #sidebarBackdrop{display:none!important}
+body:not(.v439-admin-mode) .app-shell{grid-template-columns:minmax(0,1fr)!important;display:block!important}
+body:not(.v439-admin-mode) .app-content{grid-column:1/-1!important;width:100%!important;min-width:0!important}
+</style>
 </head>
 <body>
-<header class="top"><div class="brand"><img alt="Ícono Buscador de Materiales" class="app-logo" src="icon-192.png"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V44.0</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn admin-access-btn" id="adminAccessBtn" type="button">🔐 Administrador</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
+<header class="top"><div class="brand"><img alt="Ícono Buscador de Materiales" class="app-logo" src="icon-192.png"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:#3f7fc4;vertical-align:middle">V44.1</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn admin-access-btn" id="adminAccessBtn" type="button">🔐 Administrador</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
 <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 <div class="app-shell">
 <aside class="sidebar" id="sidebar">
@@ -1689,7 +1695,7 @@ html[data-theme="dark"] .v438-back-btn{background:#17324f;color:#fff;border-colo
 </script>
 
 <style id="v439AdminSidebarStyles">
-/* V44.0: la barra lateral es exclusiva del administrador. */
+/* V44.1: la barra lateral es exclusiva del administrador. */
 body:not(.v439-admin-mode) .sidebar,
 body:not(.v439-admin-mode) #v23ExpandSidebar,
 body:not(.v439-admin-mode) .mobile-menu-btn,
@@ -1739,7 +1745,7 @@ html[data-theme="dark"] #v439SearchOrderCount{background:#173a60;color:#d9ecff}
 </script>
 
 <style id="v440CompactSearchStyles">
-/* V44.0: buscador junto al título y formulario del pedido más compacto. */
+/* V44.1: buscador junto al título y formulario del pedido más compacto. */
 #searchView>.panel>.head{display:grid!important;grid-template-columns:auto minmax(360px,1fr) auto!important;gap:14px!important;align-items:center!important}
 #searchView>.panel>.head h2{white-space:nowrap!important}
 #searchView>.panel>.head>.search{margin:0!important;width:100%!important;min-width:0!important}
@@ -1792,4 +1798,40 @@ html[data-theme="dark"] #v439SearchOrderCount{background:#173a60;color:#d9ecff}
 })();
 </script>
 
+
+<style id="v441OrderAboveSearchStyles">
+#searchView>.panel{display:flex!important;flex-direction:column!important}
+#searchView>.panel>.order-data-search{order:1!important;margin:0 0 7px!important;padding:6px 10px!important;border-radius:10px!important}
+#searchView>.panel>.head{order:2!important}
+#searchView>.panel>.results{order:3!important}
+.order-data-search .v30-order-head{display:flex!important;align-items:center!important;gap:8px!important;margin:0 0 3px!important}
+.order-data-search .v30-order-head h3{font-size:15px!important;line-height:1!important;margin:0!important}
+.order-data-search .v30-order-head .small{font-size:10px!important}
+.order-data-search .fields{display:grid!important;grid-template-columns:1.05fr 1.2fr 1.2fr 1.05fr!important;gap:3px 7px!important}
+.order-data-search .field{gap:1px!important;font-size:10px!important;line-height:1.05!important}
+.order-data-search .field select,.order-data-search .field input{margin-top:2px!important;padding:4px 7px!important;min-height:29px!important;height:29px!important;font-size:12px!important;border-radius:7px!important}
+.order-data-search .v34-district-note{grid-column:1/-1!important;margin-top:1px!important;padding:3px 7px!important;font-size:10px!important;line-height:1.15!important}
+#searchView>.panel>.head{margin-top:0!important}
+@media(max-width:1100px){.order-data-search .fields{grid-template-columns:repeat(4,minmax(130px,1fr))!important;overflow-x:auto!important;padding-bottom:2px!important}}
+@media(max-width:760px){#searchView>.panel>.order-data-search{padding:8px!important}.order-data-search .fields{grid-template-columns:1fr 1fr!important;overflow:visible!important;gap:5px 7px!important}.order-data-search .field select,.order-data-search .field input{height:39px!important;min-height:39px!important;font-size:15px!important}.order-data-search .v30-order-head h3{font-size:16px!important}}
+@media(max-width:480px){.order-data-search .fields{grid-template-columns:1fr!important}}
+</style>
+<script id="v441OrderAboveSearchAndNoFlicker">
+(function(){
+ 'use strict';
+ function clearUrlAutofill(input){if(!input)return;const v=(input.value||'').trim();if(/^https?:\/\//i.test(v)||/script\.google\.com\/macros\//i.test(v)){input.value='';input.dispatchEvent(new Event('input',{bubbles:true}));input.dispatchEvent(new Event('change',{bubbles:true}))}}
+ function protectOrderFields(){
+  const defs={omPedido:'sap_order_number',alimentadorPedido:'sap_feeder_code',fechaPedido:'sap_order_date'};
+  Object.entries(defs).forEach(([id,name])=>{const el=document.getElementById(id);if(!el)return;el.name=name;el.autocomplete='off';el.setAttribute('data-lpignore','true');el.setAttribute('data-form-type','other');if(el.tagName==='INPUT')clearUrlAutofill(el)});
+  ['dest','puesto','movil','centroGlobal','distritoPedido'].forEach(id=>{const el=document.getElementById(id);if(el){el.name='order_'+id;el.autocomplete='off'}});
+  clearUrlAutofill(document.getElementById('q'));
+ }
+ function arrange(){const panel=document.querySelector('#searchView>.panel');const order=document.querySelector('#v30OrderData');const head=panel?.querySelector(':scope>.head');if(panel&&order&&head){order.classList.add('order-data-search');if(order.parentElement!==panel||order.nextElementSibling!==head)panel.insertBefore(order,head)}protectOrderFields()}
+ function stabilizeAdminShell(){document.body.classList.toggle('v439-admin-mode',sessionStorage.getItem('bm_admin_session_v1')==='1')}
+ const start=()=>{stabilizeAdminShell();arrange();requestAnimationFrame(arrange);setTimeout(arrange,250)};
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+ window.addEventListener('pageshow',()=>{stabilizeAdminShell();arrange()});
+ document.addEventListener('focusin',e=>{if(['q','omPedido','alimentadorPedido'].includes(e.target?.id))clearUrlAutofill(e.target)},true);
+})();
+</script>
 </body></html>
