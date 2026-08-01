@@ -1,0 +1,9 @@
+V44.8 ESTABLE
+
+IMPORTANTE PARA GITHUB PAGES
+1. Elimina los archivos anteriores del repositorio.
+2. Sube directamente los archivos de este ZIP.
+3. index.html debe quedar en la RAIZ del repositorio, no dentro de otra carpeta.
+4. Espera la publicación y luego presiona Ctrl + F5.
+
+Esta versión elimina el Service Worker anterior para detener ciclos de actualización y pantallas en blanco.
