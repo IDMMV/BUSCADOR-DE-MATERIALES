@@ -1,0 +1,6 @@
+V44.6
+- Corrección de carga general desde la base estable V44.4.
+- Botón Grabar pedido.
+- Cancelar pedido junto a Grabar pedido.
+- Vista previa SAP visible solo después de grabar.
+- Limpieza reforzada de URL en el buscador.
