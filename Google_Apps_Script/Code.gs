@@ -220,7 +220,12 @@ function normalizeDateTime_(value) {
 
 function writeSheets_(data) {
   const ss=getSpreadsheet_();
-  writeTable_(ss,'Materiales',['MATRICULA','DESCRIPCION','UNIDAD','PRIORIDAD','ALIAS','IMAGEN_ARCHIVO','ACTUALIZADO'],(data.app&&data.app.materials||[]).map(m=>[m.code,m.description,m.unit,m.priority||'',(m.aliases||[]).join(' | '),m.image?'SI':'',new Date()]));
+  const imgMap = saveImages_(data.app && data.app.materials || []);
+  writeTable_(ss,'Materiales',['MATRICULA','DESCRIPCION','UNIDAD','PRIORIDAD','ALIAS','IMAGEN_ESTADO','LINK_IMAGEN_DRIVE','ACTUALIZADO'],(data.app&&data.app.materials||[]).map(m=>{
+    const imgInfo = imgMap[m.code] || {};
+    const link = imgInfo.url ? imgInfo.url : (m.image ? 'En respaldo JSON' : 'SIN IMAGEN');
+    return [m.code,m.description,m.unit,m.priority||'',(m.aliases||[]).join(' | '),m.image?'SI':'NO',link,new Date()];
+  }));
   const initials=(data.app&&data.app.supervisorInitials)||{};
   writeTable_(ss,'Supervisores',['NOMBRE','INICIALES'],(data.app&&data.app.supervisors||[]).map(x=>[x,initials[x]||'']));
   writeTable_(ss,'Unidades',['UNIDAD'],(data.app&&data.app.units||[]).map(x=>[x]));
@@ -251,12 +256,20 @@ function saveImages_(materials) {
   const folder=getFolder_();
   const it=folder.getFoldersByName('imagenes_materiales');
   const imgs=it.hasNext()?it.next():folder.createFolder('imagenes_materiales');
-  materials.filter(m=>m.image&&String(m.image).startsWith('data:image/')).forEach(m=>{
-    const parts=m.image.split(','), mime=parts[0].match(/data:(.*?);/)[1], bytes=Utilities.base64Decode(parts[1]), ext=mime.indexOf('webp')>=0?'webp':'jpg', name=m.code+'.'+ext;
-    const olds=imgs.getFilesByName(name);
-    while(olds.hasNext()) olds.next().setTrashed(true);
-    imgs.createFile(Utilities.newBlob(bytes,mime,name));
+  const imgMap = {};
+  materials.filter(m=>m&&m.image&&String(m.image).startsWith('data:image/')).forEach(m=>{
+    try {
+      const parts=m.image.split(','), mime=parts[0].match(/data:(.*?);/)[1], bytes=Utilities.base64Decode(parts[1]), ext=mime.indexOf('webp')>=0?'webp':'jpg', name=m.code+'.'+ext;
+      const olds=imgs.getFilesByName(name);
+      while(olds.hasNext()) olds.next().setTrashed(true);
+      const file = imgs.createFile(Utilities.newBlob(bytes,mime,name));
+      file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+      imgMap[m.code] = { name: name, url: file.getUrl() };
+    } catch(err) {
+      Logger.log('Error guardando imagen de ' + m.code + ': ' + err);
+    }
   });
+  return imgMap;
 }
 
 function json_(obj){

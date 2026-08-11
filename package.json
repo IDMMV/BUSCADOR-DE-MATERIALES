@@ -1,0 +1,14 @@
+{
+  "name": "buscador-de-materiales-sap",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js",
+    "build": "echo 'No build step required'",
+    "lint": "echo 'No lint step configured'",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
