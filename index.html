@@ -428,9 +428,43 @@ function selectedRowsForItem(m){if(m.allocations&&m.allocations.length)return m.
 function rows(){let unidad=$('#movil').value||'',out=[];for(let m of cart){let allocations=selectedRowsForItem(m);for(let x of allocations)out.push({MATRICULA:m.code,DESCRIPCION:m.description,C1:'',CANT:x.qty,UNIDAD:normalizedUnit(m),TP:'L',C2:'',C3:'',ALIM:x.almacen,CE:x.centro,OPERACION:'0010',LOTE:x.lote,'TIPO DE APROVISIONAMIENTO':'Reserva para orden',POS:0,DESTINATARIO:supervisorSAP(),'PUESTO DE DESCARGA':unidad?`${unidad} (${movementCode()})`:`(${movementCode()})`,'UBICACION FINAL':''})}return out}
 function valid(){if(stockMeta.date!==todayKey()){msg(expiredStockMessage(),true);return false}if(!cart.length){msg('Agrega al menos un material.',true);return false}if(cart.some(x=>!(Number(x.qty)>0))){msg('Completa las cantidades antes de exportar.',true);return false}let badIndex=cart.findIndex(x=>!x.allocations&&stockAnalysis(x.code,x.qty).current<Number(x.qty));if(badIndex>=0){openStockDecision(badIndex);return false}return true}
 function queueSync(type='app'){let cfg=JSON.parse(localStorage.getItem(SYNC_KEY)||'{}');cfg.pending=true;cfg.pendingType=type;localStorage.setItem(SYNC_KEY,JSON.stringify(cfg));renderSyncState()}
-function syncConfig(){return JSON.parse(localStorage.getItem(SYNC_KEY)||'{}')}
-function saveSyncConfig(){let cfg=syncConfig();cfg.url=$('#scriptUrl').value.trim();cfg.token=$('#scriptToken').value.trim();localStorage.setItem(SYNC_KEY,JSON.stringify(cfg));renderSyncState();msg('Conexión guardada.',false,'#adminStatus')}
-function renderSyncState(){let cfg=syncConfig(),online=navigator.onLine;let text=!cfg.url?'Sin configurar':!online?'Sin conexión':cfg.pending?'Cambios pendientes':'Sincronizado';$('#syncState')&&($('#syncState').value=text);$('#lastSync')&&($('#lastSync').value=cfg.lastSync?new Date(cfg.lastSync).toLocaleString('es-PE'):'Nunca');}
+function syncConfig(){
+  let cfg={};
+  try{cfg=JSON.parse(localStorage.getItem(SYNC_KEY)||'{}')}catch(_){}
+  if(!cfg.url) cfg.url = localStorage.getItem('bm_saved_script_url') || (window.state?.syncUrl) || '';
+  if(!cfg.token) cfg.token = localStorage.getItem('bm_saved_script_token') || (window.state?.syncToken) || '';
+  return cfg;
+}
+function saveSyncConfig(){
+  let url=($('#scriptUrl')?.value||'').trim();
+  let token=($('#scriptToken')?.value||'').trim();
+  if(!url){
+    msg('Por favor ingresa la URL de tu Google Apps Script.',true,'#adminStatus');
+    return false;
+  }
+  let cfg=syncConfig();
+  cfg.url=url;
+  cfg.token=token;
+  localStorage.setItem(SYNC_KEY,JSON.stringify(cfg));
+  localStorage.setItem('bm_saved_script_url',url);
+  localStorage.setItem('bm_saved_script_token',token);
+  if(window.state){
+    state.syncUrl=url;
+    state.syncToken=token;
+    save();
+  }
+  renderSyncState();
+  msg('✅ Conexión con Google Drive guardada permanentemente en este dispositivo.',false,'#adminStatus');
+  return true;
+}
+function renderSyncState(){
+  let cfg=syncConfig(),online=navigator.onLine;
+  let text=!cfg.url?'Sin configurar':!online?'Sin conexión':cfg.pending?'Cambios pendientes':'Sincronizado';
+  if($('#scriptUrl')&&cfg.url&&!$('#scriptUrl').value) $('#scriptUrl').value=cfg.url;
+  if($('#scriptToken')&&cfg.token&&!$('#scriptToken').value) $('#scriptToken').value=cfg.token;
+  if($('#syncState'))$('#syncState').value=text;
+  if($('#lastSync'))$('#lastSync').value=cfg.lastSync?new Date(cfg.lastSync).toLocaleString('es-PE'):'Nunca';
+}
 async function replaceStockInDrive(){
   const cfg=syncConfig();
   if(!cfg.url||!cfg.token){msg('Configura primero la URL y la clave de Apps Script.',true,'#adminStatus');return false}
@@ -452,16 +486,31 @@ async function replaceStockInDrive(){
     return true;
   }catch(e){queueSync('stock');msg('No se pudo actualizar el stock compartido: '+(e?.message||e),true,'#adminStatus');return false}
 }
-async function syncToDrive(){
+async function syncToDrive(options={}){
+ const isManual = (typeof options==='object'&&options!==null&&'isManual'in options)?!!options.isManual:(options===true);
  let btn=document.getElementById('syncNow');
  try{
   let cfg=syncConfig();
-  let url=document.getElementById('scriptUrl')?.value.trim()||cfg.url||'';
-  let token=document.getElementById('scriptToken')?.value.trim()||cfg.token||'';
-  cfg.url=url;cfg.token=token;localStorage.setItem(SYNC_KEY,JSON.stringify(cfg));
-  if(!url||!token){msg('Configura la URL y la clave de Apps Script.',true,'#adminStatus');return false}
-  if(!/\/exec(?:\?|$)/.test(url)){msg('La URL debe terminar en /exec.',true,'#adminStatus');return false}
-  if(!navigator.onLine){queueSync();msg('Sin conexión a internet. Los cambios quedan pendientes.',true,'#adminStatus');return false}
+  let inputUrl=document.getElementById('scriptUrl')?.value.trim();
+  let inputToken=document.getElementById('scriptToken')?.value.trim();
+  let url=inputUrl||cfg.url||'';
+  let token=inputToken||cfg.token||'';
+  if(url){cfg.url=url;localStorage.setItem('bm_saved_script_url',url)}
+  if(token){cfg.token=token;localStorage.setItem('bm_saved_script_token',token)}
+  localStorage.setItem(SYNC_KEY,JSON.stringify(cfg));
+  if(!url||!token){
+    if(isManual) msg('Configura la URL y la clave de Apps Script.',true,'#adminStatus');
+    return false;
+  }
+  if(!/\/exec(?:\?|$)/.test(url)){
+    if(isManual) msg('La URL debe terminar en /exec.',true,'#adminStatus');
+    return false;
+  }
+  if(!navigator.onLine){
+    queueSync();
+    if(isManual) msg('Sin conexión a internet. Los cambios quedan pendientes.',true,'#adminStatus');
+    return false;
+  }
   if(btn){btn.disabled=true;btn.textContent='Sincronizando...'}
   let box=document.getElementById('syncState');if(box)box.value='Sincronizando...';
   let payload={action:'syncAll',token,data:{app:state,pending:pendingItems,stockMeta,stockRows,updatedAt:new Date().toISOString()}};
@@ -481,8 +530,14 @@ async function syncToDrive(){
     throw new Error(`Drive no confirmó la nueva actualización. Enviado: ${stockRows.length} registros, ${stockMeta.date||'sin fecha'}, ${stockMeta.file||'sin archivo'}. Drive devuelve: ${Array.isArray(serverRows)?serverRows.length:0} registros, ${serverMeta.date||'sin fecha'}, ${serverMeta.file||'sin archivo'}. Actualiza Code.gs y publica una nueva versión.`);
   }
   cfg.pending=false;cfg.lastSync=j.savedAt||new Date().toISOString();localStorage.setItem(SYNC_KEY,JSON.stringify(cfg));
-  renderSyncState();msg(`Stock verificado en Drive: ${serverRows.length} registros · ${serverMeta.date} · ${serverMeta.file}.`,false,'#adminStatus');return true;
- }catch(e){queueSync();renderSyncState();msg('No se pudo sincronizar: '+(e?.message||e),true,'#adminStatus');return false}
+  renderSyncState();
+  if(isManual) msg(`Stock verificado en Drive: ${serverRows.length} registros · ${serverMeta.date} · ${serverMeta.file}.`,false,'#adminStatus');
+  return true;
+ }catch(e){
+  queueSync();renderSyncState();
+  if(isManual) msg('No se pudo sincronizar: '+(e?.message||e),true,'#adminStatus');
+  return false;
+ }
  finally{if(btn){btn.disabled=false;btn.textContent='Sincronizar ahora'}}
 }
 function renderRecoveredData(){
@@ -549,7 +604,21 @@ async function restoreFromDrive(options={}){
 const _save=save;save=function(){_save();queueSync('app')}
 const _importStock=importStock;importStock=async function(){await _importStock()}
 window.addEventListener('online',()=>{renderSyncState();let cfg=syncConfig();if(cfg.pending&&cfg.url)syncToDrive()});window.addEventListener('offline',renderSyncState);
-setTimeout(()=>{let cfg=syncConfig();if($('#scriptUrl')){$('#scriptUrl').value=cfg.url||'';$('#scriptToken').value=cfg.token||''}renderSyncState();renderPending();$('#saveScriptConfig')?.addEventListener('click',saveSyncConfig);$('#syncNow')?.addEventListener('click',syncToDrive);$('#restoreDrive')?.addEventListener('click',restoreFromDrive);$('#closeDecision')?.addEventListener('click',()=>$('#stockDecision').close());$('#decisionOptions')?.addEventListener('click',e=>{let b=e.target.closest('[data-decision]');if(!b||!currentDecision)return;let {index,m,a}=currentDecision,choice=b.dataset.decision;if(choice==='switch-all'){let old=$('#centroGlobal').value;$('#centroGlobal').value=a.other;$('#ce').value=a.other;m.allocations=allocateStock(m.code,m.qty).rows;$('#centroGlobal').value=old;$('#ce').value=old}else if(choice==='split-centers'){let first=stockFor(m.code,a.center).sort((x,y)=>y.libre-x.libre),second=stockFor(m.code,a.other).sort((x,y)=>y.libre-x.libre),left=a.requested,alloc=[];for(let x of [...first,...second]){if(left<=0)break;let take=Math.min(left,x.libre);alloc.push({...x,qty:take});left-=take}m.allocations=alloc}else if(choice==='partial-pending'){m.qty=String(a.current);m.allocations=allocateStock(m.code,a.current).rows;addPending(m,a,a.currentMissing,'Stock parcial; falta coordinar')}else if(choice==='pending-all'){addPending(m,a,a.requested,'Sin stock suficiente');cart.splice(index,1)}else if(choice==='remove-item'){cart.splice(index,1)}$('#stockDecision').close();currentDecision=null;renderCart();renderPending()});$('#pendingList')?.addEventListener('click',e=>{let del=e.target.closest('[data-delete-pending]');if(del){pendingItems.splice(+del.dataset.deletePending,1);savePending()}let rev=e.target.closest('[data-review-pending]');if(rev){let x=pendingItems[+rev.dataset.reviewPending],m=state.materials.find(y=>y.code===x.code);if(m&&!cart.some(y=>y.code===m.code)){cart.push({...clone(m),qty:String(x.pendingQty)});renderCart();let idx=cart.length-1;openStockDecision(idx)}}});
+setTimeout(()=>{
+  fetch('/api/config').then(r=>r.json()).then(cfgServer=>{
+    if(cfgServer?.scriptUrl){
+      let c=syncConfig();
+      if(!c.url){
+        c.url=cfgServer.scriptUrl;
+        if(cfgServer.scriptToken) c.token=cfgServer.scriptToken;
+        localStorage.setItem(SYNC_KEY,JSON.stringify(c));
+        localStorage.setItem('bm_saved_script_url',c.url);
+        if(c.token) localStorage.setItem('bm_saved_script_token',c.token);
+      }
+      renderSyncState();
+    }
+  }).catch(()=>{});
+  let cfg=syncConfig();if($('#scriptUrl')){$('#scriptUrl').value=cfg.url||'';$('#scriptToken').value=cfg.token||''}renderSyncState();renderPending();$('#saveScriptConfig')?.addEventListener('click',saveSyncConfig);$('#scriptUrl')?.addEventListener('input',()=>{let u=$('#scriptUrl').value.trim();if(u){let c=syncConfig();c.url=u;localStorage.setItem(SYNC_KEY,JSON.stringify(c));localStorage.setItem('bm_saved_script_url',u);if(window.state){state.syncUrl=u;save()}renderSyncState()}});$('#scriptToken')?.addEventListener('input',()=>{let t=$('#scriptToken').value.trim();if(t){let c=syncConfig();c.token=t;localStorage.setItem(SYNC_KEY,JSON.stringify(c));localStorage.setItem('bm_saved_script_token',t);if(window.state){state.syncToken=t;save()}renderSyncState()}});$('#syncNow')?.addEventListener('click',()=>syncToDrive({isManual:true}));$('#restoreDrive')?.addEventListener('click',restoreFromDrive);$('#closeDecision')?.addEventListener('click',()=>$('#stockDecision').close());$('#decisionOptions')?.addEventListener('click',e=>{let b=e.target.closest('[data-decision]');if(!b||!currentDecision)return;let {index,m,a}=currentDecision,choice=b.dataset.decision;if(choice==='switch-all'){let old=$('#centroGlobal').value;$('#centroGlobal').value=a.other;$('#ce').value=a.other;m.allocations=allocateStock(m.code,m.qty).rows;$('#centroGlobal').value=old;$('#ce').value=old}else if(choice==='split-centers'){let first=stockFor(m.code,a.center).sort((x,y)=>y.libre-x.libre),second=stockFor(m.code,a.other).sort((x,y)=>y.libre-x.libre),left=a.requested,alloc=[];for(let x of [...first,...second]){if(left<=0)break;let take=Math.min(left,x.libre);alloc.push({...x,qty:take});left-=take}m.allocations=alloc}else if(choice==='partial-pending'){m.qty=String(a.current);m.allocations=allocateStock(m.code,a.current).rows;addPending(m,a,a.currentMissing,'Stock parcial; falta coordinar')}else if(choice==='pending-all'){addPending(m,a,a.requested,'Sin stock suficiente');cart.splice(index,1)}else if(choice==='remove-item'){cart.splice(index,1)}$('#stockDecision').close();currentDecision=null;renderCart();renderPending()});$('#pendingList')?.addEventListener('click',e=>{let del=e.target.closest('[data-delete-pending]');if(del){pendingItems.splice(+del.dataset.deletePending,1);savePending()}let rev=e.target.closest('[data-review-pending]');if(rev){let x=pendingItems[+rev.dataset.reviewPending],m=state.materials.find(y=>y.code===x.code);if(m&&!cart.some(y=>y.code===m.code)){cart.push({...clone(m),qty:String(x.pendingQty)});renderCart();let idx=cart.length-1;openStockDecision(idx)}}});
   cfg=syncConfig();
   if(navigator.onLine&&cfg.url&&cfg.token){
     if(cfg.pending)syncToDrive().then(()=>restoreFromDrive({silent:true}));
@@ -1617,13 +1686,16 @@ html[data-theme="dark"] .admin-login-card{background:#102139;border-color:#35527
  let gallery=[],galleryIndex=0;
  function buildGallery(){const allm=(window.state?.materials||[]);gallery=allm.map(m=>({code:String(m.code||''),description:String(m.description||''),unit:String(m.unit||'UND'),image:m.image||''}));}
  function showAt(i){if(!gallery.length)return;galleryIndex=(i+gallery.length)%gallery.length;const m=gallery[galleryIndex];if(m.image){if(viewerImg){viewerImg.src=m.image;viewerImg.classList.remove('hidden')}if(viewerNoImg)viewerNoImg.classList.add('hidden')}else{if(viewerImg)viewerImg.classList.add('hidden');if(viewerNoImg)viewerNoImg.classList.remove('hidden')}if(viewerCode)viewerCode.innerHTML=`🖼️ Catálogo · Matrícula ${m.code}`;if(viewerDesc)viewerDesc.textContent=m.description;if(viewerCodeFoot)viewerCodeFoot.textContent=m.code;if(viewerDescFoot)viewerDescFoot.textContent=m.description;if(viewerUnitFoot)viewerUnitFoot.textContent=`Unidad: ${m.unit}`;let s3=0,s4=0;if(typeof stockTotal==='function'){s3=stockTotal(m.code,'1003');s4=stockTotal(m.code,'1004');}else if(typeof availableStock==='function'){s3=availableStock(m.code);}if(viewerMetaFoot){viewerMetaFoot.innerHTML=`San Juan (1003): <b>${s3} ${m.unit}</b> · Vitarte (1004): <b>${s4} ${m.unit}</b>`}if(viewerCounter){viewerCounter.textContent=`Material ${galleryIndex+1} de ${gallery.length}`}}
- document.addEventListener('click',e=>{const target=e.target.closest('.v42-material-image img,.v42-material-image,.material-thumb,.image-preview,[data-open-catalog]');if(!target)return;e.preventDefault();buildGallery();let matCode='';const row=target.closest('tr,.card,.material-item');if(row){const codeEl=row.querySelector('.v29-code,.code,b');if(codeEl)matCode=codeEl.textContent.trim().split(' ')[0].replace('·','')}if(!matCode&&typeof editingCode!=='undefined'&&editingCode)matCode=editingCode;let found=gallery.findIndex(m=>m.code===matCode);if(found<0&&gallery.length)found=0;if(gallery.length){showAt(found>=0?found:0);viewer?.showModal()}});
+ document.addEventListener('click',e=>{const target=e.target.closest('.v42-material-image img,.v42-material-image,.material-thumb,.image-preview,[data-open-catalog],.image-preview-wrap img,#imagePreviewBox');if(!target)return;e.preventDefault();buildGallery();let matCode='';const row=target.closest('tr,.card,.material-item');if(row){const codeEl=row.querySelector('.v29-code,.code,b');if(codeEl)matCode=codeEl.textContent.trim().split(' ')[0].replace('·','')}if(!matCode&&typeof editingCode!=='undefined'&&editingCode)matCode=editingCode;if(!matCode&&$('#mcode')?.value)matCode=$('#mcode').value.trim();let found=gallery.findIndex(m=>m.code===matCode);if(found<0&&gallery.length)found=0;if(gallery.length){showAt(found>=0?found:0);viewer?.showModal()}});
  qs('#imageViewerAddBtn')?.addEventListener('click',()=>{if(!gallery.length)return;const current=gallery[galleryIndex];if(current&&current.code){if(typeof add==='function')add(current.code);viewer?.close()}});
  qs('#imageViewerClose')?.addEventListener('click',()=>viewer?.close());
  qs('#imageViewerPrev')?.addEventListener('click',()=>showAt(galleryIndex-1));
  qs('#imageViewerNext')?.addEventListener('click',()=>showAt(galleryIndex+1));
  viewer?.addEventListener('click',e=>{if(e.target===viewer)viewer?.close()});
  document.addEventListener('keydown',e=>{if(!viewer?.open)return;if(e.key==='ArrowLeft')showAt(galleryIndex-1);if(e.key==='ArrowRight')showAt(galleryIndex+1);if(e.key==='Escape')viewer?.close()});
+ let touchStartX=0,touchEndX=0;
+ viewer?.addEventListener('touchstart',e=>{if(e.changedTouches&&e.changedTouches.length)touchStartX=e.changedTouches[0].screenX},{passive:true});
+ viewer?.addEventListener('touchend',e=>{if(e.changedTouches&&e.changedTouches.length){touchEndX=e.changedTouches[0].screenX;if(touchStartX-touchEndX>50)showAt(galleryIndex+1);else if(touchEndX-touchStartX>50)showAt(galleryIndex-1)}},{passive:true});
 
  const ADMIN_SESSION='bm_admin_session_v1',ADMIN_PASS_KEY='bm_admin_password_v1';
  function expectedPassword(){return localStorage.getItem(ADMIN_PASS_KEY)||'1234'}
@@ -1679,7 +1751,7 @@ html[data-theme="dark"] .v438-back-btn{background:#17324f;color:#fff;border-colo
       return;
     }
     if(event.key==='Escape'){
-      const viewer=document.getElementById('imageViewer');
+      const viewer=document.getElementById('materialImageViewer');
       if(viewer&&viewer.open)return;
       const q=document.getElementById('q');
       if(q&&(q.value||document.querySelector('[data-v36-cancel]'))){
