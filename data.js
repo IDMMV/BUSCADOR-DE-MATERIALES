@@ -1698,3 +1698,6 @@ window.APP_DATA = {
     "WCENTENO": "WC"
   }
 };
+if (typeof window !== 'undefined' && window.APP_DATA) {
+  window.initialMaterials = window.APP_DATA.materials || [];
+}
