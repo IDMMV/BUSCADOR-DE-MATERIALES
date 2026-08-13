@@ -17,14 +17,24 @@ export default async function handler(req, res) {
       try { body = JSON.parse(body); } catch (_) {}
     }
 
-    const targetUrl = (body?.targetUrl || body?.url || process.env.GOOGLE_APPS_SCRIPT_URL || '').trim();
+    const envUrl = (process.env.GOOGLE_APPS_SCRIPT_URL || '').trim();
+    const envToken = (process.env.GOOGLE_APPS_SCRIPT_TOKEN || '').trim();
+
+    const targetUrl = (envUrl || body?.targetUrl || body?.url || '').trim();
     if (!targetUrl) {
-      return res.status(400).json({ ok: false, error: 'URL de Google Apps Script no configurada.' });
+      return res.status(400).json({ ok: false, error: 'URL de Google Apps Script no configurada en Vercel o en la app.' });
     }
 
     const payload = body?.payload ? { ...body.payload } : { ...body };
     delete payload.targetUrl;
     delete payload.url;
+
+    // Priorizar el token configurado en Vercel/servidor para que cualquier equipo se conecte sin ingresar clave
+    if (envToken) {
+      payload.token = envToken;
+    } else if (!payload.token && body?.token) {
+      payload.token = body.token;
+    }
 
     const response = await fetch(targetUrl, {
       method: 'POST',
@@ -48,3 +58,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ ok: false, error: 'Error de conexión con Google Apps Script: ' + (err?.message || err) });
   }
 }
+

@@ -14,7 +14,7 @@
 <title>Buscador de Materiales SAP V40.1</title>
 <style>
 :root{--navy:#0f2942;--blue:#1d70b8;--blue-strong:#175893;--line:#cbd8e7;--bg:#f0f4f9;--panel:#ffffff;--text:#0f1e31;--yellow:#fef08a;--green:#15803d;--red:#dc2626;--muted:#4a5d78}
-html[data-theme="dark"]{--navy:#09131f;--blue:#3b82f6;--blue-strong:#2563eb;--line:#223750;--bg:#09131f;--panel:#101e30;--text:#f0f6fe;--yellow:#51480f;--green:#166534;--red:#991b1b;--muted:#94a3b8}
+html[data-theme="dark"]{--navy:#f0f6fe;--blue:#38bdf8;--blue-strong:#2563eb;--line:#223750;--bg:#071426;--panel:#0e2036;--text:#f0f6fe;--yellow:#fde047;--green:#16803d;--red:#991b1b;--muted:#94a3b8}
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text)}.top{background:var(--panel);border-top:4px solid var(--navy);border-bottom:1px solid var(--line);padding:16px clamp(14px,4vw,46px);display:flex;justify-content:space-between;gap:15px;align-items:center;position:sticky;top:0;z-index:5}.top h1{margin:4px 0;font-size:clamp(22px,3.8vw,34px);color:var(--navy);font-weight:800}.ey{color:var(--blue);font-weight:800;letter-spacing:1px;font-size:11px}.sub{color:var(--muted);margin:0;font-size:13px}.top-actions,.head-actions,.actions,.card-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.layout{padding:18px;display:grid;grid-template-columns:minmax(320px,.9fr) minmax(520px,1.35fr);gap:18px;max-width:1700px;margin:auto}.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;box-shadow:0 3px 12px #0f29420d}.head{display:flex;justify-content:space-between;align-items:center;gap:12px}.head h2{margin:0;font-size:20px;color:var(--navy);font-weight:800}.badge{background:#e8f1fb;color:var(--navy);border:1px solid #b8ceea;border-radius:20px;padding:6px 12px;font-weight:700;font-size:12px}.btn{border:0;border-radius:8px;padding:10px 15px;font-weight:700;cursor:pointer;font-size:13px;transition:all .15s ease}.primary{background:var(--blue);color:#fff}.primary:hover{background:var(--blue-strong)}.secondary{background:#eef4fa;color:var(--navy);border:1px solid #b8ceea}.secondary:hover{background:#dce7f5}.success{background:var(--green);color:#fff}.success:hover{background:#116631}.sap-btn{display:inline-flex;align-items:center;justify-content:center;background:var(--navy);color:#fff;text-decoration:none;border:1px solid #1a3e63;border-radius:8px;padding:10px 15px;font-weight:700;font-size:13px}.sap-btn:hover{background:#173c60}.admin-access-btn{background:#1d70b8;color:#fff;border:1px solid #1a3e63}#stockStatus{background-color:#e3f0f1}#driveBackup{background-color:#0f2942}.danger{background:var(--red);color:#fff}.danger:hover{background:#b91c1c}.search{display:grid;grid-template-columns:1fr auto auto;border:2px solid var(--blue);border-radius:10px;overflow:hidden;margin:15px 0;background:#fff}.search input{border:0;outline:0;padding:12px 14px;font-size:15px;min-width:0;color:var(--text)}.search button{border:0;background:#eef4fa;color:var(--navy);padding:0 15px;font-size:18px;border-left:1px solid #cbd8e7;cursor:pointer}.search button:hover{background:#dce7f5}.mic{color:var(--blue)}.mic.listening{background:#fee2e2!important;color:#bd2323;animation:pulse 1s infinite}@keyframes pulse{50%{opacity:.55}}.voice-wrap{display:grid;grid-template-columns:1fr auto;gap:6px;align-items:stretch}.voice-wrap>input,.voice-wrap>textarea{min-width:0}.voice-btn{border:1px solid #b8ceea;border-radius:8px;background:#eef4fa;color:var(--navy);padding:0 12px;font-size:17px;cursor:pointer}.voice-btn:hover{background:#dce7f5}.results{max-height:68vh;overflow:auto}.card{display:grid;grid-template-columns:minmax(0,1fr) 142px;gap:14px;padding:14px 4px;border-bottom:1px solid #e2e8f0;align-items:center}.card>div:first-child{min-width:0}.card-actions{display:grid;grid-template-columns:1fr;gap:8px;width:142px;align-self:center}.card-actions .btn{width:100%;min-height:42px;padding:9px 8px}.code{font-weight:800;color:var(--blue)}.desc{font-size:14px;margin:5px 0;color:var(--text);line-height:1.35}.tag{display:inline-block;background:#f0f4f9;color:var(--navy);border:1px solid #cbd8e7;border-radius:20px;padding:4px 9px;margin:2px;font-size:11px;font-weight:600}.edit-inline{background:#eef4fa;color:var(--navy);border:1px solid #b8ceea;white-space:nowrap}.add{white-space:nowrap}.fields{display:grid;grid-template-columns:repeat(3,minmax(150px,1fr));gap:12px;margin:15px 0}
 .date-shell{margin-top:6px;width:100%;border:1px solid #b8ceea;border-radius:8px;background:#fff;padding:10px 11px}.date-shell input{display:block;width:100%;min-width:0;border:0;background:transparent;padding:0;font:inherit;color:inherit}.supervisor-add{display:grid;grid-template-columns:minmax(220px,1fr) 110px auto;gap:9px;align-items:stretch}.supervisor-add>input{width:100%;padding:11px;border:1px solid #b8ceea;border-radius:8px;text-transform:uppercase}.supervisor-list{margin-top:14px;border:1px solid var(--line);border-radius:10px;overflow:hidden}.supervisor-row{display:grid;grid-template-columns:minmax(160px,1fr) 90px auto;gap:9px;align-items:center;padding:9px;border-bottom:1px solid var(--line)}.supervisor-row:last-child{border-bottom:0}.supervisor-row input{width:100%;padding:9px;border:1px solid #b8ceea;border-radius:7px}.supervisor-row .initials{text-transform:uppercase;text-align:center}.supervisor-actions{display:flex;gap:6px}
 .field{font-size:12px;font-weight:700;color:var(--navy)}.field select,.field input,.admin input,.admin select,.admin textarea{width:100%;padding:10px 12px;border:1px solid #b8ceea;border-radius:8px;background:#fff;color:var(--text)}.field select:focus,.field input:focus,.admin input:focus{outline:0;border-color:var(--blue);box-shadow:0 0 0 3px rgba(29,112,184,.15)}.field select,.field input{margin-top:6px}.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:10px}table{width:100%;border-collapse:collapse;min-width:760px}th{background:var(--navy)!important;color:#ffffff!important;text-align:left;padding:11px 12px;font-size:12px;font-weight:700;letter-spacing:0.4px;text-transform:uppercase}td{padding:9px 12px;border-bottom:1px solid #e2e8f0;font-size:13px;color:var(--text)}.qty-wrap{display:flex;gap:5px;align-items:center}.qty{width:85px;padding:8px;border:2px solid #d97706;border-radius:7px;background:#fef3c7;color:#78350f;font-weight:800}.qty.ready{background:#dcfce7;border-color:#16a34a;color:#14532d}.row-pending{background:#fffdf0}.status{font-weight:700;min-height:20px;color:var(--navy)}.empty{text-align:center;color:var(--muted);padding:28px}dialog{border:1px solid var(--line);border-radius:14px;width:min(980px,96vw);padding:0;box-shadow:0 15px 50px rgba(15,41,66,0.22);background:var(--panel)}dialog::backdrop{background:rgba(15,41,66,0.65)}.modal{padding:22px}.modalhead{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:14px}.modalhead h2{margin:0;color:var(--navy);font-size:20px;font-weight:800}.tabs{display:flex;gap:4px;border-bottom:2px solid var(--line);margin:14px 0;overflow:auto}.tab{background:none;border:0;padding:11px 16px;font-weight:700;cursor:pointer;white-space:nowrap;color:var(--muted)}.tab.active{color:var(--blue);border-bottom:3px solid var(--blue);font-weight:800}.page{display:none}.page.active{display:block}.adminrow{display:grid;grid-template-columns:1fr auto;gap:9px}.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}.chip{background:#eef4fa;border:1px solid #b8ceea;border-radius:20px;padding:7px 12px;color:var(--navy);font-weight:600}.chip button{border:0;background:none;color:#dc2626;cursor:pointer;font-weight:800}.material-form{display:grid;grid-template-columns:1fr 2fr .65fr 1.35fr .75fr;gap:9px}.material-list{max-height:330px;overflow:auto;margin-top:12px;border-top:1px solid var(--line)}.material-item{display:grid;grid-template-columns:120px 1fr auto;gap:10px;padding:9px;border-bottom:1px solid var(--line);align-items:center}.note{background:#eff6ff;border:1px solid #b8d4f2;border-radius:9px;padding:11px;font-size:13px;color:var(--navy)}.small{font-size:12px;color:var(--muted)}.install-note{font-size:12px;color:var(--muted);margin-top:8px}.material-main{display:grid;grid-template-columns:76px minmax(0,1fr);gap:12px;align-items:center}.material-thumb{width:76px;height:76px;border:1px solid var(--line);border-radius:10px;object-fit:contain;background:#fff}.material-placeholder{width:76px;height:76px;border:1px dashed #a8c1de;border-radius:10px;display:grid;place-items:center;background:#f0f5fa;color:var(--muted);font-size:11px;text-align:center;padding:6px}.labeled-form{display:grid;grid-template-columns:1fr 2fr .7fr .8fr;gap:12px;align-items:end}.form-group{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:800;color:var(--navy)}.form-group input,.form-group select{width:100%;padding:10px 12px;border:1px solid #b8ceea;border-radius:8px;background:#fff}.alias-box,.image-editor{margin-top:14px;border:1px solid var(--line);border-radius:12px;padding:14px;background:#fafcff}.alias-box h4,.image-editor h4{margin:0 0 10px;color:var(--navy);font-size:15px;font-weight:800}.alias-list{display:grid;gap:7px}.alias-row{display:grid;grid-template-columns:1fr auto auto;gap:6px;align-items:center;border:1px solid #cbd8e7;border-radius:8px;padding:8px 10px;background:#fff}.alias-row input{border:0;padding:4px;min-width:0}.alias-row button{border:0;background:#eef4fa;border-radius:7px;padding:7px 10px;cursor:pointer;color:var(--navy);font-weight:600}.alias-row .remove-alias{color:#dc2626;background:#fee2e2}.new-alias-row{display:grid;grid-template-columns:1fr auto auto;gap:8px;margin-top:10px}.image-preview-wrap{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.image-preview{width:110px;height:110px;object-fit:contain;border:1px solid var(--line);border-radius:10px;background:#fff}.add-only #appNote,.add-only #configTabs,.add-only #materialBrowser,.add-only #cancelEdit,.add-only #saveHelp{display:none!important}.add-only #materialActions{position:static}.edit-mode #saveHelp{display:block!important}#materialActions{position:sticky;bottom:0;background:#fff;padding:10px 0;z-index:4;border-top:1px solid var(--line)}.hidden{display:none!important}
@@ -610,7 +610,31 @@ function parseStockWorkbook(file){return new Promise((resolve,reject)=>{if(!wind
 function stockFor(code,center=$('#centroGlobal')?.value||$('#ce').value){return stockRows.filter(x=>x.material===String(code)&&x.centro===String(center)&&x.libre>0)}
 function availableStock(code){return stockFor(code).reduce((a,x)=>a+x.libre,0)}
 function allocateStock(code,qty){let left=Number(qty)||0,out=[];for(let x of stockFor(code).sort((a,b)=>b.libre-a.libre)){if(left<=0)break;let take=Math.min(left,x.libre);out.push({...x,qty:take});left-=take}return{rows:out,missing:Math.max(0,left)}}
-async function importStock(){let f=$('#stockFile').files[0];if(!f)return msg('Selecciona el Excel de stock SAP.',true);try{let rows=await parseStockWorkbook(f);if(!rows.length)throw new Error('No se encontraron filas con Material, Centro, Almacén, Lote y Libre utilización.');stockRows=rows;stockMeta={date:todayKey(),file:f.name,loadedAt:new Date().toISOString(),source:'EXCEL_SAP',revision:(crypto.randomUUID?crypto.randomUUID():(Date.now()+'-'+Math.random().toString(36).slice(2)))};saveStockCache();renderStockStatus();cart.forEach(m=>m.available=availableStock(m.code));renderCart();renderResults();msg(`Stock cargado: ${rows.length} registros. Reemplazando el stock compartido en Drive...`);let cfg=syncConfig();if(cfg.url&&cfg.token&&navigator.onLine){let ok=await replaceStockInDrive();if(ok)msg(`Stock actualizado y verificado en Drive: ${rows.length} registros.`,false,'#adminStatus')}else{queueSync('stock');msg('Stock cargado en este dispositivo. Configura Drive para compartirlo con los demás equipos.',true,'#adminStatus')}}catch(e){msg('No se pudo cargar el stock: '+e.message,true)}}
+async function importStock(){
+  let f=$('#stockFile')?.files?.[0]||$('#stockFile2')?.files?.[0];
+  if(!f)return msg('Selecciona el Excel de stock SAP.',true);
+  try{
+    let rows=await parseStockWorkbook(f);
+    if(!rows.length)throw new Error('No se encontraron filas con Material, Centro, Almacén, Lote y Libre utilización.');
+    stockRows=rows;
+    stockMeta={date:todayKey(),file:f.name,loadedAt:new Date().toISOString(),source:'EXCEL_SAP',revision:(crypto.randomUUID?crypto.randomUUID():(Date.now()+'-'+Math.random().toString(36).slice(2)))};
+    saveStockCache();
+    renderStockStatus();
+    cart.forEach(m=>m.available=availableStock(m.code));
+    renderCart();
+    renderResults();
+    msg(`Stock cargado: ${rows.length} registros. Guardando en Google Drive...`);
+    if(navigator.onLine){
+      let ok=await replaceStockInDrive();
+      if(ok) msg(`✓ Stock actualizado y verificado en Drive: ${rows.length} registros.`,false,'#adminStatus');
+    }else{
+      queueSync('stock');
+      msg('Stock cargado en este dispositivo (sin conexión). Se sincronizará al volver la red.',false,'#adminStatus');
+    }
+  }catch(e){
+    msg('No se pudo cargar el stock: '+e.message,true);
+  }
+}
 function searchText(v){return norm(v).replace(/\s*([\/-])\s*/g,'$1').replace(/\s+/g,' ').trim()}
 function filtered(){
   let q=searchText($('#q')?.value||'');
@@ -1004,26 +1028,72 @@ function selectedRowsForItem(m){if(m.allocations&&m.allocations.length)return m.
 function rows(){let unidad=$('#movil').value||'',out=[];for(let m of cart){let allocations=selectedRowsForItem(m);for(let x of allocations)out.push({MATRICULA:m.code,DESCRIPCION:m.description,C1:'',CANT:x.qty,UNIDAD:normalizedUnit(m),TP:'L',C2:'',C3:'',ALIM:x.almacen,CE:x.centro,OPERACION:'0010',LOTE:x.lote,'TIPO DE APROVISIONAMIENTO':'Reserva para orden',POS:0,DESTINATARIO:supervisorSAP(),'PUESTO DE DESCARGA':unidad?`${unidad} (${movementCode()})`:`(${movementCode()})`,'UBICACION FINAL':''})}return out}
 function valid(){if(stockMeta.date!==todayKey()){msg(expiredStockMessage(),true);return false}if(!cart.length){msg('Agrega al menos un material.',true);return false}if(cart.some(x=>!(Number(x.qty)>0))){msg('Completa las cantidades antes de exportar.',true);return false}let badIndex=cart.findIndex(x=>!x.allocations&&stockAnalysis(x.code,x.qty).current<Number(x.qty));if(badIndex>=0){openStockDecision(badIndex);return false}return true}
 function queueSync(type='app'){let cfg=JSON.parse(localStorage.getItem(SYNC_KEY)||'{}');cfg.pending=true;cfg.pendingType=type;localStorage.setItem(SYNC_KEY,JSON.stringify(cfg));renderSyncState()}
+
+// Cargar configuración de servidor (Vercel / Node) de inmediato para cualquier dispositivo
+window.SERVER_CONFIG = window.SERVER_CONFIG || {};
+window.fetchServerConfigPromise = fetch('/api/config')
+  .then(r => r.ok ? r.json() : null)
+  .then(cfgServer => {
+    if(cfgServer && typeof cfgServer === 'object'){
+      window.SERVER_CONFIG = cfgServer;
+      let c = syncConfig();
+      if(cfgServer.scriptUrl){
+        c.url = cfgServer.scriptUrl;
+        localStorage.setItem('bm_saved_script_url', c.url);
+        if(window.state) state.syncUrl = c.url;
+      }
+      if(cfgServer.scriptToken){
+        c.token = cfgServer.scriptToken;
+        localStorage.setItem('bm_saved_script_token', c.token);
+        if(window.state) state.syncToken = c.token;
+      }
+      if(cfgServer.scriptUrl || cfgServer.scriptToken){
+        localStorage.setItem(SYNC_KEY, JSON.stringify(c));
+        renderSyncState();
+      }
+    }
+    return cfgServer;
+  })
+  .catch(err => {
+    console.warn('Config fetch /api/config:', err);
+    return null;
+  });
+
 function syncConfig(){
   let cfg={};
   try{cfg=JSON.parse(localStorage.getItem(SYNC_KEY)||'{}')}catch(_){}
-  if(!cfg.url) cfg.url = localStorage.getItem('bm_saved_script_url') || (window.state?.syncUrl) || '';
-  if(!cfg.token) cfg.token = localStorage.getItem('bm_saved_script_token') || (window.state?.syncToken) || '';
+  const serverUrl = (window.SERVER_CONFIG?.scriptUrl || '').trim();
+  const serverToken = (window.SERVER_CONFIG?.scriptToken || '').trim();
+
+  cfg.url = (serverUrl || cfg.url || localStorage.getItem('bm_saved_script_url') || (window.state?.syncUrl) || '').trim();
+  cfg.token = (serverToken || cfg.token || localStorage.getItem('bm_saved_script_token') || (window.state?.syncToken) || '').trim();
   return cfg;
 }
 
+async function ensureConfigReady(){
+  if(window.fetchServerConfigPromise){
+    try { await window.fetchServerConfigPromise; } catch(_) {}
+  }
+  return syncConfig();
+}
+
 async function callGoogleScript(action, method='GET', payload=null){
-  const cfg=syncConfig();
-  const url=(cfg.url||'').trim();
-  const token=(cfg.token||'').trim();
+  let cfg = syncConfig();
+  if((!cfg.url || !cfg.token) && window.fetchServerConfigPromise){
+    await ensureConfigReady();
+    cfg = syncConfig();
+  }
+  const url = (cfg.url || '').trim();
+  const token = (cfg.token || '').trim();
+
   if(!url){
-    throw new Error('Configura primero la URL de Google Apps Script.');
+    throw new Error('URL de Google Apps Script no configurada en Administración > Google Drive ni en el servidor.');
   }
 
-  // 1. Probar primero a través del proxy del servidor (sin problemas de CORS ni redirecciones)
-  if(method==='POST'){
+  // 1. Probar primero a través del proxy del servidor / Vercel (sin problemas de CORS ni certificados)
+  if(method === 'POST'){
     const postBody = { targetUrl: url, ...(payload || { action, token }) };
-    if(!postBody.token) postBody.token = token;
+    if(!postBody.token && token) postBody.token = token;
     if(!postBody.action) postBody.action = action;
 
     try {
@@ -1036,12 +1106,18 @@ async function callGoogleScript(action, method='GET', payload=null){
         const pj = await pr.json();
         if(pj && typeof pj === 'object' && pj.ok) return pj;
         if(pj && pj.error) throw new Error(pj.error);
+      } else {
+        const pErr = await pr.json().catch(() => ({}));
+        if(pErr?.error) throw new Error(pErr.error);
       }
     } catch(proxyErr) {
-      console.warn('Proxy /api/drive/sync falló, intentando conexión directa:', proxyErr);
+      if(!proxyErr.message.includes('fetch') && !proxyErr.message.includes('Failed')) {
+        throw proxyErr;
+      }
+      console.warn('Proxy /api/drive/sync no disponible, intentando llamada directa:', proxyErr);
     }
 
-    // 2. Fallback a llamada directa en el navegador
+    // 2. Fallback a llamada directa en el navegador si hay URL
     const cleanUrl = url.replace(/\?.*$/, '');
     const r = await fetch(cleanUrl, {
       method: 'POST',
@@ -1060,16 +1136,24 @@ async function callGoogleScript(action, method='GET', payload=null){
   } else {
     // GET
     try {
-      const pr = await fetch(`/api/drive/get?url=${encodeURIComponent(url)}&token=${encodeURIComponent(token)}&action=${encodeURIComponent(action)}`, {
+      const qUrl = `url=${encodeURIComponent(url)}&`;
+      const qTok = token ? `token=${encodeURIComponent(token)}&` : '';
+      const pr = await fetch(`/api/drive/get?${qUrl}${qTok}action=${encodeURIComponent(action)}`, {
         cache: 'no-store'
       });
       if(pr.ok) {
         const pj = await pr.json();
         if(pj && typeof pj === 'object' && pj.ok) return pj;
         if(pj && pj.error) throw new Error(pj.error);
+      } else {
+        const pErr = await pr.json().catch(() => ({}));
+        if(pErr?.error) throw new Error(pErr.error);
       }
     } catch(proxyErr) {
-      console.warn('Proxy /api/drive/get falló, intentando conexión directa:', proxyErr);
+      if(!proxyErr.message.includes('fetch') && !proxyErr.message.includes('Failed')) {
+        throw proxyErr;
+      }
+      console.warn('Proxy /api/drive/get no disponible, intentando llamada directa:', proxyErr);
     }
 
     // Direct GET fallback
@@ -1114,17 +1198,23 @@ function saveSyncConfig(){
   });
   return true;
 }
+
 function renderSyncState(){
   let cfg=syncConfig(),online=navigator.onLine;
-  let text=!cfg.url?'Sin configurar':!online?'Sin conexión':cfg.pending?'Cambios pendientes':'Sincronizado';
+  let text=(!cfg.url&&!window.SERVER_CONFIG?.scriptUrl)?'Sin configurar':!online?'Sin conexión':cfg.pending?'Cambios pendientes':'Sincronizado';
   if($('#scriptUrl')&&cfg.url&&!$('#scriptUrl').value) $('#scriptUrl').value=cfg.url;
   if($('#scriptToken')&&cfg.token&&!$('#scriptToken').value) $('#scriptToken').value=cfg.token;
   if($('#syncState'))$('#syncState').value=text;
   if($('#lastSync'))$('#lastSync').value=cfg.lastSync?new Date(cfg.lastSync).toLocaleString('es-PE'):'Nunca';
 }
+
 async function replaceStockInDrive(){
+  await ensureConfigReady();
   const cfg=syncConfig();
-  if(!cfg.url||!cfg.token){msg('Configura primero la URL y la clave de Apps Script.',true,'#adminStatus');return false}
+  if(!cfg.url){
+    queueSync('stock');
+    return false;
+  }
   if(!navigator.onLine){msg('No hay conexión a internet.',true,'#adminStatus');return false}
   try{
     const payload={action:'replaceStock',token:cfg.token,stockRows,stockMeta};
@@ -1137,14 +1227,16 @@ async function replaceStockInDrive(){
     return true;
   }catch(e){
     queueSync('stock');
-    msg('No se pudo actualizar el stock en Drive: '+(e?.message||e),true,'#adminStatus');
+    console.warn('replaceStockInDrive error:', e);
     return false;
   }
 }
+
 async function syncToDrive(options={}){
  const isManual = (typeof options==='object'&&options!==null&&'isManual'in options)?!!options.isManual:(options===true);
  let btn=document.getElementById('syncNow');
  try{
+  await ensureConfigReady();
   let cfg=syncConfig();
   let inputUrl=document.getElementById('scriptUrl')?.value.trim();
   let inputToken=document.getElementById('scriptToken')?.value.trim();
@@ -1153,8 +1245,8 @@ async function syncToDrive(options={}){
   if(url){cfg.url=url;localStorage.setItem('bm_saved_script_url',url)}
   if(token){cfg.token=token;localStorage.setItem('bm_saved_script_token',token)}
   localStorage.setItem(SYNC_KEY,JSON.stringify(cfg));
-  if(!url||!token){
-    if(isManual) msg('Configura la URL y la clave de Apps Script en Administración > Google Drive.',true,'#adminStatus');
+  if(!url){
+    if(isManual) msg('Configura la URL de Google Apps Script en Administración > Google Drive o en Vercel (GOOGLE_APPS_SCRIPT_URL).',true,'#adminStatus');
     return false;
   }
   if(!navigator.onLine){
@@ -1181,6 +1273,7 @@ async function syncToDrive(options={}){
  }
  finally{if(btn){btn.disabled=false;btn.textContent='Sincronizar ahora'}}
 }
+
 function renderRecoveredData(){
   try{if(typeof populateSelectors==='function')populateSelectors()}catch(e){console.warn('populateSelectors',e)}
   try{if(typeof renderResults==='function')renderResults()}catch(e){console.warn('renderResults',e)}
@@ -1192,9 +1285,16 @@ function renderRecoveredData(){
   try{if(typeof renderStatusV27==='function')renderStatusV27()}catch(e){console.warn('renderStatusV27',e)}
   try{if(typeof renderSyncState==='function')renderSyncState()}catch(e){console.warn('renderSyncState',e)}
 }
+
 async function restoreFromDrive(options={}){
+  await ensureConfigReady();
   const cfg=syncConfig(), silent=!!options.silent, stockOnly=!!options.stockOnly;
-  if(!cfg.url||!cfg.token){if(!silent)msg('Configura Apps Script primero en Administración > Google Drive.',true,'#adminStatus');return false}
+  if(!cfg.url){
+    if(!silent){
+      msg('Para actualizar desde Google Drive, ingresa la URL de Apps Script en Administración > Google Drive o en Vercel (GOOGLE_APPS_SCRIPT_URL).',true,'#adminStatus');
+    }
+    return false;
+  }
   try{
     const j = await callGoogleScript('getAll', 'GET');
     const data=j.data||{};
@@ -1243,36 +1343,38 @@ async function restoreFromDrive(options={}){
     return true;
   }catch(e){
     if(!silent)msg('No se pudo recuperar desde Drive: '+e.message,true,'#adminStatus');
-    else console.warn('Actualización automática desde Drive:',e);
+    else console.warn('Actualización automática desde Drive:',e.message||e);
     return false;
   }
 }
+
 const _save=save;save=function(){_save();queueSync('app')}
 const _importStock=importStock;importStock=async function(){await _importStock()}
 window.addEventListener('online',()=>{renderSyncState();let cfg=syncConfig();if(cfg.pending&&cfg.url)syncToDrive()});window.addEventListener('offline',renderSyncState);
-setTimeout(()=>{
-  fetch('/api/config').then(r=>r.json()).then(cfgServer=>{
-    if(cfgServer?.scriptUrl){
-      let c=syncConfig();
-      if(!c.url){
-        c.url=cfgServer.scriptUrl;
-        if(cfgServer.scriptToken) c.token=cfgServer.scriptToken;
-        localStorage.setItem(SYNC_KEY,JSON.stringify(c));
-        localStorage.setItem('bm_saved_script_url',c.url);
-        if(c.token) localStorage.setItem('bm_saved_script_token',c.token);
-      }
-      renderSyncState();
-    }
-  }).catch(()=>{});
-  let cfg=syncConfig();if($('#scriptUrl')){$('#scriptUrl').value=cfg.url||'';$('#scriptToken').value=cfg.token||''}renderSyncState();renderPending();$('#saveScriptConfig')?.addEventListener('click',saveSyncConfig);$('#scriptUrl')?.addEventListener('input',()=>{let u=$('#scriptUrl').value.trim();if(u){let c=syncConfig();c.url=u;localStorage.setItem(SYNC_KEY,JSON.stringify(c));localStorage.setItem('bm_saved_script_url',u);if(window.state){state.syncUrl=u;save()}renderSyncState()}});$('#scriptToken')?.addEventListener('input',()=>{let t=$('#scriptToken').value.trim();if(t){let c=syncConfig();c.token=t;localStorage.setItem(SYNC_KEY,JSON.stringify(c));localStorage.setItem('bm_saved_script_token',t);if(window.state){state.syncToken=t;save()}renderSyncState()}});$('#syncNow')?.addEventListener('click',()=>syncToDrive({isManual:true}));$('#restoreDrive')?.addEventListener('click',()=>restoreFromDrive({silent:false}));$('#closeDecision')?.addEventListener('click',()=>$('#stockDecision').close());$('#decisionOptions')?.addEventListener('click',e=>{let b=e.target.closest('[data-decision]');if(!b||!currentDecision)return;let {index,m,a}=currentDecision,choice=b.dataset.decision;if(choice==='switch-all'){let old=$('#centroGlobal').value;$('#centroGlobal').value=a.other;$('#ce').value=a.other;m.allocations=allocateStock(m.code,m.qty).rows;$('#centroGlobal').value=old;$('#ce').value=old}else if(choice==='split-centers'){let first=stockFor(m.code,a.center).sort((x,y)=>y.libre-x.libre),second=stockFor(m.code,a.other).sort((x,y)=>y.libre-x.libre),left=a.requested,alloc=[];for(let x of [...first,...second]){if(left<=0)break;let take=Math.min(left,x.libre);alloc.push({...x,qty:take});left-=take}m.allocations=alloc}else if(choice==='partial-pending'){m.qty=String(a.current);m.allocations=allocateStock(m.code,a.current).rows;addPending(m,a,a.currentMissing,'Stock parcial; falta coordinar')}else if(choice==='pending-all'){addPending(m,a,a.requested,'Sin stock suficiente');cart.splice(index,1)}else if(choice==='remove-item'){cart.splice(index,1)}$('#stockDecision').close();currentDecision=null;renderCart();renderPending()});$('#pendingList')?.addEventListener('click',e=>{let del=e.target.closest('[data-delete-pending]');if(del){pendingItems.splice(+del.dataset.deletePending,1);savePending()}let rev=e.target.closest('[data-review-pending]');if(rev){let x=pendingItems[+rev.dataset.reviewPending],m=state.materials.find(y=>y.code===x.code);if(m&&!cart.some(y=>y.code===m.code)){cart.push({...clone(m),qty:String(x.pendingQty)});renderCart();let idx=cart.length-1;openStockDecision(idx)}}});
-  cfg=syncConfig();
-  if(navigator.onLine&&cfg.url&&cfg.token){
-    if(cfg.pending)syncToDrive().then(()=>restoreFromDrive({silent:true}));
+
+setTimeout(async ()=>{
+  await ensureConfigReady();
+  let cfg=syncConfig();
+  if($('#scriptUrl')){$('#scriptUrl').value=cfg.url||'';$('#scriptToken').value=cfg.token||''}
+  renderSyncState();
+  renderPending();
+  $('#saveScriptConfig')?.addEventListener('click',saveSyncConfig);
+  $('#scriptUrl')?.addEventListener('input',()=>{let u=$('#scriptUrl').value.trim();if(u){let c=syncConfig();c.url=u;localStorage.setItem(SYNC_KEY,JSON.stringify(c));localStorage.setItem('bm_saved_script_url',u);if(window.state){state.syncUrl=u;save()}renderSyncState()}});
+  $('#scriptToken')?.addEventListener('input',()=>{let t=$('#scriptToken').value.trim();if(t){let c=syncConfig();c.token=t;localStorage.setItem(SYNC_KEY,JSON.stringify(c));localStorage.setItem('bm_saved_script_token',t);if(window.state){state.syncToken=t;save()}renderSyncState()}});
+  $('#syncNow')?.addEventListener('click',()=>syncToDrive({isManual:true}));
+  $('#restoreDrive')?.addEventListener('click',()=>restoreFromDrive({silent:false}));
+  $('#closeDecision')?.addEventListener('click',()=>$('#stockDecision').close());
+  $('#decisionOptions')?.addEventListener('click',e=>{let b=e.target.closest('[data-decision]');if(!b||!currentDecision)return;let {index,m,a}=currentDecision,choice=b.dataset.decision;if(choice==='switch-all'){let old=$('#centroGlobal').value;$('#centroGlobal').value=a.other;$('#ce').value=a.other;m.allocations=allocateStock(m.code,m.qty).rows;$('#centroGlobal').value=old;$('#ce').value=old}else if(choice==='split-centers'){let first=stockFor(m.code,a.center).sort((x,y)=>y.libre-x.libre),second=stockFor(m.code,a.other).sort((x,y)=>y.libre-x.libre),left=a.requested,alloc=[];for(let x of [...first,...second]){if(left<=0)break;let take=Math.min(left,x.libre);alloc.push({...x,qty:take});left-=take}m.allocations=alloc}else if(choice==='partial-pending'){m.qty=String(a.current);m.allocations=allocateStock(m.code,a.current).rows;addPending(m,a,a.currentMissing,'Stock parcial; falta coordinar')}else if(choice==='pending-all'){addPending(m,a,a.requested,'Sin stock suficiente');cart.splice(index,1)}else if(choice==='remove-item'){cart.splice(index,1)}$('#stockDecision').close();currentDecision=null;renderCart();renderPending()});
+  $('#pendingList')?.addEventListener('click',e=>{let del=e.target.closest('[data-delete-pending]');if(del){pendingItems.splice(+del.dataset.deletePending,1);savePending()}let rev=e.target.closest('[data-review-pending]');if(rev){let x=pendingItems[+rev.dataset.reviewPending],m=state.materials.find(y=>y.code===x.code);if(m&&!cart.some(y=>y.code===m.code)){cart.push({...clone(m),qty:String(x.pendingQty)});renderCart();let idx=cart.length-1;openStockDecision(idx)}}});
+
+  if(navigator.onLine && cfg.url){
+    if(cfg.pending) syncToDrive().then(()=>restoreFromDrive({silent:true}));
     else restoreFromDrive({silent:true});
   }
 },0);
+
 let lastDriveRefresh=0;
-async function refreshDriveWhenReturning(){const cfg=syncConfig();if(!navigator.onLine||!cfg.url||!cfg.token||cfg.pending||Date.now()-lastDriveRefresh<60000)return;lastDriveRefresh=Date.now();await restoreFromDrive({silent:true})}
+async function refreshDriveWhenReturning(){const cfg=syncConfig();if(!navigator.onLine||!cfg.url||cfg.pending||Date.now()-lastDriveRefresh<60000)return;lastDriveRefresh=Date.now();await restoreFromDrive({silent:true})}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refreshDriveWhenReturning()});
 window.addEventListener('focus',refreshDriveWhenReturning);
 
@@ -2555,35 +2657,394 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
 })();
 </script>
 <style id="v42-4-unified-dark-and-images">
-/* V43.6: cambios visuales aprobados; la lógica permanece intacta. */
+/* V44.9: Modo nocturno profesional y contraste de alta legibilidad */
 .v42-material-image{width:86px;min-width:86px;text-align:center}
 .v42-material-image img{display:block;width:72px;height:58px;object-fit:contain;margin:auto;border:1px solid var(--line);border-radius:9px;background:#fff}
 .v42-material-image span{display:flex;width:72px;height:58px;margin:auto;align-items:center;justify-content:center;border:1px dashed #aabbd0;border-radius:9px;color:var(--muted);font-size:11px;background:#f8fafc}
 .order-finalize-top{justify-content:flex-start!important;margin:10px 0!important}
 #orderPanel .sap-preview-wrap{margin-top:0!important}
-html[data-theme="dark"]{--navy:#071426;--blue:#66a7ef;--blue-strong:#2f83d5;--line:#2c405c;--bg:#071426;--panel:#0f2036;--text:#f1f6ff;--yellow:#f6c515;--green:#153e2a;--red:#4b2028;--muted:#aebed2}
-html[data-theme="dark"] body{background:linear-gradient(180deg,#071426 0%,#0a1a2d 100%)}
-html[data-theme="dark"] .top,html[data-theme="dark"] .sidebar,html[data-theme="dark"] .panel,html[data-theme="dark"] .stock-toolbar,html[data-theme="dark"] dialog .modal{background:#0d1d32!important}
-html[data-theme="dark"] .panel,html[data-theme="dark"] .auto-fields-note,html[data-theme="dark"] .tablewrap,html[data-theme="dark"] .drive-note,html[data-theme="dark"] .v39-history,html[data-theme="dark"] .v39-history-card{border-color:#2b425f!important;box-shadow:none!important}
-html[data-theme="dark"] .auto-fields-note,html[data-theme="dark"] .small,html[data-theme="dark"] .sub,html[data-theme="dark"] .stock-info{color:#aebed2!important}
-html[data-theme="dark"] .badge{background:#102f59!important;color:#7fbdff!important}
-html[data-theme="dark"] .primary{background:#2179c7!important;color:#fff!important}
-html[data-theme="dark"] .secondary{background:#172d49!important;color:#e8f2ff!important;border:1px solid #304b6c!important}
-html[data-theme="dark"] .danger{background:#48222b!important;color:#ff9aa7!important}
-html[data-theme="dark"] .success,html[data-theme="dark"] #v31FinalizeOrder{background:#149447!important;color:#fff!important}
-html[data-theme="dark"] #orderPanel .tablewrap th{background:#f6c515!important;color:#111!important}
-html[data-theme="dark"] #orderPanel .tablewrap td{background:#102139!important;border-color:#2b425f!important}
-html[data-theme="dark"] #orderPanel .sap-preview-wrap{background:#0e2037!important;border-color:#2f5e92!important}
-html[data-theme="dark"] #orderPanel .sap-preview-title h3{color:#f2f6ff!important}
-html[data-theme="dark"] #orderPanel .sap-preview th{background:#f6c515!important;color:#101820!important;border-color:#d8a900!important}
-html[data-theme="dark"] #orderPanel .sap-preview td,html[data-theme="dark"] #orderPanel .sap-preview tr:nth-child(even) td{background:#102139!important;color:#edf5ff!important;border-color:#2b425f!important}
-html[data-theme="dark"] .v29-stock-table th{background:#152c48!important;color:#edf5ff!important}
-html[data-theme="dark"] .v29-stock-table td{background:#0f2036!important;color:#edf5ff!important;border-color:#2b425f!important}
-html[data-theme="dark"] .v29-stock-table tr:hover td{background:#142a45!important}
-html[data-theme="dark"] .v29-stock-pill.good{background:#153e2a!important;color:#77e3a4!important;border-color:#2d8050!important}
-html[data-theme="dark"] .v29-stock-pill.none{background:#48222b!important;color:#ff9aa7!important;border-color:#7b3745!important}
-html[data-theme="dark"] .v42-material-image span{background:#102139;color:#9fb0c5;border-color:#46617f}
-html[data-theme="dark"] .v42-material-image img{background:#fff;border-color:#46617f}
+
+/* Variables globales en Modo Nocturno */
+html[data-theme="dark"]{
+  --navy:#f1f6ff!important;
+  --text:#f1f6ff!important;
+  --bg:#071426!important;
+  --panel:#0e2036!important;
+  --line:#223c5c!important;
+  --blue:#38bdf8!important;
+  --blue-strong:#0284c7!important;
+  --muted:#94a9c4!important;
+  --yellow:#fde047!important;
+  --green:#15803d!important;
+  --red:#991b1b!important;
+}
+
+html[data-theme="dark"] body{
+  background:#071426!important;
+  color:#f1f6ff!important;
+}
+
+/* Encabezados y títulos */
+html[data-theme="dark"] h1,
+html[data-theme="dark"] h2,
+html[data-theme="dark"] h3,
+html[data-theme="dark"] h4,
+html[data-theme="dark"] .head h2,
+html[data-theme="dark"] .top h1,
+html[data-theme="dark"] .modalhead h2,
+html[data-theme="dark"] .dialog-head h2,
+html[data-theme="dark"] #v30OrderData h3,
+html[data-theme="dark"] .alias-box h4,
+html[data-theme="dark"] .image-editor h4{
+  color:#ffffff!important;
+}
+
+/* Etiquetas y campos de formulario */
+html[data-theme="dark"] label,
+html[data-theme="dark"] .field,
+html[data-theme="dark"] .form-group,
+html[data-theme="dark"] #v30OrderData label,
+html[data-theme="dark"] .stock-toolbar label,
+html[data-theme="dark"] .order-data-search label,
+html[data-theme="dark"] .v30-order-head h3{
+  color:#d4e5f9!important;
+  font-weight:700!important;
+}
+
+html[data-theme="dark"] .small,
+html[data-theme="dark"] .sub,
+html[data-theme="dark"] .stock-info,
+html[data-theme="dark"] .help,
+html[data-theme="dark"] .v30-order-head .small{
+  color:#94a9c4!important;
+}
+
+/* Paneles, Toolbars y Contenedores */
+html[data-theme="dark"] .top,
+html[data-theme="dark"] .sidebar,
+html[data-theme="dark"] .panel,
+html[data-theme="dark"] .stock-toolbar,
+html[data-theme="dark"] #v30OrderData,
+html[data-theme="dark"] .order-data-search,
+html[data-theme="dark"] .alias-v23,
+html[data-theme="dark"] .editor-card,
+html[data-theme="dark"] dialog .modal{
+  background:#0e2036!important;
+  border-color:#223c5c!important;
+  color:#f1f6ff!important;
+}
+
+html[data-theme="dark"] .top{
+  background:#0b192c!important;
+  border-bottom:1px solid #1f3652!important;
+}
+
+html[data-theme="dark"] .sidebar{
+  background:#0a1727!important;
+  border-right:1px solid #1f3652!important;
+}
+
+html[data-theme="dark"] .side-btn{
+  color:#cbd5e1!important;
+}
+html[data-theme="dark"] .side-btn:hover{
+  background:#162c46!important;
+  color:#ffffff!important;
+}
+html[data-theme="dark"] .side-btn.active{
+  background:#0284c7!important;
+  color:#ffffff!important;
+}
+html[data-theme="dark"] .side-title{
+  color:#7dd3fc!important;
+}
+html[data-theme="dark"] .side-count{
+  background:#1e3a5f!important;
+  color:#e0f2fe!important;
+  border:1px solid #38bdf8!important;
+}
+
+/* Barra de Stock y Estados */
+html[data-theme="dark"] .stock-toolbar{
+  background:#0c1d32!important;
+  border:1px solid #223d5e!important;
+}
+html[data-theme="dark"] .stock-toolbar input[type="file"]{
+  background:#071424!important;
+  border:1px solid #244163!important;
+  color:#cbd5e1!important;
+  border-radius:8px!important;
+}
+html[data-theme="dark"] .stock-status.ok{
+  background:#07331f!important;
+  color:#4ade80!important;
+  border:1px solid #166534!important;
+}
+html[data-theme="dark"] .stock-status.stale{
+  background:#362206!important;
+  color:#fde047!important;
+  border:1px solid #854d0e!important;
+}
+html[data-theme="dark"] #driveBackup,
+html[data-theme="dark"] #driveBackup2{
+  background:#0f4024!important;
+  color:#86efac!important;
+  border:1px solid #16a34a!important;
+}
+html[data-theme="dark"] #driveBackup:hover,
+html[data-theme="dark"] #driveBackup2:hover{
+  background:#166534!important;
+  color:#ffffff!important;
+}
+
+/* Inputs, Selects y Buscador */
+html[data-theme="dark"] input:not([type="file"]),
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea{
+  background:#071424!important;
+  color:#f1f6ff!important;
+  border:1px solid #254264!important;
+  border-radius:8px!important;
+}
+html[data-theme="dark"] input:focus,
+html[data-theme="dark"] select:focus,
+html[data-theme="dark"] textarea:focus{
+  border-color:#38bdf8!important;
+  box-shadow:0 0 0 3px rgba(56,189,248,0.2)!important;
+}
+html[data-theme="dark"] option{
+  background:#0c1a2d!important;
+  color:#f1f6ff!important;
+}
+
+html[data-theme="dark"] .search{
+  background:#071424!important;
+  border:2px solid #38bdf8!important;
+}
+html[data-theme="dark"] .search input{
+  background:transparent!important;
+  color:#ffffff!important;
+}
+html[data-theme="dark"] .search input::placeholder{
+  color:#64748b!important;
+}
+html[data-theme="dark"] .search button{
+  background:#112237!important;
+  color:#94a9c4!important;
+  border-left:1px solid #223c5c!important;
+}
+html[data-theme="dark"] .search button:hover{
+  background:#193658!important;
+  color:#ffffff!important;
+}
+
+/* Tarjetas de resultados y materiales */
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .result-card{
+  background:#0e2036!important;
+  border-color:#203957!important;
+}
+html[data-theme="dark"] .code,
+html[data-theme="dark"] .result-code{
+  color:#38bdf8!important;
+}
+html[data-theme="dark"] .desc,
+html[data-theme="dark"] .result-desc{
+  color:#e2e8f0!important;
+}
+html[data-theme="dark"] .tag{
+  background:#14283f!important;
+  color:#93c5fd!important;
+  border-color:#244163!important;
+}
+html[data-theme="dark"] .badge{
+  background:#142c48!important;
+  color:#7dd3fc!important;
+  border:1px solid #234b78!important;
+}
+
+/* Botones */
+html[data-theme="dark"] .primary,
+html[data-theme="dark"] .btn.primary{
+  background:#0284c7!important;
+  color:#fff!important;
+  border:1px solid #0369a1!important;
+}
+html[data-theme="dark"] .primary:hover,
+html[data-theme="dark"] .btn.primary:hover{
+  background:#0369a1!important;
+}
+html[data-theme="dark"] .secondary,
+html[data-theme="dark"] .btn.secondary,
+html[data-theme="dark"] .v438-back-btn,
+html[data-theme="dark"] #v439GoToOrder{
+  background:#14283f!important;
+  color:#e2e8f0!important;
+  border:1px solid #254366!important;
+}
+html[data-theme="dark"] .secondary:hover,
+html[data-theme="dark"] .btn.secondary:hover,
+html[data-theme="dark"] .v438-back-btn:hover,
+html[data-theme="dark"] #v439GoToOrder:hover{
+  background:#1b3554!important;
+  color:#ffffff!important;
+  border-color:#38bdf8!important;
+}
+html[data-theme="dark"] .danger,
+html[data-theme="dark"] .btn.danger{
+  background:#5c1d24!important;
+  color:#fecaca!important;
+  border:1px solid #832731!important;
+}
+html[data-theme="dark"] .danger:hover,
+html[data-theme="dark"] .btn.danger:hover{
+  background:#7f1d1d!important;
+  color:#ffffff!important;
+}
+html[data-theme="dark"] .success,
+html[data-theme="dark"] #v31FinalizeOrder{
+  background:#15803d!important;
+  color:#fff!important;
+  border:1px solid #16a34a!important;
+}
+html[data-theme="dark"] .success:hover,
+html[data-theme="dark"] #v31FinalizeOrder:hover{
+  background:#16a34a!important;
+}
+html[data-theme="dark"] .theme-toggle{
+  background:#19314d!important;
+  color:#fef08a!important;
+  border:1px solid #2d4f77!important;
+}
+html[data-theme="dark"] .sap-btn{
+  background:#152d47!important;
+  color:#e0f2fe!important;
+  border:1px solid #294d75!important;
+}
+html[data-theme="dark"] .admin-access-btn{
+  background:#0369a1!important;
+  color:#ffffff!important;
+  border:1px solid #0284c7!important;
+}
+
+/* Tablas */
+html[data-theme="dark"] .tablewrap,
+html[data-theme="dark"] .v29-table-wrap,
+html[data-theme="dark"] .v34-table-wrap,
+html[data-theme="dark"] .sap-preview-wrap,
+html[data-theme="dark"] .alias-v23-table{
+  background:#0c1b2e!important;
+  border-color:#203957!important;
+}
+html[data-theme="dark"] table th,
+html[data-theme="dark"] .v29-stock-table th,
+html[data-theme="dark"] .sap-preview th,
+html[data-theme="dark"] #orderPanel .tablewrap th,
+html[data-theme="dark"] .alias-v23-table th{
+  background:#152d47!important;
+  color:#f8fafc!important;
+  border-bottom:2px solid #2b4d75!important;
+}
+html[data-theme="dark"] table td,
+html[data-theme="dark"] .v29-stock-table td,
+html[data-theme="dark"] .sap-preview td,
+html[data-theme="dark"] #orderPanel .tablewrap td,
+html[data-theme="dark"] .alias-v23-table td{
+  background:#0e2036!important;
+  color:#e2e8f0!important;
+  border-bottom:1px solid #1a324d!important;
+}
+html[data-theme="dark"] table tr:hover td,
+html[data-theme="dark"] .v29-stock-table tr:hover td,
+html[data-theme="dark"] .sap-preview tr:hover td{
+  background:#142a44!important;
+}
+html[data-theme="dark"] .v29-stock-pill.good{
+  background:#083321!important;
+  color:#4ade80!important;
+  border-color:#166534!important;
+}
+html[data-theme="dark"] .v29-stock-pill.none{
+  background:#38171d!important;
+  color:#f87171!important;
+  border-color:#7f1d1d!important;
+}
+html[data-theme="dark"] .qty{
+  background:#362506!important;
+  color:#fef08a!important;
+  border:2px solid #854d0e!important;
+}
+html[data-theme="dark"] .qty.ready{
+  background:#073822!important;
+  color:#86efac!important;
+  border:2px solid #15803d!important;
+}
+
+/* Modales, Diálogos y Notas */
+html[data-theme="dark"] dialog,
+html[data-theme="dark"] .dialog-card,
+html[data-theme="dark"] .modal,
+html[data-theme="dark"] .material-drawer,
+html[data-theme="dark"] .admin-login-card{
+  background:#0e2036!important;
+  color:#f1f6ff!important;
+  border:1px solid #254264!important;
+}
+html[data-theme="dark"] dialog::backdrop,
+html[data-theme="dark"] .drawer-backdrop{
+  background:rgba(3,10,20,0.78)!important;
+  backdrop-filter:blur(4px)!important;
+}
+html[data-theme="dark"] .tab{
+  color:#94a9c4!important;
+}
+html[data-theme="dark"] .tab.active{
+  color:#38bdf8!important;
+  border-bottom:3px solid #38bdf8!important;
+}
+html[data-theme="dark"] .chip{
+  background:#14283f!important;
+  color:#e2e8f0!important;
+  border:1px solid #254366!important;
+}
+html[data-theme="dark"] .note,
+html[data-theme="dark"] .base-note,
+html[data-theme="dark"] .v34-district-note,
+html[data-theme="dark"] .auto-fields-note{
+  background:#112339!important;
+  border:1px solid #233e5e!important;
+  color:#cbd5e1!important;
+}
+
+/* Imágenes */
+html[data-theme="dark"] .v42-material-image span,
+html[data-theme="dark"] .material-placeholder{
+  background:#102139!important;
+  color:#9fb0c5!important;
+  border-color:#46617f!important;
+}
+html[data-theme="dark"] .v42-material-image img,
+html[data-theme="dark"] .material-thumb{
+  background:#fff!important;
+  border-color:#46617f!important;
+}
+
+/* Scrollbars */
+html[data-theme="dark"] ::-webkit-scrollbar{
+  width:8px;
+  height:8px;
+}
+html[data-theme="dark"] ::-webkit-scrollbar-track{
+  background:#0a1727;
+}
+html[data-theme="dark"] ::-webkit-scrollbar-thumb{
+  background:#254060;
+  border-radius:4px;
+}
+html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover{
+  background:#365b86;
+}
+
 @media(max-width:760px){
  .v42-material-image{width:76px!important;min-width:76px!important}
  .v42-material-image img,.v42-material-image span{width:64px;height:54px}

@@ -21,14 +21,22 @@ app.get('/api/config', (req, res) => {
 
 app.post('/api/drive/sync', async (req, res) => {
   try {
-    const targetUrl = (req.body?.targetUrl || req.body?.url || process.env.GOOGLE_APPS_SCRIPT_URL || '').trim();
+    const envUrl = (process.env.GOOGLE_APPS_SCRIPT_URL || '').trim();
+    const envToken = (process.env.GOOGLE_APPS_SCRIPT_TOKEN || '').trim();
+
+    const targetUrl = (envUrl || req.body?.targetUrl || req.body?.url || '').trim();
     if (!targetUrl) {
-      return res.status(400).json({ ok: false, error: 'URL de Google Apps Script no configurada.' });
+      return res.status(400).json({ ok: false, error: 'URL de Google Apps Script no configurada en el servidor o en la app.' });
     }
-    const payload = req.body?.payload || req.body;
-    // Remove proxy wrapper keys if present
+    const payload = req.body?.payload ? { ...req.body.payload } : { ...req.body };
     delete payload.targetUrl;
     delete payload.url;
+
+    if (envToken) {
+      payload.token = envToken;
+    } else if (!payload.token && req.body?.token) {
+      payload.token = req.body.token;
+    }
 
     const response = await fetch(targetUrl, {
       method: 'POST',
@@ -55,12 +63,15 @@ app.post('/api/drive/sync', async (req, res) => {
 
 app.get('/api/drive/get', async (req, res) => {
   try {
-    const targetUrl = (req.query?.url || process.env.GOOGLE_APPS_SCRIPT_URL || '').trim();
-    const token = req.query?.token || process.env.GOOGLE_APPS_SCRIPT_TOKEN || '';
+    const envUrl = (process.env.GOOGLE_APPS_SCRIPT_URL || '').trim();
+    const envToken = (process.env.GOOGLE_APPS_SCRIPT_TOKEN || '').trim();
+
+    const targetUrl = (envUrl || req.query?.url || '').trim();
+    const token = envToken || req.query?.token || '';
     const action = req.query?.action || 'getAll';
 
     if (!targetUrl) {
-      return res.status(400).json({ ok: false, error: 'URL de Google Apps Script no configurada.' });
+      return res.status(400).json({ ok: false, error: 'URL de Google Apps Script no configurada en el servidor o en la app.' });
     }
 
     const cleanBase = targetUrl.replace(/\?.*$/, '');

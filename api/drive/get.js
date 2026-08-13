@@ -8,12 +8,15 @@ export default async function handler(req, res) {
   }
 
   try {
-    const targetUrl = (req.query?.url || process.env.GOOGLE_APPS_SCRIPT_URL || '').trim();
-    const token = req.query?.token || process.env.GOOGLE_APPS_SCRIPT_TOKEN || '';
+    const envUrl = (process.env.GOOGLE_APPS_SCRIPT_URL || '').trim();
+    const envToken = (process.env.GOOGLE_APPS_SCRIPT_TOKEN || '').trim();
+
+    const targetUrl = (envUrl || req.query?.url || '').trim();
+    const token = envToken || req.query?.token || '';
     const action = req.query?.action || 'getAll';
 
     if (!targetUrl) {
-      return res.status(400).json({ ok: false, error: 'URL de Google Apps Script no configurada.' });
+      return res.status(400).json({ ok: false, error: 'URL de Google Apps Script no configurada en Vercel o en la app.' });
     }
 
     const cleanBase = targetUrl.replace(/\?.*$/, '');
@@ -38,3 +41,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ ok: false, error: 'Error al consultar Google Apps Script: ' + (err?.message || err) });
   }
 }
+
