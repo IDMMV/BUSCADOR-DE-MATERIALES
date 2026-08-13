@@ -97,6 +97,102 @@
 @media(max-width:900px){#v30OrderData .fields{grid-template-columns:1fr 1fr}.v34-summary{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){#v30OrderData .fields{grid-template-columns:1fr}.v34-summary{grid-template-columns:1fr}}
 </style>
+<style id="order-buttons-fix">
+#v26SaveRow, div#v26SaveRow.order-save-row {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  width: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+#v26SaveRow button,
+#v26SaveRow #v449ClearAllOrdersBtn,
+#v26SaveRow #v31FinalizeOrder,
+button#v449ClearAllOrdersBtn,
+button#v31FinalizeOrder {
+  flex: 0 0 auto !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  padding: 8px 16px !important;
+  margin: 0 !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  border-radius: 8px !important;
+  border: none !important;
+  white-space: nowrap !important;
+  box-sizing: border-box !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  cursor: pointer !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12) !important;
+}
+
+#v449ClearAllOrdersBtn, button#v449ClearAllOrdersBtn {
+  background-color: #dc2626 !important;
+  color: #ffffff !important;
+}
+
+#v31FinalizeOrder, button#v31FinalizeOrder {
+  background-color: #16a34a !important;
+  color: #ffffff !important;
+}
+
+/* Form improvement for Crear nueva matrícula and Alias y matrículas */
+.labeled-form.mat-form-improved {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 14px !important;
+  align-items: end !important;
+}
+.labeled-form.mat-form-improved .fg-code {
+  grid-column: 1 / 2 !important;
+}
+.labeled-form.mat-form-improved .fg-unit {
+  grid-column: 2 / 3 !important;
+}
+.labeled-form.mat-form-improved .fg-desc {
+  grid-column: 1 / -1 !important;
+}
+.labeled-form.mat-form-improved .fg-prio {
+  grid-column: 1 / 2 !important;
+}
+.voice-wrap {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  width: 100% !important;
+}
+.voice-wrap input {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+}
+.voice-btn {
+  flex: 0 0 38px !important;
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  border-radius: 8px !important;
+  border: 1px solid #bcd0e8 !important;
+  background: #eef4fb !important;
+  color: #075ab8 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+}
+</style>
 <style id="v39-mobile-polish">
 @media (max-width:760px){
 html,body{max-width:100%;overflow-x:hidden}body{font-size:14px}.topbar{padding:10px;gap:8px;align-items:flex-start;flex-wrap:wrap}.brand{min-width:0}.brand img{width:48px;height:48px}.brand h1{font-size:20px;line-height:1.05}.brand p{font-size:12px}.top-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;width:100%}.top-actions .btn{min-height:42px;padding:9px 7px;font-size:12px}.app-shell{display:block}.sidebar{position:fixed!important;inset:0 auto 0 0;width:min(84vw,300px)!important;z-index:1000;transform:translateX(-105%);transition:transform .22s ease;box-shadow:10px 0 30px #08182d55}.sidebar.open{transform:translateX(0)}.sidebar-backdrop{display:none;position:fixed;inset:0;background:#07142688;z-index:999}.sidebar-backdrop.open{display:block}.main-content{margin-left:0!important;width:100%!important;padding:9px!important}.sidebar-toggle-floating{display:flex!important;position:fixed!important;left:10px!important;bottom:14px!important;top:auto!important;z-index:1001;width:48px!important;height:48px!important;border-radius:50%!important;align-items:center;justify-content:center;box-shadow:0 5px 18px #0004}.global-stock{display:grid!important;grid-template-columns:1fr!important;padding:10px!important;gap:9px!important}.global-stock>*{width:100%!important}.view,.panel,.module-card{padding:11px!important;border-radius:12px!important}.view h2,.panel h2{font-size:20px}.fields,.order-fields,#v30OrderData .fields{display:grid!important;grid-template-columns:1fr!important;gap:8px!important}.field{min-width:0!important}.field input,.field select{min-height:44px!important;font-size:16px!important}#q{font-size:16px;min-height:48px}.search-box{position:sticky;top:0;z-index:20;background:var(--surface,#fff);padding:5px 0}#results .card{display:grid!important;grid-template-columns:1fr!important;gap:10px;padding:12px 8px!important}.material-main{display:grid!important;grid-template-columns:72px minmax(0,1fr)!important;gap:10px!important}.material-thumb,.material-placeholder{width:72px!important;height:86px!important}.code{font-size:18px!important}.desc{font-size:14px!important;line-height:1.3!important;overflow-wrap:anywhere}.tag{font-size:10px!important}.card-actions{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;width:100%}.card-actions .btn{width:100%!important;min-height:44px!important;font-size:13px!important;padding:8px!important}.table-wrap,.sap-preview,.v39-table,.v31-history-table,.v34-history-table{overflow-x:auto!important;-webkit-overflow-scrolling:touch;border-radius:10px}table{min-width:760px}th,td{padding:8px!important;font-size:12px!important}.sap-preview table{min-width:1500px!important}.qty{min-height:46px!important;font-size:18px!important}.v36-center-actions,.v39-center-actions{display:grid!important;grid-template-columns:1fr!important;gap:7px!important}.v36-center-btn,.v39-center-btn{width:100%!important;min-height:42px!important}.actions{display:grid!important;grid-template-columns:1fr!important;gap:8px!important}.actions .btn{width:100%!important;min-height:46px!important}.modal{align-items:flex-end!important;padding:0!important}.modal-card{width:100%!important;max-width:none!important;max-height:92vh!important;border-radius:18px 18px 0 0!important;padding:14px!important}.alias-grid,.drawer-grid{grid-template-columns:1fr!important}.alias-table{overflow-x:auto!important}.v39-history-head{display:block!important}.v39-history-actions{margin-top:10px}.v39-history-actions .btn{width:100%;min-height:44px}.v39-summary{grid-template-columns:1fr 1fr!important}.v39-history-tabs{display:grid!important;grid-template-columns:1fr!important}.v39-history-tabs button{min-height:44px}.toast,.app-toast{left:12px!important;right:12px!important;bottom:74px!important;width:auto!important;max-width:none!important}
@@ -322,12 +418,12 @@ html[data-theme="dark"] .stock-status.stale{background:#493a16!important;color:#
 <button class="side-btn active" data-view="searchView">🔎 Buscar materiales</button>
 <button class="side-btn" data-view="orderView">📋 Pedido seleccionado <span class="side-count" id="sideCartCount">0</span></button>
 <button class="side-btn" data-view="controlView">📑 Control de solicitudes</button>
-<button class="side-btn" data-config-page="mat">🏷 Alias y matrículas</button>
-<button class="side-btn" data-config-page="sup">👷 Supervisores</button>
-<button class="side-btn" data-config-page="units">🚚 Unidades móviles</button>
+<button class="side-btn" data-view="newMatView">✏️ Crear o modificar</button>
+<button class="side-btn" data-view="supView">👷 Supervisores</button>
+<button class="side-btn" data-view="unitsView">🚚 Unidades móviles</button>
 <button class="side-btn hidden" data-view="stockView" aria-hidden="true" tabindex="-1">📦 Stock SAP</button>
 <button class="side-btn" data-view="historyView">🕘 Historial <span class="side-count hidden" id="historyNewCount">0</span></button>
-<button class="side-btn" data-config-page="github" id="sideDriveOnly">☁ Google Drive</button>
+<button class="side-btn" data-view="driveView" id="sideDriveOnly">☁ Google Drive</button>
 <button class="side-btn hidden" id="sideConfig" aria-hidden="true" tabindex="-1">⚙ Configuración</button>
 </nav>
 </aside>
@@ -339,8 +435,8 @@ html[data-theme="dark"] .stock-status.stale{background:#493a16!important;color:#
 <div class="stock-status stale" id="stockStatus">⚠ Stock no actualizado hoy. Carga el Excel diario de SAP.</div>
 <button class="btn success" id="driveBackup" type="button">🔄 Actualizar stock desde Drive</button>
 <div class="stock-help">Columnas reconocidas: Material, Texto breve de material, Centro, Almacén, Lote, Libre utilización y Unidad medida base. ALIM, CE y LOTE se completan automáticamente al copiar o exportar.</div><div class="stock-help drive-refresh-help">Cuando otra persona actualice el stock, pulsa <b>Actualizar stock desde Drive</b>. No necesitas volver a publicar Apps Script ni GitHub.</div>
-</section><section class="panel"><div class="head"><h2>1. Buscar materiales</h2><div class="head-actions"><button class="btn secondary" id="v439GoToOrder" type="button">📋 Ir a pedido seleccionado</button><span class="badge" id="v439SearchOrderCount">0</span><button class="btn primary" id="newMaterialTop">＋ Agregar material</button><span class="badge" id="count"></span></div></div><div class="search"><input id="q" placeholder="Buscar por matrícula, descripción o alias..."/><button aria-label="Buscar por voz" class="mic" id="voiceSearch" title="Buscar por voz">🎤</button><button aria-label="Limpiar búsqueda" id="clear" title="Limpiar búsqueda">×</button></div><div class="results" id="results"></div></section></section>
-<section class="view" id="orderView"><main class="layout"><section class="panel" id="orderPanel"><div class="head"><h2>2. Pedido seleccionado</h2><span class="badge" id="cartCount">0 materiales</span></div><div class="v438-back-row"><button type="button" class="btn secondary v438-back-btn" id="v438BackToSearch">← Volver a buscar materiales</button></div><div class="fields"><label class="field">Supervisor<select id="dest"></select></label><label class="field">Fecha<input id="fechaPedido" type="date"/></label><label class="field">Puesto de descarga (movimiento)<select id="puesto"><option value="PEDIDO">PEDIDO</option><option value="RECUPERO">RECUPERO</option><option value="DEVOLUCION">DEVOLUCIÓN</option></select></label><label class="field">Unidad móvil<select id="movil"></select></label></div><select class="hidden" id="ce"><option value="1003">1003 - San Juan</option><option value="1004">1004 - Vitarte</option></select><div class="auto-fields-note">El Centro se toma del selector superior. ALIM, CE y LOTE se completan automáticamente desde el Excel diario de stock SAP.</div><p class="small">La cantidad inicia en 0 (amarillo). Al colocar un valor mayor a 0 cambia a verde. Puedes dictar cantidades con el micrófono.</p><div class="tablewrap"><table><thead><tr><th>Matrícula</th><th>Descripción</th><th>Cant.</th><th>Unidad</th><th></th></tr></thead><tbody id="cart"></tbody></table><div class="empty" id="empty">Agrega materiales desde el buscador.</div></div><div class="sap-preview-wrap"><div class="sap-preview-title"><div><h3>Vista previa exacta para SAP / Excel</h3><p class="small">Muestra almacén, centro y lote de donde se obtiene cada cantidad.</p></div><span class="badge" id="previewRowsCount">0 filas</span></div><div class="sap-preview"><table><thead><tr><th>MATRÍCULA</th><th>DESCRIPCIÓN</th><th>C1</th><th>CANT</th><th>UNIDAD</th><th>TP</th><th>C2</th><th>C3</th><th>ALIM</th><th>CE</th><th>OPERACIÓN</th><th>LOTE</th><th>TIPO DE APROVISIONAMIENTO</th><th>POS</th><th>DESTINATARIO</th><th>PUESTO DE DESCARGA</th><th>UBICACIÓN FINAL</th></tr></thead><tbody id="sapPreviewBody"></tbody></table><div class="preview-empty" id="sapPreviewEmpty">Agrega materiales y completa sus cantidades para generar la vista previa.</div></div></div><div class="actions"><button class="btn secondary" id="copy">Copiar para SAP</button><button class="btn secondary" id="csv">Exportar CSV</button><button class="btn primary" id="excel">Exportar Excel</button><button class="btn danger" id="clean">Limpiar</button></div><div class="pending-panel hidden" id="pendingPanel"><div class="head"><h3>⏳ Pendientes por coordinar</h3><span class="badge" id="pendingCount">0</span></div><div id="pendingList"></div></div><p class="status" id="status"></p></section></main></section>
+</section><section class="panel"><div class="head"><h2>1. Buscar materiales</h2><div class="head-actions"><button class="btn secondary" id="v439GoToOrder" type="button">📋 Ir a pedido seleccionado</button><span class="badge" id="count"></span></div></div><div class="search"><input id="q" placeholder="Buscar por matrícula, descripción o alias..."/><button aria-label="Buscar por voz" class="mic" id="voiceSearch" title="Buscar por voz">🎤</button><button aria-label="Limpiar búsqueda" id="clear" title="Limpiar búsqueda">×</button></div><div class="results" id="results"></div></section></section>
+<section class="view" id="orderView"><main class="layout"><section class="panel" id="orderPanel"><div class="head"><h2>2. Pedido seleccionado</h2><span class="badge" id="cartCount">0 materiales</span></div><div class="v438-back-row"><button type="button" class="btn secondary v438-back-btn" id="v438BackToSearch">← Volver a buscar materiales</button></div><div class="fields-and-actions-row" style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin:14px 0;flex-wrap:wrap"><div class="fields" style="flex:1 1 500px;margin:0"><label class="field">Supervisor<select id="dest"></select></label><label class="field">Fecha<input id="fechaPedido" type="date"/></label><label class="field">Puesto de descarga (movimiento)<select id="puesto"><option value="PEDIDO">PEDIDO</option><option value="RECUPERO">RECUPERO</option><option value="DEVOLUCION">DEVOLUCIÓN</option></select></label><label class="field">Unidad móvil<select id="movil"></select></label></div><div id="v26SaveRow" class="order-save-row"><button type="button" id="v449ClearAllOrdersBtn" class="btn danger v449-clear-all">🗑️ Borrar pedidos</button><button type="button" id="v31FinalizeOrder" class="btn success v31-finalize">💾 Grabar pedido</button></div></div><select class="hidden" id="ce"><option value="1003">1003 - San Juan</option><option value="1004">1004 - Vitarte</option></select><div class="auto-fields-note">El Centro se toma del selector superior. ALIM, CE y LOTE se completan automáticamente desde el Excel diario de stock SAP.</div><p class="small">La cantidad inicia en 0 (amarillo). Al colocar un valor mayor a 0 cambia a verde. Puedes dictar cantidades con el micrófono.</p><div class="tablewrap"><table><thead><tr><th>Matrícula</th><th>Descripción</th><th>Cant.</th><th>Unidad</th><th></th></tr></thead><tbody id="cart"></tbody></table><div class="empty" id="empty">Agrega materiales desde el buscador.</div></div><div class="sap-preview-wrap"><div class="sap-preview-title"><div><h3>Vista previa exacta para SAP / Excel</h3><p class="small">Muestra almacén, centro y lote de donde se obtiene cada cantidad.</p></div><span class="badge" id="previewRowsCount">0 filas</span></div><div class="sap-preview"><table><thead><tr><th>MATRÍCULA</th><th>DESCRIPCIÓN</th><th>C1</th><th>CANT</th><th>UNIDAD</th><th>TP</th><th>C2</th><th>C3</th><th>ALIM</th><th>CE</th><th>OPERACIÓN</th><th>LOTE</th><th>TIPO DE APROVISIONAMIENTO</th><th>POS</th><th>DESTINATARIO</th><th>PUESTO DE DESCARGA</th><th>UBICACIÓN FINAL</th></tr></thead><tbody id="sapPreviewBody"></tbody></table><div class="preview-empty" id="sapPreviewEmpty">Agrega materiales y completa sus cantidades para generar la vista previa.</div></div></div><div class="actions"><button class="btn secondary" id="copy">Copiar para SAP</button><button class="btn secondary" id="csv">Exportar CSV</button><button class="btn primary" id="excel">Exportar Excel</button><button class="btn danger" id="clean">Limpiar</button></div><div class="pending-panel hidden" id="pendingPanel"><div class="head"><h3>⏳ Pendientes por coordinar</h3><span class="badge" id="pendingCount">0</span></div><div id="pendingList"></div></div><p class="status" id="status"></p></section></main></section>
 <section class="view" id="stockView"><section class="stock-toolbar">
 <label>Centro de trabajo<select id="centroGlobal2"><option value="1003">1003 - San Juan</option><option value="1004">1004 - Vitarte</option></select></label>
 <div class="stock-file-wrap"><label>Excel diario de stock SAP<input accept=".xlsx,.xls,.csv" id="stockFile2" type="file"/></label></div>
@@ -351,13 +447,13 @@ html[data-theme="dark"] .stock-status.stale{background:#493a16!important;color:#
 </section></section>
 <section class="view" id="controlView"><div class="module-placeholder"><h2>📑 Control de solicitudes</h2></div></section>
 <section class="view" id="historyView"><div class="module-placeholder"><h2>🕘 Historial</h2><p>Aquí se mostrarán los pedidos guardados y sincronizados con Google Drive.</p><div class="empty">Todavía no hay pedidos guardados.</div></div></section>
+<section class="view" id="newMatView"><section class="panel"><section class="page active" id="p-new-mat"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:12px"><h3 style="margin:0">Crear o modificar matrícula</h3><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button type="button" class="btn secondary" onclick="exportMaterialBase(); return false;" title="Descargar base de materiales en Excel">📥 Descargar base de materiales</button><button type="button" class="btn secondary" onclick="document.getElementById('importMatFile').click(); return false;" title="Importar/Actualizar base de materiales">📤 Importar base de materiales</button><input type="file" id="importMatFile" accept=".csv,.tsv,.txt,.xlsx,.xls,.json" style="display:none" onchange="importMaterialBase(this)"/><button type="button" class="btn primary" id="saveNewMatBtn" onclick="saveNewMatricula(); return false;" style="font-weight:800!important;padding:8px 18px!important">💾 Guardar cambios</button></div></div><div class="editor-grid"><div class="editor-col"><div class="editor-card"><h4>Datos principales</h4><div class="labeled-form admin mat-form-improved"><label class="form-group fg-code">Matrícula SAP *<div class="voice-wrap"><input id="nmCode" inputmode="numeric" placeholder="Ej.: 8001828" oninput="lookupMatricula()" onchange="lookupMatricula()"/><button type="button" class="voice-btn clear-btn" id="clearNmCode" title="Limpiar matrícula" onclick="clearNmCodeField(); return false;">✕</button></div><span id="nmMatStatus" class="small" style="display:block;margin-top:4px;font-weight:600"></span></label><label class="form-group fg-unit">Unidad<div class="voice-wrap"><input id="nmUnit" placeholder="UND"/><button class="voice-btn" data-voice="nmUnit">🎤</button></div></label><label class="form-group fg-desc">Descripción oficial *<div class="voice-wrap"><input id="nmDesc" placeholder="Descripción del material"/><button class="voice-btn" data-voice="nmDesc">🎤</button></div></label><label class="form-group fg-prio">Prioridad<select id="nmPrio"><option value="">Normal</option><option value="P">Prioridad P</option></select></label></div></div><div class="editor-card image-editor"><div class="image-preview-wrap"><div class="material-placeholder" id="nmImagePreviewBox">Sin imagen</div><div><input accept="image/*" id="nmImage" type="file"/><p class="small">La imagen se comprime automáticamente a WebP.</p><button class="btn danger hidden" id="nmRemoveImage" type="button">Eliminar imagen</button></div></div></div></div><div class="editor-col"><div class="editor-card alias-box"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap"><h4>Alias del material</h4><button class="btn secondary" id="nmSuggestAliases" type="button">✨ Sugerir alias</button></div><div class="alias-list" id="nmAliasList"><p class="small">Agrega alias para facilitar la búsqueda.</p></div><h4 style="margin-top:14px">Agregar alias</h4><div class="new-alias-row"><input id="nmNewAlias" placeholder="Escribe un alias"/><button class="voice-btn" data-voice="nmNewAlias">🎤</button><button class="btn primary" id="nmAddAlias" type="button">Agregar alias</button></div></div><div class="actions" style="margin-top:14px"><button class="btn primary" onclick="saveNewMatricula(); return false;" style="font-size:15px!important;padding:12px 24px!important;font-weight:800!important">💾 Guardar cambios</button></div></div></div></section></section></section>
+<section class="view" id="supView"><section class="panel"><section class="page active" id="p-sup"><p class="small">Registra el nombre y las iniciales que SAP mostrará junto con la fecha, por ejemplo <b>SL 29/07</b>.</p><div class="supervisor-add admin"><div class="voice-wrap"><input id="newSup" placeholder="Nombre del supervisor"/><button class="voice-btn" data-voice="newSup">🎤</button></div><input id="newSupInitials" maxlength="4" placeholder="Iniciales"/><button class="btn primary" id="addSup">Agregar</button></div><div class="supervisor-list" id="supList"></div></section></section></section>
+<section class="view" id="unitsView"><section class="panel"><section class="page active" id="p-units"><div class="adminrow admin"><div class="voice-wrap"><input id="newUnit" placeholder="Ej.: F5X-999"/><button class="voice-btn" data-voice="newUnit">🎤</button></div><button class="btn primary" id="addUnit">Agregar</button></div><div class="chips" id="unitList"></div></section></section></section>
+<section class="view" id="driveView"><section class="panel"><section class="page active" id="p-github"><h3>Sincronización con Google Drive</h3><p>Configura la URL <b>/exec</b> de tu Google Apps Script. Los cambios se guardan primero en este dispositivo y se sincronizan cuando haya internet.</p><div class="labeled-form drive-grid"><label class="form-group">URL de Apps Script<input id="scriptUrl" placeholder="https://script.google.com/macros/s/.../exec"/></label><label class="form-group">Clave de acceso<input id="scriptToken" placeholder="Clave definida en Code.gs" type="password"/></label><label class="form-group">Estado<input id="syncState" readonly="" value="Sin configurar"/></label><label class="form-group">Última sincronización<input id="lastSync" readonly=""/></label></div><div class="actions"><button type="button" class="btn primary" id="saveScriptConfig" onclick="saveSyncConfig(); return false;">Guardar conexión</button><button type="button" class="btn success" id="syncNow" onclick="syncToDrive(); return false;">Sincronizar ahora</button><button type="button" class="btn secondary" id="restoreDrive" onclick="restoreFromDrive(); return false;">Recuperar desde Drive</button><a class="btn secondary" href="https://drive.google.com/drive/my-drive" id="openDriveLink" rel="noopener" target="_blank">☁ Abrir Google Drive</a><button class="btn secondary" id="downloadJson">Descargar respaldo JSON</button><button class="btn danger" id="reset">Restablecer datos originales</button></div><div class="drive-note"><b>Modo sin red:</b> alias, fotos, supervisores, unidades y pendientes se guardan localmente. Al volver internet, pulsa “Sincronizar ahora” o abre nuevamente la aplicación.</div></section></section></section>
 </div></div>
 <dialog id="stockDecision"><div class="modal decision-modal"><div class="modalhead"><div><div class="ey">VALIDACIÓN DE STOCK</div><h2 id="decisionTitle">Stock insuficiente</h2></div><button class="btn secondary" id="closeDecision">×</button></div><div class="decision-summary" id="decisionSummary"></div><div class="decision-options" id="decisionOptions"></div></div></dialog>
-<dialog id="dlg"><div class="modal"><div class="modalhead"><div><div class="ey">ADMINISTRACIÓN</div><h2 id="modalTitle">Google Drive</h2></div><button class="btn secondary" id="close">×</button></div><div class="note" id="appNote"><b>Modo app:</b> al publicarla en GitHub Pages podrás instalarla en el celular. El micrófono funciona en Chrome/Edge mediante HTTPS y pedirá permiso la primera vez.</div><div class="tabs" id="configTabs"><button class="tab active" data-page="mat">Matrículas y alias</button><button class="tab" data-page="sup">Supervisores</button><button class="tab" data-page="units">Unidades</button><button class="tab" data-page="github">Google Drive / Apps Script</button></div>
-<section class="page active" id="p-mat"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:12px"><h3 id="matTitle" style="margin:0">Agregar material</h3><button type="button" class="btn primary" id="saveMatTop" onclick="saveMaterial(); return false;" style="font-weight:800!important;padding:8px 18px!important">💾 Guardar cambios</button></div><div class="editor-grid"><div class="editor-col"><div class="editor-card"><h4>Datos principales</h4><div class="labeled-form admin"><label class="form-group">Matrícula SAP<div class="voice-wrap"><input id="mcode" inputmode="numeric" placeholder="Ej.: 8001828"/><button class="voice-btn" data-voice="mcode">🎤</button></div></label><label class="form-group">Descripción oficial<div class="voice-wrap"><input id="mdesc" placeholder="Descripción del material"/><button class="voice-btn" data-voice="mdesc">🎤</button></div></label><label class="form-group">Unidad<div class="voice-wrap"><input id="munit" placeholder="UND"/><button class="voice-btn" data-voice="munit">🎤</button></div></label><label class="form-group">Prioridad<select id="mprio"><option value="">Normal</option><option value="P">Prioridad P</option></select></label></div></div><div class="editor-card image-editor" id="imageEditor"><h4>Imagen del material</h4><div class="image-preview-wrap"><div class="material-placeholder" id="imagePreviewBox">Sin imagen</div><div><input accept="image/*" id="mimage" type="file"/><p class="small">La imagen se comprime automáticamente a WebP, máximo 700 × 700 px y calidad 70 %.</p><button class="btn danger hidden" id="removeImage" type="button">Eliminar imagen</button></div></div></div></div><div class="editor-col"><div class="editor-card alias-box" id="aliasEditorBox"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap"><h4>Alias del material</h4><button class="btn secondary" id="suggestAliases" type="button">✨ Sugerir alias</button></div><div class="alias-list" id="aliasList"><p class="small">Esta matrícula todavía no tiene alias.</p></div><h4 style="margin-top:14px">Agregar nuevo alias</h4><div class="new-alias-row"><input id="newAlias" placeholder="Escribe un nuevo alias"/><button class="voice-btn" data-voice="newAlias">🎤</button><button class="btn primary" id="addAlias" type="button">Agregar alias</button></div></div><p class="note" id="saveHelp"><b>Guardado:</b> descripción, unidad, prioridad, alias e imagen se guardan juntos al pulsar <b>Guardar cambios</b>.</p><div class="actions" id="materialActions" style="position:sticky;bottom:0;background:var(--panel);padding:12px;border-top:1px solid var(--line);box-shadow:0 -4px 12px #0002;z-index:10;border-radius:10px"><button class="btn primary" id="saveMat" onclick="saveMaterial(); return false;" style="font-size:15px!important;padding:12px 24px!important;font-weight:800!important">💾 Guardar cambios</button><button class="btn secondary hidden" id="cancelEdit">Cancelar edición</button></div></div></div><div id="materialBrowser"><h3>Buscar y modificar matrícula o alias</h3><div class="voice-wrap admin"><input id="adminSearch" placeholder="Buscar matrícula, descripción o alias"/><button class="voice-btn" data-voice="adminSearch">🎤</button></div><div class="material-list" id="materialList"></div></div></section>
-<section class="page" id="p-sup"><p class="small">Registra el nombre y las iniciales que SAP mostrará junto con la fecha, por ejemplo <b>SL 29/07</b>.</p><div class="supervisor-add admin"><div class="voice-wrap"><input id="newSup" placeholder="Nombre del supervisor"/><button class="voice-btn" data-voice="newSup">🎤</button></div><input id="newSupInitials" maxlength="4" placeholder="Iniciales"/><button class="btn primary" id="addSup">Agregar</button></div><div class="supervisor-list" id="supList"></div></section>
-<section class="page" id="p-units"><div class="adminrow admin"><div class="voice-wrap"><input id="newUnit" placeholder="Ej.: F5X-999"/><button class="voice-btn" data-voice="newUnit">🎤</button></div><button class="btn primary" id="addUnit">Agregar</button></div><div class="chips" id="unitList"></div></section>
-<section class="page" id="p-github"><h3>Sincronización con Google Drive</h3><p>Configura la URL <b>/exec</b> de tu Google Apps Script. Los cambios se guardan primero en este dispositivo y se sincronizan cuando haya internet.</p><div class="labeled-form drive-grid"><label class="form-group">URL de Apps Script<input id="scriptUrl" placeholder="https://script.google.com/macros/s/.../exec"/></label><label class="form-group">Clave de acceso<input id="scriptToken" placeholder="Clave definida en Code.gs" type="password"/></label><label class="form-group">Estado<input id="syncState" readonly="" value="Sin configurar"/></label><label class="form-group">Última sincronización<input id="lastSync" readonly=""/></label></div><div class="actions"><button type="button" class="btn primary" id="saveScriptConfig" onclick="saveSyncConfig(); return false;">Guardar conexión</button><button type="button" class="btn success" id="syncNow" onclick="syncToDrive(); return false;">Sincronizar ahora</button><button type="button" class="btn secondary" id="restoreDrive" onclick="restoreFromDrive(); return false;">Recuperar desde Drive</button><a class="btn secondary" href="https://drive.google.com/drive/my-drive" id="openDriveLink" rel="noopener" target="_blank">☁ Abrir Google Drive</a><button class="btn secondary" id="downloadJson">Descargar respaldo JSON</button><button class="btn danger" id="reset">Restablecer datos originales</button></div><div class="drive-note"><b>Modo sin red:</b> alias, fotos, supervisores, unidades y pendientes se guardan localmente. Al volver internet, pulsa “Sincronizar ahora” o abre nuevamente la aplicación.</div></section><p class="status" id="adminStatus"></p></div></dialog>
+<dialog id="dlg"><div class="modal"><div class="modalhead"><div><div class="ey">ADMINISTRACIÓN</div><h2 id="modalTitle">Panel de Administración</h2></div><button class="btn secondary" id="close">×</button></div></div></dialog>
 
 <dialog id="adminLoginDialog" aria-label="Acceso de administrador"><div class="admin-login-card"><div class="admin-login-head"><div><div class="ey">ACCESO RESTRINGIDO</div><h2>Administrador</h2></div><button type="button" class="btn secondary" id="adminLoginClose">×</button></div><p>Ingresa la contraseña para editar matrículas y alias, supervisores, unidades móviles y Google Drive.</p><label class="form-group">Contraseña<input id="adminPasswordInput" type="password" autocomplete="current-password" placeholder="Contraseña de administrador"></label><p class="status" id="adminLoginStatus"></p><div class="admin-login-actions"><button type="button" class="btn primary" id="adminLoginSubmit">Ingresar</button><button type="button" class="btn secondary" id="adminLogoutBtn">Cerrar sesión administrativa</button></div></div></dialog>
 <dialog id="materialImageViewer" aria-label="Catálogo de imágenes de materiales"><div class="image-viewer-shell"><div class="image-viewer-head"><div class="image-viewer-title"><b id="imageViewerCode">🖼️ Catálogo de Imágenes SAP</b><span id="imageViewerDesc">Vista ampliada de material</span></div><button type="button" class="btn image-viewer-close" id="imageViewerClose">✕ Cerrar</button></div><div class="image-viewer-stage"><button type="button" class="image-viewer-nav image-viewer-prev" id="imageViewerPrev" aria-label="Imagen anterior">‹</button><div class="image-viewer-img-wrap"><img id="imageViewerImg" alt="Imagen ampliada del material"><div id="imageViewerNoImg" class="image-viewer-no-img hidden"><span style="font-size:42px">📦</span><p>Sin imagen registrada para este material</p></div></div><button type="button" class="image-viewer-nav image-viewer-next" id="imageViewerNext" aria-label="Imagen siguiente">›</button></div><div class="image-viewer-foot" id="imageViewerFoot"><div class="cat-bottom-card"><div class="cat-bottom-header"><span class="cat-mat-badge">MATRÍCULA SAP: <strong id="imageViewerCodeFoot">---</strong></span><span class="cat-unit-badge" id="imageViewerUnitFoot">UND</span></div><div class="cat-bottom-desc" id="imageViewerDescFoot">---</div><div class="cat-bottom-meta" id="imageViewerMetaFoot">---</div><div class="cat-bottom-actions"><button type="button" class="btn primary cat-select-btn" id="imageViewerAddBtn">🛒 Seleccionar para pedido</button><span class="cat-counter" id="imageViewerCounter">Material 1 de 1</span></div></div></div></div></dialog>
@@ -379,7 +475,7 @@ function migrateState(x){x=x&&Array.isArray(x.materials)?x:clone(BASE_DATA);let 
 function load(){try{return migrateState(JSON.parse(localStorage.getItem(KEY)))}catch{return migrateState(clone(BASE_DATA))}}
 function save(){state=migrateState(state);localStorage.setItem(KEY,JSON.stringify(state))}function fill(el,a){let cur=el.value;el.innerHTML=a.map(x=>`<option>${esc(x)}</option>`).join('');if(a.includes(cur))el.value=cur}function localISODate(){let d=new Date(),off=d.getTimezoneOffset();return new Date(d.getTime()-off*60000).toISOString().slice(0,10)}
 function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));document.querySelectorAll('.side-btn[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===id));document.getElementById('sidebar')?.classList.remove('open');document.getElementById('sidebarBackdrop')?.classList.remove('open');if(id==='orderView')setTimeout(renderSapPreview,0);if(id==='controlView'&&typeof renderControl37==='function')setTimeout(renderControl37,0);if(id==='historyView'&&typeof renderHistory37==='function')setTimeout(renderHistory37,0);window.scrollTo({top:0,behavior:'smooth'})}
-function openConfigPage(page){setMaterialMode('config');let dlg=document.getElementById('dlg');dlg.classList.remove('drive-only','single-admin');dlg.dataset.singlePage='';document.querySelectorAll('.tab,.page').forEach(x=>x.classList.remove('active'));let tab=document.querySelector(`.tab[data-page="${page}"]`);if(tab)tab.classList.add('active');let pg=document.getElementById('p-'+page);if(pg)pg.classList.add('active');if(page==='sup'||page==='units'){dlg.classList.add('single-admin');dlg.dataset.singlePage=page;document.getElementById('modalTitle').textContent=page==='sup'?'Supervisores':'Unidades móviles';}else if(page==='github'){document.getElementById('modalTitle').textContent='Google Drive';}else{document.getElementById('modalTitle').textContent='Alias y matrículas';}dlg.showModal();}
+function openConfigPage(page){const pageMap={'new-mat':'newMatView','mat':'newMatView','sup':'supView','units':'unitsView','github':'driveView','drive':'driveView'};showView(pageMap[page]||'newMatView')}
 function renderSapPreview(){let body=document.getElementById('sapPreviewBody'),empty=document.getElementById('sapPreviewEmpty'),count=document.getElementById('previewRowsCount');if(!body)return;let r=[];try{r=rows()}catch{};body.innerHTML=r.map(x=>`<tr>${Object.values(x).map(v=>`<td>${esc(v)}</td>`).join('')}</tr>`).join('');empty.style.display=r.length?'none':'block';count.textContent=`${r.length} fila${r.length===1?'':'s'}`;let side=document.getElementById('sideCartCount');if(side)side.textContent=cart.length;}
 
 function init(){loadStockCache();applyTheme(localStorage.getItem('bm_theme')||'light');fill($('#dest'),state.supervisors);fill($('#movil'),state.units);$('#dest').value=state.defaults?.destinatario||state.supervisors[0]||'';$('#fechaPedido').value=state.defaults?.fechaPedido||localISODate();$('#puesto').value=['PEDIDO','RECUPERO','DEVOLUCION'].includes(state.defaults?.puestoDescarga)?state.defaults.puestoDescarga:'RECUPERO';let center=['1003','1004'].includes(String(state.defaults?.ce))?String(state.defaults.ce):'1003';$('#ce').value=center;$('#centroGlobal').value=center;renderStockStatus();renderResults();renderCart();renderAdmin();bind();setupPWA();let s2=$('#stockStatus2');if(s2)s2.textContent=$('#stockStatus').textContent}
@@ -405,11 +501,280 @@ function movementCode(){return $('#puesto').value==='PEDIDO'?'P':$('#puesto').va
 function supervisorSAP(){let supervisor=$('#dest').value||'',ini=(state.supervisorInitials?.[supervisor]||deriveInitials(supervisor)).toUpperCase(),date=formattedOrderDate();return [ini,date].filter(Boolean).join(' ')}
 function rows(){let unidad=$('#movil').value||'',out=[];for(let m of cart){let a=allocateStock(m.code,m.qty);for(let x of a.rows)out.push({MATRICULA:m.code,DESCRIPCION:m.description,C1:'',CANT:x.qty,UNIDAD:normalizedUnit(m),TP:'L',C2:'',C3:'',ALIM:x.almacen,CE:x.centro,OPERACION:'0010',LOTE:x.lote,'TIPO DE APROVISIONAMIENTO':'Reserva para orden',POS:0,DESTINATARIO:supervisorSAP(),'PUESTO DE DESCARGA':unidad?`${unidad} (${movementCode()})`:`(${movementCode()})`,'UBICACION FINAL':''})}return out}
 function valid(){if(stockMeta.date!==todayKey()){msg(expiredStockMessage(),true);return false}if(!cart.length){msg('Agrega al menos un material.',true);return false}if(cart.some(x=>!(Number(x.qty)>0))){msg('Completa las cantidades amarillas antes de exportar.',true);return false}let bad=cart.find(x=>allocateStock(x.code,x.qty).missing>0);if(bad){msg(`Stock insuficiente para ${bad.code}. Disponible: ${availableStock(bad.code)}.`,true);return false}return true}function tsv(){let r=rows(),h=Object.keys(r[0]);return r.map(x=>h.map(k=>x[k]).join('\t')).join('\n')}function csvText(){let r=rows(),h=Object.keys(r[0]),e=v=>'"'+String(v??'').replace(/"/g,'""')+'"';return '\ufeff'+[h.map(e).join(';'),...r.map(x=>h.map(k=>e(x[k])).join(';'))].join('\r\n')}function dl(txt,name,type='text/plain'){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}function excel(){if(!valid())return;let r=rows(),h=Object.keys(r[0]),table=`<table border="1"><tr>${h.map(x=>`<th style="background:#fff500">${esc(x)}</th>`).join('')}</tr>${r.map(x=>`<tr>${h.map(k=>`<td style="mso-number-format:'\@'">${esc(String(x[k]))}</td>`).join('')}</tr>`).join('')}</table>`;dl('\ufeff<html><meta charset="utf-8"><body>'+table+'</body></html>','Pedido_Materiales.xls','application/vnd.ms-excel')}function msg(t,e=false,id='#status'){let x=$(id);if(x){x.textContent=t;x.style.color=e?'#c62828':'#15803d';setTimeout(()=>x.textContent='',5000)}let toast=document.getElementById('appToast');if(!toast){toast=document.createElement('div');toast.id='appToast';toast.className='app-toast';document.body.appendChild(toast)}toast.textContent=t;toast.className='app-toast show '+(e?'error':'success');clearTimeout(window.__bmToastTimer);window.__bmToastTimer=setTimeout(()=>toast.className='app-toast',3500)}
-function renderAdmin(){fill($('#dest'),state.supervisors);fill($('#movil'),state.units);$('#supList').innerHTML=state.supervisors.map((x,i)=>`<div class="supervisor-row"><input value="${esc(x)}" data-sup-name="${i}" aria-label="Nombre del supervisor"><input class="initials" maxlength="4" value="${esc(state.supervisorInitials?.[x]||deriveInitials(x))}" data-sup-initials="${i}" aria-label="Iniciales"><div class="supervisor-actions"><button class="btn secondary" data-save-sup="${i}">Guardar</button><button class="btn danger" data-dsup="${i}">Quitar</button></div></div>`).join('');$('#unitList').innerHTML=state.units.map((x,i)=>`<span class="chip">${esc(x)} <button data-dunit="${i}">×</button></span>`).join('');renderMaterialList()}function renderMaterialList(){let q=norm($('#adminSearch').value),a=state.materials.filter(m=>!q||norm([m.code,m.description,...(m.aliases||[])].join(' ')).includes(q)).slice(0,120);$('#materialList').innerHTML=a.map(m=>`<div class="material-item"><b>${esc(m.code)}</b><div>${esc(m.description)}<br><span class="small">${esc((m.aliases||[]).join(' · ')||'Sin alias')}</span></div><button class="btn secondary" data-edit="${m.code}">Editar</button></div>`).join('')}
-function activateMatTab(){document.querySelectorAll('.tab,.page').forEach(x=>x.classList.remove('active'));document.querySelector('.tab[data-page="mat"]').classList.add('active');$('#p-mat').classList.add('active')}function renderAliasEditor(){let box=$('#aliasList');if(!currentAliases.length){box.innerHTML='<p class="small">Esta matrícula todavía no tiene alias.</p>';return}box.innerHTML=currentAliases.map((a,i)=>`<div class="alias-row"><input value="${esc(a)}" data-alias-index="${i}"><button type="button" data-save-alias="${i}">✓</button><button type="button" class="remove-alias" data-remove-alias="${i}">🗑</button></div>`).join('')}function renderImagePreview(){let box=$('#imagePreviewBox');if(currentImage){box.className='';box.innerHTML=`<img class="image-preview" src="${currentImage}" alt="Vista previa">`;$('#removeImage').classList.remove('hidden')}else{box.className='material-placeholder';box.textContent='Sin imagen';$('#removeImage').classList.add('hidden')}}function clearMaterialForm(){editingCode=null;currentAliases=[];currentImage='';['mcode','mdesc','munit','newAlias','mimage'].forEach(id=>$('#'+id).value='');$('#mprio').value='';$('#mcode').disabled=false;$('#saveMat').textContent='💾 Guardar material';if($('#saveMatTop'))$('#saveMatTop').textContent='💾 Guardar material';$('#cancelEdit').classList.add('hidden');$('#matTitle').textContent='Agregar material';renderAliasEditor();renderImagePreview()}function setMaterialMode(mode){$('#dlg').classList.toggle('add-only',mode==='add');$('#dlg').classList.toggle('edit-mode',mode==='edit');$('#modalTitle').textContent=mode==='add'?'Agregar material':mode==='edit'?'Editar material':'Configuración'}function openNewMaterial(){clearMaterialForm();setMaterialMode('add');activateMatTab();$('#dlg').showModal();setTimeout(()=>$('#mcode').focus(),50)}function openMaterialEditor(c){setMaterialMode('edit');let m=state.materials.find(x=>x.code===c);if(!m)return;editingCode=c;currentAliases=[...(m.aliases||[])];currentImage=m.image||'';$('#mcode').value=m.code;$('#mdesc').value=m.description;$('#munit').value=m.unit||'UN';$('#mprio').value=m.priority||'';$('#mcode').disabled=true;$('#saveMat').textContent='💾 Guardar cambios';if($('#saveMatTop'))$('#saveMatTop').textContent='💾 Guardar cambios';$('#cancelEdit').classList.remove('hidden');$('#matTitle').textContent='Editar material y alias';renderAliasEditor();renderImagePreview();activateMatTab();if(!$('#dlg').open)$('#dlg').showModal();setTimeout(()=>$('#newAlias').focus(),50)}function addCurrentAlias(){let v=$('#newAlias').value.trim().toUpperCase();if(!v)return;if(!currentAliases.includes(v))currentAliases.push(v);$('#newAlias').value='';renderAliasEditor()}function saveMaterial(){let c=(editingCode||$('#mcode').value.trim()),d=$('#mdesc').value.trim().toUpperCase(),u=$('#munit').value.trim().toUpperCase()||'UND',aliases=[...new Set(currentAliases.map(x=>x.trim().toUpperCase()).filter(Boolean))],p=$('#mprio').value;if(!/^\d{5,}$/.test(c)||!d)return msg('Ingresa matrícula numérica y descripción.',true,'#adminStatus');let m=state.materials.find(x=>x.code===c);if(m){m.description=d;m.unit=u;m.priority=p;m.aliases=aliases;m.image=currentImage}else state.materials.push({code:c,description:d,unit:u,aliases,priority:p,image:currentImage,source:'MANUAL'});state.materials.sort((x,y)=>x.description.localeCompare(y.description,'es'));save();renderResults();renderAdmin();clearMaterialForm();if(typeof queueSync==='function')queueSync('materials');if(navigator.onLine&&typeof syncToDrive==='function'&&syncConfig().url)syncToDrive();msg(m?'Material e imagen guardados y sincronizados con Google Drive.':'Nuevo material e imagen guardados y sincronizados con Google Drive.',false,'#adminStatus')}function buildAliasSuggestions(){let d=$('#mdesc').value.trim().toUpperCase();if(!d)return msg('Primero ingresa o conserva la descripción oficial.',true,'#adminStatus');let volts=(d.match(/\b\d+(?:[.,]\d+)?\s*KV\b/g)||[]).map(x=>x.replace(/\s+/g,''));let amps=(d.match(/\b\d+\s*A\b/g)||[]).map(x=>x.replace(/\s+/g,''));let mm=(d.match(/\b\d+(?:[.,]\d+)?\s*MM(?:2|²)?\b/g)||[]).map(x=>x.replace(/\s+/g,''));let ranges=(d.match(/\b\d+\s*[-–]\s*\d+\s*MM\b/g)||[]);let out=[];const add=x=>{x=(x||'').replace(/\s+/g,' ').replace(/\s+([,.;])/g,'$1').trim();if(x.length>=3&&!currentAliases.includes(x)&&!out.includes(x))out.push(x)};const v=volts[0]||'',a=amps[0]||'',m=mm[0]||'',r=ranges[0]||'';if(/CUT[ -]?OUT|CUTOUT/.test(d)){add(['CUT OUT',v,a].filter(Boolean).join(' '));add(['CUTOUT',v,a].filter(Boolean).join(' '));add(['FUSIBLE CUT OUT',v,a].filter(Boolean).join(' '));add(['SECCIONADOR FUSIBLE',v].filter(Boolean).join(' '))}if(/AISLADOR/.test(d)){let tipo=/SUSPENSION|ANCLAJE/.test(d)?'AISLADOR SUSPENSION':/LINE POST|PIN/.test(d)?'AISLADOR PIN':/EXTENSOR/.test(d)?'AISLADOR EXTENSOR':'AISLADOR';add([tipo,v].filter(Boolean).join(' '));if(/POLIMER/.test(d))add(['AISLADOR POLIMERICO',v].filter(Boolean).join(' '))}if(/ABRAZADERA/.test(d)){add(['ABRAZADERA',r||m].filter(Boolean).join(' '));add('ABRAZADERA PARA CABLE');if(/VIENTO/.test(d))add('ABRAZADERA PARA VIENTO')}if(/FUSIBLE/.test(d)){add(['FUSIBLE',v,a].filter(Boolean).join(' '));if(/EXPULSION/.test(d))add(['FUSIBLE DE EXPULSION',v,a].filter(Boolean).join(' '));if(/UNIPOLAR|SEC/.test(d))add(['FUSIBLE UNIPOLAR',v,a].filter(Boolean).join(' '))}if(/CONECTOR/.test(d)){let tipo=/BIMETAL/.test(d)?'CONECTOR BIMETALICO':/PERFOR/.test(d)?'CONECTOR PERFORANTE':'CONECTOR';add([tipo,m].filter(Boolean).join(' '));if(/TIPO H|\bH\s*\d+/.test(d))add(['CONECTOR TIPO H',m].filter(Boolean).join(' '))}if(/CABLE/.test(d)){add(['CABLE',m,v].filter(Boolean).join(' '));if(/PREENSAMBL/.test(d))add(['CABLE PREENSAMBLADO',m].filter(Boolean).join(' '))}if(/PERNO/.test(d)){add(['PERNO',m].filter(Boolean).join(' '));if(/GALV/.test(d))add('PERNO GALVANIZADO')}if(/ARANDELA/.test(d)){add(['ARANDELA',m].filter(Boolean).join(' '));if(/PLANA/.test(d))add('ARANDELA PLANA');if(/PRESION/.test(d))add('ARANDELA DE PRESION')}if(/AMARRE/.test(d)){add(['AMARRE',m].filter(Boolean).join(' '));if(/PREFORM/.test(d))add(['AMARRE PREFORMADO',m].filter(Boolean).join(' '))}if(/GRAPA/.test(d)){add(['GRAPA',m].filter(Boolean).join(' '));if(/SUSPENSION/.test(d))add('GRAPA DE SUSPENSION');if(/ANCLAJE/.test(d))add('GRAPA DE ANCLAJE')}if(/SECCIONADOR/.test(d)){add(['SECCIONADOR',v,a].filter(Boolean).join(' '));if(/UNIPOLAR/.test(d))add(['SECCIONADOR UNIPOLAR',v,a].filter(Boolean).join(' '))}let clean=d.replace(/[.,;:()\/]/g,' ').replace(/\b(PARA|CON|DEL|DE|LA|EL|EN|POR|TIPO|TP|P|RED|AEREA|AEREAS)\b/g,' ').replace(/\s+/g,' ').trim();add(clean.split(' ').filter(w=>w.length>2).slice(0,7).join(' '));out.slice(0,6).forEach(x=>currentAliases.push(x));renderAliasEditor();msg(out.length?out.length+' alias sugeridos agregados temporalmente. Revísalos y pulsa Actualizar matrícula y alias.':'No se encontraron alias nuevos; puedes escribirlos manualmente.',!out.length,'#adminStatus')}async function compressImage(file){return new Promise((resolve,reject)=>{let img=new Image(),url=URL.createObjectURL(file);img.onload=()=>{let max=700,scale=Math.min(1,max/Math.max(img.width,img.height)),w=Math.max(1,Math.round(img.width*scale)),h=Math.max(1,Math.round(img.height*scale)),c=document.createElement('canvas');c.width=w;c.height=h;let ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);ctx.drawImage(img,0,0,w,h);URL.revokeObjectURL(url);resolve(c.toDataURL('image/webp',0.7))};img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('Imagen inválida'))};img.src=url})}function exportData(){dl('window.APP_DATA = '+JSON.stringify(state,null,2)+';','data.js','text/javascript;charset=utf-8')}
+function renderAdmin(){fill($('#dest'),state.supervisors);fill($('#movil'),state.units);if($('#supList'))$('#supList').innerHTML=state.supervisors.map((x,i)=>`<div class="supervisor-row"><input value="${esc(x)}" data-sup-name="${i}" aria-label="Nombre del supervisor"><input class="initials" maxlength="4" value="${esc(state.supervisorInitials?.[x]||deriveInitials(x))}" data-sup-initials="${i}" aria-label="Iniciales"><div class="supervisor-actions"><button class="btn secondary" data-save-sup="${i}">Guardar</button><button class="btn danger" data-dsup="${i}">Quitar</button></div></div>`).join('');if($('#unitList'))$('#unitList').innerHTML=state.units.map((x,i)=>`<span class="chip">${esc(x)} <button data-dunit="${i}">×</button></span>`).join('');renderMaterialList()}function renderMaterialList(){let el=$('#materialList');if(!el)return;let q=norm($('#adminSearch')?.value),a=state.materials.filter(m=>!q||norm([m.code,m.description,...(m.aliases||[])].join(' ')).includes(q)).slice(0,120);el.innerHTML=a.map(m=>`<div class="material-item"><b>${esc(m.code)}</b><div>${esc(m.description)}<br><span class="small">${esc((m.aliases||[]).join(' · ')||'Sin alias')}</span></div><button class="btn secondary" data-edit="${m.code}">Editar</button></div>`).join('')}
+function openNewMaterial(){showView('newMatView');if($('#nmCode')){$('#nmCode').value='';lookupMatricula();setTimeout(()=>$('#nmCode')?.focus(),50);}}
+function clearNmCodeField(){let el=$('#nmCode');if(el){el.value='';lookupMatricula();el.focus();}}
+function exportMaterialBase(){
+  let cols=['MATRICULA','DESCRIPCION','UNIDAD','PRIORIDAD','ALIAS','IMAGEN_ARCHIVO','ACTUALIZADO'];
+  let today=new Date().toLocaleDateString('es-ES');
+  let table=`<table border="1"><tr>${cols.map(x=>`<th style="background:#19385f;color:#fff;font-weight:bold">${esc(x)}</th>`).join('')}</tr>`+
+    state.materials.map(m=>{
+      let aliasStr=(m.aliases||[]).join(' | ');
+      let imgStr=m.image?'SI':'';
+      return `<tr>
+        <td style="mso-number-format:'\@'">${esc(String(m.code||''))}</td>
+        <td>${esc(String(m.description||''))}</td>
+        <td>${esc(String(m.unit||'UND'))}</td>
+        <td>${esc(String(m.priority||''))}</td>
+        <td>${esc(String(aliasStr))}</td>
+        <td>${esc(String(imgStr))}</td>
+        <td>${esc(today)}</td>
+      </tr>`;
+    }).join('')+`</table>`;
+  dl('\ufeff<html><meta charset="utf-8"><body>'+table+'</body></html>','Base_de_Materiales.xls','application/vnd.ms-excel');
+  msg(`Base de datos exportada (${state.materials.length} materiales).`,false,'#adminStatus');
+}
+async function importMaterialBase(inputEl){
+  let file=inputEl.files?.[0];
+  if(!file)return;
+  let text=await file.text();
+  let updatedCount=0,createdCount=0;
+  if(file.name.endsWith('.json')){
+    try{
+      let data=JSON.parse(text);
+      let list=Array.isArray(data)?data:(data.materials||[]);
+      list.forEach(m=>{
+        let code=String(m.code||m.MATRICULA||m.matricula||'').trim();
+        if(!code)return;
+        let desc=String(m.description||m.DESCRIPCION||m.descripcion||'').trim().toUpperCase();
+        let unit=String(m.unit||m.UNIDAD||m.unidad||'UND').trim().toUpperCase();
+        let prio=String(m.priority||m.PRIORIDAD||m.prioridad||'').trim().toUpperCase();
+        let aliases=m.aliases;
+        if(typeof aliases==='string')aliases=aliases.split(/[|·;,]/).map(a=>a.trim().toUpperCase()).filter(Boolean);
+        let img=m.image||m.IMAGEN||m.IMAGEN_ARCHIVO||'';
+        if(!img.startsWith('data:'))img='';
+        let idx=state.materials.findIndex(x=>x.code===code);
+        if(idx>=0){
+          if(desc)state.materials[idx].description=desc;
+          if(unit)state.materials[idx].unit=unit;
+          state.materials[idx].priority=prio;
+          if(aliases&&aliases.length)state.materials[idx].aliases=[...new Set(aliases)];
+          if(img)state.materials[idx].image=img;
+          updatedCount++;
+        }else if(desc){
+          state.materials.push({code,description:desc,unit:unit||'UND',priority:prio,aliases:aliases||[],image:img,source:'IMPORT'});
+          createdCount++;
+        }
+      });
+    }catch(err){
+      msg('Error al leer archivo JSON.',true,'#adminStatus');
+      inputEl.value='';
+      return;
+    }
+  }else{
+    let rows=[];
+    if(text.includes('<table')||text.includes('<tr')){
+      let doc=new DOMParser().parseFromString(text,'text/html');
+      let trs=doc.querySelectorAll('tr');
+      trs.forEach(tr=>{
+        let cells=Array.from(tr.querySelectorAll('th, td')).map(td=>td.textContent.trim());
+        if(cells.length)rows.push(cells);
+      });
+    }else{
+      let lines=text.split(/\r?\n/).filter(l=>l.trim().length>0);
+      let sep=text.includes('\t')?'\t':(text.includes(';')?';':',');
+      rows=lines.map(line=>{
+        let cells=[],cur='',inQuote=false;
+        for(let i=0;i<line.length;i++){
+          let char=line[i];
+          if(char==='"'){inQuote=!inQuote;}
+          else if(char===sep&&!inQuote){cells.push(cur.trim());cur='';}
+          else{cur+=char;}
+        }
+        cells.push(cur.trim());
+        return cells.map(c=>c.replace(/^"|"$/g,'').trim());
+      });
+    }
+    if(!rows.length){
+      msg('El archivo ingresado está vacío.',true,'#adminStatus');
+      inputEl.value='';
+      return;
+    }
+    let headerRow=rows[0].map(c=>norm(c));
+    let codeIdx=headerRow.findIndex(c=>c.includes('matri')||c.includes('code')||c.includes('cod')||c.includes('material'));
+    let descIdx=headerRow.findIndex(c=>c.includes('desc')||c.includes('text'));
+    let unitIdx=headerRow.findIndex(c=>c.includes('unid')||c.includes('um')||c.includes('unit'));
+    let prioIdx=headerRow.findIndex(c=>c.includes('prio'));
+    let aliasIdx=headerRow.findIndex(c=>c.includes('alias'));
+    let imgIdx=headerRow.findIndex(c=>c.includes('imag')||c.includes('foto'));
+
+    if(codeIdx<0)codeIdx=0;
+    if(descIdx<0)descIdx=1;
+    if(unitIdx<0)unitIdx=2;
+    if(prioIdx<0)prioIdx=3;
+    if(aliasIdx<0)aliasIdx=4;
+    if(imgIdx<0)imgIdx=5;
+
+    let startRow=(headerRow.some(c=>c.includes('matri')||c.includes('desc')||c.includes('cod')))?1:0;
+
+    for(let i=startRow;i<rows.length;i++){
+      let r=rows[i];
+      let code=String(r[codeIdx]||'').replace(/\D/g,'').trim();
+      if(!code||code.length<4)continue;
+      let desc=String(r[descIdx]||'').trim().toUpperCase();
+      let unit=String(r[unitIdx]||'UND').trim().toUpperCase();
+      let prio=String(r[prioIdx]||'').trim().toUpperCase();
+      let rawAlias=String(r[aliasIdx]||'').trim().toUpperCase();
+      let aliases=rawAlias?rawAlias.split(/[|·;,]/).map(a=>a.trim()).filter(Boolean):[];
+      let rawImg=String(r[imgIdx]||'').trim();
+
+      let idx=state.materials.findIndex(x=>x.code===code);
+      if(idx>=0){
+        if(desc)state.materials[idx].description=desc;
+        if(unit)state.materials[idx].unit=unit;
+        state.materials[idx].priority=prio;
+        if(aliases.length)state.materials[idx].aliases=[...new Set([...(state.materials[idx].aliases||[]),...aliases])];
+        if(rawImg.startsWith('data:'))state.materials[idx].image=rawImg;
+        updatedCount++;
+      }else if(desc){
+        state.materials.push({
+          code,
+          description:desc,
+          unit:unit||'UND',
+          priority:prio,
+          aliases,
+          image:rawImg.startsWith('data:')?rawImg:'',
+          source:'IMPORT'
+        });
+        createdCount++;
+      }
+    }
+  }
+  state.materials.sort((x,y)=>x.description.localeCompare(y.description,'es'));
+  save();
+  renderResults();
+  renderAdmin();
+  if(typeof queueSync==='function')queueSync('materials');
+  if(navigator.onLine&&typeof syncToDrive==='function'&&syncConfig().url)syncToDrive();
+  inputEl.value='';
+  msg(`Base de materiales actualizada (${updatedCount} modificados, ${createdCount} creados).`,false,'#adminStatus');
+}
+let newMatAliases=[];let newMatImage='';
+function lookupMatricula(){
+  let c=$('#nmCode')?.value.trim()||'';
+  let existing=c?state.materials.find(x=>x.code===c):null;
+  let statusEl=$('#nmMatStatus');
+  if(existing){
+    if($('#nmDesc'))$('#nmDesc').value=existing.description||'';
+    if($('#nmUnit'))$('#nmUnit').value=existing.unit||'UND';
+    if($('#nmPrio'))$('#nmPrio').value=existing.priority||'';
+    newMatAliases=[...(existing.aliases||[])];
+    newMatImage=existing.image||'';
+    if($('#nmImage'))$('#nmImage').value='';
+    renderNewMatAliasEditor();
+    renderNewMatImagePreview();
+    if(statusEl){statusEl.textContent='✓ Matrícula encontrada. Puedes modificar sus datos.';statusEl.style.color='#15803d';}
+  }else{
+    if($('#nmDesc'))$('#nmDesc').value='';
+    if($('#nmUnit'))$('#nmUnit').value='';
+    if($('#nmPrio'))$('#nmPrio').value='';
+    newMatAliases=[];
+    newMatImage='';
+    if($('#nmImage'))$('#nmImage').value='';
+    renderNewMatAliasEditor();
+    renderNewMatImagePreview();
+    if(statusEl){if(c){statusEl.textContent='ℹ Matrícula no encontrada. Completa los campos para crearla.';statusEl.style.color='#19385f';}else{statusEl.textContent='';}}
+  }
+}
+function renderNewMatImagePreview(){let box=$('#nmImagePreviewBox');if(!box)return;if(newMatImage){box.className='';box.innerHTML=`<img class="image-preview" src="${newMatImage}" alt="Vista previa">`;$('#nmRemoveImage')?.classList.remove('hidden')}else{box.className='material-placeholder';box.textContent='Sin imagen';$('#nmRemoveImage')?.classList.add('hidden')}}
+function renderNewMatAliasEditor(){let box=$('#nmAliasList');if(!box)return;if(!newMatAliases.length){box.innerHTML='<p class="small">Agrega alias para facilitar la búsqueda.</p>';return}box.innerHTML=newMatAliases.map((a,i)=>`<div class="alias-row"><input value="${esc(a)}" data-nm-alias-index="${i}"><button type="button" data-nm-save-alias="${i}">✓</button><button type="button" class="remove-alias" data-nm-remove-alias="${i}">🗑</button></div>`).join('')}
+function saveNewMatricula(){
+  let c=$('#nmCode')?.value.trim()||'', d=$('#nmDesc')?.value.trim().toUpperCase()||'', u=$('#nmUnit')?.value.trim().toUpperCase()||'UND', aliases=[...new Set(newMatAliases.map(x=>x.trim().toUpperCase()).filter(Boolean))], p=$('#nmPrio')?.value||'';
+  if(!/^\d{5,}$/.test(c)||!d) return msg('Ingresa matrícula numérica de al menos 5 dígitos y descripción.',true,'#adminStatus');
+  let existingIndex=state.materials.findIndex(x=>x.code===c);
+  let isEdit=existingIndex>=0;
+  if(isEdit){
+    state.materials[existingIndex].description=d;
+    state.materials[existingIndex].unit=u;
+    state.materials[existingIndex].priority=p;
+    state.materials[existingIndex].aliases=aliases;
+    state.materials[existingIndex].image=newMatImage;
+    state.materials[existingIndex].source='MANUAL';
+  }else{
+    state.materials.push({code:c,description:d,unit:u,aliases,priority:p,image:newMatImage,source:'MANUAL'});
+  }
+  state.materials.sort((x,y)=>x.description.localeCompare(y.description,'es'));
+  save();
+  renderResults();
+  renderAdmin();
+  ['nmCode','nmDesc','nmUnit','nmNewAlias','nmImage'].forEach(id=>{ if($('#'+id)) $('#'+id).value=''; });
+  if($('#nmPrio')) $('#nmPrio').value='';
+  if($('#nmMatStatus')) $('#nmMatStatus').textContent='';
+  newMatAliases=[];newMatImage='';
+  renderNewMatAliasEditor();renderNewMatImagePreview();
+  if(typeof queueSync==='function')queueSync('materials');
+  if(navigator.onLine&&typeof syncToDrive==='function'&&syncConfig().url)syncToDrive();
+  msg(isEdit?`Matrícula ${c} modificada y guardada con éxito.`:`Nueva matrícula ${c} creada y guardada con éxito.`,false,'#adminStatus');
+}
+function openMaterialEditor(c){showView('newMatView');if($('#nmCode')){$('#nmCode').value=c;lookupMatricula();setTimeout(()=>$('#nmDesc')?.focus(),50);}}function addCurrentAlias(){let v=$('#newAlias').value.trim().toUpperCase();if(!v)return;if(!currentAliases.includes(v))currentAliases.push(v);$('#newAlias').value='';renderAliasEditor()}function saveMaterial(){let c=(editingCode||$('#mcode').value.trim()),d=$('#mdesc').value.trim().toUpperCase(),u=$('#munit').value.trim().toUpperCase()||'UND',aliases=[...new Set(currentAliases.map(x=>x.trim().toUpperCase()).filter(Boolean))],p=$('#mprio').value;if(!/^\d{5,}$/.test(c)||!d)return msg('Ingresa matrícula numérica y descripción.',true,'#adminStatus');let m=state.materials.find(x=>x.code===c);if(m){m.description=d;m.unit=u;m.priority=p;m.aliases=aliases;m.image=currentImage}else state.materials.push({code:c,description:d,unit:u,aliases,priority:p,image:currentImage,source:'MANUAL'});state.materials.sort((x,y)=>x.description.localeCompare(y.description,'es'));save();renderResults();renderAdmin();clearMaterialForm();if(typeof queueSync==='function')queueSync('materials');if(navigator.onLine&&typeof syncToDrive==='function'&&syncConfig().url)syncToDrive();msg(m?'Material e imagen guardados y sincronizados con Google Drive.':'Nuevo material e imagen guardados y sincronizados con Google Drive.',false,'#adminStatus')}function buildAliasSuggestions(){let d=$('#mdesc').value.trim().toUpperCase();if(!d)return msg('Primero ingresa o conserva la descripción oficial.',true,'#adminStatus');let volts=(d.match(/\b\d+(?:[.,]\d+)?\s*KV\b/g)||[]).map(x=>x.replace(/\s+/g,''));let amps=(d.match(/\b\d+\s*A\b/g)||[]).map(x=>x.replace(/\s+/g,''));let mm=(d.match(/\b\d+(?:[.,]\d+)?\s*MM(?:2|²)?\b/g)||[]).map(x=>x.replace(/\s+/g,''));let ranges=(d.match(/\b\d+\s*[-–]\s*\d+\s*MM\b/g)||[]);let out=[];const add=x=>{x=(x||'').replace(/\s+/g,' ').replace(/\s+([,.;])/g,'$1').trim();if(x.length>=3&&!currentAliases.includes(x)&&!out.includes(x))out.push(x)};const v=volts[0]||'',a=amps[0]||'',m=mm[0]||'',r=ranges[0]||'';if(/CUT[ -]?OUT|CUTOUT/.test(d)){add(['CUT OUT',v,a].filter(Boolean).join(' '));add(['CUTOUT',v,a].filter(Boolean).join(' '));add(['FUSIBLE CUT OUT',v,a].filter(Boolean).join(' '));add(['SECCIONADOR FUSIBLE',v].filter(Boolean).join(' '))}if(/AISLADOR/.test(d)){let tipo=/SUSPENSION|ANCLAJE/.test(d)?'AISLADOR SUSPENSION':/LINE POST|PIN/.test(d)?'AISLADOR PIN':/EXTENSOR/.test(d)?'AISLADOR EXTENSOR':'AISLADOR';add([tipo,v].filter(Boolean).join(' '));if(/POLIMER/.test(d))add(['AISLADOR POLIMERICO',v].filter(Boolean).join(' '))}if(/ABRAZADERA/.test(d)){add(['ABRAZADERA',r||m].filter(Boolean).join(' '));add('ABRAZADERA PARA CABLE');if(/VIENTO/.test(d))add('ABRAZADERA PARA VIENTO')}if(/FUSIBLE/.test(d)){add(['FUSIBLE',v,a].filter(Boolean).join(' '));if(/EXPULSION/.test(d))add(['FUSIBLE DE EXPULSION',v,a].filter(Boolean).join(' '));if(/UNIPOLAR|SEC/.test(d))add(['FUSIBLE UNIPOLAR',v,a].filter(Boolean).join(' '))}if(/CONECTOR/.test(d)){let tipo=/BIMETAL/.test(d)?'CONECTOR BIMETALICO':/PERFOR/.test(d)?'CONECTOR PERFORANTE':'CONECTOR';add([tipo,m].filter(Boolean).join(' '));if(/TIPO H|\bH\s*\d+/.test(d))add(['CONECTOR TIPO H',m].filter(Boolean).join(' '))}if(/CABLE/.test(d)){add(['CABLE',m,v].filter(Boolean).join(' '));if(/PREENSAMBL/.test(d))add(['CABLE PREENSAMBLADO',m].filter(Boolean).join(' '))}if(/PERNO/.test(d)){add(['PERNO',m].filter(Boolean).join(' '));if(/GALV/.test(d))add('PERNO GALVANIZADO')}if(/ARANDELA/.test(d)){add(['ARANDELA',m].filter(Boolean).join(' '));if(/PLANA/.test(d))add('ARANDELA PLANA');if(/PRESION/.test(d))add('ARANDELA DE PRESION')}if(/AMARRE/.test(d)){add(['AMARRE',m].filter(Boolean).join(' '));if(/PREFORM/.test(d))add(['AMARRE PREFORMADO',m].filter(Boolean).join(' '))}if(/GRAPA/.test(d)){add(['GRAPA',m].filter(Boolean).join(' '));if(/SUSPENSION/.test(d))add('GRAPA DE SUSPENSION');if(/ANCLAJE/.test(d))add('GRAPA DE ANCLAJE')}if(/SECCIONADOR/.test(d)){add(['SECCIONADOR',v,a].filter(Boolean).join(' '));if(/UNIPOLAR/.test(d))add(['SECCIONADOR UNIPOLAR',v,a].filter(Boolean).join(' '))}let clean=d.replace(/[.,;:()\/]/g,' ').replace(/\b(PARA|CON|DEL|DE|LA|EL|EN|POR|TIPO|TP|P|RED|AEREA|AEREAS)\b/g,' ').replace(/\s+/g,' ').trim();add(clean.split(' ').filter(w=>w.length>2).slice(0,7).join(' '));out.slice(0,6).forEach(x=>currentAliases.push(x));renderAliasEditor();msg(out.length?out.length+' alias sugeridos agregados temporalmente. Revísalos y pulsa Actualizar matrícula y alias.':'No se encontraron alias nuevos; puedes escribirlos manualmente.',!out.length,'#adminStatus')}async function compressImage(file){return new Promise((resolve,reject)=>{let img=new Image(),url=URL.createObjectURL(file);img.onload=()=>{let max=700,scale=Math.min(1,max/Math.max(img.width,img.height)),w=Math.max(1,Math.round(img.width*scale)),h=Math.max(1,Math.round(img.height*scale)),c=document.createElement('canvas');c.width=w;c.height=h;let ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);ctx.drawImage(img,0,0,w,h);URL.revokeObjectURL(url);resolve(c.toDataURL('image/webp',0.7))};img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('Imagen inválida'))};img.src=url})}function exportData(){dl('window.APP_DATA = '+JSON.stringify(state,null,2)+';','data.js','text/javascript;charset=utf-8')}
 function speechSupported(){return !!(window.SpeechRecognition||window.webkitSpeechRecognition)}function numberWordsToDigits(t){const map={cero:0,uno:1,una:1,dos:2,tres:3,cuatro:4,cinco:5,seis:6,siete:7,ocho:8,nueve:9};let parts=norm(t).split(' '),digits=parts.map(x=>map[x]??(x.match(/^\d+$/)?x:'')).join('');return digits||t.match(/[\d.,]+/)?.[0]||''}function cleanDictation(text,target){let t=text.trim().replace(/punto y coma/gi,';').replace(/coma/gi,',');if(target.id==='mcode'||target.type==='number')return numberWordsToDigits(t).replace(',','.');if(target.id==='munit'||target.id==='newUnit')return t.toUpperCase().replace(/\s+/g,'');return t}function startVoice(target,button,append=false){if(!speechSupported()){msg('El reconocimiento de voz no está disponible en este navegador. Usa Chrome o Edge.',true,target.closest('dialog')?'#adminStatus':'#status');return}if(activeRecognition)try{activeRecognition.abort()}catch{}const SR=window.SpeechRecognition||window.webkitSpeechRecognition,r=new SR();activeRecognition=r;r.lang='es-PE';r.interimResults=false;r.maxAlternatives=1;button.classList.add('listening');button.textContent='⏹';r.onresult=e=>{let value=cleanDictation(e.results[0][0].transcript,target);target.value=append&&target.value?target.value.replace(/\s*;?\s*$/,'')+'; '+value:value;target.dispatchEvent(new Event('input',{bubbles:true}));target.dispatchEvent(new Event('change',{bubbles:true}));target.focus()};r.onerror=e=>msg(e.error==='not-allowed'?'Permite el acceso al micrófono para usar la voz.':'No se pudo reconocer la voz. Inténtalo nuevamente.',true,target.closest('dialog')?'#adminStatus':'#status');r.onend=()=>{button.classList.remove('listening');button.textContent='🎤';activeRecognition=null};r.start()}
 function setupPWA(){if('serviceWorker'in navigator){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});if(window.caches)caches.keys().then(ks=>Promise.all(ks.filter(k=>/buscador|material|sap|v4/i.test(k)).map(k=>caches.delete(k)))).catch(()=>{})}window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('#installApp').classList.remove('hidden')});$('#installApp').onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('#installApp').classList.add('hidden')}}
-function updateMobileOrderSummary(){let sup=$('#dest')?.value||'Sin supervisor',unit=$('#movil')?.value||'Sin unidad';let el=$('#mobileOrderSummary');if(el)el.textContent=sup+' · '+unit}function bind(){document.querySelectorAll('.side-btn[data-view]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));document.querySelectorAll('.side-btn[data-config-page]').forEach(b=>b.addEventListener('click',()=>openConfigPage(b.dataset.configPage)));$('#sideConfig').onclick=()=>$('#dlg').showModal();$('#mobileMenu').onclick=()=>{$('#sidebar').classList.toggle('open');$('#sidebarBackdrop').classList.toggle('open')};$('#sidebarBackdrop').onclick=()=>{$('#sidebar').classList.remove('open');$('#sidebarBackdrop').classList.remove('open')};$('#themeToggle').onclick=()=>applyTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');$('#loadStock').onclick=importStock;if($('#loadStock2'))$('#loadStock2').onclick=()=>{let f=$('#stockFile2').files[0];if(f){let dt=new DataTransfer();dt.items.add(f);$('#stockFile').files=dt.files;importStock()}};if($('#centroGlobal2')){ $('#centroGlobal2').value=$('#centroGlobal').value; $('#centroGlobal2').onchange=()=>{ $('#centroGlobal').value=$('#centroGlobal2').value; $('#centroGlobal').dispatchEvent(new Event('change')); }; }$('#driveBackup').onclick=async()=>{let b=$('#driveBackup'),t=b.textContent;b.disabled=true;b.classList.add('is-loading');b.textContent='Actualizando desde Drive...';try{await restoreFromDrive({silent:false,stockOnly:true})}finally{b.disabled=false;b.classList.remove('is-loading');b.textContent=t}};if($('#driveBackup2'))$('#driveBackup2').onclick=async()=>{let b=$('#driveBackup2'),t=b.textContent;b.disabled=true;b.textContent='Actualizando desde Drive...';try{await restoreFromDrive({silent:false,stockOnly:true})}finally{b.disabled=false;b.textContent=t}};$('#centroGlobal').onchange=()=>{$('#ce').value=$('#centroGlobal').value;if($('#centroGlobal2'))$('#centroGlobal2').value=$('#centroGlobal').value;state.defaults=state.defaults||{};state.defaults.ce=$('#centroGlobal').value;save();cart.forEach(m=>m.available=availableStock(m.code));renderCart()};$('#ce').onchange=()=>{$('#centroGlobal').value=$('#ce').value;cart.forEach(m=>m.available=availableStock(m.code));renderCart()};if($('#goOrder'))$('#goOrder').onclick=()=>showView('orderView');$('#q').oninput=renderResults;$('#clear').onclick=()=>{$('#q').value='';renderResults();$('#q').focus()};$('#voiceSearch').onclick=e=>startVoice($('#q'),e.currentTarget);document.addEventListener('click',e=>{let b=e.target.closest('[data-voice]');if(b){e.preventDefault();startVoice($('#'+b.dataset.voice),b,b.dataset.append==='true')}let qb=e.target.closest('[data-voice-qty]');if(qb){e.preventDefault();let i=+qb.dataset.voiceQty,target=document.querySelector(`[data-qty="${i}"]`);startVoice(target,qb)}});$('#results').onclick=e=>{let edit=e.target.closest('[data-quick-edit]');if(edit){openMaterialEditor(edit.dataset.quickEdit);return}let b=e.target.closest('[data-add]');if(b)add(b.dataset.add)};$('#cart').oninput=e=>{if(e.target.matches('[data-qty]')){let input=e.target,i=+input.dataset.qty,value=input.value;if(/^0\d+/.test(value)){value=value.replace(/^0+/,'');input.value=value}cart[i].qty=value;let ready=Number(value)>0;input.classList.toggle('ready',ready);let bad=Number(value)>availableStock(cart[i].code);input.classList.toggle('insufficient',bad);input.classList.toggle('ready',ready&&!bad);input.closest('tr')?.classList.toggle('row-pending',!ready||bad);let info=input.closest('td')?.querySelector('.stock-info');if(bad)msg(`Stock insuficiente para ${cart[i].code}. Disponible: ${availableStock(cart[i].code)}.`,true)}};$('#cart').addEventListener('focusin',e=>{if(e.target.matches('[data-qty]')){if(e.target.value==='0')e.target.value='';setTimeout(()=>e.target.select(),0)}});$('#cart').onclick=e=>{let b=e.target.closest('[data-rm]');if(b){cart.splice(+b.dataset.rm,1);renderCart()}};$('#copy').onclick=async()=>{if(!valid())return;try{await navigator.clipboard.writeText(tsv())}catch{let t=document.createElement('textarea');t.value=tsv();document.body.appendChild(t);t.select();document.execCommand('copy');t.remove()}msg('Tabla copiada para SAP.')};$('#csv').onclick=()=>valid()&&dl(csvText(),'Pedido_Materiales.csv','text/csv;charset=utf-8');$('#excel').onclick=excel;$('#clean').onclick=()=>{if(confirm('¿Limpiar el pedido?')){cart=[];renderCart()}};$('#config').onclick=()=>{setMaterialMode('config');$('#dlg').showModal()};$('#newMaterialTop').onclick=openNewMaterial;$('#close').onclick=()=>{clearMaterialForm();setMaterialMode('config');$('#dlg').classList.remove('single-admin','drive-only');$('#dlg').dataset.singlePage='';$('#dlg').close()};document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab,.page').forEach(x=>x.classList.remove('active'));b.classList.add('active');$('#p-'+b.dataset.page).classList.add('active')});$('#saveMat').onclick=saveMaterial;$('#cancelEdit').onclick=clearMaterialForm;$('#addAlias').onclick=addCurrentAlias;$('#suggestAliases').onclick=buildAliasSuggestions;$('#newAlias').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addCurrentAlias()}});$('#aliasList').oninput=e=>{if(e.target.matches('[data-alias-index]'))currentAliases[+e.target.dataset.aliasIndex]=e.target.value.toUpperCase()};$('#aliasList').onclick=e=>{let r=e.target.closest('[data-remove-alias]');if(r){currentAliases.splice(+r.dataset.removeAlias,1);renderAliasEditor();return}let u=e.target.closest('[data-save-alias]');if(u){let i=+u.dataset.saveAlias,input=document.querySelector(`[data-alias-index="${i}"]`);currentAliases[i]=input.value.trim().toUpperCase();renderAliasEditor()}};$('#mimage').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{currentImage=await compressImage(f);renderImagePreview();msg('Imagen comprimida y lista para guardar.',false,'#adminStatus')}catch{msg('No se pudo procesar la imagen.',true,'#adminStatus')}};$('#removeImage').onclick=()=>{currentImage='';$('#mimage').value='';renderImagePreview()};$('#adminSearch').oninput=renderMaterialList;$('#materialList').onclick=e=>{let b=e.target.closest('[data-edit]');if(b)openMaterialEditor(b.dataset.edit)};$('#addSup').onclick=()=>{let v=$('#newSup').value.trim().toUpperCase(),ini=$('#newSupInitials').value.trim().toUpperCase()||deriveInitials(v);if(v&&!state.supervisors.includes(v)){state.supervisors.push(v);state.supervisorInitials=state.supervisorInitials||{};state.supervisorInitials[v]=ini;save();renderAdmin();$('#newSup').value='';$('#newSupInitials').value=''}};$('#addUnit').onclick=()=>{let v=$('#newUnit').value.trim().toUpperCase();if(v&&!state.units.includes(v)){state.units.push(v);save();renderAdmin();$('#newUnit').value=''}};$('#supList').onclick=e=>{let del=e.target.closest('[data-dsup]');if(del){let i=+del.dataset.dsup,name=state.supervisors[i];state.supervisors.splice(i,1);if(state.supervisorInitials)delete state.supervisorInitials[name];save();renderAdmin();return}let upd=e.target.closest('[data-save-sup]');if(upd){let i=+upd.dataset.saveSup,oldName=state.supervisors[i],name=document.querySelector(`[data-sup-name="${i}"]`).value.trim().toUpperCase(),ini=document.querySelector(`[data-sup-initials="${i}"]`).value.trim().toUpperCase()||deriveInitials(name);if(!name)return;state.supervisors[i]=name;state.supervisorInitials=state.supervisorInitials||{};delete state.supervisorInitials[oldName];state.supervisorInitials[name]=ini;save();renderAdmin();msg('Supervisor e iniciales actualizados.',false,'#adminStatus')}};$('#unitList').onclick=e=>{let b=e.target.closest('[data-dunit]');if(b){state.units.splice(+b.dataset.dunit,1);save();renderAdmin()}};if($('#downloadData'))$('#downloadData').onclick=exportData;$('#downloadJson').onclick=()=>dl(JSON.stringify(state,null,2),'materiales_respaldo.json','application/json');$('#reset').onclick=()=>{if(confirm('¿Restablecer todos los datos originales?')){localStorage.removeItem(KEY);location.reload()}};['dest','fechaPedido','puesto','movil','ce'].forEach(id=>$('#'+id).addEventListener('change',()=>{updateMobileOrderSummary();state.defaults=state.defaults||{};state.defaults.destinatario=$('#dest').value;state.defaults.fechaPedido=$('#fechaPedido').value;state.defaults.puestoDescarga=$('#puesto').value;state.defaults.ce=$('#ce').value;save()}))}
+function updateMobileOrderSummary(){let sup=$('#dest')?.value||'Sin supervisor',unit=$('#movil')?.value||'Sin unidad';let el=$('#mobileOrderSummary');if(el)el.textContent=sup+' · '+unit}function bind(){document.querySelectorAll('.side-btn[data-view]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));document.querySelectorAll('.side-btn[data-config-page]').forEach(b=>b.addEventListener('click',()=>openConfigPage(b.dataset.configPage)));$('#sideConfig').onclick=()=>$('#dlg').showModal();$('#mobileMenu').onclick=()=>{$('#sidebar').classList.toggle('open');$('#sidebarBackdrop').classList.toggle('open')};$('#sidebarBackdrop').onclick=()=>{$('#sidebar').classList.remove('open');$('#sidebarBackdrop').classList.remove('open')};$('#themeToggle').onclick=()=>applyTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');$('#loadStock').onclick=importStock;if($('#loadStock2'))$('#loadStock2').onclick=()=>{let f=$('#stockFile2').files[0];if(f){let dt=new DataTransfer();dt.items.add(f);$('#stockFile').files=dt.files;importStock()}};if($('#centroGlobal2')){ $('#centroGlobal2').value=$('#centroGlobal').value; $('#centroGlobal2').onchange=()=>{ $('#centroGlobal').value=$('#centroGlobal2').value; $('#centroGlobal').dispatchEvent(new Event('change')); }; }$('#driveBackup').onclick=async()=>{let b=$('#driveBackup'),t=b.textContent;b.disabled=true;b.classList.add('is-loading');b.textContent='Actualizando desde Drive...';try{await restoreFromDrive({silent:false,stockOnly:true})}finally{b.disabled=false;b.classList.remove('is-loading');b.textContent=t}};if($('#driveBackup2'))$('#driveBackup2').onclick=async()=>{let b=$('#driveBackup2'),t=b.textContent;b.disabled=true;b.textContent='Actualizando desde Drive...';try{await restoreFromDrive({silent:false,stockOnly:true})}finally{b.disabled=false;b.textContent=t}};$('#centroGlobal').onchange=()=>{$('#ce').value=$('#centroGlobal').value;if($('#centroGlobal2'))$('#centroGlobal2').value=$('#centroGlobal').value;state.defaults=state.defaults||{};state.defaults.ce=$('#centroGlobal').value;save();cart.forEach(m=>m.available=availableStock(m.code));renderCart()};$('#ce').onchange=()=>{$('#centroGlobal').value=$('#ce').value;cart.forEach(m=>m.available=availableStock(m.code));renderCart()};if($('#goOrder'))$('#goOrder').onclick=()=>showView('orderView');$('#q').oninput=renderResults;$('#clear').onclick=()=>{$('#q').value='';renderResults();$('#q').focus()};$('#voiceSearch').onclick=e=>startVoice($('#q'),e.currentTarget);document.addEventListener('click',e=>{let b=e.target.closest('[data-voice]');if(b){e.preventDefault();startVoice($('#'+b.dataset.voice),b,b.dataset.append==='true')}let qb=e.target.closest('[data-voice-qty]');if(qb){e.preventDefault();let i=+qb.dataset.voiceQty,target=document.querySelector(`[data-qty="${i}"]`);startVoice(target,qb)}});$('#results').onclick=e=>{let edit=e.target.closest('[data-quick-edit]');if(edit){openMaterialEditor(edit.dataset.quickEdit);return}let b=e.target.closest('[data-add]');if(b)add(b.dataset.add)};$('#cart').oninput=e=>{if(e.target.matches('[data-qty]')){let input=e.target,i=+input.dataset.qty,value=input.value;if(/^0\d+/.test(value)){value=value.replace(/^0+/,'');input.value=value}cart[i].qty=value;let ready=Number(value)>0;input.classList.toggle('ready',ready);let bad=Number(value)>availableStock(cart[i].code);input.classList.toggle('insufficient',bad);input.classList.toggle('ready',ready&&!bad);input.closest('tr')?.classList.toggle('row-pending',!ready||bad);let info=input.closest('td')?.querySelector('.stock-info');if(bad)msg(`Stock insuficiente para ${cart[i].code}. Disponible: ${availableStock(cart[i].code)}.`,true)}};$('#cart').addEventListener('focusin',e=>{if(e.target.matches('[data-qty]')){if(e.target.value==='0')e.target.value='';setTimeout(()=>e.target.select(),0)}});$('#cart').onclick=e=>{let b=e.target.closest('[data-rm]');if(b){cart.splice(+b.dataset.rm,1);renderCart()}};$('#copy').onclick=async()=>{if(!valid())return;try{await navigator.clipboard.writeText(tsv())}catch{let t=document.createElement('textarea');t.value=tsv();document.body.appendChild(t);t.select();document.execCommand('copy');t.remove()}msg('Tabla copiada para SAP.')};$('#csv').onclick=()=>valid()&&dl(csvText(),'Pedido_Materiales.csv','text/csv;charset=utf-8');$('#excel').onclick=excel;$('#clean').onclick=()=>{if(confirm('¿Limpiar el pedido?')){cart=[];renderCart()}};$('#config').onclick=()=>{setMaterialMode('config');$('#dlg').showModal()};if($('#newMaterialTop'))$('#newMaterialTop').onclick=openNewMaterial;$('#close').onclick=()=>{clearMaterialForm();setMaterialMode('config');$('#dlg').classList.remove('single-admin','drive-only');$('#dlg').dataset.singlePage='';$('#dlg').close()};document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab,.page').forEach(x=>x.classList.remove('active'));b.classList.add('active');$('#p-'+b.dataset.page).classList.add('active')});$('#saveMat').onclick=saveMaterial;$('#cancelEdit').onclick=clearMaterialForm;$('#addAlias').onclick=addCurrentAlias;$('#suggestAliases').onclick=buildAliasSuggestions;$('#newAlias').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addCurrentAlias()}});$('#aliasList').oninput=e=>{if(e.target.matches('[data-alias-index]'))currentAliases[+e.target.dataset.aliasIndex]=e.target.value.toUpperCase()};$('#aliasList').onclick=e=>{let r=e.target.closest('[data-remove-alias]');if(r){currentAliases.splice(+r.dataset.removeAlias,1);renderAliasEditor();return}let u=e.target.closest('[data-save-alias]');if(u){let i=+u.dataset.saveAlias,input=document.querySelector(`[data-alias-index="${i}"]`);currentAliases[i]=input.value.trim().toUpperCase();renderAliasEditor()}};$('#mimage').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{currentImage=await compressImage(f);renderImagePreview();msg('Imagen comprimida y lista para guardar.',false,'#adminStatus')}catch{msg('No se pudo procesar la imagen.',true,'#adminStatus')}};$('#removeImage').onclick=()=>{currentImage='';$('#mimage').value='';renderImagePreview()};$('#adminSearch').oninput=renderMaterialList;$('#materialList').onclick=e=>{let b=e.target.closest('[data-edit]');if(b)openMaterialEditor(b.dataset.edit)};$('#addSup').onclick=()=>{let v=$('#newSup').value.trim().toUpperCase(),ini=$('#newSupInitials').value.trim().toUpperCase()||deriveInitials(v);if(v&&!state.supervisors.includes(v)){state.supervisors.push(v);state.supervisorInitials=state.supervisorInitials||{};state.supervisorInitials[v]=ini;save();renderAdmin();$('#newSup').value='';$('#newSupInitials').value=''}};$('#addUnit').onclick=()=>{let v=$('#newUnit').value.trim().toUpperCase();if(v&&!state.units.includes(v)){state.units.push(v);save();renderAdmin();$('#newUnit').value=''}};$('#supList').onclick=e=>{let del=e.target.closest('[data-dsup]');if(del){let i=+del.dataset.dsup,name=state.supervisors[i];state.supervisors.splice(i,1);if(state.supervisorInitials)delete state.supervisorInitials[name];save();renderAdmin();return}let upd=e.target.closest('[data-save-sup]');if(upd){let i=+upd.dataset.saveSup,oldName=state.supervisors[i],name=document.querySelector(`[data-sup-name="${i}"]`).value.trim().toUpperCase(),ini=document.querySelector(`[data-sup-initials="${i}"]`).value.trim().toUpperCase()||deriveInitials(name);if(!name)return;state.supervisors[i]=name;state.supervisorInitials=state.supervisorInitials||{};delete state.supervisorInitials[oldName];state.supervisorInitials[name]=ini;save();renderAdmin();msg('Supervisor e iniciales actualizados.',false,'#adminStatus')}};$('#unitList').onclick=e=>{let b=e.target.closest('[data-dunit]');if(b){state.units.splice(+b.dataset.dunit,1);save();renderAdmin()}};if($('#downloadData'))$('#downloadData').onclick=exportData;$('#downloadJson').onclick=()=>dl(JSON.stringify(state,null,2),'materiales_respaldo.json','application/json');$('#reset').onclick=()=>{if(confirm('¿Restablecer todos los datos originales?')){localStorage.removeItem(KEY);location.reload()}};['dest','fechaPedido','puesto','movil','ce'].forEach(id=>$('#'+id).addEventListener('change',()=>{updateMobileOrderSummary();state.defaults=state.defaults||{};state.defaults.destinatario=$('#dest').value;state.defaults.fechaPedido=$('#fechaPedido').value;state.defaults.puestoDescarga=$('#puesto').value;state.defaults.ce=$('#ce').value;save()}));
+$('#saveNewMat')?.addEventListener('click', saveNewMatricula);
+$('#nmAddAlias')?.addEventListener('click', ()=>{
+  let v=$('#nmNewAlias')?.value.trim().toUpperCase();
+  if(!v)return;
+  if(!newMatAliases.includes(v))newMatAliases.push(v);
+  if($('#nmNewAlias'))$('#nmNewAlias').value='';
+  renderNewMatAliasEditor();
+});
+$('#nmNewAlias')?.addEventListener('keydown', e=>{
+  if(e.key==='Enter'){
+    e.preventDefault();
+    let v=$('#nmNewAlias')?.value.trim().toUpperCase();
+    if(!v)return;
+    if(!newMatAliases.includes(v))newMatAliases.push(v);
+    if($('#nmNewAlias'))$('#nmNewAlias').value='';
+    renderNewMatAliasEditor();
+  }
+});
+$('#nmAliasList')?.addEventListener('input', e=>{
+  if(e.target.matches('[data-nm-alias-index]')) newMatAliases[+e.target.dataset.nmAliasIndex]=e.target.value.toUpperCase();
+});
+$('#nmAliasList')?.addEventListener('click', e=>{
+  let r=e.target.closest('[data-nm-remove-alias]');
+  if(r){ newMatAliases.splice(+r.dataset.nmRemoveAlias,1); renderNewMatAliasEditor(); return; }
+  let u=e.target.closest('[data-nm-save-alias]');
+  if(u){
+    let i=+u.dataset.nmSaveAlias, input=document.querySelector(`[data-nm-alias-index="${i}"]`);
+    if(input) newMatAliases[i]=input.value.trim().toUpperCase();
+    renderNewMatAliasEditor();
+  }
+});
+$('#nmSuggestAliases')?.addEventListener('click', ()=>{
+  let d=$('#nmDesc')?.value.trim().toUpperCase();
+  if(!d)return msg('Primero ingresa la descripción oficial.',true,'#adminStatus');
+  let volts=(d.match(/\b\d+(?:[.,]\d+)?\s*KV\b/g)||[]).map(x=>x.replace(/\s+/g,''));
+  let amps=(d.match(/\b\d+\s*A\b/g)||[]).map(x=>x.replace(/\s+/g,''));
+  let mm=(d.match(/\b\d+(?:[.,]\d+)?\s*MM(?:2|²)?\b/g)||[]).map(x=>x.replace(/\s+/g,''));
+  let ranges=(d.match(/\b\d+\s*[-–]\s*\d+\s*MM\b/g)||[]);
+  let out=[];
+  const add=x=>{x=(x||'').replace(/\s+/g,' ').replace(/\s+([,.;])/g,'$1').trim();if(x.length>=3&&!newMatAliases.includes(x)&&!out.includes(x))out.push(x)};
+  const v=volts[0]||'',a=amps[0]||'',m=mm[0]||'',r=ranges[0]||'';
+  if(/CUT[ -]?OUT|CUTOUT/.test(d)){add(['CUT OUT',v,a].filter(Boolean).join(' '));add(['CUTOUT',v,a].filter(Boolean).join(' '));add(['FUSIBLE CUT OUT',v,a].filter(Boolean).join(' '));add(['SECCIONADOR FUSIBLE',v].filter(Boolean).join(' '))}
+  if(/AISLADOR/.test(d)){let tipo=/SUSPENSION|ANCLAJE/.test(d)?'AISLADOR SUSPENSION':/LINE POST|PIN/.test(d)?'AISLADOR PIN':/EXTENSOR/.test(d)?'AISLADOR EXTENSOR':'AISLADOR';add([tipo,v].filter(Boolean).join(' '));if(/POLIMER/.test(d))add(['AISLADOR POLIMERICO',v].filter(Boolean).join(' '))}
+  if(/ABRAZADERA/.test(d)){add(['ABRAZADERA',r||m].filter(Boolean).join(' '));add('ABRAZADERA PARA CABLE');if(/VIENTO/.test(d))add('ABRAZADERA PARA VIENTO')}
+  let clean=d.replace(/[.,;:()\/]/g,' ').replace(/\b(PARA|CON|DEL|DE|LA|EL|EN|POR|TIPO|TP|P|RED|AEREA|AEREAS)\b/g,' ').replace(/\s+/g,' ').trim();
+  add(clean.split(' ').filter(w=>w.length>2).slice(0,7).join(' '));
+  out.slice(0,6).forEach(x=>newMatAliases.push(x));
+  renderNewMatAliasEditor();
+  msg(out.length?out.length+' alias sugeridos agregados.':'No se encontraron alias automáticos.',!out.length,'#adminStatus');
+});
+$('#nmImage')?.addEventListener('change', async e=>{
+  let f=e.target.files[0];
+  if(!f)return;
+  try{
+    newMatImage=await compressImage(f);
+    renderNewMatImagePreview();
+    msg('Imagen lista para guardar.',false,'#adminStatus');
+  }catch{msg('No se pudo procesar la imagen.',true,'#adminStatus')}
+});
+$('#nmRemoveImage')?.addEventListener('click', ()=>{
+  newMatImage='';
+  if($('#nmImage'))$('#nmImage').value='';
+  renderNewMatImagePreview();
+});
+}
 
 // ===== V19: stock multi-centro, pendientes y Apps Script =====
 const SYNC_KEY='bm_sync_v19', PENDING_KEY='bm_pending_v19';
@@ -1008,18 +1373,123 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
     const ws=XLSX.utils.json_to_sheet(data,{header:headers});ws['!cols']=[12,11,20,15,14,18,18,14,17,14,19].map(wch=>({wch}));ws['!autofilter']={ref:`A1:K${data.length+1}`};
     const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'CONTROL PEDIDOS');const sup=($31('#dest')?.value||'SUPERVISOR').replace(/\s+/g,'_'),date=$31('#fechaPedido')?.value||todayKey();XLSX.writeFile(wb,`Control_Pedido_${date}_${sup}.xlsx`);if(!silent)msg('Control de pedido generado: una fila por centro, con la unidad siempre en Unidad (recojo).');
   }
+  function customConfirm(message, onConfirm){
+    let modal = document.querySelector('#v449ConfirmModal');
+    if(!modal){
+      modal = document.createElement('div');
+      modal.id = 'v449ConfirmModal';
+      modal.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;z-index:999999;padding:16px;box-sizing:border-box;';
+      modal.innerHTML = `
+        <div style="background:var(--card, #ffffff);color:var(--text, #111111);padding:24px;border-radius:14px;max-width:440px;width:100%;box-shadow:0 12px 36px rgba(0,0,0,0.35);border:1px solid var(--line, #cccccc);box-sizing:border-box;">
+          <h3 style="margin-top:0;margin-bottom:12px;font-size:1.15rem;font-weight:800;">Confirmación</h3>
+          <p id="v449ConfirmMsg" style="margin-top:0;margin-bottom:20px;font-size:0.95rem;line-height:1.45;"></p>
+          <div style="display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;">
+            <button type="button" class="btn secondary" id="v449ConfirmCancel" style="padding:9px 16px;border-radius:8px;cursor:pointer;">Cancelar</button>
+            <button type="button" class="btn danger" id="v449ConfirmOk" style="padding:9px 16px;border-radius:8px;cursor:pointer;font-weight:bold;">Aceptar</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+    const msgEl = modal.querySelector('#v449ConfirmMsg');
+    if(msgEl) msgEl.textContent = message;
+    modal.style.display = 'flex';
+
+    const cancelBtn = modal.querySelector('#v449ConfirmCancel');
+    const okBtn = modal.querySelector('#v449ConfirmOk');
+
+    const cleanup = () => {
+      modal.style.display = 'none';
+      if(cancelBtn) cancelBtn.onclick = null;
+      if(okBtn) okBtn.onclick = null;
+    };
+
+    if(cancelBtn) cancelBtn.onclick = () => { cleanup(); };
+    if(okBtn) okBtn.onclick = () => { cleanup(); if(typeof onConfirm === 'function') onConfirm(); };
+  }
   function finaliseOrder(){
     if(!valid())return;const allocs=allocationRows31();if(!allocs.length)return msg('No se generaron filas de stock para finalizar.',true);
-    if(!confirm('¿Finalizar el pedido? El stock será descontado y se guardará en el historial.'))return;
-    try{const records=groupHistory(allocs);const addedDetails=records.reduce((n,r)=>n+(Array.isArray(r.items)?r.items.length:0),0);deductStock(allocs);ensureHistory().push(...records);state.historyUnread=(Number(state.historyUnread)||0)+addedDetails;save();if(typeof window.updateHistoryBadgeV41==='function')window.updateHistoryBadgeV41();renderHistory();renderStockStatus();cart=[];renderCart();renderResults();if(typeof renderSearchOrder==='function')renderSearchOrder();if(typeof queueSync==='function')queueSync('order');if(navigator.onLine&&typeof syncToDrive==='function'&&syncConfig().url)syncToDrive();msg(`Pedido finalizado. Se descontó el stock y se agregaron ${addedDetails} registro${addedDetails===1?'':'s'} de material al historial.`)}catch(e){msg('No se pudo finalizar el pedido: '+e.message,true)}
+    customConfirm('¿Desea grabar el pedido? El stock será descontado y se guardará en el historial.', function(){
+      try{const records=groupHistory(allocs);const addedDetails=records.reduce((n,r)=>n+(Array.isArray(r.items)?r.items.length:0),0);deductStock(allocs);ensureHistory().push(...records);state.historyUnread=(Number(state.historyUnread)||0)+addedDetails;save();if(typeof window.updateHistoryBadgeV41==='function')window.updateHistoryBadgeV41();renderHistory();renderStockStatus();cart=[];renderCart();renderResults();if(typeof renderSearchOrder==='function')renderSearchOrder();if(typeof queueSync==='function')queueSync('order');if(navigator.onLine&&typeof syncToDrive==='function'&&syncConfig().url)syncToDrive();msg(`Pedido grabado. Se descontó el stock y se agregaron ${addedDetails} registro${addedDetails===1?'':'s'} de material al historial.`)}catch(e){msg('No se pudo grabar el pedido: '+e.message,true)}
+    });
+  }
+  function clearAllOrdersAction(){
+    customConfirm('¿Está seguro que desea borrar todos los pedidos?', function(){
+      cart = [];
+      if(Array.isArray(state.orderHistory)) state.orderHistory = [];
+      if(state.controlEdits) state.controlEdits = {};
+      state.historyUnread = 0;
+      save();
+      if(typeof renderCart === 'function') renderCart();
+      if(typeof renderResults === 'function') renderResults();
+      if(typeof renderHistory37 === 'function') renderHistory37();
+      else if(typeof renderHistory34 === 'function') renderHistory34();
+      else if(typeof renderHistory === 'function') renderHistory();
+      if(typeof renderSearchOrder === 'function') renderSearchOrder();
+      if(typeof updateOrderAccess === 'function') updateOrderAccess();
+      if(typeof updateHistoryBadgeV41 === 'function') updateHistoryBadgeV41();
+      if(typeof queueSync === 'function') queueSync('order');
+      if(navigator.onLine && typeof syncToDrive === 'function' && typeof syncConfig === 'function' && syncConfig().url) syncToDrive();
+      msg('Todos los pedidos han sido borrados.');
+    });
+  }
+  function ensureClearAllOrdersButton(){
+    let saveRow = $31('#v26SaveRow');
+    const previewWrap = $31('#orderPanel .sap-preview-wrap');
+    const orderPanel = $31('#orderPanel');
+    if(!saveRow){
+      saveRow = document.createElement('div');
+      saveRow.id = 'v26SaveRow';
+      saveRow.className = 'order-save-row';
+    }
+    saveRow.style.cssText = 'display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;margin:12px 0!important;flex-wrap:wrap!important;width:100%!important;box-sizing:border-box!important;';
+
+    if(previewWrap && previewWrap.parentNode){
+      if(previewWrap.previousElementSibling !== saveRow){
+        previewWrap.parentNode.insertBefore(saveRow, previewWrap);
+      }
+    } else if(orderPanel) {
+      if(saveRow.parentNode !== orderPanel){
+        orderPanel.appendChild(saveRow);
+      }
+    }
+
+    let btn = $31('#v449ClearAllOrdersBtn');
+    if(!btn){
+      btn = document.createElement('button');
+      btn.id = 'v449ClearAllOrdersBtn';
+      btn.type = 'button';
+      btn.className = 'btn danger v449-clear-all';
+    }
+    btn.textContent = '🗑️ Borrar pedidos';
+    btn.style.cssText = 'background-color: #dc2626 !important; color: #ffffff !important; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; padding: 10px 16px; margin: 0;';
+    btn.onclick = clearAllOrdersAction;
+
+    let finBtn = $31('#v31FinalizeOrder') || $31('#v26SaveOrder');
+    if(!finBtn){
+      finBtn = document.createElement('button');
+      finBtn.id = 'v31FinalizeOrder';
+      finBtn.type = 'button';
+      finBtn.className = 'btn success v31-finalize';
+    } else {
+      finBtn.id = 'v31FinalizeOrder';
+      finBtn.className = 'btn success v31-finalize';
+    }
+    finBtn.textContent = '💾 Grabar pedido';
+    finBtn.style.cssText = 'background-color: #16a34a !important; color: #ffffff !important; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; padding: 10px 16px; margin: 0;';
+    finBtn.onclick = finaliseOrder;
+
+    // Forzar el orden exacto: 1° Borrar pedidos (Izquierda), 2° Grabar pedido (Derecha)
+    saveRow.appendChild(btn);
+    saveRow.appendChild(finBtn);
   }
   function replaceButtons(){
-    const old=$31('#v26SaveOrder');if(old){const n=old.cloneNode(true);old.replaceWith(n);n.id='v31FinalizeOrder';n.className='btn v31-finalize';n.textContent='💾 Finalizar pedido y descontar stock';n.addEventListener('click',finaliseOrder)}
+    ensureClearAllOrdersButton();
     const ctrl=$31('#v30ControlExcel');if(ctrl){const n=ctrl.cloneNode(true);ctrl.replaceWith(n);n.id='v31ControlExcel';n.addEventListener('click',()=>exportControl31())}
   }
   function removeQuantityMics(){document.querySelectorAll('[data-voice-qty]').forEach(x=>x.remove());const p=[...document.querySelectorAll('#orderPanel p.small')].find(x=>x.textContent.includes('micrófono'));if(p)p.textContent='La cantidad inicia en 0 (amarillo). Al colocar un valor mayor a 0 cambia a verde.'}
   function overrideRender(){const old=window.renderCart;window.renderCart=function(){old();removeQuantityMics()}}
-  function init31(){ensureHistory();ensureOM();overrideRender();replaceButtons();removeQuantityMics();renderHistory();setTimeout(()=>{ensureOM();replaceButtons();removeQuantityMics();renderHistory()},300)}
+  function init31(){ensureHistory();ensureOM();overrideRender();replaceButtons();removeQuantityMics();renderHistory();setTimeout(()=>{ensureOM();replaceButtons();removeQuantityMics();renderHistory();ensureClearAllOrdersButton();},300);setInterval(ensureClearAllOrdersButton,1000);}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init31);else init31();
 })();
 </script><script>
@@ -1139,11 +1609,13 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
   function currentMaterials(){
     const qRaw = $v('#q')?.value || '';
     const primary = String($v('#centroGlobal')?.value || '1003');
+    const rawTokens = qRaw.trim().split(/[\s,;\n\r\t]+/).filter(Boolean);
+    const isMultiSearch = rawTokens.length > 1;
+
     const already = new Set((cart || []).filter(x => String(x.centerMode || primary) === primary || String(x.centerMode) === 'both').map(x => String(x.code)));
-    let all = (state.materials || []).filter(m => !already.has(String(m.code)));
+    let all = isMultiSearch ? (state.materials || []) : (state.materials || []).filter(m => !already.has(String(m.code)));
     if (!qRaw.trim()) return all;
 
-    const rawTokens = qRaw.trim().split(/[\s,;\n\r\t]+/).filter(Boolean);
     const normTokens = [...new Set(rawTokens.map(normv))].slice(0, 100);
 
     if (normTokens.length > 1) {
@@ -1183,6 +1655,11 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
     const rawTokens = qRaw.trim().split(/[\s,;\n\r\t]+/).filter(Boolean);
     const isMultiSearch = rawTokens.length > 1;
 
+    const qtyCache = {};
+    document.querySelectorAll('[data-v36-qty]').forEach(inp => {
+      if (inp.value) qtyCache[inp.getAttribute('data-v36-qty')] = inp.value;
+    });
+
     let list = currentMaterials();
     if (selectedCode && !isMultiSearch) {
       const one = list.find(m => String(m.code) === String(selectedCode));
@@ -1198,18 +1675,65 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
       }
     }
     if (!list.length) {
-      results.innerHTML = '<div class="empty">No se encontraron materiales o ya fueron agregados al pedido.</div>';
+      results.innerHTML = '<div class="empty">No se encontraron materiales.</div>';
       return;
     }
-    results.innerHTML = `<div class="v29-table-wrap"><table class="v29-stock-table v42-material-image-table"><thead><tr><th>Foto</th><th>Matrícula SAP</th><th>Descripción oficial</th><th>Disponible 1003 San Juan</th><th>Disponible 1004 Vitarte</th><th>Unidad</th><th>Acción</th></tr></thead><tbody>${list.map(m => {
+
+    const multiHeader = isMultiSearch ? `
+      <div class="v36-multi-toolbar" style="margin-bottom:12px;padding:12px 16px;background:#eef6ff;border:1px solid #bdd7f5;border-radius:10px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div>
+          <strong style="color:#133c63">📋 Búsqueda Múltiple (${list.length} materiales)</strong>
+          <p class="small" style="margin:2px 0 0 0;color:#2c5278">Ingresa cantidades o pulsa Guardar todos al pedido para agregar las matrículas encontradas.</p>
+        </div>
+        <button type="button" class="btn primary" id="btnSaveAllMulti" style="font-weight:800;padding:9px 18px">📥 Guardar todos al pedido</button>
+      </div>` : '';
+
+    results.innerHTML = `${multiHeader}<div class="v29-table-wrap"><table class="v29-stock-table v42-material-image-table"><thead><tr><th>Foto</th><th>Matrícula SAP</th><th>Descripción oficial</th><th>Disponible 1003 San Juan</th><th>Disponible 1004 Vitarte</th><th>Unidad</th><th>Acción</th></tr></thead><tbody>${list.map(m => {
       const s3 = totalStock(m.code, '1003'), s4 = totalStock(m.code, '1004');
       const sel = String(selectedCode) === String(m.code);
       const aliases = (m.aliases || []).length;
       const img = m.image ? `<img src="${escv(m.image)}" alt="Imagen de ${escv(m.code)}" loading="lazy" class="cursor-pointer" data-open-catalog="${escv(m.code)}" title="Tocar para ampliar foto">` : `<span class="cursor-pointer" data-open-catalog="${escv(m.code)}" title="Tocar para abrir catálogo">Sin foto</span>`;
       const showQtyBox = sel || isMultiSearch;
+      const inCart = (cart || []).some(x => String(x.code) === String(m.code));
+      const val = qtyCache[m.code] || '';
 
-      return `<tr class="${sel ? 'v36-selected-row' : ''}"><td class="v42-material-image cursor-pointer" data-open-catalog="${escv(m.code)}">${img}</td><td class="v29-code cursor-pointer" data-open-catalog="${escv(m.code)}" title="Tocar para abrir catálogo">${escv(m.code)}</td><td><b>${escv(m.description)}</b><br><button class="v29-alias-link" data-quick-edit="${escv(m.code)}">Alias: ${aliases} · Ver/editar</button>${sel ? '<div class="v36-select-note">Material seleccionado para el centro actual. Ingresa una cantidad que no supere su stock y confirma.</div>' : ''}</td><td><span class="v29-stock-pill ${s3 > 0 ? 'good' : 'none'}">${s3} ${escv(normalizedUnit(m))}</span></td><td><span class="v29-stock-pill ${s4 > 0 ? 'good' : 'none'}">${s4} ${escv(normalizedUnit(m))}</span></td><td>${escv(normalizedUnit(m))}</td><td>${showQtyBox ? `<div class="v36-select-box"><input type="number" min="0" step="1" placeholder="Cantidad" data-v36-qty="${escv(m.code)}" max="${totalStock(m.code, String($v('#centroGlobal')?.value || '1003'))}" ${sel && !isMultiSearch ? 'autofocus' : ''}><button type="button" class="btn primary" data-v36-confirm="${escv(m.code)}">Agregar al pedido</button>${sel && !isMultiSearch ? `<button type="button" class="btn secondary" data-v36-cancel>Cancelar</button>` : ''}</div>` : `<button type="button" class="btn primary" data-v36-select="${escv(m.code)}">Seleccionar</button>`}</td></tr>`;
+      return `<tr class="${sel ? 'v36-selected-row' : ''} ${inCart ? 'v36-incart-row' : ''}"><td class="v42-material-image cursor-pointer" data-open-catalog="${escv(m.code)}">${img}</td><td class="v29-code cursor-pointer" data-open-catalog="${escv(m.code)}" title="Tocar para abrir catálogo">${escv(m.code)}</td><td><b>${escv(m.description)}</b>${inCart ? ' <span class="badge" style="background:#16a34a;color:#fff;font-size:10px;margin-left:6px;padding:2px 6px">✓ En pedido</span>' : ''}<br><button class="v29-alias-link" data-quick-edit="${escv(m.code)}">Alias: ${aliases} · Ver/editar</button>${sel ? '<div class="v36-select-note">Material seleccionado para el centro actual. Ingresa una cantidad que no supere su stock y confirma.</div>' : ''}</td><td><span class="v29-stock-pill ${s3 > 0 ? 'good' : 'none'}">${s3} ${escv(normalizedUnit(m))}</span></td><td><span class="v29-stock-pill ${s4 > 0 ? 'good' : 'none'}">${s4} ${escv(normalizedUnit(m))}</span></td><td>${escv(normalizedUnit(m))}</td><td>${showQtyBox ? `<div class="v36-select-box"><input type="number" min="0" step="1" placeholder="Cantidad" value="${escv(val)}" data-v36-qty="${escv(m.code)}" max="${totalStock(m.code, String($v('#centroGlobal')?.value || '1003'))}" ${sel && !isMultiSearch ? 'autofocus' : ''}><button type="button" class="btn primary" data-v36-confirm="${escv(m.code)}">Agregar al pedido</button>${sel && !isMultiSearch ? `<button type="button" class="btn secondary" data-v36-cancel>Cancelar</button>` : ''}</div>` : `<button type="button" class="btn primary" data-v36-select="${escv(m.code)}">Seleccionar</button>`}</td></tr>`;
     }).join('')}</tbody></table></div>`;
+
+    if (isMultiSearch) {
+      $v('#btnSaveAllMulti')?.addEventListener('click', () => {
+        let added = 0;
+        const primary = String($v('#centroGlobal')?.value || '1003');
+        list.forEach(m => {
+          const inp = $v(`[data-v36-qty="${CSS.escape(String(m.code))}"]`);
+          let qVal = Number(inp?.value);
+          if (isNaN(qVal) || qVal <= 0) {
+            if (!inp || inp.value.trim() === '') qVal = 1;
+          }
+          if (qVal > 0) {
+            const avail = totalStock(m.code, primary);
+            if (qVal <= avail && !(cart || []).some(x => String(x.code) === String(m.code) && String(x.centerMode || primary) === primary)) {
+              cart.push({
+                ...clone(m),
+                qty: String(qVal),
+                centerChoices: [primary],
+                centerMode: primary,
+                cartLineId: `${m.code}-${primary}-${Date.now()}`
+              });
+              added++;
+            }
+          }
+        });
+        if (added > 0) {
+          renderCart();
+          renderResults();
+          msg(`✓ Se agregaron ${added} material(es) al pedido.`);
+        } else {
+          msg('Ingresa una cantidad mayor a 0 en los materiales que deseas agregar.', true);
+        }
+      });
+    }
+
     if (selectedCode && !isMultiSearch) setTimeout(() => $v(`[data-v36-qty="${CSS.escape(String(selectedCode))}"]`)?.focus(), 0);
   };
   function addConfirmed(code){
@@ -1798,17 +2322,37 @@ html[data-theme="dark"] .admin-login-card{background:#102139;border-color:#35527
 
   const viewer=qs('#materialImageViewer'),viewerImg=qs('#imageViewerImg'),viewerNoImg=qs('#imageViewerNoImg'),viewerCode=qs('#imageViewerCode'),viewerDesc=qs('#imageViewerDesc'),viewerCodeFoot=qs('#imageViewerCodeFoot'),viewerDescFoot=qs('#imageViewerDescFoot'),viewerUnitFoot=qs('#imageViewerUnitFoot'),viewerMetaFoot=qs('#imageViewerMetaFoot'),viewerCounter=qs('#imageViewerCounter'),viewerAddBtn=qs('#imageViewerAddBtn');
   let gallery=[],galleryIndex=0;
-  function buildGallery(){const allm=(window.state?.materials?.length?window.state.materials:(window.APP_DATA?.materials||window.initialMaterials||[]));gallery=allm.map(m=>({code:String(m.code||''),description:String(m.description||''),unit:String(m.unit||'UND'),image:m.image||''}));}
+  function buildGallery(){
+    const allm = (typeof state !== 'undefined' && state?.materials?.length) 
+      ? state.materials 
+      : (window.state?.materials?.length 
+        ? window.state.materials 
+        : (window.APP_DATA?.materials || window.initialMaterials || []));
+    gallery=allm.map(m=>({code:String(m.code||''),description:String(m.description||''),unit:String(m.unit||'UND'),image:m.image||''}));
+  }
   function showAt(i){
     if(!gallery.length)return;
     galleryIndex=(i+gallery.length)%gallery.length;
     const m=gallery[galleryIndex];
     if(m.image){
-      if(viewerImg){viewerImg.src=m.image;viewerImg.classList.remove('hidden')}
-      if(viewerNoImg)viewerNoImg.classList.add('hidden');
+      if(viewerImg){
+        viewerImg.src=m.image;
+        viewerImg.classList.remove('hidden');
+        viewerImg.style.display='block';
+      }
+      if(viewerNoImg){
+        viewerNoImg.classList.add('hidden');
+        viewerNoImg.style.display='none';
+      }
     }else{
-      if(viewerImg)viewerImg.classList.add('hidden');
-      if(viewerNoImg)viewerNoImg.classList.remove('hidden');
+      if(viewerImg){
+        viewerImg.classList.add('hidden');
+        viewerImg.style.display='none';
+      }
+      if(viewerNoImg){
+        viewerNoImg.classList.remove('hidden');
+        viewerNoImg.style.display='flex';
+      }
     }
     if(viewerCode)viewerCode.textContent=`🖼️ Catálogo · Matrícula ${m.code}`;
     if(viewerDesc)viewerDesc.textContent=m.description;
