@@ -1,0 +1,19 @@
+VERIFICACION V45 - 2026-08-13
+
+PRUEBAS SUPERADAS
+- Sintaxis del parche JavaScript de sincronización: OK.
+- Conserva la estructura e interfaz actual del index.html: OK.
+- Guardado confirmado mediante identificador único de escritura: OK.
+- Fallo de sincronización conserva estado pendiente: OK.
+- Dos cambios consecutivos durante una sincronización: el segundo permanece pendiente: OK.
+- Protección de arranque: una restauración no puede pisar cambios locales pendientes: OK.
+- Protección de recuperación manual con cambios pendientes: OK.
+- El bun.lock vacío debe eliminarse para evitar que Vercel intente usar Bun con un lockfile inválido.
+
+DIAGNOSTICO
+- El problema principal estaba en la lógica local/pending del frontend: syncToDrive() podía devolver false y el .then() de arranque ejecutaba restoreFromDrive() de todos modos.
+- La corrección V45 intercepta la sincronización antes del arranque automático y bloquea la recuperación mientras existan cambios pendientes.
+
+DESPLIEGUE
+- Vercel sirve /data.js mediante /api/data-patched para añadir el parche V45 sin reemplazar el index.html aprobado.
+- La copia anterior queda identificada por el commit 11bfd3549a1866bdd594eb3a96db968e13c7d42b.
