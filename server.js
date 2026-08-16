@@ -101,12 +101,21 @@ app.get('*', async (req, res) => {
     res.setHeader('Cache-Control','no-store, max-age=0');
     const file = path.join(__dirname, 'index.html');
     let html = await readFile(file, 'utf8');
-    const bootGuard = `<script>(function(){try{if(!Array.isArray(window.cart))window.cart=[];Object.defineProperty(window,'cart',{value:Array.isArray(window.cart)?window.cart:[],writable:true,configurable:true});}catch(e){try{window.cart=[]}catch(_){}}})();</script>`;
-    const uiPatch = '<script src="/ui-v45-5.js?v=45.5"></script>';
-    if (!html.includes('__BM_BOOT_GUARD__')) {
-      html = html.replace(/<head>/i, '<head><script>window.__BM_BOOT_GUARD__=true;</script>' + bootGuard);
-    }
-    if (!html.includes('/ui-v45-5.js')) html = html.replace(/<\/body>/i, `${uiPatch}</body>`);
+
+    // Runtime hardening for this monolithic page:
+    // expose the core state variables as window properties so later classic
+    // scripts (v36-v45) cannot fall back to DOM named elements or miss them.
+    html = html.replace(
+      'let state=load(),cart=[],editingCode=null,deferredPrompt=null,activeRecognition=null,stockRows=[],stockMeta={};',
+      'var state=load(),cart=[],editingCode=null,deferredPrompt=null,activeRecognition=null,stockRows=[],stockMeta={};'
+    );
+
+    // Keep Drive recovery strictly manual. The legacy v24 block scheduled an
+    // automatic restore at boot, which could race the app initialization.
+    html = html.replace('setTimeout(driveFirst,600)', '/* automatic Drive restore disabled */');
+
+    // Do not inject the temporary UI patch here. It depends on later globals
+    // and can mask the real app lifecycle while we stabilize the core build.
     return res.type('html').send(html);
   } catch (err) {
     console.error('Error sirviendo index.html:', err);
