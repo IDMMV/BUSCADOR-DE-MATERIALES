@@ -1,0 +1,8 @@
+V45.2 - CORRECCION DE SERVIDORES Y ASSETS
+
+1. Se evita que rutas faltantes devuelvan index.html.
+2. data.js y preloaded-stock.js quedan embebidos en index.html para eliminar errores Unexpected token <.
+3. Se retira el enlace al manifest mientras la app desregistra el Service Worker.
+4. Se desactiva cache para assets dinamicos.
+5. Se conserva Google Drive / Apps Script / stock y la UI V45.1.
+6. Version visible: V45.2.

@@ -10,7 +10,17 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-app.use(express.static(__dirname));
+app.use(express.static(__dirname, {
+  index: false,
+  fallthrough: true,
+  extensions: false,
+  setHeaders: (res, filePath) => {
+    const lower = filePath.toLowerCase();
+    if (/\.(js|mjs|css|json|webmanifest|png|jpe?g|gif|svg|ico|webp|xlsx|txt|map)$/.test(lower)) {
+      res.setHeader('Cache-Control', 'no-store, max-age=0');
+    }
+  }
+}));
 
 app.get('/api/config', (req, res) => {
   res.json({
@@ -98,7 +108,12 @@ app.get('/api/drive/get', async (req, res) => {
 });
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  // Never return HTML for a requested static asset. This prevents
+  // browser errors such as: Unexpected token '<' in .js files.
+  if (/\.[a-z0-9]+$/i.test(req.path)) {
+    return res.status(404).type('text/plain').send('Recurso no encontrado: ' + req.path);
+  }
+  return res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.listen(PORT, '0.0.0.0', () => {
