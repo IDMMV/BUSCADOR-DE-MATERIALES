@@ -1,12 +1,10 @@
-/* Client stability guard: bound Drive waits and suppress duplicate automatic restores. */
+/* Client stability guard: manual Drive sync only; never auto-restore at startup/focus. */
 (function () {
   'use strict';
 
   const state = window.__BM_CLIENT_STABILITY__ = window.__BM_CLIENT_STABILITY__ || {
     restoreInFlight: null,
     syncInFlight: null,
-    lastAutoRestore: 0,
-    lastAutoSync: 0,
     installed: false
   };
 
@@ -46,17 +44,18 @@
     const wrapped = function (options = {}) {
       const manual = isManual(options, false);
 
+      // Critical rule: automatic startup/focus refresh is disabled.
+      // Drive recovery happens only after an explicit user action.
       if (!manual) {
-        const now = Date.now();
-        if (now - state.lastAutoRestore < 30000) return Promise.resolve(false);
-        state.lastAutoRestore = now;
+        console.info('[Drive restore] automatic restore blocked by client stability guard');
+        return Promise.resolve(false);
       }
 
       if (state.restoreInFlight) return state.restoreInFlight;
 
       let result;
       try {
-        result = original.call(this, { ...(options || {}), isManual: manual });
+        result = original.call(this, { ...(options || {}), isManual: true });
       } catch (error) {
         console.error('Drive restore start failed:', error);
         return Promise.resolve(false);
@@ -85,17 +84,18 @@
     const wrapped = function (options = {}) {
       const manual = isManual(options, true);
 
+      // Automatic sync is also disabled. This prevents startup pending-state
+      // cascades from starting another Drive operation.
       if (!manual) {
-        const now = Date.now();
-        if (now - state.lastAutoSync < 30000) return Promise.resolve(false);
-        state.lastAutoSync = now;
+        console.info('[Drive sync] automatic sync blocked by client stability guard');
+        return Promise.resolve(false);
       }
 
       if (state.syncInFlight) return state.syncInFlight;
 
       let result;
       try {
-        result = original.call(this, manual ? { ...(options || {}), isManual: true } : (options || {}));
+        result = original.call(this, { ...(options || {}), isManual: true });
       } catch (error) {
         console.error('Drive sync start failed:', error);
         return Promise.resolve(false);
@@ -120,8 +120,6 @@
   installRestoreGuard();
   installSyncGuard();
 
-  // The page defines these functions before this injected script, but keep a
-  // small retry window in case a future refactor moves their definitions later.
   let attempts = 0;
   const timer = setInterval(() => {
     installRestoreGuard();
