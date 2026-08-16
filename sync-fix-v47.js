@@ -62,9 +62,8 @@
           throw error;
         } finally {
           stateStore.lastCompletedRevision = startRevision;
-          const cfg = readCfg();
           const changedDuringSync = stateStore.revision > startRevision;
-          const shouldRetry = !stateStore.failed && (stateStore.rerun || changedDuringSync || cfg.pending === true);
+          const shouldRetry = !stateStore.failed && (stateStore.rerun || changedDuringSync);
           stateStore.rerun = false;
           stateStore.inFlight = null;
           if (shouldRetry) {
@@ -87,7 +86,7 @@
       const cfg = readCfg();
       const forced = options && options.force === true;
       const unsafePending = cfg.pending === true && !forced;
-      const changedAfterSync = stateStore.revision > stateStore.lastCompletedRevision;
+      const changedAfterSync = stateStore.lastCompletedRevision >= 0 && stateStore.revision > stateStore.lastCompletedRevision;
 
       if (!forced && (stateStore.failed || stateStore.inFlight || unsafePending || changedAfterSync)) {
         return false;
@@ -162,7 +161,8 @@
         setTimeout(() => {
           const multiToolbar = btn.closest('.v36-multi-toolbar');
           const parent = multiToolbar?.parentElement || document;
-          parent.querySelectorAll('input[type="search"], input[placeholder*="Buscar" i], input[id="q"], input[id="searchInput"]').forEach(input => {
+          const inputs = parent.querySelectorAll('input[type="search"], input[placeholder*="Buscar" i], input[id="q"], input[id="searchInput"]');
+          inputs.forEach(input => {
             if (input.value) {
               input.value = '';
               input.dispatchEvent(new Event('input', { bubbles: true }));
