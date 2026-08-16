@@ -9,6 +9,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 const DRIVE_TIMEOUT_MS = 12000;
+const CONFIG_TIMEOUT_MS = 5000;
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
@@ -30,6 +31,43 @@ function fetchWithTimeout(url, options = {}, timeoutMs = DRIVE_TIMEOUT_MS) {
   return fetch(url, { ...options, signal: controller.signal })
     .finally(() => clearTimeout(timer));
 }
+
+const BOOT_DRIVE_GUARD = String.raw`<script>
+(() => {
+  'use strict';
+  const originalFetch = window.fetch.bind(window);
+  let unlocked = false;
+
+  const unlock = () => { unlocked = true; window.__BM_DRIVE_UNLOCKED__ = true; };
+  ['pointerdown','touchstart','keydown','input','change','submit'].forEach(type => {
+    document.addEventListener(type, unlock, { capture: true, passive: true });
+  });
+
+  const withTimeout = (promise, ms, label) => {
+    let timer;
+    const timeout = new Promise((_, reject) => {
+      timer = setTimeout(() => reject(new Error(label + ' timeout after ' + ms + 'ms')), ms);
+    });
+    return Promise.race([Promise.resolve(promise), timeout]).finally(() => clearTimeout(timer));
+  };
+
+  window.fetch = function(input, init) {
+    const url = typeof input === 'string' ? input : (input && input.url) || '';
+    const isConfig = /\/api\/config(?:[?#]|$)/i.test(url);
+    const isDrive = /\/api\/drive\/(?:get|sync)(?:[?#]|$)/i.test(url);
+
+    if (isDrive && !unlocked && !window.__BM_DRIVE_UNLOCKED__) {
+      console.warn('[BM] Bloqueada una sincronización automática de Drive durante el arranque. Se habilitará tras la primera interacción.');
+      return Promise.reject(new Error('Drive bloqueado durante el arranque automático'));
+    }
+
+    const request = originalFetch(input, init);
+    return withTimeout(request, isConfig ? ${CONFIG_TIMEOUT_MS} : (isDrive ? ${DRIVE_TIMEOUT_MS} : 15000), isConfig ? 'Config' : (isDrive ? 'Drive' : 'Request'));
+  };
+
+  window.__BM_BOOT_GUARD__ = true;
+})();
+</script>`;
 
 app.get('/api/config', (req, res) => {
   res.setHeader('Cache-Control', 'no-store, max-age=0');
@@ -131,17 +169,19 @@ app.get('/api/drive/get', async (req, res) => {
 });
 
 app.get('*', async (req, res) => {
-  // Never return HTML for a requested static asset. This prevents
-  // browser errors such as: Unexpected token '<' in .js files.
   if (/\.[a-z0-9]+$/i.test(req.path)) {
     return res.status(404).type('text/plain').send('Recurso no encontrado: ' + req.path);
   }
 
   try {
     const file = await fs.readFile(path.join(__dirname, 'index.html'), 'utf8');
-    const injected = file.includes('/client-stability.js')
-      ? file
-      : file.replace('</body>', '<script src="/client-stability.js" defer></script></body>');
+    let injected = file;
+    if (!injected.includes('window.__BM_BOOT_GUARD__')) {
+      injected = injected.replace(/<head>/i, `<head>${BOOT_DRIVE_GUARD}`);
+    }
+    if (!injected.includes('/client-stability.js')) {
+      injected = injected.replace('</body>', '<script src="/client-stability.js" defer></script></body>');
+    }
     res.setHeader('Cache-Control', 'no-store, max-age=0');
     return res.type('html').send(injected);
   } catch (err) {
@@ -153,4 +193,3 @@ app.get('*', async (req, res) => {
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on http://0.0.0.0:${PORT}`);
 });
-
