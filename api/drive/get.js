@@ -1,44 +1,51 @@
+const DRIVE_TIMEOUT_MS = 15000;
+
+async function fetchWithTimeout(url, options = {}, timeoutMs = DRIVE_TIMEOUT_MS) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') return res.status(200).end();
 
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+  if (req.method !== 'GET') {
+    return res.status(405).json({ ok: false, error: 'Método no permitido' });
   }
 
   try {
     const envUrl = (process.env.GOOGLE_APPS_SCRIPT_URL || '').trim();
     const envToken = (process.env.GOOGLE_APPS_SCRIPT_TOKEN || '').trim();
-
     const targetUrl = (envUrl || req.query?.url || '').trim();
     const token = envToken || req.query?.token || '';
     const action = req.query?.action || 'getAll';
-
-    if (!targetUrl) {
-      return res.status(400).json({ ok: false, error: 'URL de Google Apps Script no configurada en Vercel o en la app.' });
-    }
+    if (!targetUrl) return res.status(400).json({ ok: false, error: 'URL de Google Apps Script no configurada en Vercel o en la app.' });
 
     const cleanBase = targetUrl.replace(/\?.*$/, '');
     const urlWithParams = `${cleanBase}?action=${encodeURIComponent(action)}&token=${encodeURIComponent(token)}&_=${Date.now()}`;
-
     const response = await fetchWithTimeout(urlWithParams, {
       method: 'GET',
       headers: { 'Accept': 'application/json' },
       redirect: 'follow'
     });
-
     const text = await response.text();
     let data;
-    try {
-      data = JSON.parse(text);
-    } catch (_) {
-      return res.status(502).json({ ok: false, error: 'Respuesta no válida de Google Apps Script: ' + text.slice(0, 200) });
+    try { data = JSON.parse(text); }
+    catch (_) { return res.status(502).json({ ok: false, error: 'Respuesta no válida de Google Apps Script: ' + text.slice(0, 300) }); }
+    if (!response.ok) {
+      return res.status(502).json({ ok: false, error: data?.error || `Google Apps Script respondió HTTP ${response.status}`, upstreamStatus: response.status });
     }
     return res.status(200).json(data);
   } catch (err) {
     console.error('Error in /api/drive/get serverless function:', err);
-    return res.status(err?.name==='AbortError'?504:500).json({ ok: false, error: err?.name==='AbortError' ? `Google Apps Script no respondió en ${DRIVE_TIMEOUT_MS/1000} segundos.` : 'Error al consultar Google Apps Script: ' + (err?.message || err) });
+    const isTimeout = err?.name === 'AbortError';
+    return res.status(isTimeout ? 504 : 500).json({ ok: false, error: isTimeout ? `Google Apps Script no respondió en ${DRIVE_TIMEOUT_MS / 1000} segundos.` : 'Error al consultar Google Apps Script: ' + (err?.message || err) });
   }
 }
-
