@@ -34,67 +34,75 @@ function doGet(e) {
 }
 
 function doPost(e) {
+  const lock = LockService.getScriptLock();
   try {
-    let req = {};
-    if (e && e.postData && e.postData.contents) {
-      try {
-        req = JSON.parse(e.postData.contents);
-      } catch (pe) {
-        req = {};
-      }
-    } else if (e && e.parameter && e.parameter.data) {
-      try {
-        req = JSON.parse(e.parameter.data);
-      } catch (_) {}
-    }
-
-    validateToken_(req.token);
-
-    if (req.action === 'replaceStock') {
-      const rows = Array.isArray(req.stockRows) ? req.stockRows : [];
-      const meta = req.stockMeta || {};
-      replaceStock_(rows, meta);
-      SpreadsheetApp.flush();
-      const verified = readStockFromSheets_();
-      return json_({
-        ok: true,
-        savedAt: new Date().toISOString(),
-        stockRows: verified.stockRows.length,
-        stockDate: verified.stockMeta.date || '',
-        stockFile: verified.stockMeta.file || '',
-        stockRevision: verified.stockMeta.revision || ''
-      });
-    }
-
-    if (req.action === 'syncAll') {
-      const data = req.data || {};
-      // Si no vienen stockRows o vienen vacíos, conservar el stock existente en Sheets
-      if (!Array.isArray(data.stockRows) || data.stockRows.length === 0) {
-        const existingStock = readStockFromSheets_();
-        if (existingStock.stockRows && existingStock.stockRows.length) {
-          data.stockRows = existingStock.stockRows;
-          data.stockMeta = existingStock.stockMeta;
-        } else {
-          data.stockRows = [];
+    lock.waitLock(20000);
+    try {
+      let req = {};
+      if (e && e.postData && e.postData.contents) {
+        try {
+          req = JSON.parse(e.postData.contents);
+        } catch (pe) {
+          req = {};
         }
+      } else if (e && e.parameter && e.parameter.data) {
+        try {
+          req = JSON.parse(e.parameter.data);
+        } catch (_) {}
       }
-      saveBackup_(data);
-      writeSheets_(data);
-      SpreadsheetApp.flush();
-      const verified = readStockFromSheets_();
-      return json_({
-        ok: true,
-        savedAt: new Date().toISOString(),
-        stockRows: verified.stockRows.length,
-        stockDate: verified.stockMeta.date || '',
-        stockFile: verified.stockMeta.file || '',
-        stockRevision: verified.stockMeta.revision || ''
-      });
-    }
 
-    throw new Error('Acción no reconocida: ' + (req.action || 'vacío'));
+      validateToken_(req.token);
+
+      if (req.action === 'replaceStock') {
+        const rows = Array.isArray(req.stockRows) ? req.stockRows : [];
+        const meta = req.stockMeta || {};
+        replaceStock_(rows, meta);
+        SpreadsheetApp.flush();
+        const verified = readStockFromSheets_();
+        return json_({
+          ok: true,
+          savedAt: new Date().toISOString(),
+          stockRows: verified.stockRows.length,
+          stockDate: verified.stockMeta.date || '',
+          stockFile: verified.stockMeta.file || '',
+          stockRevision: verified.stockMeta.revision || ''
+        });
+      }
+
+      if (req.action === 'syncAll') {
+        const data = req.data || {};
+        // Si no vienen stockRows o vienen vacíos, conservar el stock existente en Sheets
+        if (!Array.isArray(data.stockRows) || data.stockRows.length === 0) {
+          const existingStock = readStockFromSheets_();
+          if (existingStock.stockRows && existingStock.stockRows.length) {
+            data.stockRows = existingStock.stockRows;
+            data.stockMeta = existingStock.stockMeta;
+          } else {
+            data.stockRows = [];
+          }
+        }
+        saveBackup_(data);
+        writeSheets_(data);
+        SpreadsheetApp.flush();
+        const verified = readStockFromSheets_();
+        return json_({
+          ok: true,
+          savedAt: new Date().toISOString(),
+          stockRows: verified.stockRows.length,
+          stockDate: verified.stockMeta.date || '',
+          stockFile: verified.stockMeta.file || '',
+          stockRevision: verified.stockMeta.revision || ''
+        });
+      }
+
+      throw new Error('Acción no reconocida: ' + (req.action || 'vacío'));
+    } catch (err) {
+      return json_({ ok: false, error: String(err.message || err) });
+    }
   } catch (err) {
     return json_({ ok: false, error: String(err.message || err) });
+  } finally {
+    try { lock.releaseLock(); } catch (_) {}
   }
 }
 

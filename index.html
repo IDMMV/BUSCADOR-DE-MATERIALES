@@ -829,7 +829,7 @@ async function importMaterialBase(inputEl){
   renderResults();
   renderAdmin();
   if(typeof queueSync==='function')queueSync('materials');
-  if(navigator.onLine&&typeof syncToDrive==='function'&&syncConfig().url)syncToDrive();
+  if(typeof scheduleDriveSync==='function')scheduleDriveSync(700,'order');
   inputEl.value='';
   msg(`Base de materiales actualizada (${updatedCount} modificados, ${createdCount} creados).`,false,'#adminStatus');
 }
@@ -887,10 +887,10 @@ function saveNewMatricula(){
   newMatAliases=[];newMatImage='';
   renderNewMatAliasEditor();renderNewMatImagePreview();
   if(typeof queueSync==='function')queueSync('materials');
-  if(navigator.onLine&&typeof syncToDrive==='function'&&syncConfig().url)syncToDrive();
+  if(typeof scheduleDriveSync==='function')scheduleDriveSync(700,'order');
   msg(isEdit?`Matrícula ${c} modificada y guardada con éxito.`:`Nueva matrícula ${c} creada y guardada con éxito.`,false,'#adminStatus');
 }
-function openMaterialEditor(c){showView('newMatView');if($('#nmCode')){$('#nmCode').value=c;lookupMatricula();setTimeout(()=>$('#nmDesc')?.focus(),50);}}function addCurrentAlias(){let v=$('#newAlias').value.trim().toUpperCase();if(!v)return;if(!currentAliases.includes(v))currentAliases.push(v);$('#newAlias').value='';renderAliasEditor()}function saveMaterial(){let c=(editingCode||$('#mcode').value.trim()),d=$('#mdesc').value.trim().toUpperCase(),u=$('#munit').value.trim().toUpperCase()||'UND',aliases=[...new Set(currentAliases.map(x=>x.trim().toUpperCase()).filter(Boolean))],p=$('#mprio').value;if(!/^\d{5,}$/.test(c)||!d)return msg('Ingresa matrícula numérica y descripción.',true,'#adminStatus');let m=state.materials.find(x=>x.code===c);if(m){m.description=d;m.unit=u;m.priority=p;m.aliases=aliases;m.image=currentImage}else state.materials.push({code:c,description:d,unit:u,aliases,priority:p,image:currentImage,source:'MANUAL'});state.materials.sort((x,y)=>x.description.localeCompare(y.description,'es'));save();renderResults();renderAdmin();clearMaterialForm();if(typeof queueSync==='function')queueSync('materials');if(navigator.onLine&&typeof syncToDrive==='function'&&syncConfig().url)syncToDrive();msg(m?'Material e imagen guardados y sincronizados con Google Drive.':'Nuevo material e imagen guardados y sincronizados con Google Drive.',false,'#adminStatus')}function buildAliasSuggestions(){let d=$('#mdesc').value.trim().toUpperCase();if(!d)return msg('Primero ingresa o conserva la descripción oficial.',true,'#adminStatus');let volts=(d.match(/\b\d+(?:[.,]\d+)?\s*KV\b/g)||[]).map(x=>x.replace(/\s+/g,''));let amps=(d.match(/\b\d+\s*A\b/g)||[]).map(x=>x.replace(/\s+/g,''));let mm=(d.match(/\b\d+(?:[.,]\d+)?\s*MM(?:2|²)?\b/g)||[]).map(x=>x.replace(/\s+/g,''));let ranges=(d.match(/\b\d+\s*[-–]\s*\d+\s*MM\b/g)||[]);let out=[];const add=x=>{x=(x||'').replace(/\s+/g,' ').replace(/\s+([,.;])/g,'$1').trim();if(x.length>=3&&!currentAliases.includes(x)&&!out.includes(x))out.push(x)};const v=volts[0]||'',a=amps[0]||'',m=mm[0]||'',r=ranges[0]||'';if(/CUT[ -]?OUT|CUTOUT/.test(d)){add(['CUT OUT',v,a].filter(Boolean).join(' '));add(['CUTOUT',v,a].filter(Boolean).join(' '));add(['FUSIBLE CUT OUT',v,a].filter(Boolean).join(' '));add(['SECCIONADOR FUSIBLE',v].filter(Boolean).join(' '))}if(/AISLADOR/.test(d)){let tipo=/SUSPENSION|ANCLAJE/.test(d)?'AISLADOR SUSPENSION':/LINE POST|PIN/.test(d)?'AISLADOR PIN':/EXTENSOR/.test(d)?'AISLADOR EXTENSOR':'AISLADOR';add([tipo,v].filter(Boolean).join(' '));if(/POLIMER/.test(d))add(['AISLADOR POLIMERICO',v].filter(Boolean).join(' '))}if(/ABRAZADERA/.test(d)){add(['ABRAZADERA',r||m].filter(Boolean).join(' '));add('ABRAZADERA PARA CABLE');if(/VIENTO/.test(d))add('ABRAZADERA PARA VIENTO')}if(/FUSIBLE/.test(d)){add(['FUSIBLE',v,a].filter(Boolean).join(' '));if(/EXPULSION/.test(d))add(['FUSIBLE DE EXPULSION',v,a].filter(Boolean).join(' '));if(/UNIPOLAR|SEC/.test(d))add(['FUSIBLE UNIPOLAR',v,a].filter(Boolean).join(' '))}if(/CONECTOR/.test(d)){let tipo=/BIMETAL/.test(d)?'CONECTOR BIMETALICO':/PERFOR/.test(d)?'CONECTOR PERFORANTE':'CONECTOR';add([tipo,m].filter(Boolean).join(' '));if(/TIPO H|\bH\s*\d+/.test(d))add(['CONECTOR TIPO H',m].filter(Boolean).join(' '))}if(/CABLE/.test(d)){add(['CABLE',m,v].filter(Boolean).join(' '));if(/PREENSAMBL/.test(d))add(['CABLE PREENSAMBLADO',m].filter(Boolean).join(' '))}if(/PERNO/.test(d)){add(['PERNO',m].filter(Boolean).join(' '));if(/GALV/.test(d))add('PERNO GALVANIZADO')}if(/ARANDELA/.test(d)){add(['ARANDELA',m].filter(Boolean).join(' '));if(/PLANA/.test(d))add('ARANDELA PLANA');if(/PRESION/.test(d))add('ARANDELA DE PRESION')}if(/AMARRE/.test(d)){add(['AMARRE',m].filter(Boolean).join(' '));if(/PREFORM/.test(d))add(['AMARRE PREFORMADO',m].filter(Boolean).join(' '))}if(/GRAPA/.test(d)){add(['GRAPA',m].filter(Boolean).join(' '));if(/SUSPENSION/.test(d))add('GRAPA DE SUSPENSION');if(/ANCLAJE/.test(d))add('GRAPA DE ANCLAJE')}if(/SECCIONADOR/.test(d)){add(['SECCIONADOR',v,a].filter(Boolean).join(' '));if(/UNIPOLAR/.test(d))add(['SECCIONADOR UNIPOLAR',v,a].filter(Boolean).join(' '))}let clean=d.replace(/[.,;:()\/]/g,' ').replace(/\b(PARA|CON|DEL|DE|LA|EL|EN|POR|TIPO|TP|P|RED|AEREA|AEREAS)\b/g,' ').replace(/\s+/g,' ').trim();add(clean.split(' ').filter(w=>w.length>2).slice(0,7).join(' '));out.slice(0,6).forEach(x=>currentAliases.push(x));renderAliasEditor();msg(out.length?out.length+' alias sugeridos agregados temporalmente. Revísalos y pulsa Actualizar matrícula y alias.':'No se encontraron alias nuevos; puedes escribirlos manualmente.',!out.length,'#adminStatus')}async function compressImage(file){return new Promise((resolve,reject)=>{let img=new Image(),url=URL.createObjectURL(file);img.onload=()=>{let max=700,scale=Math.min(1,max/Math.max(img.width,img.height)),w=Math.max(1,Math.round(img.width*scale)),h=Math.max(1,Math.round(img.height*scale)),c=document.createElement('canvas');c.width=w;c.height=h;let ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);ctx.drawImage(img,0,0,w,h);URL.revokeObjectURL(url);resolve(c.toDataURL('image/webp',0.7))};img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('Imagen inválida'))};img.src=url})}function exportData(){dl('window.APP_DATA = '+JSON.stringify(state,null,2)+';','data.js','text/javascript;charset=utf-8')}
+function openMaterialEditor(c){showView('newMatView');if($('#nmCode')){$('#nmCode').value=c;lookupMatricula();setTimeout(()=>$('#nmDesc')?.focus(),50);}}function addCurrentAlias(){let v=$('#newAlias').value.trim().toUpperCase();if(!v)return;if(!currentAliases.includes(v))currentAliases.push(v);$('#newAlias').value='';renderAliasEditor()}function saveMaterial(){let c=(editingCode||$('#mcode').value.trim()),d=$('#mdesc').value.trim().toUpperCase(),u=$('#munit').value.trim().toUpperCase()||'UND',aliases=[...new Set(currentAliases.map(x=>x.trim().toUpperCase()).filter(Boolean))],p=$('#mprio').value;if(!/^\d{5,}$/.test(c)||!d)return msg('Ingresa matrícula numérica y descripción.',true,'#adminStatus');let m=state.materials.find(x=>x.code===c);if(m){m.description=d;m.unit=u;m.priority=p;m.aliases=aliases;m.image=currentImage}else state.materials.push({code:c,description:d,unit:u,aliases,priority:p,image:currentImage,source:'MANUAL'});state.materials.sort((x,y)=>x.description.localeCompare(y.description,'es'));save();renderResults();renderAdmin();clearMaterialForm();if(typeof queueSync==='function')queueSync('materials');if(typeof scheduleDriveSync==='function')scheduleDriveSync(700,'order');msg(m?'Material e imagen guardados y sincronizados con Google Drive.':'Nuevo material e imagen guardados y sincronizados con Google Drive.',false,'#adminStatus')}function buildAliasSuggestions(){let d=$('#mdesc').value.trim().toUpperCase();if(!d)return msg('Primero ingresa o conserva la descripción oficial.',true,'#adminStatus');let volts=(d.match(/\b\d+(?:[.,]\d+)?\s*KV\b/g)||[]).map(x=>x.replace(/\s+/g,''));let amps=(d.match(/\b\d+\s*A\b/g)||[]).map(x=>x.replace(/\s+/g,''));let mm=(d.match(/\b\d+(?:[.,]\d+)?\s*MM(?:2|²)?\b/g)||[]).map(x=>x.replace(/\s+/g,''));let ranges=(d.match(/\b\d+\s*[-–]\s*\d+\s*MM\b/g)||[]);let out=[];const add=x=>{x=(x||'').replace(/\s+/g,' ').replace(/\s+([,.;])/g,'$1').trim();if(x.length>=3&&!currentAliases.includes(x)&&!out.includes(x))out.push(x)};const v=volts[0]||'',a=amps[0]||'',m=mm[0]||'',r=ranges[0]||'';if(/CUT[ -]?OUT|CUTOUT/.test(d)){add(['CUT OUT',v,a].filter(Boolean).join(' '));add(['CUTOUT',v,a].filter(Boolean).join(' '));add(['FUSIBLE CUT OUT',v,a].filter(Boolean).join(' '));add(['SECCIONADOR FUSIBLE',v].filter(Boolean).join(' '))}if(/AISLADOR/.test(d)){let tipo=/SUSPENSION|ANCLAJE/.test(d)?'AISLADOR SUSPENSION':/LINE POST|PIN/.test(d)?'AISLADOR PIN':/EXTENSOR/.test(d)?'AISLADOR EXTENSOR':'AISLADOR';add([tipo,v].filter(Boolean).join(' '));if(/POLIMER/.test(d))add(['AISLADOR POLIMERICO',v].filter(Boolean).join(' '))}if(/ABRAZADERA/.test(d)){add(['ABRAZADERA',r||m].filter(Boolean).join(' '));add('ABRAZADERA PARA CABLE');if(/VIENTO/.test(d))add('ABRAZADERA PARA VIENTO')}if(/FUSIBLE/.test(d)){add(['FUSIBLE',v,a].filter(Boolean).join(' '));if(/EXPULSION/.test(d))add(['FUSIBLE DE EXPULSION',v,a].filter(Boolean).join(' '));if(/UNIPOLAR|SEC/.test(d))add(['FUSIBLE UNIPOLAR',v,a].filter(Boolean).join(' '))}if(/CONECTOR/.test(d)){let tipo=/BIMETAL/.test(d)?'CONECTOR BIMETALICO':/PERFOR/.test(d)?'CONECTOR PERFORANTE':'CONECTOR';add([tipo,m].filter(Boolean).join(' '));if(/TIPO H|\bH\s*\d+/.test(d))add(['CONECTOR TIPO H',m].filter(Boolean).join(' '))}if(/CABLE/.test(d)){add(['CABLE',m,v].filter(Boolean).join(' '));if(/PREENSAMBL/.test(d))add(['CABLE PREENSAMBLADO',m].filter(Boolean).join(' '))}if(/PERNO/.test(d)){add(['PERNO',m].filter(Boolean).join(' '));if(/GALV/.test(d))add('PERNO GALVANIZADO')}if(/ARANDELA/.test(d)){add(['ARANDELA',m].filter(Boolean).join(' '));if(/PLANA/.test(d))add('ARANDELA PLANA');if(/PRESION/.test(d))add('ARANDELA DE PRESION')}if(/AMARRE/.test(d)){add(['AMARRE',m].filter(Boolean).join(' '));if(/PREFORM/.test(d))add(['AMARRE PREFORMADO',m].filter(Boolean).join(' '))}if(/GRAPA/.test(d)){add(['GRAPA',m].filter(Boolean).join(' '));if(/SUSPENSION/.test(d))add('GRAPA DE SUSPENSION');if(/ANCLAJE/.test(d))add('GRAPA DE ANCLAJE')}if(/SECCIONADOR/.test(d)){add(['SECCIONADOR',v,a].filter(Boolean).join(' '));if(/UNIPOLAR/.test(d))add(['SECCIONADOR UNIPOLAR',v,a].filter(Boolean).join(' '))}let clean=d.replace(/[.,;:()\/]/g,' ').replace(/\b(PARA|CON|DEL|DE|LA|EL|EN|POR|TIPO|TP|P|RED|AEREA|AEREAS)\b/g,' ').replace(/\s+/g,' ').trim();add(clean.split(' ').filter(w=>w.length>2).slice(0,7).join(' '));out.slice(0,6).forEach(x=>currentAliases.push(x));renderAliasEditor();msg(out.length?out.length+' alias sugeridos agregados temporalmente. Revísalos y pulsa Actualizar matrícula y alias.':'No se encontraron alias nuevos; puedes escribirlos manualmente.',!out.length,'#adminStatus')}async function compressImage(file){return new Promise((resolve,reject)=>{let img=new Image(),url=URL.createObjectURL(file);img.onload=()=>{let max=700,scale=Math.min(1,max/Math.max(img.width,img.height)),w=Math.max(1,Math.round(img.width*scale)),h=Math.max(1,Math.round(img.height*scale)),c=document.createElement('canvas');c.width=w;c.height=h;let ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);ctx.drawImage(img,0,0,w,h);URL.revokeObjectURL(url);resolve(c.toDataURL('image/webp',0.7))};img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('Imagen inválida'))};img.src=url})}function exportData(){dl('window.APP_DATA = '+JSON.stringify(state,null,2)+';','data.js','text/javascript;charset=utf-8')}
 function speechSupported(){return !!(window.SpeechRecognition||window.webkitSpeechRecognition)}function numberWordsToDigits(t){const map={cero:0,uno:1,una:1,dos:2,tres:3,cuatro:4,cinco:5,seis:6,siete:7,ocho:8,nueve:9};let parts=norm(t).split(' '),digits=parts.map(x=>map[x]??(x.match(/^\d+$/)?x:'')).join('');return digits||t.match(/[\d.,]+/)?.[0]||''}function cleanDictation(text,target){let t=text.trim().replace(/punto y coma/gi,';').replace(/coma/gi,',');if(target.id==='mcode'||target.type==='number')return numberWordsToDigits(t).replace(',','.');if(target.id==='munit'||target.id==='newUnit')return t.toUpperCase().replace(/\s+/g,'');return t}function startVoice(target,button,append=false){if(!speechSupported()){msg('El reconocimiento de voz no está disponible en este navegador. Usa Chrome o Edge.',true,target.closest('dialog')?'#adminStatus':'#status');return}if(activeRecognition)try{activeRecognition.abort()}catch{}const SR=window.SpeechRecognition||window.webkitSpeechRecognition,r=new SR();activeRecognition=r;r.lang='es-PE';r.interimResults=false;r.maxAlternatives=1;button.classList.add('listening');button.textContent='⏹';r.onresult=e=>{let value=cleanDictation(e.results[0][0].transcript,target);target.value=append&&target.value?target.value.replace(/\s*;?\s*$/,'')+'; '+value:value;target.dispatchEvent(new Event('input',{bubbles:true}));target.dispatchEvent(new Event('change',{bubbles:true}));target.focus()};r.onerror=e=>msg(e.error==='not-allowed'?'Permite el acceso al micrófono para usar la voz.':'No se pudo reconocer la voz. Inténtalo nuevamente.',true,target.closest('dialog')?'#adminStatus':'#status');r.onend=()=>{button.classList.remove('listening');button.textContent='🎤';activeRecognition=null};r.start()}
 function setupPWA(){if('serviceWorker'in navigator){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});if(window.caches)caches.keys().then(ks=>Promise.all(ks.filter(k=>/buscador|material|sap|v4/i.test(k)).map(k=>caches.delete(k)))).catch(()=>{})}window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('#installApp').classList.remove('hidden')});$('#installApp').onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('#installApp').classList.add('hidden')}}
 function bind(){
@@ -1020,7 +1020,7 @@ function stockTotal(code,center){return stockFor(code,center).reduce((a,x)=>a+Nu
 function stockByWarehouse(code,center){let map={};stockFor(code,center).forEach(x=>{let k=x.almacen||'SIN ALMACEN';map[k]=(map[k]||0)+Number(x.libre||0)});return map}
 function stockAnalysis(code,qty){let center=$('#centroGlobal').value,other=otherCenter(center),requested=Number(qty)||0,current=stockTotal(code,center),alternate=stockTotal(code,other);return{code,requested,center,other,current,alternate,currentMissing:Math.max(0,requested-current),byCurrent:stockByWarehouse(code,center),byOther:stockByWarehouse(code,other)}}
 function renderPending(){let panel=$('#pendingPanel'),list=$('#pendingList'),count=$('#pendingCount');count.textContent=pendingItems.length;panel.classList.toggle('hidden',!pendingItems.length);list.innerHTML=pendingItems.map((x,i)=>`<div class="pending-item"><div><b>${esc(x.code)} · ${esc(x.description)}</b><div class="pending-meta">Solicitado: ${x.requested} ${esc(x.unit)} · Disponible ${x.center}: ${x.availableCurrent} · Disponible ${x.other}: ${x.availableOther}<br>Faltante: ${x.pendingQty} · ${esc(x.reason)} · ${esc(x.date)}</div></div><div class="actions"><button class="btn secondary" data-review-pending="${i}">Revisar stock</button><button class="btn danger" data-delete-pending="${i}">Eliminar</button></div></div>`).join('')}
-function savePending(){localStorage.setItem(PENDING_KEY,JSON.stringify(pendingItems));queueSync('pending');renderPending()}
+function savePending(){localStorage.setItem(PENDING_KEY,JSON.stringify(pendingItems));scheduleDriveSync(900,'pending');renderPending()}
 function addPending(m,analysis,qty,reason='Pendiente de coordinación'){let n=Number(qty)||analysis.requested;let existing=pendingItems.find(x=>x.code===m.code&&x.center===analysis.center);let obj={code:m.code,description:m.description,unit:normalizedUnit(m),requested:analysis.requested,pendingQty:n,center:analysis.center,other:analysis.other,availableCurrent:analysis.current,availableOther:analysis.alternate,supervisor:$('#dest').value,date:$('#fechaPedido').value,reason,status:'PENDIENTE'};if(existing)Object.assign(existing,obj);else pendingItems.push(obj);savePending();msg(`${m.code} quedó pendiente por coordinar.`)}
 function breakdownHtml(map){return Object.entries(map).map(([k,v])=>`<div class="stock-chip"><b>${esc(k)}</b><br>${v} disponibles</div>`).join('')||'<div class="stock-chip">Sin stock</div>'}
 function openStockDecision(index){let m=cart[index],a=stockAnalysis(m.code,m.qty);currentDecision={index,m,a};$('#decisionTitle').textContent=a.current===0?'Sin stock en el centro seleccionado':'Stock parcial en el centro seleccionado';$('#decisionSummary').innerHTML=`<b>${esc(m.code)} · ${esc(m.description)}</b><p>Solicitas <b>${a.requested} ${esc(normalizedUnit(m))}</b>. Centro ${a.center}: <b>${a.current}</b>. Centro ${a.other}: <b>${a.alternate}</b>.</p><div class="stock-breakdown"><div><b>Centro ${a.center}</b>${breakdownHtml(a.byCurrent)}</div><div><b>Centro ${a.other}</b>${breakdownHtml(a.byOther)}</div></div>`;let opts=[];if(a.current>=a.requested)opts.push(['use-current','Usar stock del centro '+a.center]);if(a.current<a.requested&&a.current>0)opts.push(['partial-pending',`Solicitar ${a.current} y dejar ${a.currentMissing} pendiente`]);if(a.alternate>=a.requested)opts.push(['switch-all',`Cambiar todo al centro ${a.other}`]);if(a.current>0&&a.alternate>=a.currentMissing)opts.push(['split-centers',`Usar ${a.current} del ${a.center} y ${a.currentMissing} del ${a.other}`]);opts.push(['pending-all','Dejar todo pendiente para coordinar'],['remove-item','Quitar material del pedido']);$('#decisionOptions').innerHTML=opts.map(([v,t])=>`<button class="btn ${v.includes('pending')?'secondary':v==='remove-item'?'danger':'primary'}" data-decision="${v}">${t}</button>`).join('');$('#stockDecision').showModal()}
@@ -1085,88 +1085,50 @@ async function callGoogleScript(action, method='GET', payload=null){
   }
   const url = (cfg.url || '').trim();
   const token = (cfg.token || '').trim();
+  if(!url) throw new Error('URL de Google Apps Script no configurada en Administración > Google Drive ni en el servidor.');
 
-  if(!url){
-    throw new Error('URL de Google Apps Script no configurada en Administración > Google Drive ni en el servidor.');
-  }
+  const timeoutMs = 15000;
+  const controller = new AbortController();
+  const timer = setTimeout(()=>controller.abort(), timeoutMs);
 
-  // 1. Probar primero a través del proxy del servidor / Vercel (sin problemas de CORS ni certificados)
-  if(method === 'POST'){
-    const postBody = { targetUrl: url, ...(payload || { action, token }) };
-    if(!postBody.token && token) postBody.token = token;
-    if(!postBody.action) postBody.action = action;
-
-    try {
-      const pr = await fetch('/api/drive/sync', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(postBody)
+  try{
+    let response;
+    if(method === 'POST'){
+      const postBody = { targetUrl:url, ...(payload || { action, token }) };
+      if(!postBody.token && token) postBody.token = token;
+      if(!postBody.action) postBody.action = action;
+      response = await fetch('/api/drive/sync', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(postBody),
+        cache:'no-store',
+        signal:controller.signal
       });
-      if(pr.ok) {
-        const pj = await pr.json();
-        if(pj && typeof pj === 'object' && pj.ok) return pj;
-        if(pj && pj.error) throw new Error(pj.error);
-      } else {
-        const pErr = await pr.json().catch(() => ({}));
-        if(pErr?.error) throw new Error(pErr.error);
-      }
-    } catch(proxyErr) {
-      if(!proxyErr.message.includes('fetch') && !proxyErr.message.includes('Failed')) {
-        throw proxyErr;
-      }
-      console.warn('Proxy /api/drive/sync no disponible, intentando llamada directa:', proxyErr);
-    }
-
-    // 2. Fallback a llamada directa en el navegador si hay URL
-    const cleanUrl = url.replace(/\?.*$/, '');
-    const r = await fetch(cleanUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(postBody),
-      cache: 'no-store',
-      redirect: 'follow'
-    });
-    const raw = await r.text();
-    let j;
-    try { j = JSON.parse(raw); } catch(_) {
-      throw new Error('Respuesta inválida de Apps Script. Verifica la implementación y el acceso público.');
-    }
-    if(!r.ok || !j.ok) throw new Error(j.error || ('Error HTTP ' + r.status));
-    return j;
-  } else {
-    // GET
-    try {
-      const qUrl = `url=${encodeURIComponent(url)}&`;
-      const qTok = token ? `token=${encodeURIComponent(token)}&` : '';
-      const pr = await fetch(`/api/drive/get?${qUrl}${qTok}action=${encodeURIComponent(action)}`, {
-        cache: 'no-store'
+    }else{
+      const qs = `url=${encodeURIComponent(url)}&token=${encodeURIComponent(token)}&action=${encodeURIComponent(action)}&_=${Date.now()}`;
+      response = await fetch(`/api/drive/get?${qs}`, {
+        method:'GET',
+        cache:'no-store',
+        signal:controller.signal
       });
-      if(pr.ok) {
-        const pj = await pr.json();
-        if(pj && typeof pj === 'object' && pj.ok) return pj;
-        if(pj && pj.error) throw new Error(pj.error);
-      } else {
-        const pErr = await pr.json().catch(() => ({}));
-        if(pErr?.error) throw new Error(pErr.error);
-      }
-    } catch(proxyErr) {
-      if(!proxyErr.message.includes('fetch') && !proxyErr.message.includes('Failed')) {
-        throw proxyErr;
-      }
-      console.warn('Proxy /api/drive/get no disponible, intentando llamada directa:', proxyErr);
     }
 
-    // Direct GET fallback
-    const cleanUrl = url.replace(/\?.*$/, '');
-    const qs = `?action=${encodeURIComponent(action)}&token=${encodeURIComponent(token)}&_=${Date.now()}`;
-    const r = await fetch(cleanUrl + qs, { cache: 'no-store', redirect: 'follow' });
-    const raw = await r.text();
-    let j;
-    try { j = JSON.parse(raw); } catch(_) {
-      throw new Error('Apps Script devolvió una respuesta inválida. Verifica la URL y la clave.');
+    const raw = await response.text();
+    let data;
+    try{ data = JSON.parse(raw); }
+    catch(_){ throw new Error('Respuesta inválida del servidor de sincronización.'); }
+
+    if(!response.ok || !data?.ok){
+      throw new Error(data?.error || `Error HTTP ${response.status}`);
     }
-    if(!r.ok || !j.ok) throw new Error(j.error || ('Error HTTP ' + r.status));
-    return j;
+    return data;
+  }catch(err){
+    if(err?.name==='AbortError'){
+      throw new Error(`La conexión con Google Drive superó ${timeoutMs/1000} segundos.`);
+    }
+    throw err;
+  }finally{
+    clearTimeout(timer);
   }
 }
 
@@ -1274,6 +1236,25 @@ async function syncToDrive(options={}){
  finally{if(btn){btn.disabled=false;btn.textContent='Sincronizar ahora'}}
 }
 
+// Protección de sincronización: una sola escritura a Drive a la vez.
+let __driveSyncInFlight = null;
+let __driveSyncTimer = null;
+const __originalSyncToDrive = syncToDrive;
+syncToDrive = function(options={}){
+  if(__driveSyncInFlight) return __driveSyncInFlight;
+  __driveSyncInFlight = Promise.resolve(__originalSyncToDrive(options))
+    .catch(err=>{ console.warn('Drive sync:', err); return false; })
+    .finally(()=>{ __driveSyncInFlight=null; });
+  return __driveSyncInFlight;
+};
+function scheduleDriveSync(delay=900, reason='app'){
+  queueSync(reason);
+  clearTimeout(__driveSyncTimer);
+  const cfg=syncConfig();
+  if(!navigator.onLine || !cfg.url) return;
+  __driveSyncTimer=setTimeout(()=>syncToDrive({isManual:false}), delay);
+}
+
 function renderRecoveredData(){
   try{if(typeof populateSelectors==='function')populateSelectors()}catch(e){console.warn('populateSelectors',e)}
   try{if(typeof renderResults==='function')renderResults()}catch(e){console.warn('renderResults',e)}
@@ -1288,7 +1269,11 @@ function renderRecoveredData(){
 
 async function restoreFromDrive(options={}){
   await ensureConfigReady();
-  const cfg=syncConfig(), silent=!!options.silent, stockOnly=!!options.stockOnly;
+  const cfg=syncConfig(), silent=!!options.silent, stockOnly=!!options.stockOnly, force=!!options.force;
+  if(cfg.pending && !force && !stockOnly){
+    if(!silent) msg('Hay cambios locales pendientes de guardar en Drive. Sincroniza primero para evitar sobrescribirlos.',true,'#adminStatus');
+    return false;
+  }
   if(!cfg.url){
     if(!silent){
       msg('Para actualizar desde Google Drive, ingresa la URL de Apps Script en Administración > Google Drive o en Vercel (GOOGLE_APPS_SCRIPT_URL).',true,'#adminStatus');
@@ -1348,9 +1333,9 @@ async function restoreFromDrive(options={}){
   }
 }
 
-const _save=save;save=function(){_save();queueSync('app')}
+const _save=save;save=function(){_save();scheduleDriveSync(900,'app')}
 const _importStock=importStock;importStock=async function(){await _importStock()}
-window.addEventListener('online',()=>{renderSyncState();let cfg=syncConfig();if(cfg.pending&&cfg.url)syncToDrive()});window.addEventListener('offline',renderSyncState);
+window.addEventListener('online',()=>{renderSyncState();let cfg=syncConfig();if(cfg.pending&&cfg.url)syncToDrive({isManual:false})});window.addEventListener('offline',renderSyncState);
 
 setTimeout(async ()=>{
   await ensureConfigReady();
@@ -1367,16 +1352,9 @@ setTimeout(async ()=>{
   $('#decisionOptions')?.addEventListener('click',e=>{let b=e.target.closest('[data-decision]');if(!b||!currentDecision)return;let {index,m,a}=currentDecision,choice=b.dataset.decision;if(choice==='switch-all'){let old=$('#centroGlobal').value;$('#centroGlobal').value=a.other;$('#ce').value=a.other;m.allocations=allocateStock(m.code,m.qty).rows;$('#centroGlobal').value=old;$('#ce').value=old}else if(choice==='split-centers'){let first=stockFor(m.code,a.center).sort((x,y)=>y.libre-x.libre),second=stockFor(m.code,a.other).sort((x,y)=>y.libre-x.libre),left=a.requested,alloc=[];for(let x of [...first,...second]){if(left<=0)break;let take=Math.min(left,x.libre);alloc.push({...x,qty:take});left-=take}m.allocations=alloc}else if(choice==='partial-pending'){m.qty=String(a.current);m.allocations=allocateStock(m.code,a.current).rows;addPending(m,a,a.currentMissing,'Stock parcial; falta coordinar')}else if(choice==='pending-all'){addPending(m,a,a.requested,'Sin stock suficiente');cart.splice(index,1)}else if(choice==='remove-item'){cart.splice(index,1)}$('#stockDecision').close();currentDecision=null;renderCart();renderPending()});
   $('#pendingList')?.addEventListener('click',e=>{let del=e.target.closest('[data-delete-pending]');if(del){pendingItems.splice(+del.dataset.deletePending,1);savePending()}let rev=e.target.closest('[data-review-pending]');if(rev){let x=pendingItems[+rev.dataset.reviewPending],m=state.materials.find(y=>y.code===x.code);if(m&&!cart.some(y=>y.code===m.code)){cart.push({...clone(m),qty:String(x.pendingQty)});renderCart();let idx=cart.length-1;openStockDecision(idx)}}});
 
-  if(navigator.onLine && cfg.url){
-    if(cfg.pending) syncToDrive().then(()=>restoreFromDrive({silent:true}));
-    else restoreFromDrive({silent:true});
-  }
+  // No se recupera Drive automáticamente al arrancar ni al recuperar el foco.
+  // El usuario controla la recuperación desde el botón "Actualizar stock desde Drive".
 },0);
-
-let lastDriveRefresh=0;
-async function refreshDriveWhenReturning(){const cfg=syncConfig();if(!navigator.onLine||!cfg.url||cfg.pending||Date.now()-lastDriveRefresh<60000)return;lastDriveRefresh=Date.now();await restoreFromDrive({silent:true})}
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refreshDriveWhenReturning()});
-window.addEventListener('focus',refreshDriveWhenReturning);
 
 try{init();updateMobileOrderSummary()}catch(err){console.error('Core init error',err);setTimeout(()=>msg('Error al iniciar la web: '+err.message,true),0)}
 </script>
@@ -1416,7 +1394,7 @@ html[data-theme="dark"] .alias-v23-table th{background:#263951;color:#e9f2ff}htm
  function renderAliasTable(){if(!$v('#v23AliasBody'))return;let arr=filteredMaterials();$v('#v23BaseCount').textContent=`${arr.length} de ${state.materials.length}`;$v('#v23AliasBody').innerHTML=arr.map(m=>`<tr class="${inlineCode===m.code?'alias-row-selected':''}"><td><b>${escV(m.code)}</b></td><td>${escV(m.description)}</td><td>${escV(typeof normalizedUnit==='function'?normalizedUnit(m):m.unit)}</td><td>${inlineCode===m.code?inlineEditorHtml(m):`<button class="alias-count-btn" data-alias-open="${m.code}">${(m.aliases||[]).length} alias${(m.aliases||[]).length===1?'':'es'} ›</button>`}</td><td><button class="btn secondary" data-drawer-edit="${m.code}">✎</button></td></tr>`).join('')||'<tr><td colspan="5" class="empty">No se encontraron materiales.</td></tr>'}
  function inlineEditorHtml(m){return `<div class="alias-inline-editor"><div class="alias-chips-edit">${(m.aliases||[]).map((a,i)=>`<span class="alias-edit-chip">${escV(a)}<button data-inline-remove="${i}" title="Eliminar">×</button></span>`).join('')||'<span class="small">Sin alias registrados.</span>'}</div><div class="alias-new-row"><input data-inline-input="${m.code}" placeholder="Agregar nuevo alias"><button class="btn primary" data-inline-add="${m.code}">＋</button></div><div style="margin-top:8px;display:flex;gap:8px"><button class="btn primary" data-inline-save="${m.code}">✓ Guardar</button><button class="btn secondary" data-inline-cancel>Cancelar</button></div></div>`}
  function aliasTableClick(e){let open=e.target.closest('[data-alias-open]');if(open){inlineCode=open.dataset.aliasOpen;renderAliasTable();return}let edit=e.target.closest('[data-drawer-edit]');if(edit){openDrawer(edit.dataset.drawerEdit);return}if(e.target.closest('[data-inline-cancel]')){inlineCode=null;renderAliasTable();return}let rem=e.target.closest('[data-inline-remove]');if(rem&&inlineCode){let m=state.materials.find(x=>x.code===inlineCode);m.aliases.splice(+rem.dataset.inlineRemove,1);renderAliasTable();return}let add=e.target.closest('[data-inline-add]');if(add){let m=state.materials.find(x=>x.code===add.dataset.inlineAdd),inp=$v(`[data-inline-input="${add.dataset.inlineAdd}"]`),v=(inp.value||'').trim().toUpperCase();if(v&&!m.aliases.includes(v))m.aliases.push(v);renderAliasTable();return}let saveBtn=e.target.closest('[data-inline-save]');if(saveBtn){save();inlineCode=null;renderAliasTable();renderResults();syncChanged('Alias guardados y sincronizados.')}}
- function syncChanged(text){if(typeof queueSync==='function')queueSync('materials');if(navigator.onLine&&typeof syncToDrive==='function')syncToDrive();setAliasStatus(text)}
+ function syncChanged(text){scheduleDriveSync(700,'materials');setAliasStatus(text)}
  function setAliasStatus(t){let el=$v('#v23AliasStatus');if(el){el.textContent=t;setTimeout(()=>el.textContent='',5000)}}
  function renderDrawerAliases(){let box=$v('#v23DrawerAliases');box.innerHTML=drawerAliases.map((a,i)=>`<div class="drawer-alias-item"><input value="${escV(a)}" data-drawer-alias="${i}"><button class="btn danger" data-drawer-remove="${i}">×</button></div>`).join('')||'<span class="small">Todavía no hay alias.</span>'}
  function renderDrawerImage(){let p=$v('#v23Preview');if(drawerImage){p.innerHTML=`<img src="${drawerImage}" alt="Vista previa">`;$v('#v23RemoveImage').classList.remove('hidden')}else{p.textContent='Sin imagen';$v('#v23RemoveImage').classList.add('hidden')}}
@@ -1793,7 +1771,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
   function finaliseOrder(){
     if(!valid())return;const allocs=allocationRows31();if(!allocs.length)return msg('No se generaron filas de stock para finalizar.',true);
     customConfirm('¿Desea grabar el pedido? El stock será descontado y se guardará en el historial.', function(){
-      try{const records=groupHistory(allocs);const addedDetails=records.reduce((n,r)=>n+(Array.isArray(r.items)?r.items.length:0),0);deductStock(allocs);ensureHistory().push(...records);state.historyUnread=(Number(state.historyUnread)||0)+addedDetails;save();if(typeof window.updateHistoryBadgeV41==='function')window.updateHistoryBadgeV41();renderHistory();renderStockStatus();cart=[];renderCart();renderResults();if(typeof renderSearchOrder==='function')renderSearchOrder();if(typeof queueSync==='function')queueSync('order');if(navigator.onLine&&typeof syncToDrive==='function'&&syncConfig().url)syncToDrive();msg(`Pedido grabado. Se descontó el stock y se agregaron ${addedDetails} registro${addedDetails===1?'':'s'} de material al historial.`)}catch(e){msg('No se pudo grabar el pedido: '+e.message,true)}
+      try{const records=groupHistory(allocs);const addedDetails=records.reduce((n,r)=>n+(Array.isArray(r.items)?r.items.length:0),0);deductStock(allocs);ensureHistory().push(...records);state.historyUnread=(Number(state.historyUnread)||0)+addedDetails;save();if(typeof window.updateHistoryBadgeV41==='function')window.updateHistoryBadgeV41();renderHistory();renderStockStatus();cart=[];renderCart();renderResults();if(typeof renderSearchOrder==='function')renderSearchOrder();if(typeof queueSync==='function')queueSync('order');if(typeof scheduleDriveSync==='function')scheduleDriveSync(700,'order');msg(`Pedido grabado. Se descontó el stock y se agregaron ${addedDetails} registro${addedDetails===1?'':'s'} de material al historial.`)}catch(e){msg('No se pudo grabar el pedido: '+e.message,true)}
     });
   }
   function clearAllOrdersAction(){
@@ -1812,7 +1790,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
       if(typeof updateOrderAccess === 'function') updateOrderAccess();
       if(typeof updateHistoryBadgeV41 === 'function') updateHistoryBadgeV41();
       if(typeof queueSync === 'function') queueSync('order');
-      if(navigator.onLine && typeof syncToDrive === 'function' && typeof syncConfig === 'function' && syncConfig().url) syncToDrive();
+      if(typeof scheduleDriveSync==='function')scheduleDriveSync(700,'order');
       msg('Todos los pedidos han sido borrados.');
     });
   }

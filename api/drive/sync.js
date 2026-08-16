@@ -36,7 +36,7 @@ export default async function handler(req, res) {
       payload.token = body.token;
     }
 
-    const response = await fetch(targetUrl, {
+    const response = await fetchWithTimeout(targetUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain;charset=utf-8'
@@ -55,7 +55,7 @@ export default async function handler(req, res) {
     return res.status(200).json(data);
   } catch (err) {
     console.error('Error in /api/drive/sync serverless function:', err);
-    return res.status(500).json({ ok: false, error: 'Error de conexión con Google Apps Script: ' + (err?.message || err) });
+    return res.status(err?.name==='AbortError'?504:500).json({ ok: false, error: err?.name==='AbortError' ? `Google Apps Script no respondió en ${DRIVE_TIMEOUT_MS/1000} segundos.` : 'Error de conexión con Google Apps Script: ' + (err?.message || err) });
   }
 }
 

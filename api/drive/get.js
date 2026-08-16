@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     const cleanBase = targetUrl.replace(/\?.*$/, '');
     const urlWithParams = `${cleanBase}?action=${encodeURIComponent(action)}&token=${encodeURIComponent(token)}&_=${Date.now()}`;
 
-    const response = await fetch(urlWithParams, {
+    const response = await fetchWithTimeout(urlWithParams, {
       method: 'GET',
       headers: { 'Accept': 'application/json' },
       redirect: 'follow'
@@ -38,7 +38,7 @@ export default async function handler(req, res) {
     return res.status(200).json(data);
   } catch (err) {
     console.error('Error in /api/drive/get serverless function:', err);
-    return res.status(500).json({ ok: false, error: 'Error al consultar Google Apps Script: ' + (err?.message || err) });
+    return res.status(err?.name==='AbortError'?504:500).json({ ok: false, error: err?.name==='AbortError' ? `Google Apps Script no respondió en ${DRIVE_TIMEOUT_MS/1000} segundos.` : 'Error al consultar Google Apps Script: ' + (err?.message || err) });
   }
 }
 

@@ -1,0 +1,24 @@
+V45.4 - SINCRONIZACION DRIVE ESTABLE
+
+1. Se mantiene la interfaz y la funcionalidad de la version base entregada.
+2. Guardado a Google Drive:
+   - Los cambios locales se marcan como pendientes.
+   - La sincronizacion se programa con un pequeño retraso para agrupar cambios.
+   - Solo hay una escritura a Drive a la vez.
+   - Si no hay internet, los cambios permanecen locales y quedan pendientes.
+3. Actualizar desde Drive:
+   - La recuperacion es manual mediante el boton de Drive.
+   - Ya no se recupera automaticamente al iniciar, volver a la pestaña o enfocar el navegador.
+   - Si existen cambios locales pendientes, se evita sobrescribirlos accidentalmente.
+4. Red:
+   - Las llamadas de Drive pasan por el proxy de Vercel.
+   - Se elimina el fallback directo del navegador.
+   - Timeout de 15 segundos en cliente y 12 segundos en servidor.
+5. Servidor:
+   - Los recursos estaticos inexistentes devuelven 404 y no index.html.
+   - Cache-Control no-store para JS/CSS/JSON y recursos relevantes.
+6. Apps Script:
+   - Escrituras protegidas con LockService para evitar colisiones de dos PCs.
+7. Stock:
+   - La carga del Excel conserva el guardado/verificacion en Drive.
+   - El boton Actualizar desde Drive conserva stock y metadatos compartidos.

@@ -8,9 +8,25 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const DRIVE_TIMEOUT_MS = 12000;
+function fetchWithTimeout(url, options={}, timeoutMs=DRIVE_TIMEOUT_MS){
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),timeoutMs);
+  return fetch(url,{...options,signal:controller.signal}).finally(()=>clearTimeout(timer));
+}
+
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-app.use(express.static(__dirname));
+app.use(express.static(__dirname, {
+  index: false,
+  fallthrough: true,
+  extensions: false,
+  setHeaders: (res, filePath) => {
+    if (/\.(js|mjs|css|json|webmanifest|png|jpe?g|gif|svg|ico|webp|xlsx|txt|map)$/i.test(filePath)) {
+      res.setHeader('Cache-Control','no-store, max-age=0');
+    }
+  }
+}));
 
 app.get('/api/config', (req, res) => {
   res.json({
@@ -38,7 +54,7 @@ app.post('/api/drive/sync', async (req, res) => {
       payload.token = req.body.token;
     }
 
-    const response = await fetch(targetUrl, {
+    const response = await fetchWithTimeout(targetUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain;charset=utf-8'
@@ -57,7 +73,9 @@ app.post('/api/drive/sync', async (req, res) => {
     return res.json(data);
   } catch (err) {
     console.error('Error in /api/drive/sync proxy:', err);
-    return res.status(500).json({ ok: false, error: 'Error de conexión con Google Apps Script: ' + (err?.message || err) });
+    return res.status(err?.name==='AbortError'?504:500).json({ ok: false, error: err?.name==='AbortError'
+      ? `Google Apps Script no respondió en ${DRIVE_TIMEOUT_MS/1000} segundos.`
+      : 'Error de conexión con Google Apps Script: ' + (err?.message || err) });
   }
 });
 
@@ -77,7 +95,7 @@ app.get('/api/drive/get', async (req, res) => {
     const cleanBase = targetUrl.replace(/\?.*$/, '');
     const urlWithParams = `${cleanBase}?action=${encodeURIComponent(action)}&token=${encodeURIComponent(token)}&_=${Date.now()}`;
 
-    const response = await fetch(urlWithParams, {
+    const response = await fetchWithTimeout(urlWithParams, {
       method: 'GET',
       headers: { 'Accept': 'application/json' },
       redirect: 'follow'
@@ -93,12 +111,23 @@ app.get('/api/drive/get', async (req, res) => {
     return res.json(data);
   } catch (err) {
     console.error('Error in /api/drive/get proxy:', err);
-    return res.status(500).json({ ok: false, error: 'Error al consultar Google Apps Script: ' + (err?.message || err) });
+    return res.status(err?.name==='AbortError'?504:500).json({ ok: false, error: err?.name==='AbortError'
+      ? `Google Apps Script no respondió en ${DRIVE_TIMEOUT_MS/1000} segundos.`
+      : 'Error al consultar Google Apps Script: ' + (err?.message || err) });
   }
 });
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+app.get('*', async (req, res) => {
+  if (/\.[a-z0-9]+$/i.test(req.path)) {
+    return res.status(404).type('text/plain').send('Recurso no encontrado: ' + req.path);
+  }
+  try {
+    res.setHeader('Cache-Control','no-store, max-age=0');
+    return res.sendFile(path.join(__dirname, 'index.html'));
+  } catch (err) {
+    console.error('Error sirviendo index.html:', err);
+    return res.status(500).type('text/plain').send('No se pudo cargar la aplicación.');
+  }
 });
 
 app.listen(PORT, '0.0.0.0', () => {

@@ -1,6 +1,8 @@
 {
-  "name": "Buscador de Materiales SAP V40.1",
+  "name": "Buscador de Materiales SAP V45.4 - Drive estable",
   "description": "Buscador de Materiales SAP con gestión de pedidos, stock y control de materiales.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }
