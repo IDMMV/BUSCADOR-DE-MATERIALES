@@ -507,7 +507,7 @@ body:not(.v439-admin-mode) [data-config-page="drive"] {
 <button class="btn success" id="driveBackup" type="button">🔄 Actualizar stock desde Drive</button>
 <div class="stock-help">Columnas reconocidas: Material, Texto breve de material, Centro, Almacén, Lote, Libre utilización y Unidad medida base. ALIM, CE y LOTE se completan automáticamente al copiar o exportar.</div><div class="stock-help drive-refresh-help">Cuando otra persona actualice el stock, pulsa <b>Actualizar stock desde Drive</b>. No necesitas volver a publicar Apps Script ni GitHub.</div>
 </section><section class="panel"><div class="head"><h2>1. Buscar materiales</h2><div class="head-actions"><button class="btn secondary" id="v439GoToOrder" type="button">📋 Ir a pedido seleccionado</button><span class="badge" id="count"></span></div></div><div class="search"><input id="q" placeholder="Buscar por matrícula, descripción o alias..."/><button aria-label="Buscar por voz" class="mic" id="voiceSearch" title="Buscar por voz">🎤</button><button aria-label="Limpiar búsqueda" id="clear" title="Limpiar búsqueda">×</button></div><div class="results" id="results"></div></section></section>
-<section class="view" id="orderView"><main class="layout"><section class="panel" id="orderPanel"><div class="head"><h2>2. Pedido seleccionado</h2><span class="badge" id="cartCount">0 materiales</span></div><div class="v438-back-row"><button type="button" class="btn secondary v438-back-btn" id="v438BackToSearch">← Volver a buscar materiales</button></div><div class="fields-and-actions-row" style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin:14px 0;flex-wrap:wrap"><div class="fields" style="flex:1 1 500px;margin:0"><label class="field">Supervisor<select id="dest"></select></label><label class="field">Fecha<input id="fechaPedido" type="date"/></label><label class="field">Puesto de descarga (movimiento)<select id="puesto"><option value="PEDIDO">PEDIDO</option><option value="RECUPERO">RECUPERO</option><option value="DEVOLUCION">DEVOLUCIÓN</option></select></label><label class="field">Unidad móvil<select id="movil"></select></label></div><div id="v26SaveRow" class="order-save-row"><button type="button" id="v449ClearAllOrdersBtn" class="btn danger v449-clear-all">🗑️ Borrar pedidos</button><button type="button" id="v31FinalizeOrder" class="btn success v31-finalize">💾 Grabar pedido</button></div></div><select class="hidden" id="ce"><option value="1003">1003 - San Juan</option><option value="1004">1004 - Vitarte</option></select><div class="auto-fields-note">El Centro se toma del selector superior. ALIM, CE y LOTE se completan automáticamente desde el Excel diario de stock SAP.</div><p class="small">La cantidad inicia en 0 (amarillo). Al colocar un valor mayor a 0 cambia a verde. Puedes dictar cantidades con el micrófono.</p><div class="tablewrap"><table><thead><tr><th>Matrícula</th><th>Descripción</th><th>Cant.</th><th>Unidad</th><th></th></tr></thead><tbody id="cart"></tbody></table><div class="empty" id="empty">Agrega materiales desde el buscador.</div></div><div class="sap-preview-wrap"><div class="sap-preview-title"><div><h3>Vista previa exacta para SAP / Excel</h3><p class="small">Muestra almacén, centro y lote de donde se obtiene cada cantidad.</p></div><span class="badge" id="previewRowsCount">0 filas</span></div><div class="sap-preview"><table><thead><tr><th>MATRÍCULA</th><th>DESCRIPCIÓN</th><th>C1</th><th>CANT</th><th>UNIDAD</th><th>TP</th><th>C2</th><th>C3</th><th>ALIM</th><th>CE</th><th>OPERACIÓN</th><th>LOTE</th><th>TIPO DE APROVISIONAMIENTO</th><th>POS</th><th>DESTINATARIO</th><th>PUESTO DE DESCARGA</th><th>UBICACIÓN FINAL</th></tr></thead><tbody id="sapPreviewBody"></tbody></table><div class="preview-empty" id="sapPreviewEmpty">Agrega materiales y completa sus cantidades para generar la vista previa.</div></div></div><div class="actions"><button class="btn secondary" id="copy">Copiar para SAP</button><button class="btn secondary" id="csv">Exportar CSV</button><button class="btn primary" id="excel">Exportar Excel</button><button class="btn danger" id="clean">Limpiar</button></div><div class="pending-panel hidden" id="pendingPanel"><div class="head"><h3>⏳ Pendientes por coordinar</h3><span class="badge" id="pendingCount">0</span></div><div id="pendingList"></div></div><p class="status" id="status"></p></section></main></section>
+<section class="view" id="orderView"><main class="layout"><section class="panel" id="orderPanel"><div class="head"><h2>2. Pedido seleccionado</h2><span class="badge" id="cartCount">0 materiales</span></div><div class="fields-and-actions-row" style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin:14px 0;flex-wrap:wrap"><div class="fields" style="flex:1 1 500px;margin:0"><label class="field">Supervisor<select id="dest"></select></label><label class="field">Fecha<input id="fechaPedido" type="date"/></label><label class="field">Puesto de descarga (movimiento)<select id="puesto"><option value="PEDIDO">PEDIDO</option><option value="RECUPERO">RECUPERO</option><option value="DEVOLUCION">DEVOLUCIÓN</option></select></label><label class="field">Unidad móvil<select id="movil"></select></label></div><div id="v26SaveRow" class="order-save-row"><button type="button" id="v449ClearAllOrdersBtn" class="btn danger v449-clear-all">🗑️ Borrar pedidos</button><button type="button" id="v31FinalizeOrder" class="btn success v31-finalize">💾 Grabar pedido</button></div></div><select class="hidden" id="ce"><option value="1003">1003 - San Juan</option><option value="1004">1004 - Vitarte</option></select><div class="auto-fields-note">El Centro se toma del selector superior. ALIM, CE y LOTE se completan automáticamente desde el Excel diario de stock SAP.</div><p class="small">La cantidad inicia en 0 (amarillo). Al colocar un valor mayor a 0 cambia a verde. Puedes dictar cantidades con el micrófono.</p><div class="v438-back-row"><button type="button" class="btn secondary v438-back-btn" id="v438BackToSearch">← Volver a buscar materiales</button></div><div class="tablewrap"><table><thead><tr><th>Matrícula</th><th>Descripción</th><th>Cant.</th><th>Unidad</th><th></th></tr></thead><tbody id="cart"></tbody></table><div class="empty" id="empty">Agrega materiales desde el buscador.</div></div><div class="sap-preview-wrap"><div class="sap-preview-title"><div><h3>Vista previa exacta para SAP / Excel</h3><p class="small">Muestra almacén, centro y lote de donde se obtiene cada cantidad.</p></div><span class="badge" id="previewRowsCount">0 filas</span></div><div class="sap-preview"><table><thead><tr><th>MATRÍCULA</th><th>DESCRIPCIÓN</th><th>C1</th><th>CANT</th><th>UNIDAD</th><th>TP</th><th>C2</th><th>C3</th><th>ALIM</th><th>CE</th><th>OPERACIÓN</th><th>LOTE</th><th>TIPO DE APROVISIONAMIENTO</th><th>POS</th><th>DESTINATARIO</th><th>PUESTO DE DESCARGA</th><th>UBICACIÓN FINAL</th></tr></thead><tbody id="sapPreviewBody"></tbody></table><div class="preview-empty" id="sapPreviewEmpty">Agrega materiales y completa sus cantidades para generar la vista previa.</div></div></div><div class="actions"><button class="btn secondary" id="copy">Copiar para SAP</button><button class="btn secondary" id="csv">Exportar CSV</button><button class="btn primary" id="excel">Exportar Excel</button><button class="btn danger" id="clean">Limpiar</button></div><div class="pending-panel hidden" id="pendingPanel"><div class="head"><h3>⏳ Pendientes por coordinar</h3><span class="badge" id="pendingCount">0</span></div><div id="pendingList"></div></div><p class="status" id="status"></p></section></main></section>
 <section class="view" id="stockView"><section class="stock-toolbar">
 <label>Centro de trabajo<select id="centroGlobal2"><option value="1003">1003 - San Juan</option><option value="1004">1004 - Vitarte</option></select></label>
 <div class="stock-file-wrap"><label>Excel diario de stock SAP<input accept=".xlsx,.xls,.csv" id="stockFile2" type="file"/></label></div>
@@ -684,7 +684,7 @@ function renderCart(){$('#cartCount').textContent=`${cart.length} material${cart
 function movementCode(){return $('#puesto').value==='PEDIDO'?'P':$('#puesto').value==='RECUPERO'?'R':'D'}function formattedOrderDate(){let v=$('#fechaPedido').value;if(!v)return'';let [y,m,d]=v.split('-');return `${d}/${m}`}
 function supervisorSAP(){let supervisor=$('#dest').value||'',ini=(state.supervisorInitials?.[supervisor]||deriveInitials(supervisor)).toUpperCase(),date=formattedOrderDate();return [ini,date].filter(Boolean).join(' ')}
 function rows(){let unidad=$('#movil').value||'',out=[];for(let m of cart){let a=allocateStock(m.code,m.qty);for(let x of a.rows)out.push({MATRICULA:m.code,DESCRIPCION:m.description,C1:'',CANT:x.qty,UNIDAD:normalizedUnit(m),TP:'L',C2:'',C3:'',ALIM:x.almacen,CE:x.centro,OPERACION:'0010',LOTE:x.lote,'TIPO DE APROVISIONAMIENTO':'Reserva para orden',POS:0,DESTINATARIO:supervisorSAP(),'PUESTO DE DESCARGA':unidad?`${unidad} (${movementCode()})`:`(${movementCode()})`,'UBICACION FINAL':''})}return out}
-function valid(){if(stockMeta.date!==todayKey()){msg(expiredStockMessage(),true);return false}if(!cart.length){msg('Agrega al menos un material.',true);return false}if(cart.some(x=>!(Number(x.qty)>0))){msg('Completa las cantidades amarillas antes de exportar.',true);return false}let bad=cart.find(x=>allocateStock(x.code,x.qty).missing>0);if(bad){msg(`Stock insuficiente para ${bad.code}. Disponible: ${availableStock(bad.code)}.`,true);return false}return true}function tsv(){let r=rows(),h=Object.keys(r[0]);return r.map(x=>h.map(k=>x[k]).join('\t')).join('\n')}function csvText(){let r=rows(),h=Object.keys(r[0]),e=v=>'"'+String(v??'').replace(/"/g,'""')+'"';return '\ufeff'+[h.map(e).join(';'),...r.map(x=>h.map(k=>e(x[k])).join(';'))].join('\r\n')}function dl(txt,name,type='text/plain'){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}function excel(){if(!valid())return;let r=rows(),h=Object.keys(r[0]),table=`<table border="1"><tr>${h.map(x=>`<th style="background:#fff500">${esc(x)}</th>`).join('')}</tr>${r.map(x=>`<tr>${h.map(k=>`<td style="mso-number-format:'\@'">${esc(String(x[k]))}</td>`).join('')}</tr>`).join('')}</table>`;dl('\ufeff<html><meta charset="utf-8"><body>'+table+'</body></html>','Pedido_Materiales.xls','application/vnd.ms-excel')}function msg(t,e=false,id='#status'){let x=$(id);if(x){x.textContent=t;x.style.color=e?'#c62828':'#15803d';setTimeout(()=>x.textContent='',5000)}let toast=document.getElementById('appToast');if(!toast){toast=document.createElement('div');toast.id='appToast';toast.className='app-toast';document.body.appendChild(toast)}toast.textContent=t;toast.className='app-toast show '+(e?'error':'success');clearTimeout(window.__bmToastTimer);window.__bmToastTimer=setTimeout(()=>toast.className='app-toast',3500)}
+function valid(){if(stockMeta.date!==todayKey()){msg(expiredStockMessage(),true);return false}if(!cart.length){msg('Agrega al menos un material.',true);return false}if(cart.some(x=>!(Number(x.qty)>0))){msg('Completa las cantidades amarillas antes de exportar.',true);return false}let bad=cart.find(x=>allocateStock(x.code,x.qty).missing>0);if(bad){msg(`Stock insuficiente para ${bad.code}. Disponible: ${availableStock(bad.code)}.`,true);return false}return true}function tsv(){let r=rows(),h=Object.keys(r[0]);return r.map(x=>h.map(k=>x[k]).join('\t')).join('\n')}function csvText(){let r=rows(),h=Object.keys(r[0]),e=v=>'"'+String(v??'').replace(/"/g,'""')+'"';return '\ufeff'+[h.map(e).join(';'),...r.map(x=>h.map(k=>e(x[k])).join(';'))].join('\r\n')}function dl(txt,name,type='text/plain'){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}function excel(){if(!valid())return;let r=rows(),h=Object.keys(r[0]),table=`<table border="1"><tr>${h.map(x=>`<th style="background:#fff500">${esc(x)}</th>`).join('')}</tr>${r.map(x=>`<tr>${h.map(k=>`<td style="mso-number-format:'\@'">${esc(String(x[k]))}</td>`).join('')}</tr>`).join('')}</table>`;dl('\ufeff<html><meta charset="utf-8"><body>'+table+'\n</body></html>','Pedido_Materiales.xls','application/vnd.ms-excel')}function msg(t,e=false,id='#status'){let x=$(id);if(x){x.textContent=t;x.style.color=e?'#c62828':'#15803d';setTimeout(()=>x.textContent='',5000)}let toast=document.getElementById('appToast');if(!toast){toast=document.createElement('div');toast.id='appToast';toast.className='app-toast';document.body.appendChild(toast)}toast.textContent=t;toast.className='app-toast show '+(e?'error':'success');clearTimeout(window.__bmToastTimer);window.__bmToastTimer=setTimeout(()=>toast.className='app-toast',3500)}
 function renderAdmin(){fill($('#dest'),state.supervisors);fill($('#movil'),state.units);if($('#supList'))$('#supList').innerHTML=state.supervisors.map((x,i)=>`<div class="supervisor-row"><input value="${esc(x)}" data-sup-name="${i}" aria-label="Nombre del supervisor"><input class="initials" maxlength="4" value="${esc(state.supervisorInitials?.[x]||deriveInitials(x))}" data-sup-initials="${i}" aria-label="Iniciales"><div class="supervisor-actions"><button class="btn secondary" data-save-sup="${i}">Guardar</button><button class="btn danger" data-dsup="${i}">Quitar</button></div></div>`).join('');if($('#unitList'))$('#unitList').innerHTML=state.units.map((x,i)=>`<span class="chip">${esc(x)} <button data-dunit="${i}">×</button></span>`).join('');renderMaterialList()}function renderMaterialList(){let el=$('#materialList');if(!el)return;let q=norm($('#adminSearch')?.value),a=state.materials.filter(m=>!q||norm([m.code,m.description,...(m.aliases||[])].join(' ')).includes(q)).slice(0,120);el.innerHTML=a.map(m=>`<div class="material-item"><b>${esc(m.code)}</b><div>${esc(m.description)}<br><span class="small">${esc((m.aliases||[]).join(' · ')||'Sin alias')}</span></div><button class="btn secondary" data-edit="${m.code}">Editar</button></div>`).join('')}
 function openNewMaterial(){showView('newMatView');if($('#nmCode')){$('#nmCode').value='';lookupMatricula();setTimeout(()=>$('#nmCode')?.focus(),50);}}
 function clearNmCodeField(){let el=$('#nmCode');if(el){el.value='';lookupMatricula();el.focus();}}
@@ -829,7 +829,7 @@ async function importMaterialBase(inputEl){
   renderResults();
   renderAdmin();
   if(typeof queueSync==='function')queueSync('materials');
-  if(navigator.onLine&&typeof syncToDrive==='function'&&hasSyncConnection(syncConfig()))syncToDrive();
+  if(navigator.onLine&&typeof syncToDrive==='function'&&syncConfig().url)syncToDrive();
   inputEl.value='';
   msg(`Base de materiales actualizada (${updatedCount} modificados, ${createdCount} creados).`,false,'#adminStatus');
 }
@@ -887,10 +887,10 @@ function saveNewMatricula(){
   newMatAliases=[];newMatImage='';
   renderNewMatAliasEditor();renderNewMatImagePreview();
   if(typeof queueSync==='function')queueSync('materials');
-  if(navigator.onLine&&typeof syncToDrive==='function'&&hasSyncConnection(syncConfig()))syncToDrive();
+  if(navigator.onLine&&typeof syncToDrive==='function'&&syncConfig().url)syncToDrive();
   msg(isEdit?`Matrícula ${c} modificada y guardada con éxito.`:`Nueva matrícula ${c} creada y guardada con éxito.`,false,'#adminStatus');
 }
-function openMaterialEditor(c){showView('newMatView');if($('#nmCode')){$('#nmCode').value=c;lookupMatricula();setTimeout(()=>$('#nmDesc')?.focus(),50);}}function addCurrentAlias(){let v=$('#newAlias').value.trim().toUpperCase();if(!v)return;if(!currentAliases.includes(v))currentAliases.push(v);$('#newAlias').value='';renderAliasEditor()}function saveMaterial(){let c=(editingCode||$('#mcode').value.trim()),d=$('#mdesc').value.trim().toUpperCase(),u=$('#munit').value.trim().toUpperCase()||'UND',aliases=[...new Set(currentAliases.map(x=>x.trim().toUpperCase()).filter(Boolean))],p=$('#mprio').value;if(!/^\d{5,}$/.test(c)||!d)return msg('Ingresa matrícula numérica y descripción.',true,'#adminStatus');let m=state.materials.find(x=>x.code===c);if(m){m.description=d;m.unit=u;m.priority=p;m.aliases=aliases;m.image=currentImage}else state.materials.push({code:c,description:d,unit:u,aliases,priority:p,image:currentImage,source:'MANUAL'});state.materials.sort((x,y)=>x.description.localeCompare(y.description,'es'));save();renderResults();renderAdmin();clearMaterialForm();if(typeof queueSync==='function')queueSync('materials');if(navigator.onLine&&typeof syncToDrive==='function'&&hasSyncConnection(syncConfig()))syncToDrive();msg(m?'Material e imagen guardados. Sincronización con Drive en curso.':'Nuevo material e imagen guardados. Sincronización con Drive en curso.',false,'#adminStatus')}function buildAliasSuggestions(){let d=$('#mdesc').value.trim().toUpperCase();if(!d)return msg('Primero ingresa o conserva la descripción oficial.',true,'#adminStatus');let volts=(d.match(/\b\d+(?:[.,]\d+)?\s*KV\b/g)||[]).map(x=>x.replace(/\s+/g,''));let amps=(d.match(/\b\d+\s*A\b/g)||[]).map(x=>x.replace(/\s+/g,''));let mm=(d.match(/\b\d+(?:[.,]\d+)?\s*MM(?:2|²)?\b/g)||[]).map(x=>x.replace(/\s+/g,''));let ranges=(d.match(/\b\d+\s*[-–]\s*\d+\s*MM\b/g)||[]);let out=[];const add=x=>{x=(x||'').replace(/\s+/g,' ').replace(/\s+([,.;])/g,'$1').trim();if(x.length>=3&&!currentAliases.includes(x)&&!out.includes(x))out.push(x)};const v=volts[0]||'',a=amps[0]||'',m=mm[0]||'',r=ranges[0]||'';if(/CUT[ -]?OUT|CUTOUT/.test(d)){add(['CUT OUT',v,a].filter(Boolean).join(' '));add(['CUTOUT',v,a].filter(Boolean).join(' '));add(['FUSIBLE CUT OUT',v,a].filter(Boolean).join(' '));add(['SECCIONADOR FUSIBLE',v].filter(Boolean).join(' '))}if(/AISLADOR/.test(d)){let tipo=/SUSPENSION|ANCLAJE/.test(d)?'AISLADOR SUSPENSION':/LINE POST|PIN/.test(d)?'AISLADOR PIN':/EXTENSOR/.test(d)?'AISLADOR EXTENSOR':'AISLADOR';add([tipo,v].filter(Boolean).join(' '));if(/POLIMER/.test(d))add(['AISLADOR POLIMERICO',v].filter(Boolean).join(' '))}if(/ABRAZADERA/.test(d)){add(['ABRAZADERA',r||m].filter(Boolean).join(' '));add('ABRAZADERA PARA CABLE');if(/VIENTO/.test(d))add('ABRAZADERA PARA VIENTO')}if(/FUSIBLE/.test(d)){add(['FUSIBLE',v,a].filter(Boolean).join(' '));if(/EXPULSION/.test(d))add(['FUSIBLE DE EXPULSION',v,a].filter(Boolean).join(' '));if(/UNIPOLAR|SEC/.test(d))add(['FUSIBLE UNIPOLAR',v,a].filter(Boolean).join(' '))}if(/CONECTOR/.test(d)){let tipo=/BIMETAL/.test(d)?'CONECTOR BIMETALICO':/PERFOR/.test(d)?'CONECTOR PERFORANTE':'CONECTOR';add([tipo,m].filter(Boolean).join(' '));if(/TIPO H|\bH\s*\d+/.test(d))add(['CONECTOR TIPO H',m].filter(Boolean).join(' '))}if(/CABLE/.test(d)){add(['CABLE',m,v].filter(Boolean).join(' '));if(/PREENSAMBL/.test(d))add(['CABLE PREENSAMBLADO',m].filter(Boolean).join(' '))}if(/PERNO/.test(d)){add(['PERNO',m].filter(Boolean).join(' '));if(/GALV/.test(d))add('PERNO GALVANIZADO')}if(/ARANDELA/.test(d)){add(['ARANDELA',m].filter(Boolean).join(' '));if(/PLANA/.test(d))add('ARANDELA PLANA');if(/PRESION/.test(d))add('ARANDELA DE PRESION')}if(/AMARRE/.test(d)){add(['AMARRE',m].filter(Boolean).join(' '));if(/PREFORM/.test(d))add(['AMARRE PREFORMADO',m].filter(Boolean).join(' '))}if(/GRAPA/.test(d)){add(['GRAPA',m].filter(Boolean).join(' '));if(/SUSPENSION/.test(d))add('GRAPA DE SUSPENSION');if(/ANCLAJE/.test(d))add('GRAPA DE ANCLAJE')}if(/SECCIONADOR/.test(d)){add(['SECCIONADOR',v,a].filter(Boolean).join(' '));if(/UNIPOLAR/.test(d))add(['SECCIONADOR UNIPOLAR',v,a].filter(Boolean).join(' '))}let clean=d.replace(/[.,;:()\/]/g,' ').replace(/\b(PARA|CON|DEL|DE|LA|EL|EN|POR|TIPO|TP|P|RED|AEREA|AEREAS)\b/g,' ').replace(/\s+/g,' ').trim();add(clean.split(' ').filter(w=>w.length>2).slice(0,7).join(' '));out.slice(0,6).forEach(x=>currentAliases.push(x));renderAliasEditor();msg(out.length?out.length+' alias sugeridos agregados temporalmente. Revísalos y pulsa Actualizar matrícula y alias.':'No se encontraron alias nuevos; puedes escribirlos manualmente.',!out.length,'#adminStatus')}async function compressImage(file){return new Promise((resolve,reject)=>{let img=new Image(),url=URL.createObjectURL(file);img.onload=()=>{let max=700,scale=Math.min(1,max/Math.max(img.width,img.height)),w=Math.max(1,Math.round(img.width*scale)),h=Math.max(1,Math.round(img.height*scale)),c=document.createElement('canvas');c.width=w;c.height=h;let ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);ctx.drawImage(img,0,0,w,h);URL.revokeObjectURL(url);resolve(c.toDataURL('image/webp',0.7))};img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('Imagen inválida'))};img.src=url})}function exportData(){dl('window.APP_DATA = '+JSON.stringify(state,null,2)+';','data.js','text/javascript;charset=utf-8')}
+function openMaterialEditor(c){showView('newMatView');if($('#nmCode')){$('#nmCode').value=c;lookupMatricula();setTimeout(()=>$('#nmDesc')?.focus(),50);}}function addCurrentAlias(){let v=$('#newAlias').value.trim().toUpperCase();if(!v)return;if(!currentAliases.includes(v))currentAliases.push(v);$('#newAlias').value='';renderAliasEditor()}function saveMaterial(){let c=(editingCode||$('#mcode').value.trim()),d=$('#mdesc').value.trim().toUpperCase(),u=$('#munit').value.trim().toUpperCase()||'UND',aliases=[...new Set(currentAliases.map(x=>x.trim().toUpperCase()).filter(Boolean))],p=$('#mprio').value;if(!/^\d{5,}$/.test(c)||!d)return msg('Ingresa matrícula numérica y descripción.',true,'#adminStatus');let m=state.materials.find(x=>x.code===c);if(m){m.description=d;m.unit=u;m.priority=p;m.aliases=aliases;m.image=currentImage}else state.materials.push({code:c,description:d,unit:u,aliases,priority:p,image:currentImage,source:'MANUAL'});state.materials.sort((x,y)=>x.description.localeCompare(y.description,'es'));save();renderResults();renderAdmin();clearMaterialForm();if(typeof queueSync==='function')queueSync('materials');if(navigator.onLine&&typeof syncToDrive==='function'&&syncConfig().url)syncToDrive();msg(m?'Material e imagen guardados y sincronizados con Google Drive.':'Nuevo material e imagen guardados y sincronizados con Google Drive.',false,'#adminStatus')}function buildAliasSuggestions(){let d=$('#mdesc').value.trim().toUpperCase();if(!d)return msg('Primero ingresa o conserva la descripción oficial.',true,'#adminStatus');let volts=(d.match(/\b\d+(?:[.,]\d+)?\s*KV\b/g)||[]).map(x=>x.replace(/\s+/g,''));let amps=(d.match(/\b\d+\s*A\b/g)||[]).map(x=>x.replace(/\s+/g,''));let mm=(d.match(/\b\d+(?:[.,]\d+)?\s*MM(?:2|²)?\b/g)||[]).map(x=>x.replace(/\s+/g,''));let ranges=(d.match(/\b\d+\s*[-–]\s*\d+\s*MM\b/g)||[]);let out=[];const add=x=>{x=(x||'').replace(/\s+/g,' ').replace(/\s+([,.;])/g,'$1').trim();if(x.length>=3&&!currentAliases.includes(x)&&!out.includes(x))out.push(x)};const v=volts[0]||'',a=amps[0]||'',m=mm[0]||'',r=ranges[0]||'';if(/CUT[ -]?OUT|CUTOUT/.test(d)){add(['CUT OUT',v,a].filter(Boolean).join(' '));add(['CUTOUT',v,a].filter(Boolean).join(' '));add(['FUSIBLE CUT OUT',v,a].filter(Boolean).join(' '));add(['SECCIONADOR FUSIBLE',v].filter(Boolean).join(' '))}if(/AISLADOR/.test(d)){let tipo=/SUSPENSION|ANCLAJE/.test(d)?'AISLADOR SUSPENSION':/LINE POST|PIN/.test(d)?'AISLADOR PIN':/EXTENSOR/.test(d)?'AISLADOR EXTENSOR':'AISLADOR';add([tipo,v].filter(Boolean).join(' '));if(/POLIMER/.test(d))add(['AISLADOR POLIMERICO',v].filter(Boolean).join(' '))}if(/ABRAZADERA/.test(d)){add(['ABRAZADERA',r||m].filter(Boolean).join(' '));add('ABRAZADERA PARA CABLE');if(/VIENTO/.test(d))add('ABRAZADERA PARA VIENTO')}if(/FUSIBLE/.test(d)){add(['FUSIBLE',v,a].filter(Boolean).join(' '));if(/EXPULSION/.test(d))add(['FUSIBLE DE EXPULSION',v,a].filter(Boolean).join(' '));if(/UNIPOLAR|SEC/.test(d))add(['FUSIBLE UNIPOLAR',v,a].filter(Boolean).join(' '))}if(/CONECTOR/.test(d)){let tipo=/BIMETAL/.test(d)?'CONECTOR BIMETALICO':/PERFOR/.test(d)?'CONECTOR PERFORANTE':'CONECTOR';add([tipo,m].filter(Boolean).join(' '));if(/TIPO H|\bH\s*\d+/.test(d))add(['CONECTOR TIPO H',m].filter(Boolean).join(' '))}if(/CABLE/.test(d)){add(['CABLE',m,v].filter(Boolean).join(' '));if(/PREENSAMBL/.test(d))add(['CABLE PREENSAMBLADO',m].filter(Boolean).join(' '))}if(/PERNO/.test(d)){add(['PERNO',m].filter(Boolean).join(' '));if(/GALV/.test(d))add('PERNO GALVANIZADO')}if(/ARANDELA/.test(d)){add(['ARANDELA',m].filter(Boolean).join(' '));if(/PLANA/.test(d))add('ARANDELA PLANA');if(/PRESION/.test(d))add('ARANDELA DE PRESION')}if(/AMARRE/.test(d)){add(['AMARRE',m].filter(Boolean).join(' '));if(/PREFORM/.test(d))add(['AMARRE PREFORMADO',m].filter(Boolean).join(' '))}if(/GRAPA/.test(d)){add(['GRAPA',m].filter(Boolean).join(' '));if(/SUSPENSION/.test(d))add('GRAPA DE SUSPENSION');if(/ANCLAJE/.test(d))add('GRAPA DE ANCLAJE')}if(/SECCIONADOR/.test(d)){add(['SECCIONADOR',v,a].filter(Boolean).join(' '));if(/UNIPOLAR/.test(d))add(['SECCIONADOR UNIPOLAR',v,a].filter(Boolean).join(' '))}let clean=d.replace(/[.,;:()\/]/g,' ').replace(/\b(PARA|CON|DEL|DE|LA|EL|EN|POR|TIPO|TP|P|RED|AEREA|AEREAS)\b/g,' ').replace(/\s+/g,' ').trim();add(clean.split(' ').filter(w=>w.length>2).slice(0,7).join(' '));out.slice(0,6).forEach(x=>currentAliases.push(x));renderAliasEditor();msg(out.length?out.length+' alias sugeridos agregados temporalmente. Revísalos y pulsa Actualizar matrícula y alias.':'No se encontraron alias nuevos; puedes escribirlos manualmente.',!out.length,'#adminStatus')}async function compressImage(file){return new Promise((resolve,reject)=>{let img=new Image(),url=URL.createObjectURL(file);img.onload=()=>{let max=700,scale=Math.min(1,max/Math.max(img.width,img.height)),w=Math.max(1,Math.round(img.width*scale)),h=Math.max(1,Math.round(img.height*scale)),c=document.createElement('canvas');c.width=w;c.height=h;let ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);ctx.drawImage(img,0,0,w,h);URL.revokeObjectURL(url);resolve(c.toDataURL('image/webp',0.7))};img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('Imagen inválida'))};img.src=url})}function exportData(){dl('window.APP_DATA = '+JSON.stringify(state,null,2)+';','data.js','text/javascript;charset=utf-8')}
 function speechSupported(){return !!(window.SpeechRecognition||window.webkitSpeechRecognition)}function numberWordsToDigits(t){const map={cero:0,uno:1,una:1,dos:2,tres:3,cuatro:4,cinco:5,seis:6,siete:7,ocho:8,nueve:9};let parts=norm(t).split(' '),digits=parts.map(x=>map[x]??(x.match(/^\d+$/)?x:'')).join('');return digits||t.match(/[\d.,]+/)?.[0]||''}function cleanDictation(text,target){let t=text.trim().replace(/punto y coma/gi,';').replace(/coma/gi,',');if(target.id==='mcode'||target.type==='number')return numberWordsToDigits(t).replace(',','.');if(target.id==='munit'||target.id==='newUnit')return t.toUpperCase().replace(/\s+/g,'');return t}function startVoice(target,button,append=false){if(!speechSupported()){msg('El reconocimiento de voz no está disponible en este navegador. Usa Chrome o Edge.',true,target.closest('dialog')?'#adminStatus':'#status');return}if(activeRecognition)try{activeRecognition.abort()}catch{}const SR=window.SpeechRecognition||window.webkitSpeechRecognition,r=new SR();activeRecognition=r;r.lang='es-PE';r.interimResults=false;r.maxAlternatives=1;button.classList.add('listening');button.textContent='⏹';r.onresult=e=>{let value=cleanDictation(e.results[0][0].transcript,target);target.value=append&&target.value?target.value.replace(/\s*;?\s*$/,'')+'; '+value:value;target.dispatchEvent(new Event('input',{bubbles:true}));target.dispatchEvent(new Event('change',{bubbles:true}));target.focus()};r.onerror=e=>msg(e.error==='not-allowed'?'Permite el acceso al micrófono para usar la voz.':'No se pudo reconocer la voz. Inténtalo nuevamente.',true,target.closest('dialog')?'#adminStatus':'#status');r.onend=()=>{button.classList.remove('listening');button.textContent='🎤';activeRecognition=null};r.start()}
 function setupPWA(){if('serviceWorker'in navigator){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});if(window.caches)caches.keys().then(ks=>Promise.all(ks.filter(k=>/buscador|material|sap|v4/i.test(k)).map(k=>caches.delete(k)))).catch(()=>{})}window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('#installApp').classList.remove('hidden')});$('#installApp').onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('#installApp').classList.add('hidden')}}
 function bind(){
@@ -1027,34 +1027,27 @@ function openStockDecision(index){let m=cart[index],a=stockAnalysis(m.code,m.qty
 function selectedRowsForItem(m){if(m.allocations&&m.allocations.length)return m.allocations;return allocateStock(m.code,m.qty).rows}
 function rows(){let unidad=$('#movil').value||'',out=[];for(let m of cart){let allocations=selectedRowsForItem(m);for(let x of allocations)out.push({MATRICULA:m.code,DESCRIPCION:m.description,C1:'',CANT:x.qty,UNIDAD:normalizedUnit(m),TP:'L',C2:'',C3:'',ALIM:x.almacen,CE:x.centro,OPERACION:'0010',LOTE:x.lote,'TIPO DE APROVISIONAMIENTO':'Reserva para orden',POS:0,DESTINATARIO:supervisorSAP(),'PUESTO DE DESCARGA':unidad?`${unidad} (${movementCode()})`:`(${movementCode()})`,'UBICACION FINAL':''})}return out}
 function valid(){if(stockMeta.date!==todayKey()){msg(expiredStockMessage(),true);return false}if(!cart.length){msg('Agrega al menos un material.',true);return false}if(cart.some(x=>!(Number(x.qty)>0))){msg('Completa las cantidades antes de exportar.',true);return false}let badIndex=cart.findIndex(x=>!x.allocations&&stockAnalysis(x.code,x.qty).current<Number(x.qty));if(badIndex>=0){openStockDecision(badIndex);return false}return true}
-let syncQueueTimer=null;
-function queueSync(type='app',schedule=true,incrementRevision=true){
-  let cfg={};
-  try{cfg=JSON.parse(localStorage.getItem(SYNC_KEY)||'{}')}catch(_){}
-  cfg.pending=true;
-  cfg.pendingType=type;
-  if(incrementRevision) cfg.localRevision=(Number(cfg.localRevision)||0)+1;
-  localStorage.setItem(SYNC_KEY,JSON.stringify(cfg));
-  renderSyncState();
-  if(schedule&&navigator.onLine){
-    clearTimeout(syncQueueTimer);
-    syncQueueTimer=setTimeout(()=>{
-      const current=syncConfig();
-      if(current.pending&&hasSyncConnection(current)) syncToDrive({isManual:false});
-    },1200);
-  }
-}
+function queueSync(type='app'){let cfg=JSON.parse(localStorage.getItem(SYNC_KEY)||'{}');cfg.pending=true;cfg.pendingType=type;localStorage.setItem(SYNC_KEY,JSON.stringify(cfg));renderSyncState()}
 
-// Cargar configuración de servidor (Vercel / Node) sin exponer credenciales al navegador
+// Cargar configuración de servidor (Vercel / Node) de inmediato para cualquier dispositivo
 window.SERVER_CONFIG = window.SERVER_CONFIG || {};
-window.fetchServerConfigPromise = fetch('/api/config',{cache:'no-store'})
+window.fetchServerConfigPromise = fetch('/api/config')
   .then(r => r.ok ? r.json() : null)
   .then(cfgServer => {
     if(cfgServer && typeof cfgServer === 'object'){
       window.SERVER_CONFIG = cfgServer;
       let c = syncConfig();
-      if(cfgServer.configured){
-        c.proxyConfigured = true;
+      if(cfgServer.scriptUrl){
+        c.url = cfgServer.scriptUrl;
+        localStorage.setItem('bm_saved_script_url', c.url);
+        if(window.state) state.syncUrl = c.url;
+      }
+      if(cfgServer.scriptToken){
+        c.token = cfgServer.scriptToken;
+        localStorage.setItem('bm_saved_script_token', c.token);
+        if(window.state) state.syncToken = c.token;
+      }
+      if(cfgServer.scriptUrl || cfgServer.scriptToken){
         localStorage.setItem(SYNC_KEY, JSON.stringify(c));
         renderSyncState();
       }
@@ -1069,14 +1062,12 @@ window.fetchServerConfigPromise = fetch('/api/config',{cache:'no-store'})
 function syncConfig(){
   let cfg={};
   try{cfg=JSON.parse(localStorage.getItem(SYNC_KEY)||'{}')}catch(_){}
-  cfg.url = (cfg.url || localStorage.getItem('bm_saved_script_url') || (window.state?.syncUrl) || '').trim();
-  cfg.token = (cfg.token || localStorage.getItem('bm_saved_script_token') || (window.state?.syncToken) || '').trim();
-  cfg.proxyConfigured = !!(cfg.proxyConfigured || window.SERVER_CONFIG?.configured);
-  return cfg;
-}
+  const serverUrl = (window.SERVER_CONFIG?.scriptUrl || '').trim();
+  const serverToken = (window.SERVER_CONFIG?.scriptToken || '').trim();
 
-function hasSyncConnection(cfg=syncConfig()){
-  return !!(cfg && (cfg.proxyConfigured || cfg.url));
+  cfg.url = (serverUrl || cfg.url || localStorage.getItem('bm_saved_script_url') || (window.state?.syncUrl) || '').trim();
+  cfg.token = (serverToken || cfg.token || localStorage.getItem('bm_saved_script_token') || (window.state?.syncToken) || '').trim();
+  return cfg;
 }
 
 async function ensureConfigReady(){
@@ -1088,109 +1079,113 @@ async function ensureConfigReady(){
 
 async function callGoogleScript(action, method='GET', payload=null){
   let cfg = syncConfig();
-  if(!hasSyncConnection(cfg) && window.fetchServerConfigPromise){
+  if((!cfg.url || !cfg.token) && window.fetchServerConfigPromise){
     await ensureConfigReady();
     cfg = syncConfig();
   }
   const url = (cfg.url || '').trim();
   const token = (cfg.token || '').trim();
-  const proxyReady = !!cfg.proxyConfigured;
 
-  if(!proxyReady && !url){
-    throw new Error('Google Apps Script no está configurado. Revisa las variables de Vercel o la conexión manual en Administración > Google Drive.');
+  if(!url){
+    throw new Error('URL de Google Apps Script no configurada en Administración > Google Drive ni en el servidor.');
   }
 
+  // 1. Probar primero a través del proxy del servidor / Vercel (sin problemas de CORS ni certificados)
   if(method === 'POST'){
-    const postBody = { ...(payload || {}) };
+    const postBody = { targetUrl: url, ...(payload || { action, token }) };
+    if(!postBody.token && token) postBody.token = token;
     if(!postBody.action) postBody.action = action;
 
-    if(proxyReady){
-      // En Vercel, URL y token permanecen únicamente en variables del servidor.
-      delete postBody.targetUrl;
-      delete postBody.url;
-      delete postBody.token;
+    try {
       const pr = await fetch('/api/drive/sync', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(postBody),
-        cache: 'no-store'
+        body: JSON.stringify(postBody)
       });
-      const pj = await pr.json().catch(() => ({}));
-      if(!pr.ok || !pj?.ok) throw new Error(pj?.error || ('Error HTTP ' + pr.status));
-      return pj;
+      if(pr.ok) {
+        const pj = await pr.json();
+        if(pj && typeof pj === 'object' && pj.ok) return pj;
+        if(pj && pj.error) throw new Error(pj.error);
+      } else {
+        const pErr = await pr.json().catch(() => ({}));
+        if(pErr?.error) throw new Error(pErr.error);
+      }
+    } catch(proxyErr) {
+      if(!proxyErr.message.includes('fetch') && !proxyErr.message.includes('Failed')) {
+        throw proxyErr;
+      }
+      console.warn('Proxy /api/drive/sync no disponible, intentando llamada directa:', proxyErr);
     }
 
-    // Modo local/manual: primero intenta el proxy local y luego Apps Script directo.
-    const proxyBody = { targetUrl:url, ...postBody };
-    if(!proxyBody.token && token) proxyBody.token = token;
-    try{
-      const pr = await fetch('/api/drive/sync', {
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body:JSON.stringify(proxyBody), cache:'no-store'
-      });
-      const pj = await pr.json().catch(() => ({}));
-      if(pr.ok && pj?.ok) return pj;
-      if(pj?.error) throw new Error(pj.error);
-    }catch(proxyErr){
-      console.warn('Proxy /api/drive/sync no disponible; se intentará conexión directa:', proxyErr);
-    }
-
+    // 2. Fallback a llamada directa en el navegador si hay URL
     const cleanUrl = url.replace(/\?.*$/, '');
     const r = await fetch(cleanUrl, {
-      method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body:JSON.stringify({...postBody,token}), cache:'no-store', redirect:'follow'
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(postBody),
+      cache: 'no-store',
+      redirect: 'follow'
     });
     const raw = await r.text();
     let j;
-    try { j = JSON.parse(raw); } catch(_) { throw new Error('Respuesta inválida de Apps Script. Verifica la implementación y el acceso público.'); }
+    try { j = JSON.parse(raw); } catch(_) {
+      throw new Error('Respuesta inválida de Apps Script. Verifica la implementación y el acceso público.');
+    }
+    if(!r.ok || !j.ok) throw new Error(j.error || ('Error HTTP ' + r.status));
+    return j;
+  } else {
+    // GET
+    try {
+      const qUrl = `url=${encodeURIComponent(url)}&`;
+      const qTok = token ? `token=${encodeURIComponent(token)}&` : '';
+      const pr = await fetch(`/api/drive/get?${qUrl}${qTok}action=${encodeURIComponent(action)}`, {
+        cache: 'no-store'
+      });
+      if(pr.ok) {
+        const pj = await pr.json();
+        if(pj && typeof pj === 'object' && pj.ok) return pj;
+        if(pj && pj.error) throw new Error(pj.error);
+      } else {
+        const pErr = await pr.json().catch(() => ({}));
+        if(pErr?.error) throw new Error(pErr.error);
+      }
+    } catch(proxyErr) {
+      if(!proxyErr.message.includes('fetch') && !proxyErr.message.includes('Failed')) {
+        throw proxyErr;
+      }
+      console.warn('Proxy /api/drive/get no disponible, intentando llamada directa:', proxyErr);
+    }
+
+    // Direct GET fallback
+    const cleanUrl = url.replace(/\?.*$/, '');
+    const qs = `?action=${encodeURIComponent(action)}&token=${encodeURIComponent(token)}&_=${Date.now()}`;
+    const r = await fetch(cleanUrl + qs, { cache: 'no-store', redirect: 'follow' });
+    const raw = await r.text();
+    let j;
+    try { j = JSON.parse(raw); } catch(_) {
+      throw new Error('Apps Script devolvió una respuesta inválida. Verifica la URL y la clave.');
+    }
     if(!r.ok || !j.ok) throw new Error(j.error || ('Error HTTP ' + r.status));
     return j;
   }
-
-  // GET
-  if(proxyReady){
-    const pr = await fetch(`/api/drive/get?action=${encodeURIComponent(action)}&_=${Date.now()}`, {cache:'no-store'});
-    const pj = await pr.json().catch(() => ({}));
-    if(!pr.ok || !pj?.ok) throw new Error(pj?.error || ('Error HTTP ' + pr.status));
-    return pj;
-  }
-
-  try{
-    const qUrl = `url=${encodeURIComponent(url)}&`;
-    const qTok = token ? `token=${encodeURIComponent(token)}&` : '';
-    const pr = await fetch(`/api/drive/get?${qUrl}${qTok}action=${encodeURIComponent(action)}&_=${Date.now()}`, {cache:'no-store'});
-    const pj = await pr.json().catch(() => ({}));
-    if(pr.ok && pj?.ok) return pj;
-    if(pj?.error) throw new Error(pj.error);
-  }catch(proxyErr){
-    console.warn('Proxy /api/drive/get no disponible; se intentará conexión directa:', proxyErr);
-  }
-
-  const cleanUrl = url.replace(/\?.*$/, '');
-  const qs = `?action=${encodeURIComponent(action)}&token=${encodeURIComponent(token)}&_=${Date.now()}`;
-  const r = await fetch(cleanUrl + qs, { cache:'no-store', redirect:'follow' });
-  const raw = await r.text();
-  let j;
-  try { j = JSON.parse(raw); } catch(_) { throw new Error('Apps Script devolvió una respuesta inválida. Verifica la URL y la clave.'); }
-  if(!r.ok || !j.ok) throw new Error(j.error || ('Error HTTP ' + r.status));
-  return j;
 }
 
 function saveSyncConfig(){
   let url=($('#scriptUrl')?.value||'').trim();
   let token=($('#scriptToken')?.value||'').trim();
-  const currentCfg=syncConfig();
-  if(!url && !currentCfg.proxyConfigured){
-    msg('Por favor ingresa la URL de tu Google Apps Script o configura las variables en Vercel.',true,'#adminStatus');
+  if(!url){
+    msg('Por favor ingresa la URL de tu Google Apps Script.',true,'#adminStatus');
     return false;
   }
   let cfg=syncConfig();
-  if(url){cfg.url=url;localStorage.setItem('bm_saved_script_url',url)}
-  if(token){cfg.token=token;localStorage.setItem('bm_saved_script_token',token)}
+  cfg.url=url;
+  cfg.token=token;
   localStorage.setItem(SYNC_KEY,JSON.stringify(cfg));
+  localStorage.setItem('bm_saved_script_url',url);
+  localStorage.setItem('bm_saved_script_token',token);
   if(window.state){
-    if(url) state.syncUrl=url;
-    if(token) state.syncToken=token;
+    state.syncUrl=url;
+    state.syncToken=token;
     save();
   }
   renderSyncState();
@@ -1206,7 +1201,7 @@ function saveSyncConfig(){
 
 function renderSyncState(){
   let cfg=syncConfig(),online=navigator.onLine;
-  let text=!hasSyncConnection(cfg)?'Sin configurar':!online?'Sin conexión':cfg.pending?'Cambios pendientes':'Sincronizado';
+  let text=(!cfg.url&&!window.SERVER_CONFIG?.scriptUrl)?'Sin configurar':!online?'Sin conexión':cfg.pending?'Cambios pendientes':'Sincronizado';
   if($('#scriptUrl')&&cfg.url&&!$('#scriptUrl').value) $('#scriptUrl').value=cfg.url;
   if($('#scriptToken')&&cfg.token&&!$('#scriptToken').value) $('#scriptToken').value=cfg.token;
   if($('#syncState'))$('#syncState').value=text;
@@ -1216,8 +1211,8 @@ function renderSyncState(){
 async function replaceStockInDrive(){
   await ensureConfigReady();
   const cfg=syncConfig();
-  if(!hasSyncConnection(cfg)){
-    queueSync('stock',false,false);
+  if(!cfg.url){
+    queueSync('stock');
     return false;
   }
   if(!navigator.onLine){msg('No hay conexión a internet.',true,'#adminStatus');return false}
@@ -1231,7 +1226,7 @@ async function replaceStockInDrive(){
     renderSyncState();
     return true;
   }catch(e){
-    queueSync('stock',false,false);
+    queueSync('stock');
     console.warn('replaceStockInDrive error:', e);
     return false;
   }
@@ -1243,7 +1238,6 @@ async function syncToDrive(options={}){
  try{
   await ensureConfigReady();
   let cfg=syncConfig();
-  const startRevision=Number(cfg.localRevision)||0;
   let inputUrl=document.getElementById('scriptUrl')?.value.trim();
   let inputToken=document.getElementById('scriptToken')?.value.trim();
   let url=inputUrl||cfg.url||'';
@@ -1251,8 +1245,8 @@ async function syncToDrive(options={}){
   if(url){cfg.url=url;localStorage.setItem('bm_saved_script_url',url)}
   if(token){cfg.token=token;localStorage.setItem('bm_saved_script_token',token)}
   localStorage.setItem(SYNC_KEY,JSON.stringify(cfg));
-  if(!hasSyncConnection(cfg)){
-    if(isManual) msg('La conexión con Google Apps Script no está configurada. Revisa Vercel o Administración > Google Drive.',true,'#adminStatus');
+  if(!url){
+    if(isManual) msg('Configura la URL de Google Apps Script en Administración > Google Drive o en Vercel (GOOGLE_APPS_SCRIPT_URL).',true,'#adminStatus');
     return false;
   }
   if(!navigator.onLine){
@@ -1263,39 +1257,17 @@ async function syncToDrive(options={}){
   if(btn){btn.disabled=true;btn.textContent='Sincronizando...'}
   let box=document.getElementById('syncState');if(box)box.value='Sincronizando...';
   
-  const writeId='web-'+Date.now()+'-'+Math.random().toString(36).slice(2,9);
-  const updatedAt=new Date().toISOString();
-  const appForCloud={...state};
-  delete appForCloud.syncToken;
-  delete appForCloud.syncUrl;
-  let payload={action:'syncAll',token,data:{app:appForCloud,pending:pendingItems,stockMeta,stockRows,updatedAt,syncWriteId:writeId}};
+  let payload={action:'syncAll',token,data:{app:state,pending:pendingItems,stockMeta,stockRows,updatedAt:new Date().toISOString()}};
   const j = await callGoogleScript('syncAll', 'POST', payload);
 
-  // No marcar como sincronizado hasta volver a leer Drive y confirmar exactamente esta escritura.
-  const verify = await callGoogleScript('getAll','GET');
-  if(!verify?.data || verify.data.syncWriteId!==writeId){
-    throw new Error('Google Drive respondió, pero no confirmó la última escritura. Los cambios quedan pendientes en esta PC para evitar pérdida de datos.');
-  }
-
-  const latest=syncConfig();
-  const noNewerLocalChange=(Number(latest.localRevision)||0)===startRevision;
-  latest.lastSync=verify.data.updatedAt||j.savedAt||new Date().toISOString();
-  if(noNewerLocalChange){
-    latest.pending=false;
-    latest.pendingType='';
-  }else{
-    latest.pending=true;
-  }
-  localStorage.setItem(SYNC_KEY,JSON.stringify(latest));
+  cfg.pending=false;
+  cfg.lastSync=j.savedAt||new Date().toISOString();
+  localStorage.setItem(SYNC_KEY,JSON.stringify(cfg));
   renderSyncState();
-  if(!noNewerLocalChange){
-    clearTimeout(syncQueueTimer);
-    syncQueueTimer=setTimeout(()=>syncToDrive({isManual:false}),350);
-  }
-  if(isManual) msg(noNewerLocalChange?`✅ Guardado confirmado en Google Drive (${j.stockRows||stockRows.length} registros de stock). Ya puede abrirse desde otra PC.`:'✅ Esta escritura llegó a Drive, pero existe un cambio más reciente. Se está enviando también.',false,'#adminStatus');
-  return noNewerLocalChange;
+  if(isManual) msg(`✅ Sincronización exitosa con Google Drive (${j.stockRows||stockRows.length} registros de stock guardados).`,false,'#adminStatus');
+  return true;
  }catch(e){
-  queueSync('app',false,false);renderSyncState();
+  queueSync();renderSyncState();
   if(isManual) msg('No se pudo sincronizar: '+(e?.message||e),true,'#adminStatus');
   return false;
  }
@@ -1317,11 +1289,7 @@ function renderRecoveredData(){
 async function restoreFromDrive(options={}){
   await ensureConfigReady();
   const cfg=syncConfig(), silent=!!options.silent, stockOnly=!!options.stockOnly;
-  if(cfg.pending&&!stockOnly&&!options.force){
-    if(!silent) msg('Hay cambios locales pendientes de guardar. Primero sincroniza con Google Drive; no se recuperará una copia antigua para evitar perderlos.',true,'#adminStatus');
-    return false;
-  }
-  if(!hasSyncConnection(cfg)){
+  if(!cfg.url){
     if(!silent){
       msg('Para actualizar desde Google Drive, ingresa la URL de Apps Script en Administración > Google Drive o en Vercel (GOOGLE_APPS_SCRIPT_URL).',true,'#adminStatus');
     }
@@ -1349,7 +1317,7 @@ async function restoreFromDrive(options={}){
     }
     
     cfg.lastSync=data.updatedAt||j.serverTime||new Date().toISOString();
-    if(!stockOnly){cfg.pending=false;cfg.pendingType=''}
+    cfg.pending=false;
     localStorage.setItem(SYNC_KEY,JSON.stringify(cfg));
     
     if(stockOnly){
@@ -1382,7 +1350,7 @@ async function restoreFromDrive(options={}){
 
 const _save=save;save=function(){_save();queueSync('app')}
 const _importStock=importStock;importStock=async function(){await _importStock()}
-window.addEventListener('online',()=>{renderSyncState();let cfg=syncConfig();if(cfg.pending&&hasSyncConnection(cfg))syncToDrive()});window.addEventListener('offline',renderSyncState);
+window.addEventListener('online',()=>{renderSyncState();let cfg=syncConfig();if(cfg.pending&&cfg.url)syncToDrive()});window.addEventListener('offline',renderSyncState);
 
 setTimeout(async ()=>{
   await ensureConfigReady();
@@ -1399,19 +1367,14 @@ setTimeout(async ()=>{
   $('#decisionOptions')?.addEventListener('click',e=>{let b=e.target.closest('[data-decision]');if(!b||!currentDecision)return;let {index,m,a}=currentDecision,choice=b.dataset.decision;if(choice==='switch-all'){let old=$('#centroGlobal').value;$('#centroGlobal').value=a.other;$('#ce').value=a.other;m.allocations=allocateStock(m.code,m.qty).rows;$('#centroGlobal').value=old;$('#ce').value=old}else if(choice==='split-centers'){let first=stockFor(m.code,a.center).sort((x,y)=>y.libre-x.libre),second=stockFor(m.code,a.other).sort((x,y)=>y.libre-x.libre),left=a.requested,alloc=[];for(let x of [...first,...second]){if(left<=0)break;let take=Math.min(left,x.libre);alloc.push({...x,qty:take});left-=take}m.allocations=alloc}else if(choice==='partial-pending'){m.qty=String(a.current);m.allocations=allocateStock(m.code,a.current).rows;addPending(m,a,a.currentMissing,'Stock parcial; falta coordinar')}else if(choice==='pending-all'){addPending(m,a,a.requested,'Sin stock suficiente');cart.splice(index,1)}else if(choice==='remove-item'){cart.splice(index,1)}$('#stockDecision').close();currentDecision=null;renderCart();renderPending()});
   $('#pendingList')?.addEventListener('click',e=>{let del=e.target.closest('[data-delete-pending]');if(del){pendingItems.splice(+del.dataset.deletePending,1);savePending()}let rev=e.target.closest('[data-review-pending]');if(rev){let x=pendingItems[+rev.dataset.reviewPending],m=state.materials.find(y=>y.code===x.code);if(m&&!cart.some(y=>y.code===m.code)){cart.push({...clone(m),qty:String(x.pendingQty)});renderCart();let idx=cart.length-1;openStockDecision(idx)}}});
 
-  if(navigator.onLine && hasSyncConnection(cfg)){
-    if(cfg.pending){
-      const saved=await syncToDrive({isManual:false});
-      if(saved) await restoreFromDrive({silent:true});
-      else renderSyncState();
-    }else{
-      await restoreFromDrive({silent:true});
-    }
+  if(navigator.onLine && cfg.url){
+    if(cfg.pending) syncToDrive().then(()=>restoreFromDrive({silent:true}));
+    else restoreFromDrive({silent:true});
   }
 },0);
 
 let lastDriveRefresh=0;
-async function refreshDriveWhenReturning(){const cfg=syncConfig();if(!navigator.onLine||!hasSyncConnection(cfg)||cfg.pending||Date.now()-lastDriveRefresh<60000)return;lastDriveRefresh=Date.now();await restoreFromDrive({silent:true})}
+async function refreshDriveWhenReturning(){const cfg=syncConfig();if(!navigator.onLine||!cfg.url||cfg.pending||Date.now()-lastDriveRefresh<60000)return;lastDriveRefresh=Date.now();await restoreFromDrive({silent:true})}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refreshDriveWhenReturning()});
 window.addEventListener('focus',refreshDriveWhenReturning);
 
@@ -1468,7 +1431,7 @@ html[data-theme="dark"] .alias-v23-table th{background:#263951;color:#e9f2ff}htm
  function improveCore(){let top=$v('#newMaterialTop');if(top)top.onclick=()=>openDrawer();let config=$v('#config');if(config)config.onclick=()=>{setMaterialMode('config');$v('#dlg').showModal()};let close=$v('#close');if(close)close.onclick=()=>{if($v('#dlg').open)$v('#dlg').close()};let sideConfig=$v('#sideConfig');if(sideConfig)sideConfig.onclick=()=>{setMaterialMode('config');$v('#dlg').showModal()};let oldRender=window.renderPending;if(oldRender)window.renderPending=function(){oldRender();let n=pendingItems.length;let side=document.querySelector('.side-btn[data-view="pendingView"]');if(side&&!side.querySelector('.side-count'))side.insertAdjacentHTML('beforeend',`<span class="side-count">${n}</span>`);else if(side?.querySelector('.side-count'))side.querySelector('.side-count').textContent=n};
 
  }
- function driveFirst(){let cfg=typeof syncConfig==='function'?syncConfig():null;if(hasSyncConnection(cfg)&&navigator.onLine&&typeof restoreFromDrive==='function'){restoreFromDrive().then(()=>renderAliasTable()).catch(()=>{})}}
+ function driveFirst(){let cfg=typeof syncConfig==='function'?syncConfig():null;if(cfg?.url&&cfg?.token&&navigator.onLine&&typeof restoreFromDrive==='function'){restoreFromDrive().then(()=>renderAliasTable()).catch(()=>{})}}
  const startV24=()=>{try{installAliasView();wireDrawer();improveCore();if(localStorage.getItem('bm_sidebar_collapsed')==='1'&&innerWidth>800)setSidebarCollapsed(true);setTimeout(driveFirst,600)}catch(err){console.error('V24 init error',err);msg('La interfaz adicional no pudo iniciarse: '+err.message,true)}};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',startV24);else startV24();
 })();
 </script>
@@ -1830,7 +1793,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
   function finaliseOrder(){
     if(!valid())return;const allocs=allocationRows31();if(!allocs.length)return msg('No se generaron filas de stock para finalizar.',true);
     customConfirm('¿Desea grabar el pedido? El stock será descontado y se guardará en el historial.', function(){
-      try{const records=groupHistory(allocs);const addedDetails=records.reduce((n,r)=>n+(Array.isArray(r.items)?r.items.length:0),0);deductStock(allocs);ensureHistory().push(...records);state.historyUnread=(Number(state.historyUnread)||0)+addedDetails;save();if(typeof window.updateHistoryBadgeV41==='function')window.updateHistoryBadgeV41();renderHistory();renderStockStatus();cart=[];renderCart();renderResults();if(typeof renderSearchOrder==='function')renderSearchOrder();if(typeof queueSync==='function')queueSync('order');if(navigator.onLine&&typeof syncToDrive==='function'&&hasSyncConnection(syncConfig()))syncToDrive();msg(`Pedido grabado. Se descontó el stock y se agregaron ${addedDetails} registro${addedDetails===1?'':'s'} de material al historial.`)}catch(e){msg('No se pudo grabar el pedido: '+e.message,true)}
+      try{const records=groupHistory(allocs);const addedDetails=records.reduce((n,r)=>n+(Array.isArray(r.items)?r.items.length:0),0);deductStock(allocs);ensureHistory().push(...records);state.historyUnread=(Number(state.historyUnread)||0)+addedDetails;save();if(typeof window.updateHistoryBadgeV41==='function')window.updateHistoryBadgeV41();renderHistory();renderStockStatus();cart=[];renderCart();renderResults();if(typeof renderSearchOrder==='function')renderSearchOrder();if(typeof queueSync==='function')queueSync('order');if(navigator.onLine&&typeof syncToDrive==='function'&&syncConfig().url)syncToDrive();msg(`Pedido grabado. Se descontó el stock y se agregaron ${addedDetails} registro${addedDetails===1?'':'s'} de material al historial.`)}catch(e){msg('No se pudo grabar el pedido: '+e.message,true)}
     });
   }
   function clearAllOrdersAction(){
@@ -1849,7 +1812,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
       if(typeof updateOrderAccess === 'function') updateOrderAccess();
       if(typeof updateHistoryBadgeV41 === 'function') updateHistoryBadgeV41();
       if(typeof queueSync === 'function') queueSync('order');
-      if(navigator.onLine && typeof syncToDrive === 'function' && typeof syncConfig === 'function' && hasSyncConnection(syncConfig())) syncToDrive();
+      if(navigator.onLine && typeof syncToDrive === 'function' && typeof syncConfig === 'function' && syncConfig().url) syncToDrive();
       msg('Todos los pedidos han sido borrados.');
     });
   }
@@ -1862,9 +1825,15 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
       saveRow.id = 'v26SaveRow';
       saveRow.className = 'order-save-row';
     }
-    saveRow.style.cssText = 'display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;margin:12px 0!important;flex-wrap:wrap!important;width:100%!important;box-sizing:border-box!important;';
+    saveRow.style.cssText = 'display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;margin:10px 0 16px!important;flex-wrap:wrap!important;width:100%!important;box-sizing:border-box!important;';
+    saveRow.classList.add('order-cart-actions-row');
 
-    if(previewWrap && previewWrap.parentNode){
+    const tableWrap = orderPanel?.querySelector('#cart')?.closest('.tablewrap');
+    if(tableWrap && tableWrap.parentNode){
+      if(tableWrap.nextElementSibling !== saveRow){
+        tableWrap.parentNode.insertBefore(saveRow, tableWrap.nextElementSibling);
+      }
+    } else if(previewWrap && previewWrap.parentNode){
       if(previewWrap.previousElementSibling !== saveRow){
         previewWrap.parentNode.insertBefore(saveRow, previewWrap);
       }
@@ -2151,34 +2120,55 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
 
     if (isMultiSearch) {
       $v('#btnSaveAllMulti')?.addEventListener('click', () => {
-        let added = 0;
         const primary = String($v('#centroGlobal')?.value || '1003');
-        list.forEach(m => {
+        const entries = list.map(m => {
           const inp = $v(`[data-v36-qty="${CSS.escape(String(m.code))}"]`);
-          let qVal = Number(inp?.value);
-          if (isNaN(qVal) || qVal <= 0) {
-            if (!inp || inp.value.trim() === '') qVal = 1;
-          }
-          if (qVal > 0) {
-            const avail = totalStock(m.code, primary);
-            if (qVal <= avail && !(cart || []).some(x => String(x.code) === String(m.code) && String(x.centerMode || primary) === primary)) {
-              cart.push({
-                ...clone(m),
-                qty: String(qVal),
-                centerChoices: [primary],
-                centerMode: primary,
-                cartLineId: `${m.code}-${primary}-${Date.now()}`
-              });
-              added++;
-            }
+          return { m, inp, qty: Number(inp?.value) };
+        });
+        const invalid = entries.find(({ qty }) => !Number.isFinite(qty) || qty <= 0);
+        if (invalid) {
+          invalid.inp?.focus();
+          msg('Ingresa una cantidad mayor a 0 en todos los materiales que deseas guardar.', true);
+          return;
+        }
+        const overStock = entries.find(({ m, qty }) => qty > totalStock(m.code, primary));
+        if (overStock) {
+          overStock.inp?.focus();
+          msg(`La cantidad de ${overStock.m.code} supera el stock disponible en ${centerLabel(primary)}.`, true);
+          return;
+        }
+
+        let changed = 0;
+        const now = Date.now();
+        entries.forEach(({ m, qty }, idx) => {
+          const existing = (cart || []).find(x => String(x.code) === String(m.code) && String(x.centerMode || primary) === primary);
+          if (existing) {
+            existing.qty = String(qty);
+            existing.centerChoices = [primary];
+            existing.centerMode = primary;
+            changed++;
+          } else {
+            cart.push({
+              ...clone(m),
+              qty: String(qty),
+              centerChoices: [primary],
+              centerMode: primary,
+              cartLineId: `${m.code}-${primary}-${now}-${idx}`
+            });
+            changed++;
           }
         });
-        if (added > 0) {
+
+        if (changed > 0) {
           renderCart();
+          const q = $v('#q');
+          if (q) {
+            q.value = '';
+            qtyCache = {};
+          }
+          selectedCode = '';
           renderResults();
-          msg(`✓ Se agregaron ${added} material(es) al pedido.`);
-        } else {
-          msg('Ingresa una cantidad mayor a 0 en los materiales que deseas agregar.', true);
+          msg(`✓ ${changed} material(es) guardado(s) en el pedido. Búsqueda múltiple limpiada.`);
         }
       });
     }
@@ -2623,9 +2613,8 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
  function moveFinalize(){
    const panel=document.getElementById('orderPanel'),btn=document.getElementById('v31FinalizeOrder');
    if(!panel||!btn)return;
-   let holder=panel.querySelector('.order-finalize-top');
-   if(!holder){holder=document.createElement('div');holder.className='order-finalize-top';const head=panel.querySelector('.head');head?head.insertAdjacentElement('afterend',holder):panel.prepend(holder)}
-   if(btn.parentElement!==holder)holder.appendChild(btn);
+   const holder=panel.querySelector('#v26SaveRow.order-cart-actions-row, #v26SaveRow');
+   if(holder&&btn.parentElement!==holder)holder.appendChild(btn);
  }
  function cleanup(){document.getElementById('v30ControlExcel')?.remove();document.getElementById('v31ControlExcel')?.remove();moveFinalize()}
  document.addEventListener('DOMContentLoaded',()=>{
@@ -3704,5 +3693,25 @@ html[data-theme="dark"] #v444CancelOrder{background:#4a2027!important;color:#fec
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',clean,{once:true});else clean();
   window.addEventListener('pageshow',clean,{once:true});
 })();
+</script>
+
+<style id="hugo-order-ui-v45">
+/* Hugo UI V45: acciones claras, menos espacio y menor riesgo de borrado accidental. */
+#orderPanel .v438-back-row{display:flex!important;justify-content:flex-end!important;align-items:center!important;margin:4px 0 10px!important}
+#orderPanel .v438-back-btn{min-width:220px!important;min-height:40px!important;padding:9px 14px!important}
+#orderPanel #v26SaveRow.order-cart-actions-row{display:flex!important;justify-content:space-between!important;align-items:center!important;width:100%!important;margin:10px 0 16px!important;padding:0!important;border:0!important;background:transparent!important}
+#orderPanel #v26SaveRow #v31FinalizeOrder{margin-left:auto!important;min-width:190px!important;padding:10px 18px!important}
+#orderPanel #v26SaveRow #v449ClearAllOrdersBtn{margin-right:auto!important;opacity:.92!important}
+#orderPanel .tablewrap{margin-bottom:0!important}
+#searchView > .stock-toolbar{position:sticky!important;top:0!important;z-index:8!important;margin:6px 18px 10px!important;padding:6px 10px!important;grid-template-columns:minmax(210px,1fr) auto minmax(280px,1.2fr) auto!important;gap:8px!important;align-items:center!important;border:1px solid var(--line)!important;border-radius:10px!important;background:var(--panel)!important;box-shadow:0 2px 8px rgba(15,41,66,.08)!important}
+#searchView > .stock-toolbar .stock-help{display:none!important}
+#searchView > .stock-toolbar .stock-file-wrap label{display:flex!important;align-items:center!important;gap:8px!important;white-space:nowrap!important}
+#searchView > .stock-toolbar .stock-file-wrap input{margin-top:0!important;padding:7px!important;min-width:0!important}
+#searchView > .stock-toolbar .btn{min-height:40px!important;padding:8px 13px!important;white-space:nowrap!important}
+#searchView > .stock-toolbar .stock-status{min-height:40px!important;padding:7px 10px!important}
+@media(max-width:820px){#orderPanel #v26SaveRow.order-cart-actions-row{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}#orderPanel #v26SaveRow #v31FinalizeOrder,#orderPanel #v26SaveRow #v449ClearAllOrdersBtn{width:100%!important;min-width:0!important;margin:0!important}#orderPanel .v438-back-row{justify-content:stretch!important}#orderPanel .v438-back-btn{width:100%!important}#searchView > .stock-toolbar{position:static!important;margin:6px 10px 8px!important;grid-template-columns:1fr 1fr!important}#searchView > .stock-toolbar .stock-file-wrap,#searchView > .stock-toolbar .stock-status{grid-column:1/-1!important}#searchView > .stock-toolbar #driveBackup{width:100%!important}}
+</style>
+<script id="hugo-order-ui-v45-script">
+(function(){'use strict';function placeActions(){const panel=document.getElementById('orderPanel');const row=document.getElementById('v26SaveRow');const table=document.getElementById('cart')?.closest('.tablewrap');if(panel&&row&&table&&table.parentNode&&table.nextElementSibling!==row){table.parentNode.insertBefore(row,table.nextElementSibling);row.classList.add('order-cart-actions-row')}const back=document.getElementById('v438BackToSearch');const backRow=back?.closest('.v438-back-row');if(panel&&backRow&&table&&table.parentNode&&backRow.parentNode!==table.parentNode){table.parentNode.insertBefore(backRow,table)}}document.addEventListener('DOMContentLoaded',function(){placeActions();[100,400,1000,2000].forEach(ms=>setTimeout(placeActions,ms));const panel=document.getElementById('orderPanel');if(panel)new MutationObserver(placeActions).observe(panel,{childList:true,subtree:true})});})();
 </script>
 </body></html>

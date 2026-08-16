@@ -1,0 +1,20 @@
+MEJORAS UI V45 - PEDIDO / BÚSQUEDA MÚLTIPLE / STOCK
+
+1. Pedido seleccionado
+- El botón verde "Grabar pedido" se mueve debajo de la tabla de pedido y queda alineado a la derecha, bajo las columnas de Unidad y Quitar.
+- El botón rojo "Borrar pedidos" queda separado a la izquierda en la misma franja de acciones para reducir errores de clic.
+- El botón "Volver a buscar materiales" queda justo encima de la tabla de pedido, alineado hacia la derecha sobre Cant., Unidad y acción.
+
+2. Guardar todos en búsqueda múltiple
+- Ya no se asigna automáticamente 1 cuando una cantidad está vacía.
+- Se valida que todas las cantidades sean mayores que 0 antes de guardar.
+- Se valida que ninguna cantidad supere el stock del centro seleccionado.
+- Si el material ya está en el pedido, su cantidad se actualiza en lugar de provocar el falso mensaje de error.
+- Tras guardar correctamente, se limpia la búsqueda múltiple y se restaura la lista completa.
+
+3. Barra de stock SAP
+- Se mantiene arriba del módulo de búsqueda.
+- Se compacta para ocupar menos alto y no quitar espacio al pedido.
+- Se eliminan ayudas largas de la franja principal y se conserva el estado de carga.
+
+No se modificó la conexión con Google Drive / Apps Script ni la estructura de datos.

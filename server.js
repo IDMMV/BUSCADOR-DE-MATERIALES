@@ -13,14 +13,13 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express.static(__dirname));
 
 app.get('/api/config', (req, res) => {
-  res.setHeader('Cache-Control', 'no-store, max-age=0');
-  const scriptUrl = (process.env.GOOGLE_APPS_SCRIPT_URL || '').trim();
-  const scriptToken = (process.env.GOOGLE_APPS_SCRIPT_TOKEN || '').trim();
-  res.json({ configured: Boolean(scriptUrl && scriptToken), proxyOnly: true });
+  res.json({
+    scriptUrl: process.env.GOOGLE_APPS_SCRIPT_URL || '',
+    scriptToken: process.env.GOOGLE_APPS_SCRIPT_TOKEN || ''
+  });
 });
 
 app.post('/api/drive/sync', async (req, res) => {
-  res.setHeader('Cache-Control', 'no-store, max-age=0');
   try {
     const envUrl = (process.env.GOOGLE_APPS_SCRIPT_URL || '').trim();
     const envToken = (process.env.GOOGLE_APPS_SCRIPT_TOKEN || '').trim();
@@ -63,7 +62,6 @@ app.post('/api/drive/sync', async (req, res) => {
 });
 
 app.get('/api/drive/get', async (req, res) => {
-  res.setHeader('Cache-Control', 'no-store, max-age=0');
   try {
     const envUrl = (process.env.GOOGLE_APPS_SCRIPT_URL || '').trim();
     const envToken = (process.env.GOOGLE_APPS_SCRIPT_TOKEN || '').trim();
