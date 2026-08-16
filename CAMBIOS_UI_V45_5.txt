@@ -1,0 +1,8 @@
+V45.5 - MEJORA DE PEDIDO SEGUN METODO HUGO
+
+1. Botón "Volver a buscar materiales" alineado sobre la columna Unidad del pedido.
+2. "Borrar pedidos" y "Grabar pedido" quedan en la misma fila debajo de la tabla; Grabar pedido se alinea bajo Unidad.
+3. "Quitar" queda al lado de la cantidad para eliminar inmediatamente una línea del pedido.
+4. Después de "Guardar todos al pedido", si todos los resultados de la búsqueda múltiple quedaron agregados, el filtro se limpia automáticamente.
+5. Se mantiene la sincronización con Google Drive corregida en la rama base.
+6. Cambio limitado a la interfaz y flujo del pedido; no se modifica la lógica de stock ni Apps Script.
