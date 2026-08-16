@@ -1,8 +1,5 @@
 {
   "version": 2,
   "cleanUrls": true,
-  "trailingSlash": false,
-  "rewrites": [
-    { "source": "/data.js", "destination": "/api/data-patched" }
-  ]
+  "trailingSlash": false
 }

@@ -1,15 +1,12 @@
 CORRECCION V45 - SINCRONIZACION MULTI-PC
 Fecha: 2026-08-13
 
-1. Los cambios locales quedan marcados como pendientes y se intenta sincronizarlos automáticamente cuando hay internet.
-2. Si la sincronización falla al iniciar, la recuperación desde Drive queda bloqueada mientras existan cambios locales pendientes.
-3. Una sincronización solo se considera confirmada después de volver a leer Drive y verificar un identificador único de escritura.
-4. Si aparece un segundo cambio mientras una escritura está en curso, ese cambio conserva su revisión pendiente y se vuelve a enviar.
-5. Se elimina bun.lock vacío para evitar que Vercel intente usar un lockfile inválido de Bun.
-6. La corrección se inyecta mediante /api/data-patched sobre data.js, manteniendo intacto index.html y el diseño aprobado.
+1. Los cambios locales se sincronizan automáticamente (debounce) cuando hay internet.
+2. Si una sincronización falla al iniciar, NO se recupera Drive encima de los cambios locales.
+3. Recuperar desde Drive queda bloqueado mientras existan cambios locales pendientes, evitando pérdida accidental.
+4. Una sincronización solo se marca exitosa después de releer Drive y verificar un identificador único de escritura.
+5. Vercel ya no expone URL ni token de Apps Script en /api/config; las credenciales permanecen del lado servidor.
+6. Los endpoints de sincronización usan Cache-Control: no-store.
+7. Los mensajes ya no afirman 'sincronizado' antes de recibir confirmación de Drive.
 
-No se modifica la estructura de datos, materiales, stock, historial, formularios ni la interfaz actual.
-
-RECUPERACION
-La versión inmediatamente anterior está identificada por el commit:
-11bfd3549a1866bdd594eb3a96db968e13c7d42b
+No se modificó la estructura de datos, materiales, stock, historial, formularios ni diseño aprobado.
