@@ -1,0 +1,9 @@
+V45.3 - CORRECCIÓN DEFINITIVA DE ARRANQUE Y SERVIDOR
+
+1. Se desactivó la recuperación automática desde Google Drive al arrancar y al volver a la pestaña.
+2. Se mantiene la sincronización posterior a cambios locales, con control de tiempo.
+3. Se añadió timeout del cliente para llamadas a Vercel/Apps Script.
+4. server.js ya no devuelve index.html para recursos inexistentes; devuelve 404.
+5. server.js usa timeout de 12 s al consultar Apps Script.
+6. Se eliminó CNAME para evitar que GitHub Pages interfiera con el proyecto Vercel.
+7. Versión visible: V45.3.
