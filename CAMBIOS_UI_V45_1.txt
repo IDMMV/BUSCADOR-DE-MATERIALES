@@ -1,0 +1,10 @@
+V45.1 - CORRECCION DE NAVEGACION Y PEDIDO
+
+1. Se corrige la navegacion al modulo "Pedido seleccionado".
+2. Se garantiza que #orderView.active y #orderPanel permanezcan visibles.
+3. "Volver a buscar materiales" queda antes de la tabla.
+4. "Grabar pedido" y "Borrar pedidos" se mueven despues de la tabla.
+5. Se mantiene "Grabar pedido" alineado a la derecha y "Borrar pedidos" separado a la izquierda.
+6. Se mantiene la limpieza del filtro despues de Guardar todos al pedido.
+7. Se conserva Google Drive / Apps Script y la logica de stock.
+8. Version mostrada en la interfaz: V45.1.

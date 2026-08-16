@@ -478,9 +478,17 @@ body:not(.v439-admin-mode) [data-config-page="drive"] {
   display: none !important;
 }
 </style>
+<style id="hugo-order-ui-v45-1-guard">
+#orderView.active{display:block!important}
+#orderPanel{display:block!important;visibility:visible!important;opacity:1!important}
+#orderPanel .v438-back-row{order:0!important}
+#orderPanel .order-cart-actions-row{display:flex!important;justify-content:space-between!important;align-items:center!important;width:100%!important}
+#orderPanel .order-cart-actions-row #v31FinalizeOrder{margin-left:auto!important}
+@media(max-width:820px){#orderPanel .order-cart-actions-row{display:grid!important;grid-template-columns:1fr 1fr!important}}
+</style>
 </head>
 <body><script id="v442EarlyAdminShell">try{if(sessionStorage.getItem('bm_admin_session_v1')==='1')document.body.classList.add('v439-admin-mode')}catch(e){}</script>
-<header class="top"><div class="brand"><img alt="Buscador de Materiales SAP" class="app-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230f2942'/%3E%3Crect x='6' y='6' width='88' height='88' rx='18' fill='none' stroke='%231d70b8' stroke-width='4'/%3E%3Cpath d='M30 38 L50 26 L70 38 L50 50 Z' fill='%23fef08a'/%3E%3Cpath d='M30 38 L50 50 L50 74 L30 62 Z' fill='%23f59e0b'/%3E%3Cpath d='M70 38 L50 50 L50 74 L70 62 Z' fill='%23d97706'/%3E%3C/svg%3E"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:var(--blue);vertical-align:middle;font-weight:700">V44.8</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn admin-access-btn" id="adminAccessBtn" type="button">🔐 Administrador</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
+<header class="top"><div class="brand"><img alt="Buscador de Materiales SAP" class="app-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230f2942'/%3E%3Crect x='6' y='6' width='88' height='88' rx='18' fill='none' stroke='%231d70b8' stroke-width='4'/%3E%3Cpath d='M30 38 L50 26 L70 38 L50 50 Z' fill='%23fef08a'/%3E%3Cpath d='M30 38 L50 50 L50 74 L30 62 Z' fill='%23f59e0b'/%3E%3Cpath d='M70 38 L50 50 L50 74 L70 62 Z' fill='%23d97706'/%3E%3C/svg%3E"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:var(--blue);vertical-align:middle;font-weight:700">V45.1</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn admin-access-btn" id="adminAccessBtn" type="button">🔐 Administrador</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
 <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 <div class="app-shell">
 <aside class="sidebar" id="sidebar">
@@ -3711,7 +3719,47 @@ html[data-theme="dark"] #v444CancelOrder{background:#4a2027!important;color:#fec
 #searchView > .stock-toolbar .stock-status{min-height:40px!important;padding:7px 10px!important}
 @media(max-width:820px){#orderPanel #v26SaveRow.order-cart-actions-row{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}#orderPanel #v26SaveRow #v31FinalizeOrder,#orderPanel #v26SaveRow #v449ClearAllOrdersBtn{width:100%!important;min-width:0!important;margin:0!important}#orderPanel .v438-back-row{justify-content:stretch!important}#orderPanel .v438-back-btn{width:100%!important}#searchView > .stock-toolbar{position:static!important;margin:6px 10px 8px!important;grid-template-columns:1fr 1fr!important}#searchView > .stock-toolbar .stock-file-wrap,#searchView > .stock-toolbar .stock-status{grid-column:1/-1!important}#searchView > .stock-toolbar #driveBackup{width:100%!important}}
 </style>
-<script id="hugo-order-ui-v45-script">
-(function(){'use strict';function placeActions(){const panel=document.getElementById('orderPanel');const row=document.getElementById('v26SaveRow');const table=document.getElementById('cart')?.closest('.tablewrap');if(panel&&row&&table&&table.parentNode&&table.nextElementSibling!==row){table.parentNode.insertBefore(row,table.nextElementSibling);row.classList.add('order-cart-actions-row')}const back=document.getElementById('v438BackToSearch');const backRow=back?.closest('.v438-back-row');if(panel&&backRow&&table&&table.parentNode&&backRow.parentNode!==table.parentNode){table.parentNode.insertBefore(backRow,table)}}document.addEventListener('DOMContentLoaded',function(){placeActions();[100,400,1000,2000].forEach(ms=>setTimeout(placeActions,ms));const panel=document.getElementById('orderPanel');if(panel)new MutationObserver(placeActions).observe(panel,{childList:true,subtree:true})});})();
+<script id="hugo-order-ui-v45-1-script">
+(function(){
+  'use strict';
+  function placeActions(){
+    const panel=document.getElementById('orderPanel');
+    const row=document.getElementById('v26SaveRow');
+    const table=document.getElementById('cart')?.closest('.tablewrap');
+    const backRow=document.getElementById('v438BackToSearch')?.closest('.v438-back-row');
+    if(!panel||!table||!table.parentNode)return;
+    if(row&&row.parentNode!==table.parentNode) table.parentNode.insertBefore(row,table.nextElementSibling);
+    else if(row&&table.nextElementSibling!==row) table.parentNode.insertBefore(row,table.nextElementSibling);
+    if(backRow&&backRow.parentNode!==table.parentNode) table.parentNode.insertBefore(backRow,table);
+    if(row) row.classList.add('order-cart-actions-row');
+  }
+  function openOrder(e){
+    const target=e.target.closest?.('.side-btn[data-view="orderView"],#v439GoToOrder');
+    if(!target)return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id==='orderView'));
+    document.querySelectorAll('.side-btn[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view==='orderView'));
+    document.getElementById('sidebar')?.classList.remove('open');
+    document.getElementById('sidebarBackdrop')?.classList.remove('open');
+    placeActions();
+    if(typeof renderCart==='function')renderCart();
+    if(typeof renderSapPreview==='function')setTimeout(renderSapPreview,0);
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  function backToSearch(e){
+    if(!e.target.closest?.('#v438BackToSearch'))return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id==='searchView'));
+    document.querySelectorAll('.side-btn[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view==='searchView'));
+    document.getElementById('q')?.focus();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  document.addEventListener('click',openOrder,true);
+  document.addEventListener('click',backToSearch,true);
+  function init(){placeActions();setTimeout(placeActions,150);setTimeout(placeActions,500);setTimeout(placeActions,1200);}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
 </script>
 </body></html>
