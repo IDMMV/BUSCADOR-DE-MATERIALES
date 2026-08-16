@@ -1,0 +1,140 @@
+import express from 'express';
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+const INDEX_FILE = path.join(__dirname, 'index.html');
+
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(express.static(__dirname, {
+  index: false,
+  fallthrough: true,
+  extensions: false,
+  setHeaders: (res, filePath) => {
+    const lower = filePath.toLowerCase();
+    if (/\.(js|mjs|css|json|webmanifest|png|jpe?g|gif|svg|ico|webp|xlsx|txt|map)$/.test(lower)) {
+      res.setHeader('Cache-Control', 'no-store, max-age=0');
+    }
+  }
+}));
+
+app.get('/api/config', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, max-age=0');
+  res.json({
+    configured: Boolean(process.env.GOOGLE_APPS_SCRIPT_URL && process.env.GOOGLE_APPS_SCRIPT_TOKEN),
+    scriptUrl: process.env.GOOGLE_APPS_SCRIPT_URL || '',
+    scriptToken: process.env.GOOGLE_APPS_SCRIPT_TOKEN || ''
+  });
+});
+
+async function fetchWithTimeout(url, options = {}, timeoutMs = 15000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+app.post('/api/drive/sync', async (req, res) => {
+  try {
+    const envUrl = (process.env.GOOGLE_APPS_SCRIPT_URL || '').trim();
+    const envToken = (process.env.GOOGLE_APPS_SCRIPT_TOKEN || '').trim();
+    const targetUrl = (envUrl || req.body?.targetUrl || req.body?.url || '').trim();
+    if (!targetUrl) {
+      return res.status(400).json({ ok: false, error: 'URL de Google Apps Script no configurada en Vercel.' });
+    }
+
+    const payload = req.body?.payload ? { ...req.body.payload } : { ...req.body };
+    delete payload.targetUrl;
+    delete payload.url;
+    if (envToken) payload.token = envToken;
+    else if (!payload.token && req.body?.token) payload.token = req.body.token;
+
+    const response = await fetchWithTimeout(targetUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload),
+      redirect: 'follow'
+    });
+
+    const text = await response.text();
+    let data;
+    try { data = JSON.parse(text); }
+    catch (_) {
+      return res.status(502).json({ ok: false, error: 'Respuesta no válida de Google Apps Script: ' + text.slice(0, 300) });
+    }
+    if (!response.ok) {
+      return res.status(502).json({ ok: false, error: `Google Apps Script respondió HTTP ${response.status}`, details: data });
+    }
+    return res.json(data);
+  } catch (err) {
+    const message = err?.name === 'AbortError' ? 'Tiempo de espera agotado al conectar con Google Apps Script.' : (err?.message || String(err));
+    console.error('Error in /api/drive/sync proxy:', message);
+    return res.status(504).json({ ok: false, error: message });
+  }
+});
+
+app.get('/api/drive/get', async (req, res) => {
+  try {
+    const envUrl = (process.env.GOOGLE_APPS_SCRIPT_URL || '').trim();
+    const envToken = (process.env.GOOGLE_APPS_SCRIPT_TOKEN || '').trim();
+    const targetUrl = (envUrl || req.query?.url || '').trim();
+    const token = envToken || req.query?.token || '';
+    const action = req.query?.action || 'getAll';
+    if (!targetUrl) {
+      return res.status(400).json({ ok: false, error: 'URL de Google Apps Script no configurada en Vercel.' });
+    }
+
+    const cleanBase = targetUrl.replace(/\?.*$/, '');
+    const urlWithParams = `${cleanBase}?action=${encodeURIComponent(action)}&token=${encodeURIComponent(token)}&_=${Date.now()}`;
+    const response = await fetchWithTimeout(urlWithParams, {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+      redirect: 'follow'
+    });
+
+    const text = await response.text();
+    let data;
+    try { data = JSON.parse(text); }
+    catch (_) {
+      return res.status(502).json({ ok: false, error: 'Respuesta no válida de Google Apps Script: ' + text.slice(0, 300) });
+    }
+    if (!response.ok) {
+      return res.status(502).json({ ok: false, error: `Google Apps Script respondió HTTP ${response.status}`, details: data });
+    }
+    return res.json(data);
+  } catch (err) {
+    const message = err?.name === 'AbortError' ? 'Tiempo de espera agotado al consultar Google Apps Script.' : (err?.message || String(err));
+    console.error('Error in /api/drive/get proxy:', message);
+    return res.status(504).json({ ok: false, error: message });
+  }
+});
+
+app.get('*', async (req, res) => {
+  if (/\.[a-z0-9]+$/i.test(req.path)) {
+    return res.status(404).type('text/plain').send('Recurso no encontrado: ' + req.path);
+  }
+  try {
+    let html = await fs.readFile(INDEX_FILE, 'utf8');
+    const patchTag = '<script src="/sync-fix-v47.js" defer></script>';
+    if (!html.includes('/sync-fix-v47.js')) {
+      html = html.replace(/<\/body>/i, `${patchTag}</body>`);
+    }
+    res.setHeader('Cache-Control', 'no-store, max-age=0');
+    res.type('html').send(html);
+  } catch (err) {
+    res.status(500).type('text/plain').send('No se pudo cargar index.html: ' + (err?.message || err));
+  }
+});
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on http://0.0.0.0:${PORT}`);
+});
