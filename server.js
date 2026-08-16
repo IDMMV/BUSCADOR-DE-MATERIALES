@@ -98,8 +98,14 @@ app.get('*', async (req, res) => {
   if (/\.[a-z0-9]+$/i.test(req.path)) return res.status(404).type('text/plain').send('Recurso no encontrado: ' + req.path);
   try {
     let html = await fs.readFile(INDEX_FILE, 'utf8');
-    const patchTag = '<script src="/sync-fix-v47.js" defer></script>';
-    if (!html.includes('/sync-fix-v47.js')) html = html.replace(/<\/body>/i, `${patchTag}</body>`);
+    const patchTags = [
+      '<script src="/sync-fix-v47.js" defer></script>',
+      '<script src="/stability-v48.js" defer></script>'
+    ];
+    for (const patchTag of patchTags) {
+      const src = patchTag.match(/src="([^"]+)"/)?.[1];
+      if (src && !html.includes(src)) html = html.replace(/<\/body>/i, `${patchTag}</body>`);
+    }
     res.setHeader('Cache-Control', 'no-store, max-age=0');
     res.type('html').send(html);
   } catch (err) {
