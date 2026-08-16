@@ -10,26 +10,17 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-app.use(express.static(__dirname, {
-  index: false,
-  fallthrough: true,
-  extensions: false,
-  setHeaders: (res, filePath) => {
-    const lower = filePath.toLowerCase();
-    if (/\.(js|mjs|css|json|webmanifest|png|jpe?g|gif|svg|ico|webp|xlsx|txt|map)$/.test(lower)) {
-      res.setHeader('Cache-Control', 'no-store, max-age=0');
-    }
-  }
-}));
+app.use(express.static(__dirname));
 
 app.get('/api/config', (req, res) => {
-  res.json({
-    scriptUrl: process.env.GOOGLE_APPS_SCRIPT_URL || '',
-    scriptToken: process.env.GOOGLE_APPS_SCRIPT_TOKEN || ''
-  });
+  res.setHeader('Cache-Control', 'no-store, max-age=0');
+  const scriptUrl = (process.env.GOOGLE_APPS_SCRIPT_URL || '').trim();
+  const scriptToken = (process.env.GOOGLE_APPS_SCRIPT_TOKEN || '').trim();
+  res.json({ configured: Boolean(scriptUrl && scriptToken), proxyOnly: true });
 });
 
 app.post('/api/drive/sync', async (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, max-age=0');
   try {
     const envUrl = (process.env.GOOGLE_APPS_SCRIPT_URL || '').trim();
     const envToken = (process.env.GOOGLE_APPS_SCRIPT_TOKEN || '').trim();
@@ -72,6 +63,7 @@ app.post('/api/drive/sync', async (req, res) => {
 });
 
 app.get('/api/drive/get', async (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, max-age=0');
   try {
     const envUrl = (process.env.GOOGLE_APPS_SCRIPT_URL || '').trim();
     const envToken = (process.env.GOOGLE_APPS_SCRIPT_TOKEN || '').trim();
@@ -108,12 +100,7 @@ app.get('/api/drive/get', async (req, res) => {
 });
 
 app.get('*', (req, res) => {
-  // Never return HTML for a requested static asset. This prevents
-  // browser errors such as: Unexpected token '<' in .js files.
-  if (/\.[a-z0-9]+$/i.test(req.path)) {
-    return res.status(404).type('text/plain').send('Recurso no encontrado: ' + req.path);
-  }
-  return res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.listen(PORT, '0.0.0.0', () => {
