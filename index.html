@@ -479,28 +479,427 @@ body:not(.v439-admin-mode) [data-config-page="drive"] {
 }
 </style>
 <style id="v450-order-buttons-final-fix">
-#v26SaveRow.order-save-row{
-  display:flex!important;
-  flex-direction:row!important;
-  flex-wrap:nowrap!important;
-  align-items:center!important;
-  justify-content:stretch!important;
-  gap:10px!important;
-  width:100%!important;
-  margin:0!important;
-  padding:0!important;
-  box-sizing:border-box!important;
+#v26SaveRow.order-save-row,
+#orderPanel #v26SaveRow,
+.fields-and-actions-row #v26SaveRow,
+.order-save-row {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 12px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 14px 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
 }
-#v26SaveRow.order-save-row #v449ClearAllOrdersBtn,
-#v26SaveRow.order-save-row #v31FinalizeOrder{
-  flex:1 1 0!important;
-  width:auto!important;
-  min-width:0!important;
-  max-width:none!important;
-  height:44px!important;
-  min-height:44px!important;
-  margin:0!important;
-  box-sizing:border-box!important;
+#v449ClearAllOrdersBtn,
+.order-save-row #v449ClearAllOrdersBtn,
+#v26SaveRow #v449ClearAllOrdersBtn {
+  order: 1 !important;
+  flex: 0 0 155px !important;
+  width: 155px !important;
+  min-width: 155px !important;
+  max-width: 155px !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  white-space: nowrap !important;
+  background-color: #dc2626 !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+}
+#v31FinalizeOrder,
+.order-save-row #v31FinalizeOrder,
+#v26SaveRow #v31FinalizeOrder {
+  order: 2 !important;
+  flex: 0 0 155px !important;
+  width: 155px !important;
+  min-width: 155px !important;
+  max-width: 155px !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  white-space: nowrap !important;
+  background-color: #16a34a !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+}
+@media (max-width: 760px) {
+  #v26SaveRow.order-save-row,
+  #orderPanel #v26SaveRow,
+  .order-save-row {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-end !important;
+    gap: 8px !important;
+  }
+  #v31FinalizeOrder,
+  #v449ClearAllOrdersBtn {
+    flex: 1 1 auto !important;
+    width: auto !important;
+    min-width: 130px !important;
+    max-width: none !important;
+  }
+}
+</style>
+<style id="v451DocumentPrintStyles">
+#documentPrintView {
+  display: none;
+}
+#v452SilentPrintFrame {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  border: 0;
+  visibility: hidden;
+}
+.v452-print-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 16px;
+}
+.v452-print-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(4px);
+}
+.v452-print-window {
+  position: relative;
+  background: #f1f5f9;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 940px;
+  max-height: 94vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+  border: 1px solid #cbd5e1;
+  z-index: 2;
+}
+.v452-print-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  background: #0f2942;
+  color: #ffffff;
+  flex-wrap: wrap;
+}
+.v452-print-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #ffffff;
+}
+.v452-print-header p {
+  margin: 2px 0 0;
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+.v452-print-header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.v452-print-selector-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 18px;
+  background: #1e293b;
+  border-bottom: 1px solid #334155;
+  color: #f1f5f9;
+  flex-wrap: wrap;
+}
+.v452-selector-label {
+  font-weight: 700;
+  font-size: 13px;
+  color: #93c5fd;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.v452-selector-options {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.v452-table-choice {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  border: 1px solid #475569;
+  background: #0f172a;
+  color: #cbd5e1;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.v452-table-choice:hover {
+  background: #334155;
+  border-color: #94a3b8;
+  color: #ffffff;
+}
+.v452-table-choice.active {
+  background: #2563eb;
+  border-color: #60a5fa;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+}
+.v452-table-choice small {
+  font-size: 11px;
+  opacity: 0.85;
+  font-weight: normal;
+}
+.v452-print-content-wrap {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 16px 60px 16px;
+  background: #64748b;
+  display: block;
+}
+.v452-paper {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  width: 100%;
+  max-width: 860px;
+  margin: 0 auto;
+  height: auto !important;
+  min-height: 100%;
+  padding: 28px 32px 36px 32px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+  overflow: visible;
+}
+
+/* Reglas universales del documento impreso (tanto en pantalla dentro del modal como al imprimir) */
+.print-doc {
+  width: 100%;
+  color: #0f172a;
+  font-family: Arial, Helvetica, sans-serif;
+  box-sizing: border-box;
+}
+.print-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #0f2942;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+  page-break-inside: avoid !important;
+}
+.print-title h2 {
+  margin: 0;
+  font-size: 13.5pt;
+  color: #0f2942;
+  font-weight: 800;
+}
+.print-title p {
+  margin: 2px 0 0;
+  font-size: 8pt;
+  color: #475569;
+}
+.print-doc-badge {
+  font-size: 8pt;
+  font-weight: 700;
+  color: #1e40af;
+  background: #dbeafe;
+  border: 1px solid #93c5fd;
+  border-radius: 4px;
+  padding: 3px 8px;
+  white-space: nowrap;
+}
+.print-meta-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 6px !important;
+  background: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 6px !important;
+  padding: 8px 10px !important;
+  margin-bottom: 12px !important;
+  font-size: 8.5pt !important;
+  page-break-inside: avoid !important;
+}
+.print-meta-item strong {
+  display: block;
+  font-size: 7pt;
+  color: #64748b;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+  font-weight: 700;
+}
+.print-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+  font-size: 8pt;
+  table-layout: auto;
+  page-break-inside: auto;
+}
+.print-table thead {
+  display: table-header-group !important; /* Repite encabezados de tabla si pasa a la siguiente página */
+}
+.print-table tbody {
+  page-break-inside: auto !important;
+}
+.print-table tr {
+  page-break-inside: avoid !important;
+  page-break-after: auto;
+}
+.print-table th {
+  background: #0f2942 !important;
+  color: #ffffff !important;
+  border: 1px solid #0f2942 !important;
+  padding: 5px 6px;
+  font-size: 7.5pt;
+  font-weight: 700;
+  text-align: left;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+.print-table td {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  padding: 4px 6px;
+  vertical-align: middle;
+  word-break: break-word;
+}
+.print-table tr:nth-child(even) td {
+  background: #f8fafc !important;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+.print-summary {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9pt;
+  font-weight: bold;
+  margin-top: 6px;
+  margin-bottom: 18px;
+  padding: 6px 12px;
+  background: #f1f5f9 !important;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  page-break-inside: avoid !important;
+}
+.print-signatures {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 16px !important;
+  margin-top: 22px !important;
+  text-align: center !important;
+  page-break-inside: avoid !important;
+  width: 100% !important;
+}
+.print-signatures > div {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  min-height: 60px !important;
+}
+.print-sig-line {
+  width: 85% !important;
+  border-top: 1px dashed #475569 !important;
+  padding-top: 5px !important;
+  font-size: 8pt !important;
+  color: #1e293b !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+  margin: 0 auto !important;
+}
+.print-sig-role {
+  font-size: 7pt !important;
+  color: #64748b !important;
+  margin-top: 2px !important;
+  text-transform: uppercase !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm 8mm 8mm 8mm;
+  }
+  html, body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 9.5pt !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .top, .sidebar, .sidebar-backdrop, .head-actions, .actions, .v438-back-row, 
+  .stock-toolbar, .search, #clear, .mic, .voice-btn, .theme-toggle, 
+  .mobile-menu-btn, .admin-access-btn, #v449ConfirmModal, .v452-print-modal, dialog,
+  #v26SaveRow, .order-save-row, .v36-select-box, .v29-alias-link, .v34-alias-link,
+  .v39-history-actions, .v41-control-note, #v444CancelOrder, #v439GoToOrder {
+    display: none !important;
+  }
+  
+  body.printing-doc > *:not(#documentPrintView) {
+    display: none !important;
+  }
+  body.printing-doc #documentPrintView {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  .print-doc {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
 }
 </style>
 </head>
@@ -532,7 +931,7 @@ body:not(.v439-admin-mode) [data-config-page="drive"] {
 <button class="btn success" id="driveBackup" type="button">🔄 Actualizar stock desde Drive</button>
 <div class="stock-help">Columnas reconocidas: Material, Texto breve de material, Centro, Almacén, Lote, Libre utilización y Unidad medida base. ALIM, CE y LOTE se completan automáticamente al copiar o exportar.</div><div class="stock-help drive-refresh-help">Cuando otra persona actualice el stock, pulsa <b>Actualizar stock desde Drive</b>. No necesitas volver a publicar Apps Script ni GitHub.</div>
 </section><section class="panel"><div class="head"><h2>1. Buscar materiales</h2><div class="head-actions"><button class="btn secondary" id="v439GoToOrder" type="button">📋 Ir a pedido seleccionado</button><span class="badge" id="count"></span></div></div><div class="search"><input id="q" placeholder="Buscar por matrícula, descripción o alias..."/><button aria-label="Buscar por voz" class="mic" id="voiceSearch" title="Buscar por voz">🎤</button><button aria-label="Limpiar búsqueda" id="clear" title="Limpiar búsqueda">×</button></div><div class="results" id="results"></div></section></section>
-<section class="view" id="orderView"><main class="layout"><section class="panel" id="orderPanel"><div class="head"><h2>2. Pedido seleccionado</h2><span class="badge" id="cartCount">0 materiales</span></div><div class="v438-back-row"><button type="button" class="btn secondary v438-back-btn" id="v438BackToSearch">← Volver a buscar materiales</button></div><div class="fields-and-actions-row" style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin:14px 0;flex-wrap:wrap"><div class="fields" style="flex:1 1 500px;margin:0"><label class="field">Supervisor<select id="dest"></select></label><label class="field">Fecha<input id="fechaPedido" type="date"/></label><label class="field">Puesto de descarga (movimiento)<select id="puesto"><option value="PEDIDO">PEDIDO</option><option value="RECUPERO">RECUPERO</option><option value="DEVOLUCION">DEVOLUCIÓN</option></select></label><label class="field">Unidad móvil<select id="movil"></select></label></div><div id="v26SaveRow" class="order-save-row"><button type="button" id="v449ClearAllOrdersBtn" class="btn danger v449-clear-all">🗑️ Borrar pedidos</button><button type="button" id="v31FinalizeOrder" class="btn success v31-finalize">💾 Grabar pedido</button></div></div><select class="hidden" id="ce"><option value="1003">1003 - San Juan</option><option value="1004">1004 - Vitarte</option></select><div class="auto-fields-note">El Centro se toma del selector superior. ALIM, CE y LOTE se completan automáticamente desde el Excel diario de stock SAP.</div><p class="small">La cantidad inicia en 0 (amarillo). Al colocar un valor mayor a 0 cambia a verde. Puedes dictar cantidades con el micrófono.</p><div class="tablewrap"><table><thead><tr><th>Matrícula</th><th>Descripción</th><th>Cant.</th><th>Unidad</th><th></th></tr></thead><tbody id="cart"></tbody></table><div class="empty" id="empty">Agrega materiales desde el buscador.</div></div><div class="sap-preview-wrap"><div class="sap-preview-title"><div><h3>Vista previa exacta para SAP / Excel</h3><p class="small">Muestra almacén, centro y lote de donde se obtiene cada cantidad.</p></div><span class="badge" id="previewRowsCount">0 filas</span></div><div class="sap-preview"><table><thead><tr><th>MATRÍCULA</th><th>DESCRIPCIÓN</th><th>C1</th><th>CANT</th><th>UNIDAD</th><th>TP</th><th>C2</th><th>C3</th><th>ALIM</th><th>CE</th><th>OPERACIÓN</th><th>LOTE</th><th>TIPO DE APROVISIONAMIENTO</th><th>POS</th><th>DESTINATARIO</th><th>PUESTO DE DESCARGA</th><th>UBICACIÓN FINAL</th></tr></thead><tbody id="sapPreviewBody"></tbody></table><div class="preview-empty" id="sapPreviewEmpty">Agrega materiales y completa sus cantidades para generar la vista previa.</div></div></div><div class="actions"><button class="btn secondary" id="copy">Copiar para SAP</button><button class="btn secondary" id="csv">Exportar CSV</button><button class="btn primary" id="excel">Exportar Excel</button><button class="btn danger" id="clean">Limpiar</button></div><div class="pending-panel hidden" id="pendingPanel"><div class="head"><h3>⏳ Pendientes por coordinar</h3><span class="badge" id="pendingCount">0</span></div><div id="pendingList"></div></div><p class="status" id="status"></p></section></main></section>
+<section class="view" id="orderView"><main class="layout"><section class="panel" id="orderPanel"><div class="head"><h2>2. Pedido seleccionado</h2><span class="badge" id="cartCount">0 materiales</span></div><div class="v438-back-row"><button type="button" class="btn secondary v438-back-btn" id="v438BackToSearch">← Volver a buscar materiales</button></div><div class="fields-and-actions-row" style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin:14px 0;flex-wrap:wrap"><div class="fields" style="flex:1 1 500px;margin:0"><label class="field">Supervisor<select id="dest"></select></label><label class="field">Fecha<input id="fechaPedido" type="date"/></label><label class="field">Puesto de descarga (movimiento)<select id="puesto"><option value="PEDIDO">PEDIDO</option><option value="RECUPERO">RECUPERO</option><option value="DEVOLUCION">DEVOLUCIÓN</option></select></label><label class="field">Unidad móvil<select id="movil"></select></label></div><div id="v26SaveRow" class="order-save-row"><button type="button" id="v449ClearAllOrdersBtn" class="btn danger v449-clear-all">🗑️ Borrar pedidos</button><button type="button" id="v31FinalizeOrder" class="btn success v31-finalize">💾 Grabar pedido</button></div></div><select class="hidden" id="ce"><option value="1003">1003 - San Juan</option><option value="1004">1004 - Vitarte</option></select><div class="auto-fields-note">El Centro se toma del selector superior. ALIM, CE y LOTE se completan automáticamente desde el Excel diario de stock SAP.</div><p class="small">La cantidad inicia en 0 (amarillo). Al colocar un valor mayor a 0 cambia a verde. Puedes dictar cantidades con el micrófono.</p><div class="tablewrap"><table><thead><tr><th>Matrícula</th><th>Descripción</th><th>Cant.</th><th>Unidad</th><th></th></tr></thead><tbody id="cart"></tbody></table><div class="empty" id="empty">Agrega materiales desde el buscador.</div></div><div class="sap-preview-wrap"><div class="sap-preview-title"><div><h3>Vista previa exacta para SAP / Excel</h3><p class="small">Muestra almacén, centro y lote de donde se obtiene cada cantidad.</p></div><span class="badge" id="previewRowsCount">0 filas</span></div><div class="sap-preview"><table><thead><tr><th>MATRÍCULA</th><th>DESCRIPCIÓN</th><th>C1</th><th>CANT</th><th>UNIDAD</th><th>TP</th><th>C2</th><th>C3</th><th>ALIM</th><th>CE</th><th>OPERACIÓN</th><th>LOTE</th><th>TIPO DE APROVISIONAMIENTO</th><th>POS</th><th>DESTINATARIO</th><th>PUESTO DE DESCARGA</th><th>UBICACIÓN FINAL</th></tr></thead><tbody id="sapPreviewBody"></tbody></table><div class="preview-empty" id="sapPreviewEmpty">Agrega materiales y completa sus cantidades para generar la vista previa.</div></div></div><div class="actions"><button class="btn secondary" id="copy">Copiar para SAP</button><button class="btn secondary" id="csv">Exportar CSV</button><button class="btn primary" id="excel">Exportar Excel</button><button class="btn secondary" id="printDocBtn" type="button" title="Imprimir documento de pedido">🖨️ Imprimir documento</button><button class="btn danger" id="clean">Limpiar</button></div><div class="pending-panel hidden" id="pendingPanel"><div class="head"><h3>⏳ Pendientes por coordinar</h3><span class="badge" id="pendingCount">0</span></div><div id="pendingList"></div></div><p class="status" id="status"></p></section></main></section>
 <section class="view" id="stockView"><section class="stock-toolbar">
 <label>Centro de trabajo<select id="centroGlobal2"><option value="1003">1003 - San Juan</option><option value="1004">1004 - Vitarte</option></select></label>
 <div class="stock-file-wrap"><label>Excel diario de stock SAP<input accept=".xlsx,.xls,.csv" id="stockFile2" type="file"/></label></div>
@@ -710,6 +1109,404 @@ function movementCode(){return $('#puesto').value==='PEDIDO'?'P':$('#puesto').va
 function supervisorSAP(){let supervisor=$('#dest').value||'',ini=(state.supervisorInitials?.[supervisor]||deriveInitials(supervisor)).toUpperCase(),date=formattedOrderDate();return [ini,date].filter(Boolean).join(' ')}
 function rows(){let unidad=$('#movil').value||'',out=[];for(let m of cart){let a=allocateStock(m.code,m.qty);for(let x of a.rows)out.push({MATRICULA:m.code,DESCRIPCION:m.description,C1:'',CANT:x.qty,UNIDAD:normalizedUnit(m),TP:'L',C2:'',C3:'',ALIM:x.almacen,CE:x.centro,OPERACION:'0010',LOTE:x.lote,'TIPO DE APROVISIONAMIENTO':'Reserva para orden',POS:0,DESTINATARIO:supervisorSAP(),'PUESTO DE DESCARGA':unidad?`${unidad} (${movementCode()})`:`(${movementCode()})`,'UBICACION FINAL':''})}return out}
 function valid(){if(stockMeta.date!==todayKey()){msg(expiredStockMessage(),true);return false}if(!cart.length){msg('Agrega al menos un material.',true);return false}if(cart.some(x=>!(Number(x.qty)>0))){msg('Completa las cantidades amarillas antes de exportar.',true);return false}let bad=cart.find(x=>allocateStock(x.code,x.qty).missing>0);if(bad){msg(`Stock insuficiente para ${bad.code}. Disponible: ${availableStock(bad.code)}.`,true);return false}return true}function tsv(){let r=rows(),h=Object.keys(r[0]);return r.map(x=>h.map(k=>x[k]).join('\t')).join('\n')}function csvText(){let r=rows(),h=Object.keys(r[0]),e=v=>'"'+String(v??'').replace(/"/g,'""')+'"';return '\ufeff'+[h.map(e).join(';'),...r.map(x=>h.map(k=>e(x[k])).join(';'))].join('\r\n')}function dl(txt,name,type='text/plain'){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}function excel(){if(!valid())return;let r=rows(),h=Object.keys(r[0]),table=`<table border="1"><tr>${h.map(x=>`<th style="background:#fff500">${esc(x)}</th>`).join('')}</tr>${r.map(x=>`<tr>${h.map(k=>`<td style="mso-number-format:'\@'">${esc(String(x[k]))}</td>`).join('')}</tr>`).join('')}</table>`;dl('\ufeff<html><meta charset="utf-8"><body>'+table+'</body></html>','Pedido_Materiales.xls','application/vnd.ms-excel')}function msg(t,e=false,id='#status'){let x=$(id);if(x){x.textContent=t;x.style.color=e?'#c62828':'#15803d';setTimeout(()=>x.textContent='',5000)}let toast=document.getElementById('appToast');if(!toast){toast=document.createElement('div');toast.id='appToast';toast.className='app-toast';document.body.appendChild(toast)}toast.textContent=t;toast.className='app-toast show '+(e?'error':'success');clearTimeout(window.__bmToastTimer);window.__bmToastTimer=setTimeout(()=>toast.className='app-toast',3500)}
+function generateOrderDocumentHtml(tableType = 'sap') {
+  const allocations = (typeof rows === 'function') ? rows() : [];
+  const sup = $('#dest')?.value || 'NO ESPECIFICADO';
+  const date = $('#fechaPedido')?.value || (new Date().toISOString().split('T')[0]);
+  const om = document.querySelector('#omPedido')?.value.trim() || '---';
+  const movil = $('#movil')?.value || '---';
+  const puesto = $('#puesto')?.value || 'PEDIDO';
+  const primaryCenter = $('#centroGlobal')?.value || '1003';
+  const primaryCenterName = primaryCenter === '1003' ? '1003 - San Juan' : '1004 - Vitarte';
+  const alim = document.querySelector('#alimentadorPedido')?.value || '---';
+  const dist = document.querySelector('#distritoPedido')?.value || '---';
+
+  const isSap = tableType === 'sap';
+
+  let tableHeaderHtml = '';
+  let tableBodyHtml = '';
+  let summaryHtml = '';
+  let docTitle = '';
+  let docSub = '';
+
+  if (isSap) {
+    docTitle = '⚡ LUZ DEL SUR - VISTA PREVIA DE SAP (DETALLADA)';
+    docSub = `Detalle de asignación por Centro, Almacén, Lote y TP · Generado el ${new Date().toLocaleString('es-PE')}`;
+    
+    let itemsList = allocations.length ? allocations : (cart || []).map((m, idx) => ({
+      POS: idx + 1,
+      MATRICULA: m.code,
+      DESCRIPCION: m.description,
+      CANT: m.qty || 0,
+      UNIDAD: normalizedUnit(m),
+      CE: primaryCenter,
+      ALIM: '---',
+      LOTE: '---',
+      TP: 'L',
+      OPERACION: '0010',
+      DESTINATARIO: supervisorSAP(),
+      'PUESTO DE DESCARGA': movil ? `${movil} (${movementCode()})` : `(${movementCode()})`
+    }));
+
+    let totalItems = itemsList.length;
+    let totalQty = itemsList.reduce((acc, row) => acc + (Number(row.CANT) || 0), 0);
+
+    tableHeaderHtml = `
+      <tr>
+        <th style="width:30px;text-align:center">#</th>
+        <th style="width:85px">MATRÍCULA</th>
+        <th>DESCRIPCIÓN</th>
+        <th style="width:45px;text-align:center">CANT</th>
+        <th style="width:40px;text-align:center">UND</th>
+        <th style="width:35px;text-align:center">TP</th>
+        <th style="width:50px;text-align:center">ALIM</th>
+        <th style="width:50px;text-align:center">CE</th>
+        <th style="width:50px;text-align:center">OPER.</th>
+        <th style="width:55px;text-align:center">LOTE</th>
+        <th style="width:85px;text-align:center">DESTINATARIO</th>
+        <th style="width:110px">PUESTO DESCARGA</th>
+      </tr>
+    `;
+
+    tableBodyHtml = itemsList.map((r, idx) => `
+      <tr>
+        <td style="text-align:center;font-size:7.5pt;color:#64748b">${idx + 1}</td>
+        <td><b>${esc(r.MATRICULA)}</b></td>
+        <td>${esc(r.DESCRIPCION)}</td>
+        <td style="text-align:center;font-weight:bold">${esc(r.CANT)}</td>
+        <td style="text-align:center">${esc(r.UNIDAD)}</td>
+        <td style="text-align:center">${esc(r.TP || 'L')}</td>
+        <td style="text-align:center">${esc(r.ALIM || '---')}</td>
+        <td style="text-align:center">${esc(r.CE || primaryCenter)}</td>
+        <td style="text-align:center">${esc(r.OPERACION || '0010')}</td>
+        <td style="text-align:center">${esc(r.LOTE || '---')}</td>
+        <td style="text-align:center;font-size:7.5pt">${esc(r.DESTINATARIO || supervisorSAP())}</td>
+        <td style="font-size:7.5pt">${esc(r['PUESTO DE DESCARGA'] || (movil ? `${movil} (${movementCode()})` : `(${movementCode()})`))}</td>
+      </tr>
+    `).join('');
+
+    summaryHtml = `
+      <span>Total de posiciones SAP: <b>${totalItems}</b></span>
+      <span>Cantidad total despachada: <b>${totalQty}</b></span>
+    `;
+  } else {
+    docTitle = '📋 LUZ DEL SUR - PEDIDO SELECCIONADO DE MATERIALES';
+    docSub = `Resumen de materiales seleccionados y cantidades · Generado el ${new Date().toLocaleString('es-PE')}`;
+
+    let itemsList = (cart || []).map((m, idx) => {
+      let av = (typeof availableStock === 'function') ? availableStock(m.code) : 0;
+      return {
+        POS: idx + 1,
+        MATRICULA: m.code,
+        DESCRIPCION: m.description,
+        CANT: m.qty || 0,
+        UNIDAD: normalizedUnit(m),
+        DISP: `${av} ${normalizedUnit(m)} (Centro ${primaryCenter})`
+      };
+    });
+
+    let totalItems = itemsList.length;
+    let totalQty = itemsList.reduce((acc, row) => acc + (Number(row.CANT) || 0), 0);
+
+    tableHeaderHtml = `
+      <tr>
+        <th style="width:40px;text-align:center">N°</th>
+        <th style="width:110px">MATRÍCULA</th>
+        <th>DESCRIPCIÓN DEL MATERIAL</th>
+        <th style="width:80px;text-align:center">CANTIDAD</th>
+        <th style="width:70px;text-align:center">UNIDAD</th>
+        <th style="width:160px">DISPONIBILIDAD / CENTRO</th>
+      </tr>
+    `;
+
+    tableBodyHtml = itemsList.map((r, idx) => `
+      <tr>
+        <td style="text-align:center;font-size:8pt;color:#64748b">${idx + 1}</td>
+        <td style="font-size:9.5pt"><b>${esc(r.MATRICULA)}</b></td>
+        <td>${esc(r.DESCRIPCION)}</td>
+        <td style="text-align:center;font-weight:bold;font-size:10pt">${esc(r.CANT)}</td>
+        <td style="text-align:center">${esc(r.UNIDAD)}</td>
+        <td style="font-size:8pt;color:#334155">${esc(r.DISP)}</td>
+      </tr>
+    `).join('');
+
+    summaryHtml = `
+      <span>Total de materiales seleccionados: <b>${totalItems}</b></span>
+      <span>Cantidad total de unidades: <b>${totalQty}</b></span>
+    `;
+  }
+
+  return `
+    <div class="print-doc">
+      <div class="print-header">
+        <div class="print-title">
+          <h2>${docTitle}</h2>
+          <p>${docSub}</p>
+        </div>
+        <div class="print-doc-badge">DOCUMENTO DE DESPACHO</div>
+      </div>
+      
+      <div class="print-meta-grid">
+        <div class="print-meta-item"><strong>Supervisor / Solicitante</strong>${esc(sup)}</div>
+        <div class="print-meta-item"><strong>Fecha de Pedido</strong>${esc(date)}</div>
+        <div class="print-meta-item"><strong>Orden Mant. (OM)</strong>${esc(om)}</div>
+        <div class="print-meta-item"><strong>Puesto Descarga / Mov.</strong>${esc(puesto)}</div>
+        <div class="print-meta-item"><strong>Unidad Móvil (Recojo)</strong>${esc(movil)}</div>
+        <div class="print-meta-item"><strong>Centro de Trabajo</strong>${esc(primaryCenterName)}</div>
+        <div class="print-meta-item"><strong>Alimentador</strong>${esc(alim)}</div>
+        <div class="print-meta-item"><strong>Distrito / Ubicación</strong>${esc(dist)}</div>
+      </div>
+      
+      <table class="print-table">
+        <thead>
+          ${tableHeaderHtml}
+        </thead>
+        <tbody>
+          ${tableBodyHtml}
+        </tbody>
+      </table>
+      
+      <div class="print-summary">
+        ${summaryHtml}
+      </div>
+      
+      <div class="print-signatures">
+        <div>
+          <div style="height:25px"></div>
+          <div class="print-sig-line">${esc(sup)}</div>
+          <div class="print-sig-role">SOLICITADO POR (SUPERVISOR)</div>
+        </div>
+        <div>
+          <div style="height:25px"></div>
+          <div class="print-sig-line">${esc(movil !== '---' ? movil : 'CONDUCTOR')}</div>
+          <div class="print-sig-role">TRANSPORTE / RETIRO</div>
+        </div>
+        <div>
+          <div style="height:25px"></div>
+          <div class="print-sig-line">RESPONSABLE ALMACÉN</div>
+          <div class="print-sig-role">DESPACHADO / SAP</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function getStandalonePrintPage(contentHtml, title) {
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>${title}</title>
+  <style>
+    @page { size: A4 portrait; margin: 8mm 8mm 8mm 8mm; }
+    html, body { background:#ffffff!important; color:#000000!important; font-family:Arial,Helvetica,sans-serif!important; font-size:10pt!important; margin:0!important; padding:12px!important; -webkit-print-color-adjust:exact!important; print-color-adjust:exact!important; }
+    .print-doc { width:100%; max-width:820px; margin:0 auto; color:#0f172a; box-sizing:border-box; }
+    .print-header { display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #0f2942; padding-bottom:8px; margin-bottom:10px; }
+    .print-title h2 { margin:0; font-size:13.5pt; color:#0f2942; font-weight:800; }
+    .print-title p { margin:2px 0 0; font-size:8pt; color:#475569; }
+    .print-doc-badge { font-size:8pt; font-weight:700; color:#1e40af; background:#dbeafe; border:1px solid #93c5fd; border-radius:4px; padding:3px 8px; white-space:nowrap; }
+    .print-meta-grid { display:grid!important; grid-template-columns:repeat(4, 1fr)!important; gap:6px!important; background:#f8fafc!important; border:1px solid #cbd5e1!important; border-radius:6px!important; padding:8px 10px!important; margin-bottom:12px!important; font-size:8.5pt!important; }
+    .print-meta-item strong { display:block; font-size:7pt; color:#64748b; text-transform:uppercase; margin-bottom:2px; font-weight:700; }
+    .print-table { width:100%; border-collapse:collapse; margin-bottom:10px; font-size:8pt; table-layout:auto; }
+    .print-table th { background:#0f2942!important; color:#ffffff!important; border:1px solid #0f2942!important; padding:5px 6px; font-size:7.5pt; font-weight:700; text-align:left; }
+    .print-table td { border:1px solid #cbd5e1!important; padding:4px 6px; vertical-align:middle; word-break:break-word; }
+    .print-table tr:nth-child(even) td { background:#f8fafc!important; }
+    .print-summary { display:flex; justify-content:space-between; font-size:9pt; font-weight:bold; margin-bottom:18px; padding:6px 12px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:6px; }
+    .print-signatures { display:grid!important; grid-template-columns:repeat(3, 1fr)!important; gap:16px!important; margin-top:22px!important; text-align:center!important; page-break-inside:avoid!important; width:100%!important; }
+    .print-signatures > div { display:flex!important; flex-direction:column!important; align-items:center!important; justify-content:flex-end!important; min-height:60px!important; }
+    .print-sig-line { width:85%!important; border-top:1px dashed #475569!important; padding-top:5px!important; font-size:8pt!important; color:#1e293b!important; font-weight:700!important; text-align:center!important; margin:0 auto!important; }
+    .print-sig-role { font-size:7pt!important; color:#64748b!important; margin-top:2px!important; text-transform:uppercase!important; font-weight:600!important; text-align:center!important; }
+    @media print { body { padding:0!important; } }
+  </style>
+</head>
+<body>
+  ${contentHtml}
+  <script>
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        window.focus();
+        try { window.print(); } catch(e) {}
+      }, 350);
+    });
+  <\/script>
+</body>
+</html>`;
+}
+
+function executeSilentPrint(fullHtml) {
+  let frame = document.getElementById('v452SilentPrintFrame');
+  if (!frame) {
+    frame = document.createElement('iframe');
+    frame.id = 'v452SilentPrintFrame';
+    document.body.appendChild(frame);
+  }
+  
+  try {
+    const doc = frame.contentWindow.document;
+    doc.open();
+    doc.write(fullHtml);
+    doc.close();
+    
+    setTimeout(() => {
+      try {
+        frame.contentWindow.focus();
+        frame.contentWindow.print();
+      } catch (e) {
+        window.print();
+      }
+    }, 400);
+  } catch (err) {
+    window.print();
+  }
+}
+
+let currentPrintTableType = 'sap';
+
+function openPrintModal(initialType = 'sap') {
+  currentPrintTableType = initialType;
+
+  let modal = document.getElementById('documentPrintModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'documentPrintModal';
+    modal.className = 'v452-print-modal';
+    modal.innerHTML = `
+      <div class="v452-print-backdrop" id="v452Backdrop"></div>
+      <div class="v452-print-window">
+        <div class="v452-print-header">
+          <div class="v452-print-header-info">
+            <h3 id="v452PrintModalTitle">🖨️ Vista de Impresión del Documento</h3>
+            <p id="v452PrintModalSub" class="small">Elige qué tabla deseas imprimir. Al hacer clic en Imprimir, tu sistema te permitirá elegir tu impresora de destino o guardar en PDF.</p>
+          </div>
+          <div class="v452-print-header-actions">
+            <button type="button" class="btn primary" id="v452DirectPrintBtn" title="Abrir cuadro para elegir impresora y mandar a imprimir">🖨️ Imprimir (Elegir impresora)</button>
+            <button type="button" class="btn secondary" id="v452NewTabPrintBtn" title="Abrir documento limpio en pestaña nueva para imprimir">🌐 Abrir en pestaña</button>
+            <button type="button" class="btn secondary" id="v452DownloadHtmlBtn" title="Guardar archivo HTML para archivar o imprimir luego">📥 Descargar</button>
+            <button type="button" class="btn danger" id="v452ClosePrintModal">✕ Cerrar</button>
+          </div>
+        </div>
+        <div class="v452-print-selector-bar">
+          <span class="v452-selector-label">📄 Seleccionar formato de tabla a imprimir:</span>
+          <div class="v452-selector-options">
+            <button type="button" class="v452-table-choice" id="v452ChoiceSap" data-table="sap">
+              ⚡ Vista previa de SAP <small>(Centro, Almacén, Lote, TP, Destinatario)</small>
+            </button>
+            <button type="button" class="v452-table-choice" id="v452ChoiceSelected" data-table="selected">
+              📋 Pedido seleccionado <small>(Matrícula, Descripción, Cantidad, Unidad)</small>
+            </button>
+          </div>
+        </div>
+        <div class="v452-print-content-wrap">
+          <div class="v452-paper" id="v452PrintPaper"></div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  }
+
+  const paper = modal.querySelector('#v452PrintPaper');
+  const sapBtn = modal.querySelector('#v452ChoiceSap');
+  const selBtn = modal.querySelector('#v452ChoiceSelected');
+
+  function updateView(type) {
+    currentPrintTableType = type;
+    if (sapBtn && selBtn) {
+      sapBtn.classList.toggle('active', type === 'sap');
+      selBtn.classList.toggle('active', type === 'selected');
+    }
+    const html = generateOrderDocumentHtml(type);
+    if (paper) paper.innerHTML = html;
+  }
+
+  if (sapBtn) sapBtn.onclick = () => updateView('sap');
+  if (selBtn) selBtn.onclick = () => updateView('selected');
+
+  updateView(currentPrintTableType);
+  modal.style.display = 'flex';
+
+  const close = () => { modal.style.display = 'none'; };
+  modal.querySelector('#v452ClosePrintModal').onclick = close;
+  modal.querySelector('#v452Backdrop').onclick = close;
+
+  modal.querySelector('#v452DirectPrintBtn').onclick = () => {
+    const html = generateOrderDocumentHtml(currentPrintTableType);
+    const om = document.querySelector('#omPedido')?.value.trim() || 'SIN_OM';
+    const date = $('#fechaPedido')?.value || todayKey();
+    const title = (currentPrintTableType === 'sap' ? '⚡ PEDIDO SAP - ' : '📋 PEDIDO SELECCIONADO - ') + (om !== 'SIN_OM' ? om : date);
+    const fullPage = getStandalonePrintPage(html, title);
+    
+    let printView = document.getElementById('documentPrintView');
+    if (!printView) {
+      printView = document.createElement('div');
+      printView.id = 'documentPrintView';
+      document.body.appendChild(printView);
+    }
+    printView.innerHTML = html;
+    document.body.classList.add('printing-doc');
+    
+    // Abre directamente el selector nativo de impresoras del navegador
+    setTimeout(() => {
+      try {
+        window.print();
+      } catch (e) {
+        executeSilentPrint(fullPage);
+      }
+      setTimeout(() => {
+        document.body.classList.remove('printing-doc');
+      }, 1000);
+    }, 100);
+  };
+
+  modal.querySelector('#v452NewTabPrintBtn').onclick = () => {
+    try {
+      const html = generateOrderDocumentHtml(currentPrintTableType);
+      const om = document.querySelector('#omPedido')?.value.trim() || 'SIN_OM';
+      const date = $('#fechaPedido')?.value || todayKey();
+      const title = (currentPrintTableType === 'sap' ? '⚡ PEDIDO SAP - ' : '📋 PEDIDO SELECCIONADO - ') + (om !== 'SIN_OM' ? om : date);
+      const fullPage = getStandalonePrintPage(html, title);
+      const blob = new Blob([fullPage], { type: 'text/html;charset=utf-8' });
+      const blobUrl = URL.createObjectURL(blob);
+      const win = window.open(blobUrl, '_blank');
+      if (!win) {
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      }
+      msg('Se abrió el documento en una pestaña nueva para imprimir.');
+    } catch(err) {
+      msg('Usa el botón Imprimir documento o Descargar.', true);
+    }
+  };
+
+  modal.querySelector('#v452DownloadHtmlBtn').onclick = () => {
+    const html = generateOrderDocumentHtml(currentPrintTableType);
+    const om = document.querySelector('#omPedido')?.value.trim() || 'SIN_OM';
+    const date = $('#fechaPedido')?.value || todayKey();
+    const title = (currentPrintTableType === 'sap' ? 'Pedido_SAP_' : 'Pedido_Seleccionado_') + (om !== 'SIN_OM' ? om : date);
+    const fullPage = getStandalonePrintPage(html, title);
+    dl(fullPage, `${title}.html`, 'text/html;charset=utf-8');
+    msg('Documento descargado. Ábrelo en tu navegador para imprimir.');
+  };
+}
+window.openPrintModal = openPrintModal;
+
+function printOrderDocument(){
+  if(!cart || !cart.length){
+    msg('Agrega al menos un material al pedido para imprimir el documento.', true);
+    return;
+  }
+  const allocations = (typeof rows === 'function') ? rows() : [];
+  if(!allocations.length && cart.some(x => !(Number(x.qty) > 0))){
+    msg('Completa las cantidades antes de imprimir el documento.', true);
+    return;
+  }
+  openPrintModal('sap');
+}
+window.printOrderDocument = printOrderDocument;
 function renderAdmin(){fill($('#dest'),state.supervisors);fill($('#movil'),state.units);if($('#supList'))$('#supList').innerHTML=state.supervisors.map((x,i)=>`<div class="supervisor-row"><input value="${esc(x)}" data-sup-name="${i}" aria-label="Nombre del supervisor"><input class="initials" maxlength="4" value="${esc(state.supervisorInitials?.[x]||deriveInitials(x))}" data-sup-initials="${i}" aria-label="Iniciales"><div class="supervisor-actions"><button class="btn secondary" data-save-sup="${i}">Guardar</button><button class="btn danger" data-dsup="${i}">Quitar</button></div></div>`).join('');if($('#unitList'))$('#unitList').innerHTML=state.units.map((x,i)=>`<span class="chip">${esc(x)} <button data-dunit="${i}">×</button></span>`).join('');renderMaterialList()}function renderMaterialList(){let el=$('#materialList');if(!el)return;let q=norm($('#adminSearch')?.value),a=state.materials.filter(m=>!q||norm([m.code,m.description,...(m.aliases||[])].join(' ')).includes(q)).slice(0,120);el.innerHTML=a.map(m=>`<div class="material-item"><b>${esc(m.code)}</b><div>${esc(m.description)}<br><span class="small">${esc((m.aliases||[]).join(' · ')||'Sin alias')}</span></div><button class="btn secondary" data-edit="${m.code}">Editar</button></div>`).join('')}
 function openNewMaterial(){showView('newMatView');if($('#nmCode')){$('#nmCode').value='';lookupMatricula();setTimeout(()=>$('#nmCode')?.focus(),50);}}
 function clearNmCodeField(){let el=$('#nmCode');if(el){el.value='';lookupMatricula();el.focus();}}
@@ -946,6 +1743,7 @@ function bind(){
   if($('#copy')) $('#copy').onclick=async()=>{if(!valid())return;try{await navigator.clipboard.writeText(tsv())}catch{let t=document.createElement('textarea');t.value=tsv();document.body.appendChild(t);t.select();document.execCommand('copy');t.remove()}msg('Tabla copiada para SAP.')};
   if($('#csv')) $('#csv').onclick=()=>valid()&&dl(csvText(),'Pedido_Materiales.csv','text/csv;charset=utf-8');
   if($('#excel')) $('#excel').onclick=excel;
+  if($('#printDocBtn')) $('#printDocBtn').onclick=printOrderDocument;
   if($('#clean')) $('#clean').onclick=()=>{if(confirm('¿Limpiar el pedido?')){cart=[];renderCart()}};
   if($('#config')) $('#config').onclick=()=>{setMaterialMode('config');$('#dlg')?.showModal()};
   if($('#newMaterialTop')) $('#newMaterialTop').onclick=openNewMaterial;
@@ -1828,7 +2626,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
       saveRow.id = 'v26SaveRow';
       saveRow.className = 'order-save-row';
     }
-    saveRow.style.cssText = 'display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;margin:12px 0!important;flex-wrap:wrap!important;width:100%!important;box-sizing:border-box!important;';
+    saveRow.style.cssText = 'display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-end!important;gap:12px!important;margin:14px 0!important;flex-wrap:nowrap!important;width:100%!important;box-sizing:border-box!important;';
 
     if(previewWrap && previewWrap.parentNode){
       if(previewWrap.previousElementSibling !== saveRow){
@@ -1839,17 +2637,6 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
         orderPanel.appendChild(saveRow);
       }
     }
-
-    let btn = $31('#v449ClearAllOrdersBtn');
-    if(!btn){
-      btn = document.createElement('button');
-      btn.id = 'v449ClearAllOrdersBtn';
-      btn.type = 'button';
-      btn.className = 'btn danger v449-clear-all';
-    }
-    btn.textContent = '🗑️ Borrar pedidos';
-    btn.style.cssText = 'background-color: #dc2626 !important; color: #ffffff !important; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; padding: 10px 16px; margin: 0;';
-    btn.onclick = clearAllOrdersAction;
 
     let finBtn = $31('#v31FinalizeOrder') || $31('#v26SaveOrder');
     if(!finBtn){
@@ -1862,12 +2649,24 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
       finBtn.className = 'btn success v31-finalize';
     }
     finBtn.textContent = '💾 Grabar pedido';
-    finBtn.style.cssText = 'background-color: #16a34a !important; color: #ffffff !important; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; padding: 10px 16px; margin: 0;';
+    finBtn.style.cssText = 'order:1!important;background-color:#16a34a!important;color:#ffffff!important;font-weight:700!important;border:none!important;border-radius:8px!important;cursor:pointer!important;height:44px!important;min-height:44px!important;width:155px!important;min-width:155px!important;padding:0 14px!important;margin:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important;font-size:14px!important;';
     finBtn.onclick = finaliseOrder;
 
-    // Forzar el orden exacto: 1° Borrar pedidos (Izquierda), 2° Grabar pedido (Derecha)
-    saveRow.appendChild(btn);
+    let btn = $31('#v449ClearAllOrdersBtn');
+    if(!btn){
+      btn = document.createElement('button');
+      btn.id = 'v449ClearAllOrdersBtn';
+      btn.type = 'button';
+      btn.className = 'btn danger v449-clear-all';
+    }
+    btn.textContent = '🗑️ Borrar pedidos';
+    btn.style.cssText = 'order:2!important;background-color:#dc2626!important;color:#ffffff!important;font-weight:700!important;border:none!important;border-radius:8px!important;cursor:pointer!important;height:44px!important;min-height:44px!important;width:155px!important;min-width:155px!important;padding:0 14px!important;margin:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important;font-size:14px!important;';
+    btn.onclick = clearAllOrdersAction;
+
+    // Orden garantizado: 1° Izquierda: Grabar pedido | 2° Derecha: Borrar pedidos (en la misma fila)
+    saveRow.innerHTML = '';
     saveRow.appendChild(finBtn);
+    saveRow.appendChild(btn);
   }
   function replaceButtons(){
     ensureClearAllOrdersButton();
@@ -2322,6 +3121,105 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
     XLSX.writeFile(wb,`Control_Solicitudes_${new Date().toISOString().slice(0,10)}.xlsx`);
   }
 
+  function printControlDocument(){
+    const data=controlRows37();
+    if(!data.length)return msg('No hay solicitudes registradas para imprimir.',true);
+    const docHtml = `
+      <div class="print-doc">
+        <div class="print-header">
+          <div class="print-title">
+            <h2>📑 CONTROL DE SOLICITUDES DE MATERIALES</h2>
+            <p>Reporte de Control · Generado el ${new Date().toLocaleString('es-PE')}</p>
+          </div>
+          <div style="text-align:right;font-size:9pt;color:#64748b">
+            <b>Fecha:</b> ${new Date().toLocaleDateString('es-PE')}
+          </div>
+        </div>
+        <table class="print-table">
+          <thead>
+            <tr>
+              <th>RESERVA</th><th>ALMACEN</th><th>ENCARGADO</th><th>OM</th><th>FECHA PEDIDO</th>
+              <th>UNIDAD (RECOJO)</th><th>CONDUCTOR</th><th>ALIM.</th><th>DISTRITO</th><th>STATUS</th><th>UNIDAD (RECUPERO)</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${data.map(r=>`
+              <tr>
+                <td><b>${esc(r.reserva||'---')}</b></td>
+                <td>${esc(r.almacen||'')}</td>
+                <td>${esc(r.encargado||'')}</td>
+                <td><b>${esc(r.om||'')}</b></td>
+                <td>${esc(r.fecha||'')}</td>
+                <td>${esc(r.unidadRecojo||'')}</td>
+                <td>${esc(r.conductor||'---')}</td>
+                <td>${esc(r.alimentador||'')}</td>
+                <td>${esc(r.distrito||'')}</td>
+                <td>${esc(r.status||'')}</td>
+                <td>${esc(r.unidadRecupero||'')}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+        <div class="print-summary">
+          <span>Total de solicitudes: <b>${data.length}</b></span>
+        </div>
+      </div>
+    `;
+    openPrintModal('📑 CONTROL DE SOLICITUDES DE MATERIALES', docHtml, `Control_Solicitudes_${new Date().toISOString().slice(0,10)}.html`);
+  }
+  window.printControlDocument = printControlDocument;
+
+  function printHistoryDocument(){
+    const details=detailRows37();
+    if(!details.length)return msg('No hay historial de retiros registrado para imprimir.',true);
+    const totalQty=details.reduce((a,x)=>a+(Number(x.cantidad)||0),0);
+    const docHtml = `
+      <div class="print-doc">
+        <div class="print-header">
+          <div class="print-title">
+            <h2>🕘 HISTORIAL DETALLADO DE RETIROS POR OM</h2>
+            <p>Reporte Detallado de Retiros · Generado el ${new Date().toLocaleString('es-PE')}</p>
+          </div>
+          <div style="text-align:right;font-size:9pt;color:#64748b">
+            <b>Fecha:</b> ${new Date().toLocaleDateString('es-PE')}
+          </div>
+        </div>
+        <table class="print-table">
+          <thead>
+            <tr>
+              <th>OM</th><th>FECHA</th><th>MATRÍCULA</th><th>DESCRIPCIÓN</th><th>CANT.</th><th>UND</th>
+              <th>RETIRADO POR</th><th>CENTRO</th><th>ALMACÉN</th><th>LOTE</th><th>UNIDAD RECOJO</th><th>MOVIMIENTO</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${details.map(r=>`
+              <tr>
+                <td><b>${esc(r.om||'')}</b></td>
+                <td>${esc(r.fecha||'')}</td>
+                <td><b>${esc(r.matricula||'')}</b></td>
+                <td>${esc(r.descripcion||'')}</td>
+                <td style="font-weight:bold">${esc(r.cantidad||'')}</td>
+                <td>${esc(r.unidad||'')}</td>
+                <td>${esc(r.supervisor||'')}</td>
+                <td>${esc(r.centro==='1003'?'1003 - San Juan':r.centro==='1004'?'1004 - Vitarte':r.centro)}</td>
+                <td>${esc(r.almacen||'')}</td>
+                <td>${esc(r.lote||'')}</td>
+                <td>${esc(r.unidadRecojo||'')}</td>
+                <td>${esc(r.movimiento||'')}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+        <div class="print-summary">
+          <span>Total de posiciones: <b>${details.length}</b></span>
+          <span>Cantidad total retirada: <b>${totalQty}</b></span>
+        </div>
+      </div>
+    `;
+    openPrintModal('🕘 HISTORIAL DETALLADO DE RETIROS POR OM', docHtml, `Historial_Retiro_Materiales_${new Date().toISOString().slice(0,10)}.html`);
+  }
+  window.printHistoryDocument = printHistoryDocument;
+
   function renderControl37(){
     const view=$('#controlView'); if(!view)return;
     const controls=controlRows37();
@@ -2340,6 +3238,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
         </div>
         <div class="v39-history-actions">
           <button class="btn primary" id="v39ExportControl">📊 Exportar control de solicitudes</button>
+          <button class="btn secondary" id="v39PrintControl" type="button">🖨️ Imprimir control</button>
         </div>
       </div>
       <p class="v41-control-note">Completa directamente <b>RESERVA</b> y <b>CONDUCTOR</b>. Los cambios quedan guardados y se incluyen al exportar el Excel.</p>
@@ -2354,6 +3253,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
       </div>
     </div>`;
     $('#v39ExportControl')?.addEventListener('click',exportControl37);
+    $('#v39PrintControl')?.addEventListener('click',printControlDocument);
     view.querySelectorAll('[data-control-key]').forEach(input=>{
       const saveHandler=()=>{
         state.controlEdits=state.controlEdits&&typeof state.controlEdits==='object'?state.controlEdits:{};
@@ -2398,6 +3298,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
         </div>
         <div class="v39-history-actions">
           <button class="btn primary" id="v39ExportDetail">📊 Exportar retiro detallado</button>
+          <button class="btn secondary" id="v39PrintHistory" type="button">🖨️ Imprimir historial</button>
         </div>
       </div>
       <div class="v39-summary">
@@ -2417,6 +3318,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
       </div>
     </div>`;
     $('#v39ExportDetail')?.addEventListener('click',exportDetail37);
+    $('#v39PrintHistory')?.addEventListener('click',printHistoryDocument);
   }
   window.renderHistory37 = renderHistory37;
 
