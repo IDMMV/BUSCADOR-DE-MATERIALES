@@ -1103,12 +1103,39 @@ function filtered(){
   }).filter(x=>x.score<999).sort((a,b)=>a.score-b.score||a.index-b.index).slice(0,300).map(x=>x.m);
 }
 function renderResults(){let a=filtered();$('#count').textContent=`${a.length} de ${state.materials.length}`;$('#results').innerHTML=a.length?a.map(m=>`<div class="card ${m.priority==='P'?'card-prio-p':''}"><div class="material-main">${m.image?`<img class="material-thumb" src="${m.image}" alt="Imagen de ${esc(m.description)}">`:`<div class="material-placeholder">Sin imagen</div>`}<div><div class="code">${esc(m.code)} · ${esc(m.unit)}${m.priority==='P'?'<span class="prio-p-badge">⚡ PRIORIDAD P</span>':''}</div><div class="desc">${esc(m.description)}</div>${(m.aliases||[]).map(x=>`<span class="tag">${esc(x)}</span>`).join('')}</div></div><div class="card-actions"><button class="btn edit-inline" data-quick-edit="${m.code}">✎ Alias / editar</button><button class="btn primary add" data-add="${m.code}">＋ Agregar</button></div></div>`).join(''):'<div class="empty">No se encontraron materiales.</div>'}
-function add(c){let m=state.materials.find(x=>x.code===c);if(!m)return;if(cart.some(x=>x.code===c))return msg('El material ya está agregado.',true);if(stockMeta.date!==todayKey())return msg(expiredStockMessage(),true);let available=availableStock(c);if(available<=0)return msg(`No hay libre utilización para ${c} en el centro ${$('#centroGlobal').value}.`,true);cart.push({...clone(m),qty:'',available});renderCart();msg(`Material ${m.code} agregado al pedido. Disponible: ${available} ${normalizedUnit(m)}.`)}
-function renderCart(){$('#cartCount').textContent=`${cart.length} material${cart.length===1?'':'es'}`;$('#empty').style.display=cart.length?'none':'block';$('#cart').innerHTML=cart.map((m,i)=>{let q=Number(m.qty)||0,av=availableStock(m.code),bad=q>av;return `<tr class="${q>0&&!bad?'':'row-pending'}"><td><b>${esc(m.code)}</b></td><td>${esc(m.description)}<span class="stock-info">Disponible centro ${esc($('#centroGlobal').value)}: ${av} ${esc(normalizedUnit(m))}</span></td><td><div class="qty-wrap"><input class="qty ${q>0&&!bad?'ready':''} ${bad?'insufficient':''}" type="number" min="0" step="0.01" value="${m.qty ?? ''}" placeholder="0" data-qty="${i}"><button class="voice-btn" data-voice-qty="${i}" title="Dictar cantidad">🎤</button></div>${bad?'<span class="stock-info" style="color:#c62828">Stock insuficiente</span>':''}</td><td>${esc(normalizedUnit(m))}</td><td><button class="btn danger" data-rm="${i}">Quitar</button></td></tr>`}).join('');renderSapPreview()}
-function movementCode(){return $('#puesto').value==='PEDIDO'?'P':$('#puesto').value==='RECUPERO'?'R':'D'}function formattedOrderDate(){let v=$('#fechaPedido').value;if(!v)return'';let [y,m,d]=v.split('-');return `${d}/${m}`}
+function isDevolucion(){let v=String($('#puesto')?.value||'').trim().toUpperCase();return v==='DEVOLUCION'||v==='DEVOLUCIÓN'||v==='DEV'}
+window.isDevolucion=isDevolucion;
+function add(c){
+  let m=state.materials.find(x=>x.code===c);if(!m)return;
+  let isDev=isDevolucion();
+  let existing=cart.find(x=>x.code===c);
+  if(existing){
+    let prevQty = Number(existing.qty) || 0;
+    let totalQty = prevQty + 1;
+    let confirmFn = () => {
+      existing.qty = String(totalQty);
+      renderCart();
+      msg(`✓ Se agregó 1 ${normalizedUnit(m)} adicional de ${m.code} (Total: ${totalQty}).`);
+    };
+    if(typeof window.customConfirm === 'function'){
+      window.customConfirm(`¿Desea agregar más material?\n\nLa matrícula ${c} (${m.description}) ya se encuentra en el pedido con cantidad ${prevQty} ${normalizedUnit(m)}.\n\n¿Desea agregar 1 ${normalizedUnit(m)} más? (Total: ${totalQty})`, confirmFn, null, { title: '¿Desea agregar más material?', okText: 'Sí, agregar más', okClass: 'btn primary' });
+    } else {
+      confirmFn();
+    }
+    return;
+  }
+  if(!isDev&&stockMeta.date!==todayKey())return msg(expiredStockMessage(),true);
+  let available=availableStock(c);
+  if(!isDev&&available<=0)return msg(`No hay libre utilización para ${c} en el centro ${$('#centroGlobal').value}.`,true);
+  cart.push({...clone(m),qty:'',available});
+  renderCart();
+  msg(`Material ${m.code} agregado al pedido.${isDev?' (Devolución sin restricción de stock)':` Disponible: ${available} ${normalizedUnit(m)}.`}`);
+}
+function renderCart(){let isDev=isDevolucion();$('#cartCount').textContent=`${cart.length} material${cart.length===1?'':'es'}`;$('#empty').style.display=cart.length?'none':'block';$('#cart').innerHTML=cart.map((m,i)=>{let q=Number(m.qty)||0,av=availableStock(m.code),bad=!isDev&&(q>av);return `<tr class="${q>0&&!bad?'':'row-pending'}"><td><b>${esc(m.code)}</b></td><td>${esc(m.description)}<span class="stock-info">${isDev?`Devolución (D) · Sin restricción (Disp. centro ${esc($('#centroGlobal').value)}: ${av} ${esc(normalizedUnit(m))})`:`Disponible centro ${esc($('#centroGlobal').value)}: ${av} ${esc(normalizedUnit(m))}`}</span></td><td><div class="qty-wrap"><input class="qty ${q>0&&!bad?'ready':''} ${bad?'insufficient':''}" type="number" min="0" step="0.01" value="${m.qty ?? ''}" placeholder="0" data-qty="${i}"><button class="voice-btn" data-voice-qty="${i}" title="Dictar cantidad">🎤</button></div>${bad?'<span class="stock-info" style="color:#c62828">Stock insuficiente</span>':''}</td><td>${esc(normalizedUnit(m))}</td><td><button class="btn danger" data-rm="${i}">Quitar</button></td></tr>`}).join('');renderSapPreview()}
+function movementCode(){let v=String($('#puesto')?.value||'').trim().toUpperCase();return v==='PEDIDO'?'P':v==='RECUPERO'?'R':'D'}function formattedOrderDate(){let v=$('#fechaPedido').value;if(!v)return'';let [y,m,d]=v.split('-');return `${d}/${m}`}
 function supervisorSAP(){let supervisor=$('#dest').value||'',ini=(state.supervisorInitials?.[supervisor]||deriveInitials(supervisor)).toUpperCase(),date=formattedOrderDate();return [ini,date].filter(Boolean).join(' ')}
 function rows(){let unidad=$('#movil').value||'',out=[];for(let m of cart){let a=allocateStock(m.code,m.qty);for(let x of a.rows)out.push({MATRICULA:m.code,DESCRIPCION:m.description,C1:'',CANT:x.qty,UNIDAD:normalizedUnit(m),TP:'L',C2:'',C3:'',ALIM:x.almacen,CE:x.centro,OPERACION:'0010',LOTE:x.lote,'TIPO DE APROVISIONAMIENTO':'Reserva para orden',POS:0,DESTINATARIO:supervisorSAP(),'PUESTO DE DESCARGA':unidad?`${unidad} (${movementCode()})`:`(${movementCode()})`,'UBICACION FINAL':''})}return out}
-function valid(){if(stockMeta.date!==todayKey()){msg(expiredStockMessage(),true);return false}if(!cart.length){msg('Agrega al menos un material.',true);return false}if(cart.some(x=>!(Number(x.qty)>0))){msg('Completa las cantidades amarillas antes de exportar.',true);return false}let bad=cart.find(x=>allocateStock(x.code,x.qty).missing>0);if(bad){msg(`Stock insuficiente para ${bad.code}. Disponible: ${availableStock(bad.code)}.`,true);return false}return true}function tsv(){let r=rows(),h=Object.keys(r[0]);return r.map(x=>h.map(k=>x[k]).join('\t')).join('\n')}function csvText(){let r=rows(),h=Object.keys(r[0]),e=v=>'"'+String(v??'').replace(/"/g,'""')+'"';return '\ufeff'+[h.map(e).join(';'),...r.map(x=>h.map(k=>e(x[k])).join(';'))].join('\r\n')}function dl(txt,name,type='text/plain'){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}function excel(){if(!valid())return;let r=rows(),h=Object.keys(r[0]),table=`<table border="1"><tr>${h.map(x=>`<th style="background:#fff500">${esc(x)}</th>`).join('')}</tr>${r.map(x=>`<tr>${h.map(k=>`<td style="mso-number-format:'\@'">${esc(String(x[k]))}</td>`).join('')}</tr>`).join('')}</table>`;dl('\ufeff<html><meta charset="utf-8"><body>'+table+'</body></html>','Pedido_Materiales.xls','application/vnd.ms-excel')}function msg(t,e=false,id='#status'){let x=$(id);if(x){x.textContent=t;x.style.color=e?'#c62828':'#15803d';setTimeout(()=>x.textContent='',5000)}let toast=document.getElementById('appToast');if(!toast){toast=document.createElement('div');toast.id='appToast';toast.className='app-toast';document.body.appendChild(toast)}toast.textContent=t;toast.className='app-toast show '+(e?'error':'success');clearTimeout(window.__bmToastTimer);window.__bmToastTimer=setTimeout(()=>toast.className='app-toast',3500)}
+function valid(){let isDev=isDevolucion();if(!isDev&&stockMeta.date!==todayKey()){msg(expiredStockMessage(),true);return false}if(!cart.length){msg('Agrega al menos un material.',true);return false}if(cart.some(x=>!(Number(x.qty)>0))){msg('Completa las cantidades antes de exportar.',true);return false}if(!isDev){let bad=cart.find(x=>allocateStock(x.code,x.qty).missing>0);if(bad){msg(`Stock insuficiente para ${bad.code}. Disponible: ${availableStock(bad.code)}.`,true);return false}}return true}function tsv(){let r=rows(),h=Object.keys(r[0]);return r.map(x=>h.map(k=>x[k]).join('\t')).join('\n')}function csvText(){let r=rows(),h=Object.keys(r[0]),e=v=>'"'+String(v??'').replace(/"/g,'""')+'"';return '\ufeff'+[h.map(e).join(';'),...r.map(x=>h.map(k=>e(x[k])).join(';'))].join('\r\n')}function dl(txt,name,type='text/plain'){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}function excel(){if(!valid())return;let r=rows(),h=Object.keys(r[0]),table=`<table border="1"><tr>${h.map(x=>`<th style="background:#fff500">${esc(x)}</th>`).join('')}</tr>${r.map(x=>`<tr>${h.map(k=>`<td style="mso-number-format:'\@'">${esc(String(x[k]))}</td>`).join('')}</tr>`).join('')}</table>`;dl('\ufeff<html><meta charset="utf-8"><body>'+table+'</body></html>','Pedido_Materiales.xls','application/vnd.ms-excel')}function msg(t,e=false,id='#status'){let x=$(id);if(x){x.textContent=t;x.style.color=e?'#c62828':'#15803d';setTimeout(()=>x.textContent='',5000)}let toast=document.getElementById('appToast');if(!toast){toast=document.createElement('div');toast.id='appToast';toast.className='app-toast';document.body.appendChild(toast)}toast.textContent=t;toast.className='app-toast show '+(e?'error':'success');clearTimeout(window.__bmToastTimer);window.__bmToastTimer=setTimeout(()=>toast.className='app-toast',3500)}
 function generateOrderDocumentHtml(tableType = 'sap') {
   const allocations = (typeof rows === 'function') ? rows() : [];
   const sup = $('#dest')?.value || 'NO ESPECIFICADO';
@@ -2408,12 +2435,31 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
   };
   window.add=function(code){
     const m=state.materials.find(x=>x.code===code);if(!m)return;
-    if(stockMeta.date!==todayKey())return msg(expiredStockMessage(),true);
-    const input=document.querySelector(`[data-v34-qty="${CSS.escape(String(code))}"]`),qty=Number(input?.value)||1;
-    let item=cart.find(x=>x.code===code);if(!item){item={...clone(m),qty:String(qty),available:availableStock(code)};cart.push(item)}else item.qty=String(qty);
-    const planned=allocateAcross(code,qty);item.allocations=planned.missing===0?planned.rows:null;
+    const isDev=typeof window.isDevolucion==='function'?window.isDevolucion():isDevolucion();
+    if(!isDev&&stockMeta.date!==todayKey())return msg(expiredStockMessage(),true);
+    const input=document.querySelector(`[data-v34-qty="${CSS.escape(String(code))}"]`)||document.querySelector(`[data-v36-qty="${CSS.escape(String(code))}"]`)||document.querySelector(`[data-v29-qty="${CSS.escape(String(code))}"]`),qty=Number(input?.value)||1;
+    let item=cart.find(x=>x.code===code);
+    if(item){
+      const prevQty = Number(item.qty) || 0;
+      const totalQty = prevQty + qty;
+      const confirmFn = () => {
+        item.qty = String(totalQty);
+        const planned=allocateAcross(code,totalQty);
+        item.allocations=isDev?(planned.rows.length?planned.rows:[{material:code,centro:$v34('#centroGlobal')?.value||'1003',almacen:'ALM1',lote:'LDA-000000',libre:totalQty,qty:totalQty}]):planned.rows;
+        renderCart();renderSearchOrder();renderResults();
+        msg(isDev ? `✓ Se agregaron ${qty} ${normalizedUnit(m)} adicionales de ${code} a la devolución (Total: ${totalQty}).` : `✓ Se agregaron ${qty} ${normalizedUnit(m)} adicionales de ${code} (Total: ${totalQty}).`);
+      };
+      if(typeof window.customConfirm === 'function'){
+        window.customConfirm(`¿Desea agregar más material?\n\nLa matrícula ${code} (${m.description}) ya se encuentra en el pedido con cantidad ${prevQty} ${normalizedUnit(m)}.\n\n¿Desea agregar ${qty} ${normalizedUnit(m)} más? (Total: ${totalQty} ${normalizedUnit(m)})`, confirmFn, null, { title: '¿Desea agregar más material?', okText: 'Sí, agregar más', okClass: 'btn primary' });
+      } else {
+        confirmFn();
+      }
+      return;
+    }
+    item={...clone(m),qty:String(qty),available:availableStock(code)};cart.push(item);
+    const planned=allocateAcross(code,qty);item.allocations=isDev?(planned.rows.length?planned.rows:[{material:code,centro:$v34('#centroGlobal')?.value||'1003',almacen:'ALM1',lote:'LDA-000000',libre:qty,qty}]):planned.rows;
     renderCart();renderSearchOrder();renderResults();
-    if(planned.missing===0)msg(`Material ${code} agregado. Cantidad ${qty} asignada al stock disponible.`);
+    if(isDev||planned.missing===0)msg(`Material ${code} agregado con cantidad ${qty}.${isDev?' (Devolución sin restricción de stock)':''}`);
     else msg(`Material ${code} agregado, pero faltan ${planned.missing} ${normalizedUnit(m)} por coordinar.`,true);
   };
   const oldRenderCart=window.renderCart;
@@ -2444,13 +2490,19 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
   }
   function allocateByChoices(item){
     const qty=Number(item.qty)||0, choices=selectedCenters(item), primary=String($30('#centroGlobal')?.value||'1003');
+    const isDev=typeof window.isDevolucion==='function'?window.isDevolucion():isDevolucion();
     const ordered=[primary,...choices.filter(x=>x!==primary)].filter((x,i,a)=>choices.includes(x)&&a.indexOf(x)===i);
     let left=qty,out=[];
     for(const center of ordered){
       const lots=stockFor(item.code,center).slice().sort((a,b)=>Number(b.libre)-Number(a.libre));
       for(const x of lots){if(left<=0)break;const take=Math.min(left,Number(x.libre)||0);if(take>0)out.push({...x,qty:take});left-=take;}
     }
-    item.centerChoices=choices;item.allocations=out;item.missing=Math.max(0,left);return {rows:out,missing:item.missing};
+    if(isDev&&left>0){
+      const fallbackCenter = ordered[0] || primary;
+      out.push({material:item.code, centro:fallbackCenter, almacen:'ALM1', lote:'LDA-000000', libre:left, qty:left});
+      left = 0;
+    }
+    item.centerChoices=choices;item.allocations=out;item.missing=isDev?0:Math.max(0,left);return {rows:out,missing:item.missing};
   }
   window.rows=function(){
     const unidad=$30('#movil')?.value||'',out=[];
@@ -2458,27 +2510,36 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
     return out;
   };
   window.valid=function(){
-    if(stockMeta.date!==todayKey()){msg(expiredStockMessage(),true);return false;}
+    const isDev=typeof window.isDevolucion==='function'?window.isDevolucion():isDevolucion();
+    if(!isDev&&stockMeta.date!==todayKey()){msg(expiredStockMessage(),true);return false;}
     if(!cart.length){msg('Agrega al menos un material.',true);return false;}
-    for(const m of cart){if(!(Number(m.qty)>0)){msg(`Completa la cantidad de ${m.code}.`,true);return false;}const a=allocateByChoices(m);if(a.missing>0){msg(`Faltan ${a.missing} ${normalizedUnit(m)} de ${m.code}. Selecciona otro centro o deja el faltante pendiente.`,true);return false;}}
+    for(const m of cart){
+      if(!(Number(m.qty)>0)){msg(`Completa la cantidad de ${m.code}.`,true);return false;}
+      if(!isDev){
+        const a=typeof allocate36==='function'?allocate36(m):allocateByChoices(m);
+        if(a.missing>0){msg(`Faltan ${a.missing} ${normalizedUnit(m)} de ${m.code}. Selecciona otro centro o deja el faltante pendiente.`,true);return false;}
+      }
+    }
     return true;
   };
   window.renderCart=function(){
     const tbody=$30('#cart'),empty=$30('#empty');if(!tbody)return;
+    const isDev=typeof window.isDevolucion==='function'?window.isDevolucion():isDevolucion();
     $30('#cartCount').textContent=`${cart.length} material${cart.length===1?'':'es'}`;empty.style.display=cart.length?'none':'block';
     const table=tbody.closest('table');table?.classList.add('v30-cart-table');
     const hr=table?.querySelector('thead tr');if(hr)hr.innerHTML='<th>Matrícula</th><th>Descripción</th><th>Cant.</th><th>Unidad</th><th>Origen del stock</th><th></th>';
     tbody.innerHTML=cart.map((m,i)=>{
       const qty=Number(m.qty)||0,choices=selectedCenters(m),plan=allocateByChoices(m),s3=stock30(m.code,'1003'),s4=stock30(m.code,'1004');
       const buttons=['1003','1004'].map(c=>`<button type="button" class="v30-source-btn ${choices.includes(c)?'active':''}" data-center-toggle="${i}" data-center="${c}">${choices.includes(c)?'✓ ':''}Usar ${c}<span class="stock"> · ${c==='1003'?s3:s4}</span></button>`).join('');
-      return `<tr class="${qty>0&&plan.missing===0?'':'row-pending'}"><td><b>${esc30(m.code)}</b></td><td>${esc30(m.description)}<span class="stock-info">Disponible: 1003 San Juan ${s3} · 1004 Vitarte ${s4} ${esc30(normalizedUnit(m))}</span>${plan.missing>0?`<span class="stock-alt-note">Faltan <strong>${plan.missing} ${esc30(normalizedUnit(m))}</strong>. Activa ambos centros o elige el centro que atenderá el pedido.</span>`:''}</td><td><div class="qty-wrap"><input class="qty ${qty>0&&plan.missing===0?'ready':''} ${plan.missing>0?'insufficient':''}" type="number" min="0" step="1" value="${esc30(m.qty??'')}" placeholder="0" data-qty="${i}"><button class="voice-btn" data-voice-qty="${i}" title="Dictar cantidad">🎤</button></div></td><td>${esc30(normalizedUnit(m))}</td><td><div class="v30-source-buttons">${buttons}</div><span class="v30-source-help">Puedes activar un centro o ambos.</span></td><td><button class="btn danger" data-rm="${i}">Quitar</button></td></tr>`;
+      const isGood=qty>0&&(isDev||plan.missing===0);
+      const isBad=!isDev&&plan.missing>0;
+      return `<tr class="${isGood?'':'row-pending'}"><td><b>${esc30(m.code)}</b></td><td>${esc30(m.description)}<span class="stock-info">${isDev?'Devolución (D) · Ingreso sin restricción de stock':`Disponible: 1003 San Juan ${s3} · 1004 Vitarte ${s4} ${esc30(normalizedUnit(m))}`}</span>${isBad?`<span class="stock-alt-note">Faltan <strong>${plan.missing} ${esc30(normalizedUnit(m))}</strong>. Activa ambos centros o elige el centro que atenderá el pedido.</span>`:''}</td><td><div class="qty-wrap"><input class="qty ${isGood?'ready':''} ${isBad?'insufficient':''}" type="number" min="0" step="1" value="${esc30(m.qty??'')}" placeholder="0" data-qty="${i}"><button class="voice-btn" data-voice-qty="${i}" title="Dictar cantidad">🎤</button></div></td><td>${esc30(normalizedUnit(m))}</td><td><div class="v30-source-buttons">${buttons}</div><span class="v30-source-help">${isDev?'Recepción por centro.':'Puedes activar un centro o ambos.'}</span></td><td><button class="btn danger" data-rm="${i}">Quitar</button></td></tr>`;
     }).join('');
     renderSapPreview();if(typeof renderSearchOrder==='function')renderSearchOrder();
   };
   function exactFiltered(){
-    const q=searchText($30('#q')?.value||''),selected=new Set(cart.map(x=>String(x.code)));
-    if(q&&cart.some(m=>searchText(m.code)===q||searchText(m.description)===q||(m.aliases||[]).some(a=>searchText(a)===q)))return [];
-    let all=filtered().filter(m=>!selected.has(String(m.code)));
+    const q=searchText($30('#q')?.value||'');
+    let all=filtered();
     if(!q)return all;
     const exact=all.filter(m=>searchText(m.code)===q||searchText(m.description)===q||(m.aliases||[]).some(a=>searchText(a)===q));
     return exact.length?exact:all;
@@ -2486,15 +2547,35 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
   window.renderResults=function(){
     const a=exactFiltered(),results=$30('#results'),primary=String($30('#centroGlobal')?.value||'1003'),other=primary==='1003'?'1004':'1003';
     $30('#count').textContent=`${a.length} de ${state.materials.length}`;results.classList.add('v29-results');
-    if(!a.length){const q=($30('#q')?.value||'').trim();results.innerHTML=cart.some(m=>searchText(m.code)===searchText(q)||(m.aliases||[]).some(a=>searchText(a)===searchText(q)))?'<div class="v30-search-confirm">Este material ya fue agregado al pedido. Puedes continuar buscando otro.</div>':'<div class="v29-empty">No se encontraron materiales.</div>';return;}
-    results.innerHTML=`<div class="v29-table-wrap"><table class="v29-stock-table"><thead><tr><th>Matrícula SAP</th><th>Descripción oficial</th><th>Disponible 1003 San Juan</th><th>Disponible 1004 Vitarte</th><th>Unidad</th><th>Agregar</th></tr></thead><tbody>${a.map(m=>{const s3=stock30(m.code,'1003'),s4=stock30(m.code,'1004'),cur=primary==='1003'?s3:s4,alt=primary==='1003'?s4:s3,aliasCount=(m.aliases||[]).length,cls=n=>n>0?'good':'none';return `<tr><td class="v29-code">${esc30(m.code)}</td><td><b>${esc30(m.description)}</b><br><button class="v29-alias-link" data-quick-edit="${esc30(m.code)}">Alias: ${aliasCount} · Ver/editar</button>${cur<=0&&alt>0?`<div class="v29-warning">En ${centerLabel30(other)} hay ${alt} ${esc30(normalizedUnit(m))} disponibles.</div>`:''}</td><td><span class="v29-stock-pill ${cls(s3)}">${s3} ${esc30(normalizedUnit(m))}</span></td><td><span class="v29-stock-pill ${cls(s4)}">${s4} ${esc30(normalizedUnit(m))}</span></td><td>${esc30(normalizedUnit(m))}</td><td><div class="v29-add-box"><input type="number" min="0" step="1" placeholder="0" data-v29-qty="${esc30(m.code)}"><button class="btn primary" data-add="${esc30(m.code)}">＋</button></div></td></tr>`}).join('')}</tbody></table></div>`;
+    if(!a.length){results.innerHTML='<div class="v29-empty">No se encontraron materiales.</div>';return;}
+    results.innerHTML=`<div class="v29-table-wrap"><table class="v29-stock-table"><thead><tr><th>Matrícula SAP</th><th>Descripción oficial</th><th>Disponible 1003 San Juan</th><th>Disponible 1004 Vitarte</th><th>Unidad</th><th>Agregar</th></tr></thead><tbody>${a.map(m=>{const s3=stock30(m.code,'1003'),s4=stock30(m.code,'1004'),cur=primary==='1003'?s3:s4,alt=primary==='1003'?s4:s3,aliasCount=(m.aliases||[]).length,cls=n=>n>0?'good':'none',inCart=(cart||[]).some(x=>String(x.code)===String(m.code));return `<tr class="${inCart?'v36-incart-row':''}"><td class="v29-code">${esc30(m.code)}</td><td><b>${esc30(m.description)}</b>${inCart?' <span class="badge" style="background:#16a34a;color:#fff;font-size:10px;margin-left:6px;padding:2px 6px">✓ En pedido</span>':''}<br><button class="v29-alias-link" data-quick-edit="${esc30(m.code)}">Alias: ${aliasCount} · Ver/editar</button>${cur<=0&&alt>0?`<div class="v29-warning">En ${centerLabel30(other)} hay ${alt} ${esc30(normalizedUnit(m))} disponibles.</div>`:''}</td><td><span class="v29-stock-pill ${cls(s3)}">${s3} ${esc30(normalizedUnit(m))}</span></td><td><span class="v29-stock-pill ${cls(s4)}">${s4} ${esc30(normalizedUnit(m))}</span></td><td>${esc30(normalizedUnit(m))}</td><td><div class="v29-add-box"><input type="number" min="0" step="1" placeholder="0" data-v29-qty="${esc30(m.code)}"><button class="btn primary" data-add="${esc30(m.code)}">＋</button></div></td></tr>`}).join('')}</tbody></table></div>`;
   };
   window.add=function(code){
-    const m=state.materials.find(x=>x.code===code);if(!m)return;if(stockMeta.date!==todayKey())return msg(expiredStockMessage(),true);
+    const m=state.materials.find(x=>x.code===code);if(!m)return;
+    const isDev=typeof window.isDevolucion==='function'?window.isDevolucion():isDevolucion();
+    if(!isDev&&stockMeta.date!==todayKey())return msg(expiredStockMessage(),true);
     const input=document.querySelector(`[data-v29-qty="${CSS.escape(String(code))}"]`),qty=Number(input?.value)||1,primary=String($30('#centroGlobal')?.value||'1003');
-    let item=cart.find(x=>x.code===code);if(!item){item={...clone(m),qty:String(qty),centerChoices:[primary]};cart.push(item)}else{item.qty=String(qty);item.centerChoices=item.centerChoices?.length?item.centerChoices:[primary];}
+    let item=cart.find(x=>x.code===code);
+    if(item){
+      const prevQty = Number(item.qty) || 0;
+      const totalQty = prevQty + qty;
+      const confirmFn = () => {
+        item.qty = String(totalQty);
+        item.centerChoices = item.centerChoices?.length ? item.centerChoices : [primary];
+        const plan = allocateByChoices(item);
+        renderCart(); renderResults();
+        msg(isDev ? `✓ Se agregaron ${qty} ${normalizedUnit(m)} adicionales de ${code} a la devolución (Total: ${totalQty}).` : `✓ Se agregaron ${qty} ${normalizedUnit(m)} adicionales de ${code} (Total: ${totalQty}).`);
+      };
+      if(typeof window.customConfirm === 'function'){
+        window.customConfirm(`¿Desea agregar más material?\n\nLa matrícula ${code} (${m.description}) ya se encuentra en el pedido con cantidad ${prevQty} ${normalizedUnit(m)}.\n\n¿Desea agregar ${qty} ${normalizedUnit(m)} más? (Total: ${totalQty} ${normalizedUnit(m)})`, confirmFn, null, { title: '¿Desea agregar más material?', okText: 'Sí, agregar más', okClass: 'btn primary' });
+      } else {
+        confirmFn();
+      }
+      return;
+    }
+    item={...clone(m),qty:String(qty),centerChoices:[primary]};cart.push(item);
     const plan=allocateByChoices(item);renderCart();renderResults();
-    msg(plan.missing===0?`Material ${code} agregado al pedido.`:`Material ${code} agregado. Faltan ${plan.missing} ${normalizedUnit(m)}; revisa los botones de centro en Pedido seleccionado.`,plan.missing>0);
+    msg(isDev?`Material ${code} agregado para devolución (sin restricción de stock).`:(plan.missing===0?`Material ${code} agregado al pedido.`:`Material ${code} agregado. Faltan ${plan.missing} ${normalizedUnit(m)}; revisa los botones de centro en Pedido seleccionado.`),!isDev&&plan.missing>0);
   };
   function toggleCenter(i,c){const m=cart[i];if(!m)return;let arr=selectedCenters(m);if(arr.includes(c)){if(arr.length===1)return msg('Debe quedar al menos un centro seleccionado.',true);arr=arr.filter(x=>x!==c)}else arr.push(c);m.centerChoices=arr;allocateByChoices(m);renderCart();}
   function exportControlOrder(){
@@ -2530,10 +2611,15 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
   function selectedCenters31(item){let a=Array.isArray(item.centerChoices)?item.centerChoices.map(String):[];if(!a.length)a=[String($31('#centroGlobal')?.value||'1003')];return [...new Set(a)]}
   function allocationRows31(){return typeof rows==='function'?rows():[]}
   function deductStock(allocs){
+    const isDev=typeof window.isDevolucion==='function'?window.isDevolucion():isDevolucion();
     for(const a of allocs){let left=Number(a.CANT)||0;if(left<=0)continue;
       const matches=stockRows.filter(r=>String(r.material)===String(a.MATRICULA)&&String(r.centro)===String(a.CE)&&String(r.almacen||'')===String(a.ALIM||'')&&String(r.lote||'')===String(a.LOTE||''));
-      for(const r of matches){if(left<=0)break;const take=Math.min(left,Number(r.libre)||0);r.libre=Math.max(0,(Number(r.libre)||0)-take);left-=take}
-      if(left>0)throw new Error(`No se pudo descontar completamente ${a.MATRICULA} del lote ${a.LOTE}.`);
+      for(const r of matches){if(left<=0)break;if(isDev){r.libre=(Number(r.libre)||0)+left;left=0;break;}else{const take=Math.min(left,Number(r.libre)||0);r.libre=Math.max(0,(Number(r.libre)||0)-take);left-=take;}}
+      if(isDev && left>0){
+        stockRows.push({material:a.MATRICULA,centro:a.CE,almacen:a.ALIM||'ALM1',lote:a.LOTE||'LDA-000000',libre:left,descripcion:a.DESCRIPCION||'',unidad:a.UNIDAD||'UND'});
+        left=0;
+      }
+      if(!isDev&&left>0)throw new Error(`No se pudo descontar completamente ${a.MATRICULA} del lote ${a.LOTE}.`);
     }
     stockMeta.lastOrderAt=new Date().toISOString();saveStockCache();
   }
@@ -2557,30 +2643,39 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
     const ws=XLSX.utils.json_to_sheet(data,{header:headers});ws['!cols']=[12,11,20,15,14,18,18,14,17,14,19].map(wch=>({wch}));ws['!autofilter']={ref:`A1:K${data.length+1}`};
     const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'CONTROL PEDIDOS');const sup=($31('#dest')?.value||'SUPERVISOR').replace(/\s+/g,'_'),date=$31('#fechaPedido')?.value||todayKey();XLSX.writeFile(wb,`Control_Pedido_${date}_${sup}.xlsx`);if(!silent)msg('Control de pedido generado: una fila por centro, con la unidad siempre en Unidad (recojo).');
   }
-  function customConfirm(message, onConfirm){
+  function customConfirm(message, onConfirm, onCancel, options = {}){
     let modal = document.querySelector('#v449ConfirmModal');
     if(!modal){
       modal = document.createElement('div');
       modal.id = 'v449ConfirmModal';
       modal.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;z-index:999999;padding:16px;box-sizing:border-box;';
       modal.innerHTML = `
-        <div style="background:var(--card, #ffffff);color:var(--text, #111111);padding:24px;border-radius:14px;max-width:440px;width:100%;box-shadow:0 12px 36px rgba(0,0,0,0.35);border:1px solid var(--line, #cccccc);box-sizing:border-box;">
-          <h3 style="margin-top:0;margin-bottom:12px;font-size:1.15rem;font-weight:800;">Confirmación</h3>
-          <p id="v449ConfirmMsg" style="margin-top:0;margin-bottom:20px;font-size:0.95rem;line-height:1.45;"></p>
+        <div style="background:var(--card, #ffffff);color:var(--text, #111111);padding:24px;border-radius:14px;max-width:460px;width:100%;box-shadow:0 12px 36px rgba(0,0,0,0.35);border:1px solid var(--line, #cccccc);box-sizing:border-box;">
+          <h3 id="v449ConfirmTitle" style="margin-top:0;margin-bottom:12px;font-size:1.15rem;font-weight:800;">Confirmación</h3>
+          <div id="v449ConfirmMsg" style="margin-top:0;margin-bottom:20px;font-size:0.95rem;line-height:1.5;white-space:pre-wrap;"></div>
           <div style="display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;">
             <button type="button" class="btn secondary" id="v449ConfirmCancel" style="padding:9px 16px;border-radius:8px;cursor:pointer;">Cancelar</button>
-            <button type="button" class="btn danger" id="v449ConfirmOk" style="padding:9px 16px;border-radius:8px;cursor:pointer;font-weight:bold;">Aceptar</button>
+            <button type="button" class="btn primary" id="v449ConfirmOk" style="padding:9px 16px;border-radius:8px;cursor:pointer;font-weight:bold;">Aceptar</button>
           </div>
         </div>
       `;
       document.body.appendChild(modal);
     }
+    const titleEl = modal.querySelector('#v449ConfirmTitle');
     const msgEl = modal.querySelector('#v449ConfirmMsg');
-    if(msgEl) msgEl.textContent = message;
-    modal.style.display = 'flex';
-
-    const cancelBtn = modal.querySelector('#v449ConfirmCancel');
     const okBtn = modal.querySelector('#v449ConfirmOk');
+    const cancelBtn = modal.querySelector('#v449ConfirmCancel');
+
+    if(titleEl) titleEl.textContent = options.title || 'Confirmación';
+    if(msgEl) msgEl.textContent = message;
+    if(okBtn){
+      okBtn.textContent = options.okText || 'Aceptar';
+      okBtn.className = options.okClass || (options.isDanger ? 'btn danger' : 'btn primary');
+      okBtn.style.background = options.isDanger ? '#dc2626' : (options.okColor || '#2563eb');
+      okBtn.style.color = '#ffffff';
+    }
+    if(cancelBtn) cancelBtn.textContent = options.cancelText || 'Cancelar';
+    modal.style.display = 'flex';
 
     const cleanup = () => {
       modal.style.display = 'none';
@@ -2588,13 +2683,15 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
       if(okBtn) okBtn.onclick = null;
     };
 
-    if(cancelBtn) cancelBtn.onclick = () => { cleanup(); };
+    if(cancelBtn) cancelBtn.onclick = () => { cleanup(); if(typeof onCancel === 'function') onCancel(); };
     if(okBtn) okBtn.onclick = () => { cleanup(); if(typeof onConfirm === 'function') onConfirm(); };
   }
+  window.customConfirm = customConfirm;
   function finaliseOrder(){
     if(!valid())return;const allocs=allocationRows31();if(!allocs.length)return msg('No se generaron filas de stock para finalizar.',true);
-    customConfirm('¿Desea grabar el pedido? El stock será descontado y se guardará en el historial.', function(){
-      try{const records=groupHistory(allocs);const addedDetails=records.reduce((n,r)=>n+(Array.isArray(r.items)?r.items.length:0),0);deductStock(allocs);ensureHistory().push(...records);state.historyUnread=(Number(state.historyUnread)||0)+addedDetails;save();if(typeof window.updateHistoryBadgeV41==='function')window.updateHistoryBadgeV41();renderHistory();renderStockStatus();cart=[];renderCart();renderResults();if(typeof renderSearchOrder==='function')renderSearchOrder();if(typeof queueSync==='function')queueSync('order');if(typeof scheduleDriveSync==='function')scheduleDriveSync(700,'order');msg(`Pedido grabado. Se descontó el stock y se agregaron ${addedDetails} registro${addedDetails===1?'':'s'} de material al historial.`)}catch(e){msg('No se pudo grabar el pedido: '+e.message,true)}
+    const isDev=typeof window.isDevolucion==='function'?window.isDevolucion():isDevolucion();
+    customConfirm(isDev?'¿Desea registrar la devolución? El stock será devuelto y se guardará en el historial.':'¿Desea grabar el pedido? El stock será descontado y se guardará en el historial.', function(){
+      try{const records=groupHistory(allocs);const addedDetails=records.reduce((n,r)=>n+(Array.isArray(r.items)?r.items.length:0),0);deductStock(allocs);ensureHistory().push(...records);state.historyUnread=(Number(state.historyUnread)||0)+addedDetails;save();if(typeof window.updateHistoryBadgeV41==='function')window.updateHistoryBadgeV41();renderHistory();renderStockStatus();cart=[];renderCart();renderResults();if(typeof renderSearchOrder==='function')renderSearchOrder();if(typeof queueSync==='function')queueSync('order');if(typeof scheduleDriveSync==='function')scheduleDriveSync(700,'order');msg(isDev?`Devolución grabada con éxito. Se guardaron ${addedDetails} registro${addedDetails===1?'':'s'} en el historial.`:`Pedido grabado. Se descontó el stock y se agregaron ${addedDetails} registro${addedDetails===1?'':'s'} de material al historial.`)}catch(e){msg('No se pudo grabar: '+e.message,true)}
     });
   }
   function clearAllOrdersAction(){
@@ -2808,8 +2905,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
     const rawTokens = qRaw.trim().split(/[\s,;\n\r\t]+/).filter(Boolean);
     const isMultiSearch = rawTokens.length > 1;
 
-    const already = new Set((cart || []).filter(x => String(x.centerMode || primary) === primary || String(x.centerMode) === 'both').map(x => String(x.code)));
-    let all = isMultiSearch ? (state.materials || []) : (state.materials || []).filter(m => !already.has(String(m.code)));
+    let all = state.materials || [];
     if (!qRaw.trim()) return all;
 
     const normTokens = [...new Set(rawTokens.map(normv))].slice(0, 100);
@@ -2863,6 +2959,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
     const qRaw = $v('#q')?.value || '';
     const rawTokens = qRaw.trim().split(/[\s,;\n\r\t]+/).filter(Boolean);
     const isMultiSearch = rawTokens.length > 1;
+    const isDev = typeof window.isDevolucion === 'function' ? window.isDevolucion() : false;
 
     const qtyCache = {};
     document.querySelectorAll('[data-v36-qty]').forEach(inp => {
@@ -2907,7 +3004,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
       const inCart = (cart || []).some(x => String(x.code) === String(m.code));
       const val = qtyCache[m.code] || '';
 
-      return `<tr class="${sel ? 'v36-selected-row' : ''} ${inCart ? 'v36-incart-row' : ''} ${isP ? 'v36-prio-p-row' : ''}"><td class="v42-material-image cursor-pointer" data-open-catalog="${escv(m.code)}">${img}</td><td class="v29-code cursor-pointer" data-open-catalog="${escv(m.code)}" title="Tocar para abrir catálogo">${escv(m.code)}${isP ? '<br><span class="prio-p-badge">⚡ PRIORIDAD P</span>' : ''}</td><td><b>${escv(m.description)}</b>${inCart ? ' <span class="badge" style="background:#16a34a;color:#fff;font-size:10px;margin-left:6px;padding:2px 6px">✓ En pedido</span>' : ''}<br><button class="v29-alias-link" data-quick-edit="${escv(m.code)}">Alias: ${aliases} · Ver/editar</button>${sel ? '<div class="v36-select-note">Material seleccionado para el centro actual. Ingresa una cantidad que no supere su stock y confirma.</div>' : ''}</td><td><span class="v29-stock-pill ${s3 > 0 ? 'good' : 'none'}">${s3} ${escv(normalizedUnit(m))}</span></td><td><span class="v29-stock-pill ${s4 > 0 ? 'good' : 'none'}">${s4} ${escv(normalizedUnit(m))}</span></td><td>${escv(normalizedUnit(m))}</td><td>${showQtyBox ? `<div class="v36-select-box"><input type="number" min="0" step="1" placeholder="Cantidad" value="${escv(val)}" data-v36-qty="${escv(m.code)}" max="${totalStock(m.code, String($v('#centroGlobal')?.value || '1003'))}" ${sel && !isMultiSearch ? 'autofocus' : ''}><button type="button" class="btn primary" data-v36-confirm="${escv(m.code)}">Agregar al pedido</button>${sel && !isMultiSearch ? `<button type="button" class="btn secondary" data-v36-cancel>Cancelar</button>` : ''}</div>` : `<button type="button" class="btn primary" data-v36-select="${escv(m.code)}">Seleccionar</button>`}</td></tr>`;
+      return `<tr class="${sel ? 'v36-selected-row' : ''} ${inCart ? 'v36-incart-row' : ''} ${isP ? 'v36-prio-p-row' : ''}"><td class="v42-material-image cursor-pointer" data-open-catalog="${escv(m.code)}">${img}</td><td class="v29-code cursor-pointer" data-open-catalog="${escv(m.code)}" title="Tocar para abrir catálogo">${escv(m.code)}${isP ? '<br><span class="prio-p-badge">⚡ PRIORIDAD P</span>' : ''}</td><td><b>${escv(m.description)}</b>${inCart ? ' <span class="badge" style="background:#16a34a;color:#fff;font-size:10px;margin-left:6px;padding:2px 6px">✓ En pedido</span>' : ''}<br><button class="v29-alias-link" data-quick-edit="${escv(m.code)}">Alias: ${aliases} · Ver/editar</button>${sel ? `<div class="v36-select-note">${isDev ? '📦 Devolución habilitada: ingresa la cantidad a devolver (sin restricción de stock) y confirma.' : 'Material seleccionado para el centro actual. Ingresa una cantidad que no supere su stock y confirma.'}</div>` : ''}</td><td><span class="v29-stock-pill ${s3 > 0 ? 'good' : 'none'}">${s3} ${escv(normalizedUnit(m))}</span></td><td><span class="v29-stock-pill ${s4 > 0 ? 'good' : 'none'}">${s4} ${escv(normalizedUnit(m))}</span></td><td>${escv(normalizedUnit(m))}</td><td>${showQtyBox ? `<div class="v36-select-box"><input type="number" min="0" step="1" placeholder="Cantidad" value="${escv(val)}" data-v36-qty="${escv(m.code)}" ${isDev ? '' : `max="${totalStock(m.code, String($v('#centroGlobal')?.value || '1003'))}"`} ${sel && !isMultiSearch ? 'autofocus' : ''}><button type="button" class="btn primary" data-v36-confirm="${escv(m.code)}">${isDev ? 'Agregar devolución' : 'Agregar al pedido'}</button>${sel && !isMultiSearch ? `<button type="button" class="btn secondary" data-v36-cancel>Cancelar</button>` : ''}</div>` : `<button type="button" class="btn primary" data-v36-select="${escv(m.code)}">Seleccionar</button>`}</td></tr>`;
     }).join('')}</tbody></table></div>`;
 
     if (results.innerHTML !== newHtml) {
@@ -2926,7 +3023,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
           }
           if (qVal > 0) {
             const avail = totalStock(m.code, primary);
-            if (qVal <= avail && !(cart || []).some(x => String(x.code) === String(m.code) && String(x.centerMode || primary) === primary)) {
+            if ((isDev || qVal <= avail) && !(cart || []).some(x => String(x.code) === String(m.code) && String(x.centerMode || primary) === primary)) {
               cart.push({
                 ...clone(m),
                 qty: String(qVal),
@@ -2941,7 +3038,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
         if (added > 0) {
           renderCart();
           renderResults();
-          msg(`✓ Se agregaron ${added} material(es) al pedido.`);
+          msg(isDev ? `✓ Se agregaron ${added} material(es) a la devolución.` : `✓ Se agregaron ${added} material(es) al pedido.`);
         } else {
           msg('Ingresa una cantidad mayor a 0 en los materiales que deseas agregar.', true);
         }
@@ -2952,14 +3049,44 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
   };
   function addConfirmed(code){
     const m=(state.materials||[]).find(x=>String(x.code)===String(code));if(!m)return;
-    if(stockMeta.date!==todayKey())return msg(expiredStockMessage(),true);
+    const isDev = typeof window.isDevolucion === 'function' ? window.isDevolucion() : false;
+    if(!isDev&&stockMeta.date!==todayKey())return msg(expiredStockMessage(),true);
     const input=$v(`[data-v36-qty="${CSS.escape(String(code))}"]`),qty=Number(input?.value)||0;
     if(qty<=0)return msg('Ingresa una cantidad mayor a 0 antes de agregar el material.',true);
     const primary=String($v('#centroGlobal')?.value||'1003'),available=totalStock(code,primary);
-    if(qty>available){if(input){input.classList.add('insufficient');input.focus()}return msg(`No puedes agregar ${qty} ${normalizedUnit(m)}. En ${primary==='1003'?'1003 - San Juan':'1004 - Vitarte'} solo hay ${available} disponibles. Corrige la cantidad.`,true)}
-    if((cart||[]).some(x=>String(x.code)===String(code)&&(String(x.centerMode||primary)===primary||String(x.centerMode)==='both')))return msg(`Este material ya fue agregado para el centro ${primary}. Puedes cambiar el Centro de trabajo y agregarlo también desde el otro centro.`,true);
+    if(!isDev&&qty>available){if(input){input.classList.add('insufficient');input.focus()}return msg(`No puedes agregar ${qty} ${normalizedUnit(m)}. En ${primary==='1003'?'1003 - San Juan':'1004 - Vitarte'} solo hay ${available} disponibles. Corrige la cantidad.`,true)}
+    
+    const existing = (cart||[]).find(x=>String(x.code)===String(code)&&(String(x.centerMode||primary)===primary||String(x.centerMode)==='both'));
+    if(existing){
+      const prevQty = Number(existing.qty) || 0;
+      const totalQty = prevQty + qty;
+      const confirmFn = () => {
+        if(!isDev && totalQty > available){
+          msg(`Atención: La cantidad total acumulada (${totalQty} ${normalizedUnit(m)}) supera el stock libre del centro ${primary} (${available}).`, true);
+        }
+        existing.qty = String(totalQty);
+        selectedCode='';
+        renderCart();
+        renderResults();
+        msg(isDev ? `✓ Se agregaron ${qty} ${normalizedUnit(m)} adicionales de ${code} a la devolución (Total: ${totalQty}).` : `✓ Se agregaron ${qty} ${normalizedUnit(m)} adicionales de ${code} (Total: ${totalQty}).`);
+      };
+
+      const confirmMsg = `¿Desea agregar más material?\n\nLa matrícula ${code} (${m.description}) ya se encuentra en el pedido con cantidad ${prevQty} ${normalizedUnit(m)}.\n\n¿Desea sumar ${qty} ${normalizedUnit(m)} más? (Cantidad total resultante: ${totalQty} ${normalizedUnit(m)})`;
+
+      if(typeof window.customConfirm === 'function'){
+        window.customConfirm(confirmMsg, confirmFn, null, {
+          title: '¿Desea agregar más material?',
+          okText: 'Sí, agregar más',
+          okClass: 'btn primary'
+        });
+      } else {
+        confirmFn();
+      }
+      return;
+    }
+
     cart.push({...clone(m),qty:String(qty),centerChoices:[primary],centerMode:primary,cartLineId:`${code}-${primary}-${Date.now()}`});
-    selectedCode='';renderCart();renderResults();msg(`Material ${code} agregado desde el centro ${primary} con cantidad ${qty}.`);
+    selectedCode='';renderCart();renderResults();msg(isDev ? `Material ${code} agregado a la devolución con cantidad ${qty} (sin restricción de stock).` : `Material ${code} agregado desde el centro ${primary} con cantidad ${qty}.`);
   }
   function lots(code,center){try{return (stockFor(String(code),String(center))||[]).slice().sort((a,b)=>(Number(b.libre)||0)-(Number(a.libre)||0))}catch{return []}}
   function modeFor(m){return m.centerMode==='1004'||m.centerMode==='both'?' '+m.centerMode:m.centerMode==='1003'?'1003':String($v('#centroGlobal')?.value||'1003')}
@@ -2969,7 +3096,13 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
     if(mode==='both'&&primary==='1004')centers.reverse();
     let left=Number(m.qty)||0,out=[];
     for(const c of centers){for(const x of lots(m.code,c)){if(left<=0)break;const take=Math.min(left,Number(x.libre)||0);if(take>0)out.push({...x,qty:take});left-=take}}
-    m.centerMode=mode;m.centerChoices=mode==='both'?['1003','1004']:[mode];m.allocations=out;m.missing=Math.max(0,left);return {rows:out,missing:m.missing};
+    const isDev = typeof window.isDevolucion === 'function' ? window.isDevolucion() : false;
+    if(isDev && left>0){
+      const fallbackCenter = centers[0] || primary;
+      out.push({material:m.code, centro:fallbackCenter, almacen:'ALM1', lote:'LDA-000000', libre:left, qty:left});
+      left = 0;
+    }
+    m.centerMode=mode;m.centerChoices=mode==='both'?['1003','1004']:[mode];m.allocations=out;m.missing=isDev?0:Math.max(0,left);return {rows:out,missing:m.missing};
   }
   window.rows=function(){
     const unidad=$v('#movil')?.value||'',out=[];
@@ -2978,9 +3111,15 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
   };
   window.renderCart=function(){
     const tbody=$v('#cart'),empty=$v('#empty');if(!tbody)return;
+    const isDev = typeof window.isDevolucion === 'function' ? window.isDevolucion() : false;
     const cc=$v('#cartCount');if(cc)cc.textContent=`${cart.length} material${cart.length===1?'':'es'}`;if(empty)empty.style.display=cart.length?'none':'block';
     const table=tbody.closest('table'),hr=table?.querySelector('thead tr');if(hr)hr.innerHTML='<th>Matrícula</th><th>Descripción</th><th>Cant.</th><th>Unidad</th><th>Centro de atención</th><th></th>';
-    tbody.innerHTML=cart.map((m,i)=>{const qty=Number(m.qty)||0,p=allocate36(m),s3=totalStock(m.code,'1003'),s4=totalStock(m.code,'1004'),mode=m.centerMode||String($v('#centroGlobal')?.value||'1003');return `<tr class="${qty>0&&p.missing===0?'':'row-pending'}"><td><b>${escv(m.code)}</b></td><td>${escv(m.description)}<span class="stock-info">Disponible: 1003 San Juan ${s3} · 1004 Vitarte ${s4} ${escv(normalizedUnit(m))}</span>${p.missing>0?`<span class="stock-alt-note">Faltan <strong>${p.missing} ${escv(normalizedUnit(m))}</strong>. Elige 1003, 1004 o Ambos.</span>`:''}</td><td class="v36-cart-qty"><input class="qty ${qty>0&&p.missing===0?'ready':''} ${p.missing>0?'insufficient':''}" type="number" min="0" step="1" value="${escv(m.qty||'')}" placeholder="0" data-qty="${i}"></td><td>${escv(normalizedUnit(m))}</td><td><div class="v36-center-actions"><button type="button" class="v36-center-btn ${mode==='1003'?'active':''}" data-v36-mode="1003" data-v36-index="${i}">Usar 1003 · ${s3}</button><button type="button" class="v36-center-btn ${mode==='1004'?'active':''}" data-v36-mode="1004" data-v36-index="${i}">Usar 1004 · ${s4}</button><button type="button" class="v36-center-btn both ${mode==='both'?'active':''}" data-v36-mode="both" data-v36-index="${i}">Ambos</button></div><span class="v36-center-summary">${mode==='both'?'Se distribuirá entre ambos centros.':`Se usará solo el centro ${mode}.`}</span></td><td><button class="btn danger" data-rm="${i}">Quitar</button></td></tr>`}).join('');
+    tbody.innerHTML=cart.map((m,i)=>{
+      const qty=Number(m.qty)||0,p=allocate36(m),s3=totalStock(m.code,'1003'),s4=totalStock(m.code,'1004'),mode=m.centerMode||String($v('#centroGlobal')?.value||'1003');
+      const isGood = qty>0 && (isDev || p.missing===0);
+      const isBad = !isDev && p.missing>0;
+      return `<tr class="${isGood?'':'row-pending'}"><td><b>${escv(m.code)}</b></td><td>${escv(m.description)}<span class="stock-info">${isDev?'Devolución (D) · Ingreso sin restricción de stock':`Disponible: 1003 San Juan ${s3} · 1004 Vitarte ${s4} ${escv(normalizedUnit(m))}`}</span>${isBad?`<span class="stock-alt-note">Faltan <strong>${p.missing} ${escv(normalizedUnit(m))}</strong>. Elige 1003, 1004 o Ambos.</span>`:''}</td><td class="v36-cart-qty"><input class="qty ${isGood?'ready':''} ${isBad?'insufficient':''}" type="number" min="0" step="1" value="${escv(m.qty||'')}" placeholder="0" data-qty="${i}"></td><td>${escv(normalizedUnit(m))}</td><td><div class="v36-center-actions"><button type="button" class="v36-center-btn ${mode==='1003'?'active':''}" data-v36-mode="1003" data-v36-index="${i}">Usar 1003 · ${s3}</button><button type="button" class="v36-center-btn ${mode==='1004'?'active':''}" data-v36-mode="1004" data-v36-index="${i}">Usar 1004 · ${s4}</button><button type="button" class="v36-center-btn both ${mode==='both'?'active':''}" data-v36-mode="both" data-v36-index="${i}">Ambos</button></div><span class="v36-center-summary">${mode==='both'?'Se distribuirá entre ambos centros.':`Se usará solo el centro ${mode}.`}</span></td><td><button class="btn danger" data-rm="${i}">Quitar</button></td></tr>`;
+    }).join('');
     if(typeof renderSapPreview==='function')renderSapPreview();if(typeof renderSearchOrder==='function')renderSearchOrder();
   };
   document.addEventListener('click',e=>{
@@ -2999,6 +3138,12 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
   }
   document.addEventListener('input',e=>{if(e.target.matches('#q')){debouncedRenderResults()}},true);
   $v('#centroGlobal')?.addEventListener('change',()=>{selectedCode='';renderResults();renderCart()});
+  $v('#puesto')?.addEventListener('change',()=>{
+    const isDev = typeof window.isDevolucion === 'function' ? window.isDevolucion() : false;
+    if(isDev) msg('📦 Movimiento DEVOLUCIÓN seleccionado: ingreso de matrículas sin restricciones de stock.');
+    renderResults();
+    renderCart();
+  });
   setTimeout(()=>{selectedCode='';renderResults();renderCart()},250);
 })();
 </script>
