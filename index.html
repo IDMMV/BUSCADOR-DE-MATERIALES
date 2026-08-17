@@ -478,6 +478,31 @@ body:not(.v439-admin-mode) [data-config-page="drive"] {
   display: none !important;
 }
 </style>
+<style id="v450-order-buttons-final-fix">
+#v26SaveRow.order-save-row{
+  display:flex!important;
+  flex-direction:row!important;
+  flex-wrap:nowrap!important;
+  align-items:center!important;
+  justify-content:stretch!important;
+  gap:10px!important;
+  width:100%!important;
+  margin:0!important;
+  padding:0!important;
+  box-sizing:border-box!important;
+}
+#v26SaveRow.order-save-row #v449ClearAllOrdersBtn,
+#v26SaveRow.order-save-row #v31FinalizeOrder{
+  flex:1 1 0!important;
+  width:auto!important;
+  min-width:0!important;
+  max-width:none!important;
+  height:44px!important;
+  min-height:44px!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+}
+</style>
 </head>
 <body><script id="v442EarlyAdminShell">try{if(sessionStorage.getItem('bm_admin_session_v1')==='1')document.body.classList.add('v439-admin-mode')}catch(e){}</script>
 <header class="top"><div class="brand"><img alt="Buscador de Materiales SAP" class="app-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230f2942'/%3E%3Crect x='6' y='6' width='88' height='88' rx='18' fill='none' stroke='%231d70b8' stroke-width='4'/%3E%3Cpath d='M30 38 L50 26 L70 38 L50 50 Z' fill='%23fef08a'/%3E%3Cpath d='M30 38 L50 50 L50 74 L30 62 Z' fill='%23f59e0b'/%3E%3Cpath d='M70 38 L50 50 L50 74 L70 62 Z' fill='%23d97706'/%3E%3C/svg%3E"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:var(--blue);vertical-align:middle;font-weight:700">V44.8</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn admin-access-btn" id="adminAccessBtn" type="button">🔐 Administrador</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
