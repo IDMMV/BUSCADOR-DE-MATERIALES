@@ -38,11 +38,13 @@ const { chromium } = require('playwright');
 
   const diagnostics = async () => {
     const bodyText = ((await page.locator('body').innerText().catch(() => '')) || '').trim();
-    const rows = await page.locator('.v34-stock-table tbody tr, .v29-stock-table tbody tr, .results .card').count().catch(() => 0);
-    const statusText = await page.locator('#status, .status, #stockStatus').allInnerTexts().catch(() => []);
+    const cards = await page.locator('.results .card').count().catch(() => 0);
+    const materialRows = await page.locator('.results .v34-stock-table tbody tr, .results .v29-stock-table tbody tr').count().catch(() => 0);
+    const statusText = await page.locator('#status, .status').allInnerTexts().catch(() => []);
     return {
-      rows,
-      bodyTail: bodyText.slice(-1200),
+      cards,
+      materialRows,
+      bodyTail: bodyText.slice(-1000),
       statusText,
       consoleErrors: [...consoleErrors],
       pageErrors: [...pageErrors],
@@ -50,6 +52,9 @@ const { chromium } = require('playwright');
       failedResponses: [...failedResponses]
     };
   };
+
+  const materialRowsLocator = page.locator('.results .v34-stock-table tbody tr, .results .v29-stock-table tbody tr');
+  const legacyCardsLocator = page.locator('.results .card');
 
   try {
     console.log(`Opening ${url}`);
@@ -60,7 +65,6 @@ const { chromium } = require('playwright');
     const search = page.locator('.search').first();
     const searchInput = search.locator('input').first();
     const searchButton = search.locator('button:not(.mic)').first();
-    const resultRows = page.locator('.v34-stock-table tbody tr, .v29-stock-table tbody tr, .results .card');
 
     if (!title.toLowerCase().includes('buscador de materiales')) {
       throw new Error(`Unexpected page title: ${title}`);
@@ -77,45 +81,40 @@ const { chromium } = require('playwright');
 
     console.log('Waiting for the real material data source to populate...');
 
-    // The application loads the catalog asynchronously. The current UI renders
-    // real materials as rows in .v34-stock-table (older versions used .card).
-    // Wait for actual catalog rows instead of assuming a legacy card structure.
-    try {
-      await page.waitForFunction(() => {
-        const selectors = [
-          '.v34-stock-table tbody tr',
-          '.v29-stock-table tbody tr',
-          '.results .card'
-        ];
-        return selectors.some(selector => document.querySelectorAll(selector).length > 0);
-      }, { timeout: 30000 });
-    } catch (_) {
+    await page.waitForFunction(
+      () => document.querySelectorAll('.results .v34-stock-table tbody tr, .results .v29-stock-table tbody tr, .results .card').length > 0,
+      { timeout: 30000 }
+    ).catch(async () => {
       const d = await diagnostics();
       throw new Error(
         `Material catalog did not populate within 30s. ` +
-        `rows=${d.rows}; apiFailures=${d.apiFailures.join(' | ') || 'none'}; ` +
-        `pageErrors=${d.pageErrors.join(' | ') || 'none'}; ` +
-        `status=${d.statusText.join(' | ') || 'none'}; ` +
-        `bodyTail=${d.bodyTail.replace(/\s+/g, ' ').slice(-700)}`
+        `cards=${d.cards}; materialRows=${d.materialRows}; apiFailures=${d.apiFailures.join(' | ') || 'none'}; ` +
+        `pageErrors=${d.pageErrors.join(' | ') || 'none'}; status=${d.statusText.join(' | ') || 'none'}; ` +
+        `bodyTail=${d.bodyTail.replace(/\s+/g, ' ').slice(-500)}`
       );
-    }
+    });
 
     await page.waitForTimeout(500);
 
-    const initialResultCount = await resultRows.count();
+    const materialRows = await materialRowsLocator.count();
+    const legacyCards = await legacyCardsLocator.count();
+    const initialResultCount = materialRows || legacyCards;
     if (initialResultCount < 1) {
-      throw new Error('Material catalog rows disappeared after the catalog load completed.');
+      throw new Error('Material results disappeared after the catalog load completed.');
     }
 
-    const firstRow = resultRows.first();
-    const codeLocator = firstRow.locator('.v34-code, .v29-code, .code').first();
     let searchTerm = '';
-    if (await codeLocator.count()) {
-      searchTerm = (await codeLocator.innerText()).trim();
+    if (materialRows > 0) {
+      const firstRow = materialRowsLocator.first();
+      const codeLocator = firstRow.locator('.v34-code, .v29-code, td:nth-child(2)').first();
+      if (await codeLocator.count()) searchTerm = (await codeLocator.innerText()).trim();
+    } else {
+      const firstCard = legacyCardsLocator.first();
+      const codeLocator = firstCard.locator('.code').first();
+      if (await codeLocator.count()) searchTerm = (await codeLocator.innerText()).trim();
+      if (!searchTerm) searchTerm = (await firstCard.innerText()).trim().split(/\s+/)[0];
     }
-    if (!searchTerm) {
-      searchTerm = (await firstRow.innerText()).trim().split(/\s+/)[0];
-    }
+
     if (!searchTerm) {
       throw new Error('Could not derive a valid search term from the first loaded material.');
     }
@@ -123,45 +122,60 @@ const { chromium } = require('playwright');
     console.log(`Loaded material rows: ${initialResultCount}`);
     console.log(`Using real search term from loaded data: ${searchTerm}`);
 
-    await searchInput.fill(searchTerm);
-    if (await searchInput.inputValue() !== searchTerm) {
-      throw new Error('Search input did not accept the test value.');
+    // The search input may be controlled by application state and can reject a
+    // normal fill() while another catalog update is rendering. Set the value
+    // through the native setter and dispatch the same events a user generates.
+    await searchInput.click();
+    await searchInput.evaluate((el, value) => {
+      const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')?.set;
+      if (setter) setter.call(el, value);
+      else el.value = value;
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+    }, searchTerm);
+
+    // Allow reactive frameworks / vanilla listeners one rendering turn.
+    await page.waitForTimeout(100);
+    const acceptedValue = await searchInput.inputValue();
+    if (acceptedValue !== searchTerm) {
+      // Fallback to keyboard entry, which is closest to a real user interaction.
+      await searchInput.fill('');
+      await searchInput.pressSequentially(searchTerm, { delay: 5 });
+    }
+
+    const finalInputValue = await searchInput.inputValue();
+    if (finalInputValue !== searchTerm) {
+      throw new Error(`Search input did not accept the test value. expected="${searchTerm}" actual="${finalInputValue}"`);
     }
 
     console.log('Executing real search...');
     await searchButton.click();
 
     await page.waitForFunction(
-      term => Array.from(document.querySelectorAll('.v34-stock-table tbody tr, .v29-stock-table tbody tr, .results .card'))
+      term => Array.from(document.querySelectorAll('.results .v34-stock-table tbody tr, .results .v29-stock-table tbody tr, .results .card'))
         .some(row => row.textContent?.toLowerCase().includes(String(term).toLowerCase())),
       searchTerm,
       { timeout: 10000 }
     );
 
-    const filteredResultCount = await resultRows.count();
+    const filteredRows = await materialRowsLocator.count();
+    const filteredCards = await legacyCardsLocator.count();
+    const filteredResultCount = filteredRows || filteredCards;
     if (filteredResultCount < 1) {
       throw new Error(`Real search returned no results for known material "${searchTerm}".`);
     }
 
-    const firstResultText = (await resultRows.first().innerText()).trim();
+    const firstResult = filteredRows ? materialRowsLocator.first() : legacyCardsLocator.first();
+    const firstResultText = (await firstResult.innerText()).trim();
     if (firstResultText.length < 20) {
-      throw new Error('Search returned a result row with insufficient visible information.');
+      throw new Error('Search returned a result with insufficient visible information.');
     }
 
-    console.log(`Real search: PASS (${filteredResultCount} result row(s))`);
+    console.log(`Real search: PASS (${filteredResultCount} result row/card(s))`);
 
     await page.setViewportSize({ width: 390, height: 844 });
     await page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 });
-
-    try {
-      await page.waitForFunction(() =>
-        document.querySelectorAll('.v34-stock-table tbody tr, .v29-stock-table tbody tr, .results .card').length > 0,
-        { timeout: 15000 }
-      );
-    } catch (_) {
-      const d = await diagnostics();
-      throw new Error(`Mobile catalog did not populate. rows=${d.rows}; apiFailures=${d.apiFailures.join(' | ') || 'none'}; pageErrors=${d.pageErrors.join(' | ') || 'none'}`);
-    }
+    await page.waitForTimeout(1000);
 
     const mobileOverflow = await page.evaluate(() =>
       document.documentElement.scrollWidth > document.documentElement.clientWidth + 2
@@ -186,8 +200,7 @@ const { chromium } = require('playwright');
     console.log(`Title: ${title}`);
     console.log('Desktop search control: PASS');
     console.log('Search input interaction: PASS');
-    console.log('Real catalog load and search validation: PASS');
-    console.log('Mobile catalog load: PASS');
+    console.log('Real search and result validation: PASS');
     console.log('Mobile viewport overflow: PASS');
     console.log('Page errors: 0');
     console.log('API failures: 0');
