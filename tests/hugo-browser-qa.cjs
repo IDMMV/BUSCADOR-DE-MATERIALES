@@ -53,6 +53,15 @@ const { chromium } = require('playwright');
     };
   };
 
+  // Extract only the material code from a cell/card. The UI can render
+  // additional labels such as "PRIORIDAD P" beside the code, so the whole
+  // innerText must never be used as the search term.
+  const extractMaterialCode = text => {
+    const normalized = String(text || '').replace(/\s+/g, ' ').trim();
+    const matches = normalized.match(/\b\d{4,}\b/g);
+    return matches?.[0] || '';
+  };
+
   const materialRowsLocator = page.locator('.results .v34-stock-table tbody tr, .results .v29-stock-table tbody tr');
   const legacyCardsLocator = page.locator('.results .card');
 
@@ -107,20 +116,27 @@ const { chromium } = require('playwright');
     if (materialRows > 0) {
       const firstRow = materialRowsLocator.first();
       const codeLocator = firstRow.locator('.v34-code, .v29-code, td:nth-child(2)').first();
-      if (await codeLocator.count()) searchTerm = (await codeLocator.innerText()).trim();
+      const codeText = await codeLocator.innerText().catch(() => '');
+      searchTerm = extractMaterialCode(codeText);
+      if (!searchTerm) {
+        searchTerm = extractMaterialCode(await firstRow.innerText().catch(() => ''));
+      }
     } else {
       const firstCard = legacyCardsLocator.first();
       const codeLocator = firstCard.locator('.code').first();
-      if (await codeLocator.count()) searchTerm = (await codeLocator.innerText()).trim();
-      if (!searchTerm) searchTerm = (await firstCard.innerText()).trim().split(/\s+/)[0];
+      const codeText = await codeLocator.innerText().catch(() => '');
+      searchTerm = extractMaterialCode(codeText);
+      if (!searchTerm) {
+        searchTerm = extractMaterialCode(await firstCard.innerText().catch(() => ''));
+      }
     }
 
     if (!searchTerm) {
-      throw new Error('Could not derive a valid search term from the first loaded material.');
+      throw new Error('Could not derive a valid numeric material code from the first loaded material.');
     }
 
     console.log(`Loaded material rows: ${initialResultCount}`);
-    console.log(`Using real search term from loaded data: ${searchTerm}`);
+    console.log(`Using real material code from loaded data: ${searchTerm}`);
 
     // The search input may be controlled by application state and can reject a
     // normal fill() while another catalog update is rendering. Set the value
@@ -134,11 +150,9 @@ const { chromium } = require('playwright');
       el.dispatchEvent(new Event('change', { bubbles: true }));
     }, searchTerm);
 
-    // Allow reactive frameworks / vanilla listeners one rendering turn.
     await page.waitForTimeout(100);
     const acceptedValue = await searchInput.inputValue();
     if (acceptedValue !== searchTerm) {
-      // Fallback to keyboard entry, which is closest to a real user interaction.
       await searchInput.fill('');
       await searchInput.pressSequentially(searchTerm, { delay: 5 });
     }
