@@ -1,4 +1,4 @@
-const { execFileSync } = require('node:child_process');
+import { execFileSync } from 'node:child_process';
 
 const url = process.env.PREVIEW_URL;
 const bypassSecret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
