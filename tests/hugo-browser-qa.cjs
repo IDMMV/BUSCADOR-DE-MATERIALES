@@ -42,6 +42,7 @@ const { chromium } = require('playwright');
     const search = page.locator('.search').first();
     const searchInput = search.locator('input').first();
     const searchButtons = search.locator('button');
+    const resultCards = page.locator('.results .card');
 
     if (!title.toLowerCase().includes('buscador de materiales')) {
       throw new Error(`Unexpected page title: ${title}`);
@@ -56,19 +57,40 @@ const { chromium } = require('playwright');
       throw new Error('Main search controls were not found.');
     }
 
-    await searchInput.fill('MATERIAL');
-    if (await searchInput.inputValue() !== 'MATERIAL') {
-      throw new Error('Search input did not accept text.');
+    const initialResultCount = await resultCards.count();
+    if (initialResultCount < 1) {
+      throw new Error('No material cards are loaded before search. The preview data source is empty or unavailable.');
+    }
+
+    const firstCard = resultCards.first();
+    const codeLocator = firstCard.locator('.code').first();
+    let searchTerm = '';
+    if (await codeLocator.count()) {
+      searchTerm = (await codeLocator.innerText()).trim();
+    }
+    if (!searchTerm) {
+      searchTerm = (await firstCard.innerText()).trim().split(/\s+/)[0];
+    }
+    if (!searchTerm) {
+      throw new Error('Could not derive a valid search term from the first loaded material.');
+    }
+
+    console.log(`Loaded material cards: ${initialResultCount}`);
+    console.log(`Using real search term from loaded data: ${searchTerm}`);
+
+    await searchInput.fill(searchTerm);
+    if (await searchInput.inputValue() !== searchTerm) {
+      throw new Error('Search input did not accept the test value.');
     }
 
     console.log('Executing real search...');
-    await searchButtons.first().click();
+    const searchButton = searchButtons.filter({ hasNot: page.locator('.mic') }).first();
+    await searchButton.click();
     await page.waitForTimeout(1500);
 
-    const resultCards = page.locator('.results .card');
-    const resultCount = await resultCards.count();
-    if (resultCount < 1) {
-      throw new Error('Real search returned no material results for "MATERIAL".');
+    const filteredResultCount = await resultCards.count();
+    if (filteredResultCount < 1) {
+      throw new Error(`Real search returned no results for known material "${searchTerm}".`);
     }
 
     const firstResultText = (await resultCards.first().innerText()).trim();
@@ -76,7 +98,7 @@ const { chromium } = require('playwright');
       throw new Error('Search returned a result card with insufficient visible information.');
     }
 
-    console.log(`Real search: PASS (${resultCount} result card(s))`);
+    console.log(`Real search: PASS (${filteredResultCount} result card(s))`);
 
     await page.setViewportSize({ width: 390, height: 844 });
     await page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 });
