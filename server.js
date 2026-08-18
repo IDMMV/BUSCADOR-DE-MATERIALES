@@ -30,8 +30,7 @@ app.use(express.static(__dirname, {
 
 app.get('/api/config', (req, res) => {
   res.json({
-    scriptUrl: process.env.GOOGLE_APPS_SCRIPT_URL || '',
-    scriptToken: process.env.GOOGLE_APPS_SCRIPT_TOKEN || ''
+    scriptUrl: process.env.GOOGLE_APPS_SCRIPT_URL || ''
   });
 });
 
