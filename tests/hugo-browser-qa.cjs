@@ -21,6 +21,7 @@ const { chromium } = require('playwright');
   const consoleErrors = [];
   const pageErrors = [];
   const apiFailures = [];
+  const failedResponses = [];
 
   page.on('console', msg => {
     if (msg.type() === 'error') consoleErrors.push(msg.text());
@@ -31,17 +32,34 @@ const { chromium } = require('playwright');
       apiFailures.push(`${response.status()} ${response.url()}`);
     }
   });
+  page.on('requestfailed', request => {
+    failedResponses.push(`${request.method()} ${request.url()} :: ${request.failure()?.errorText || 'request failed'}`);
+  });
+
+  const diagnostics = async () => {
+    const bodyText = ((await page.locator('body').innerText().catch(() => '')) || '').trim();
+    const cards = await page.locator('.results .card').count().catch(() => 0);
+    const statusText = await page.locator('#status, .status').allInnerTexts().catch(() => []);
+    return {
+      cards,
+      bodyTail: bodyText.slice(-1000),
+      statusText,
+      consoleErrors: [...consoleErrors],
+      pageErrors: [...pageErrors],
+      apiFailures: [...apiFailures],
+      failedResponses: [...failedResponses]
+    };
+  };
 
   try {
     console.log(`Opening ${url}`);
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
-    await page.waitForTimeout(1500);
 
     const title = await page.title();
     const bodyText = (await page.locator('body').innerText()).trim();
     const search = page.locator('.search').first();
     const searchInput = search.locator('input').first();
-    const searchButtons = search.locator('button');
+    const searchButton = search.locator('button:not(.mic)').first();
     const resultCards = page.locator('.results .card');
 
     if (!title.toLowerCase().includes('buscador de materiales')) {
@@ -53,13 +71,36 @@ const { chromium } = require('playwright');
     if (!(await searchInput.isVisible())) {
       throw new Error('Main search input is not visible.');
     }
-    if ((await searchButtons.count()) < 1) {
-      throw new Error('Main search controls were not found.');
+    if (!(await searchButton.isVisible())) {
+      throw new Error('Main search button is not visible.');
     }
+
+    console.log('Waiting for the real material data source to populate...');
+
+    // The application loads the material catalog asynchronously. Do not assume
+    // that DOMContentLoaded means the catalog is already available.
+    try {
+      await page.waitForFunction(
+        () => document.querySelectorAll('.results .card').length > 0,
+        { timeout: 20000 }
+      );
+    } catch (_) {
+      const d = await diagnostics();
+      throw new Error(
+        `Material catalog did not populate within 20s. ` +
+        `cards=${d.cards}; apiFailures=${d.apiFailures.join(' | ') || 'none'}; ` +
+        `pageErrors=${d.pageErrors.join(' | ') || 'none'}; ` +
+        `status=${d.statusText.join(' | ') || 'none'}; ` +
+        `bodyTail=${d.bodyTail.replace(/\s+/g, ' ').slice(-500)}`
+      );
+    }
+
+    // Give the UI one additional rendering turn after the first card appears.
+    await page.waitForTimeout(500);
 
     const initialResultCount = await resultCards.count();
     if (initialResultCount < 1) {
-      throw new Error('No material cards are loaded before search. The preview data source is empty or unavailable.');
+      throw new Error('Material cards disappeared after the catalog load completed.');
     }
 
     const firstCard = resultCards.first();
@@ -84,9 +125,16 @@ const { chromium } = require('playwright');
     }
 
     console.log('Executing real search...');
-    const searchButton = searchButtons.filter({ hasNot: page.locator('.mic') }).first();
     await searchButton.click();
-    await page.waitForTimeout(1500);
+
+    // Search rendering can also be asynchronous; wait for the known material
+    // code to remain present instead of relying on a fixed 1.5s delay.
+    await page.waitForFunction(
+      term => Array.from(document.querySelectorAll('.results .card'))
+        .some(card => card.textContent?.toLowerCase().includes(String(term).toLowerCase())),
+      searchTerm,
+      { timeout: 10000 }
+    );
 
     const filteredResultCount = await resultCards.count();
     if (filteredResultCount < 1) {
@@ -111,16 +159,16 @@ const { chromium } = require('playwright');
       throw new Error('Mobile layout has horizontal overflow.');
     }
 
-    if (consoleErrors.length || pageErrors.length || apiFailures.length) {
-      console.log('Browser QA diagnostics:');
-      console.log(JSON.stringify({ consoleErrors, pageErrors, apiFailures }, null, 2));
-    }
-
     if (pageErrors.length) {
       throw new Error(`Browser page errors detected: ${pageErrors.join(' | ')}`);
     }
     if (apiFailures.length) {
       throw new Error(`API failures detected: ${apiFailures.join(' | ')}`);
+    }
+
+    if (consoleErrors.length) {
+      console.log('Browser console errors detected:');
+      console.log(JSON.stringify(consoleErrors, null, 2));
     }
 
     console.log('HUGO BROWSER QA: PASS');
