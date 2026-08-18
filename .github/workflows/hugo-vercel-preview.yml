@@ -1,0 +1,75 @@
+name: Hugo Vercel Preview QA
+
+on:
+  push:
+    branches:
+      - hugo/automation-pilot
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preview-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      VERCEL_ORG_ID: team_xKrCqcyTSHNLjjkmAWtOsIPc
+      VERCEL_PROJECT_ID: prj_hSOpojbBScMrA5eP2gqRdtpGik7i
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Validate server source
+        run: node --check server.js
+
+      - name: Deploy Hugo branch to Vercel Preview
+        id: deploy
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "VERCEL_TOKEN is not configured in GitHub Secrets."
+            echo "Add a Vercel token before running the Vercel Preview QA."
+            exit 1
+          fi
+          npx vercel@latest deploy --token="$VERCEL_TOKEN" --scope="jose-hugo-s-projects" --yes > vercel-deploy.txt
+          cat vercel-deploy.txt
+          DEPLOYMENT_URL=$(tail -n 1 vercel-deploy.txt | tr -d '\r')
+          if ! echo "$DEPLOYMENT_URL" | grep -q '^https://'; then
+            echo "Could not determine the Vercel Preview URL."
+            exit 1
+          fi
+          echo "url=$DEPLOYMENT_URL" >> "$GITHUB_OUTPUT"
+
+      - name: Check Vercel Preview HTTP response
+        env:
+          PREVIEW_URL: ${{ steps.deploy.outputs.url }}
+        run: |
+          echo "Checking $PREVIEW_URL"
+          curl --fail --silent --show-error --location --max-time 30 "$PREVIEW_URL" > /tmp/hugo-preview.html
+          test -s /tmp/hugo-preview.html
+          echo "HUGO VERCEL PREVIEW: PASS"
+
+      - name: Publish Preview URL
+        env:
+          PREVIEW_URL: ${{ steps.deploy.outputs.url }}
+        run: |
+          {
+            echo "## Hugo Vercel Preview QA"
+            echo ""
+            echo "Preview: $PREVIEW_URL"
+            echo ""
+            echo "Result: PASS"
+            echo ""
+            echo "This workflow only creates a Vercel Preview. It does not deploy to production."
+          } >> "$GITHUB_STEP_SUMMARY"
