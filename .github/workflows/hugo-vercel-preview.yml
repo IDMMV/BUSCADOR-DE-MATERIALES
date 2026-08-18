@@ -12,10 +12,11 @@ permissions:
 jobs:
   preview-qa:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     env:
       VERCEL_ORG_ID: team_xKrCqcyTSHNLjjkmAWtOsIPc
       VERCEL_PROJECT_ID: prj_hSOpojbBScMrA5eP2gqRdtpGik7i
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -38,16 +39,18 @@ jobs:
         run: |
           if [ -z "$VERCEL_TOKEN" ]; then
             echo "VERCEL_TOKEN is not configured in GitHub Secrets."
-            echo "Add a Vercel token before running the Vercel Preview QA."
             exit 1
           fi
+
           npx vercel@latest deploy --token="$VERCEL_TOKEN" --scope="jose-hugo-s-projects" --yes > vercel-deploy.txt
           cat vercel-deploy.txt
+
           DEPLOYMENT_URL=$(tail -n 1 vercel-deploy.txt | tr -d '\r')
           if ! echo "$DEPLOYMENT_URL" | grep -q '^https://'; then
             echo "Could not determine the Vercel Preview URL."
             exit 1
           fi
+
           echo "url=$DEPLOYMENT_URL" >> "$GITHUB_OUTPUT"
 
       - name: Check Vercel Preview HTTP response
@@ -59,7 +62,108 @@ jobs:
           test -s /tmp/hugo-preview.html
           echo "HUGO VERCEL PREVIEW: PASS"
 
-      - name: Publish Preview URL
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+
+      - name: Hugo Browser QA
+        env:
+          PREVIEW_URL: ${{ steps.deploy.outputs.url }}
+        run: |
+          node <<'NODE'
+          const { chromium } = require('playwright');
+
+          (async () => {
+            const url = process.env.PREVIEW_URL;
+            const browser = await chromium.launch({ headless: true });
+            const page = await browser.newPage({
+              viewport: { width: 1440, height: 900 },
+              deviceScaleFactor: 1
+            });
+
+            const consoleErrors = [];
+            const pageErrors = [];
+            const apiFailures = [];
+
+            page.on('console', msg => {
+              if (msg.type() === 'error') consoleErrors.push(msg.text());
+            });
+            page.on('pageerror', err => pageErrors.push(err.message));
+            page.on('response', response => {
+              if (response.url().includes('/api/') && response.status() >= 400) {
+                apiFailures.push(`${response.status()} ${response.url()}`);
+              }
+            });
+
+            console.log(`Opening ${url}`);
+            await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
+            await page.waitForTimeout(1500);
+
+            const title = await page.title();
+            const bodyText = (await page.locator('body').innerText()).trim();
+            const searchInput = page.locator('.search input').first();
+            const searchButtons = page.locator('.search button');
+
+            if (!title.toLowerCase().includes('buscador de materiales')) {
+              throw new Error(`Unexpected page title: ${title}`);
+            }
+            if (bodyText.length < 100) {
+              throw new Error('Page body contains too little visible content.');
+            }
+            if (!(await searchInput.isVisible())) {
+              throw new Error('Main search input is not visible.');
+            }
+            if ((await searchButtons.count()) < 1) {
+              throw new Error('Main search controls were not found.');
+            }
+
+            await searchInput.fill('MATERIAL');
+            const filledValue = await searchInput.inputValue();
+            if (filledValue !== 'MATERIAL') {
+              throw new Error('Search input did not accept text.');
+            }
+
+            await page.setViewportSize({ width: 390, height: 844 });
+            await page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 });
+            await page.waitForTimeout(1000);
+
+            const mobileOverflow = await page.evaluate(() =>
+              document.documentElement.scrollWidth > document.documentElement.clientWidth + 2
+            );
+            if (mobileOverflow) {
+              throw new Error('Mobile layout has horizontal overflow.');
+            }
+
+            if (consoleErrors.length || pageErrors.length || apiFailures.length) {
+              console.log('Browser QA diagnostics:');
+              console.log(JSON.stringify({ consoleErrors, pageErrors, apiFailures }, null, 2));
+            }
+
+            if (pageErrors.length) {
+              throw new Error(`Browser page errors detected: ${pageErrors.join(' | ')}`);
+            }
+            if (apiFailures.length) {
+              throw new Error(`API failures detected: ${apiFailures.join(' | ')}`);
+            }
+
+            console.log('HUGO BROWSER QA: PASS');
+            console.log(`Title: ${title}`);
+            console.log('Desktop search control: PASS');
+            console.log('Search input interaction: PASS');
+            console.log('Mobile viewport overflow: PASS');
+            console.log('Page errors: 0');
+            console.log('API failures: 0');
+
+            await browser.close();
+          })().catch(async error => {
+            console.error(`HUGO BROWSER QA: FAIL - ${error.message}`);
+            process.exit(1);
+          });
+          NODE
+
+      - name: Publish Preview QA summary
+        if: success()
         env:
           PREVIEW_URL: ${{ steps.deploy.outputs.url }}
         run: |
@@ -70,5 +174,11 @@ jobs:
             echo ""
             echo "Result: PASS"
             echo ""
-            echo "This workflow only creates a Vercel Preview. It does not deploy to production."
+            echo "- Vercel Preview: PASS"
+            echo "- HTTP response: PASS"
+            echo "- Browser smoke test: PASS"
+            echo "- Desktop search control: PASS"
+            echo "- Search input interaction: PASS"
+            echo "- Mobile overflow check: PASS"
+            echo "- Production deployment: NOT PERFORMED"
           } >> "$GITHUB_STEP_SUMMARY"
