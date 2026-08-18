@@ -1,4 +1,7 @@
 const { execFileSync } = require('node:child_process');
+const os = require('node:os');
+const path = require('node:path');
+const fs = require('node:fs');
 
 const url = process.env.PREVIEW_URL;
 const bypassSecret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
@@ -6,39 +9,47 @@ const bypassSecret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
 if (!url) throw new Error('PREVIEW_URL is not configured.');
 if (!bypassSecret) throw new Error('VERCEL_AUTOMATION_BYPASS_SECRET is not configured.');
 
-function getJson(path) {
-  const target = new URL(path, url).toString();
-  const output = execFileSync('curl', [
-    '--silent', '--show-error', '--location',
-    '--connect-timeout', '10', '--max-time', '30',
-    '-H', `x-vercel-protection-bypass: ${bypassSecret}`,
-    '-H', 'x-vercel-set-bypass-cookie: true',
-    '-H', 'accept: application/json',
-    '-w', '\n__HTTP_STATUS__:%{http_code}',
-    target
-  ], { encoding: 'utf8' });
+const cookieFile = path.join(os.tmpdir(), `hugo-vercel-bypass-${process.pid}.cookies`);
 
-  const marker = '\n__HTTP_STATUS__:';
-  const markerIndex = output.lastIndexOf(marker);
-  if (markerIndex < 0) {
-    throw new Error(`${path}: curl did not return an HTTP status.`);
-  }
-
-  const text = output.slice(0, markerIndex);
-  const status = Number(output.slice(markerIndex + marker.length).trim());
-
-  let data;
+function getJson(pathname) {
+  const target = new URL(pathname, url).toString();
   try {
-    data = JSON.parse(text);
-  } catch {
-    throw new Error(`Expected JSON from ${path}, received HTTP ${status}: ${text.slice(0, 500)}`);
-  }
+    const output = execFileSync('curl', [
+      '--silent', '--show-error', '--location',
+      '--connect-timeout', '10', '--max-time', '30',
+      '--cookie', cookieFile,
+      '--cookie-jar', cookieFile,
+      '-H', `x-vercel-protection-bypass: ${bypassSecret}`,
+      '-H', 'x-vercel-set-bypass-cookie: true',
+      '-H', 'accept: application/json',
+      '-w', '\n__HTTP_STATUS__:%{http_code}',
+      target
+    ], { encoding: 'utf8' });
 
-  if (status < 200 || status >= 300) {
-    throw new Error(`${path} returned HTTP ${status}: ${JSON.stringify(data).slice(0, 800)}`);
-  }
+    const marker = '\n__HTTP_STATUS__:';
+    const markerIndex = output.lastIndexOf(marker);
+    if (markerIndex < 0) {
+      throw new Error(`${pathname}: curl did not return an HTTP status.`);
+    }
 
-  return data;
+    const text = output.slice(0, markerIndex);
+    const status = Number(output.slice(markerIndex + marker.length).trim());
+
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      throw new Error(`Expected JSON from ${pathname}, received HTTP ${status}: ${text.slice(0, 500)}`);
+    }
+
+    if (status < 200 || status >= 300) {
+      throw new Error(`${pathname} returned HTTP ${status}: ${JSON.stringify(data).slice(0, 800)}`);
+    }
+
+    return data;
+  } finally {
+    try { fs.rmSync(cookieFile, { force: true }); } catch (_) {}
+  }
 }
 
 function findArray(value, depth = 0) {
@@ -64,7 +75,6 @@ function findArray(value, depth = 0) {
   }
   console.log('Google Apps Script configuration: PASS');
 
-  // Read-only check. This does not create, edit or delete any Drive data.
   const drive = getJson('/api/drive/get?action=getAll');
   if (!drive || typeof drive !== 'object') {
     throw new Error('Google Drive API returned an invalid response object.');
