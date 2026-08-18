@@ -1,0 +1,1 @@
+Hugo Browser QA tests live in this directory.
