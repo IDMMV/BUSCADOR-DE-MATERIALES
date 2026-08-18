@@ -14,12 +14,35 @@ function doGet(e) {
     if (action === 'getAll') {
       const backup = readLatestBackup_();
       const stock = readStockFromSheets_();
+      const materials = readMaterialsFromSheets_();
       const data = Object.assign({}, backup || {});
+
       // Google Sheets es la fuente oficial del stock compartido.
       if (stock.stockRows && stock.stockRows.length) {
         data.stockRows = stock.stockRows;
         data.stockMeta = stock.stockMeta;
       }
+
+      // Las imágenes se guardan como archivos reales en Drive y su URL se registra
+      // en Sheets. Esto evita depender de data:image/... guardados en el navegador.
+      if (materials.length) {
+        if (!data.app) data.app = {};
+        if (Array.isArray(data.app.materials) && data.app.materials.length) {
+          const imageMap = {};
+          materials.forEach(m => { imageMap[m.code] = m.image || ''; });
+          data.app.materials = data.app.materials.map(m => {
+            const driveImage = imageMap[m.code];
+            if (driveImage) return Object.assign({}, m, { image: driveImage });
+            if (Object.prototype.hasOwnProperty.call(imageMap, m.code) && !driveImage) {
+              return Object.assign({}, m, { image: '' });
+            }
+            return m;
+          });
+        } else {
+          data.app.materials = materials;
+        }
+      }
+
       return json_({ ok: true, data: data, serverTime: new Date().toISOString() });
     }
 
@@ -81,9 +104,14 @@ function doPost(e) {
             data.stockRows = [];
           }
         }
-        saveBackup_(data);
+
+        // Primero guardamos las imágenes en Drive y convertimos sus data URI
+        // locales en URLs compartibles. Luego el respaldo JSON ya queda liviano
+        // y portable entre computadoras.
         writeSheets_(data);
+        saveBackup_(data);
         SpreadsheetApp.flush();
+
         const verified = readStockFromSheets_();
         return json_({
           ok: true,
@@ -190,13 +218,14 @@ function replaceStock_(rows, meta) {
 function saveBackup_(data) {
   try {
     const folder=getFolder_(), name='respaldo_actual.json';
+    const json=JSON.stringify(data);
     const old=folder.getFilesByName(name);
     while(old.hasNext()) old.next().setTrashed(true);
-    folder.createFile(name, JSON.stringify(data), MimeType.PLAIN_TEXT);
+    folder.createFile(name, json, MimeType.PLAIN_TEXT);
     const it=folder.getFoldersByName('respaldos');
     const backups=it.hasNext()?it.next():folder.createFolder('respaldos');
     const dated='respaldo_'+Utilities.formatDate(new Date(),Session.getScriptTimeZone(),'yyyyMMdd_HHmmss')+'.json';
-    backups.createFile(dated,JSON.stringify(data),MimeType.PLAIN_TEXT);
+    backups.createFile(dated,json,MimeType.PLAIN_TEXT);
   } catch (e) {
     Logger.log('Error en saveBackup_: ' + e);
   }
@@ -248,6 +277,31 @@ function readStockFromSheets_() {
   return {stockRows:stockRows,stockMeta:stockMeta};
 }
 
+function readMaterialsFromSheets_() {
+  const ss=getSpreadsheet_();
+  const sh=ss.getSheetByName('Materiales');
+  const materials=[];
+  if (!sh || sh.getLastRow()<=1) return materials;
+
+  const vals=sh.getRange(2,1,sh.getLastRow()-1,8).getValues();
+  vals.forEach(r=>{
+    const code=String(r[0]||'').replace(/\.0$/,'').trim();
+    if (!code) return;
+    const aliases=String(r[4]||'').split('|').map(x=>x.trim()).filter(Boolean);
+    const image=String(r[6]||'').trim();
+    materials.push({
+      code:code,
+      description:String(r[1]||''),
+      unit:String(r[2]||'UND'),
+      priority:String(r[3]||''),
+      aliases:aliases,
+      image:image && image!=='SIN IMAGEN' && image!=='En respaldo JSON' ? image : '',
+      source:'GOOGLE_DRIVE'
+    });
+  });
+  return materials;
+}
+
 function normalizeDate_(value) {
   if (!value) return '';
   if (Object.prototype.toString.call(value) === '[object Date]' && !isNaN(value)) {
@@ -271,15 +325,28 @@ function normalizeDateTime_(value) {
 
 function writeSheets_(data) {
   const ss=getSpreadsheet_();
+  const materials=(data.app&&Array.isArray(data.app.materials))?data.app.materials:[];
   let imgMap = {};
   try {
-    imgMap = saveImages_(data.app && data.app.materials || []);
-  } catch(_) {}
+    imgMap = saveImages_(materials);
+  } catch(err) {
+    Logger.log('Error general guardando imágenes: ' + err);
+  }
 
-  writeTable_(ss,'Materiales',['MATRICULA','DESCRIPCION','UNIDAD','PRIORIDAD','ALIAS','IMAGEN_ESTADO','LINK_IMAGEN_DRIVE','ACTUALIZADO'],(data.app&&data.app.materials||[]).map(m=>{
-    const imgInfo = imgMap[m.code] || {};
-    const link = imgInfo.url ? imgInfo.url : (m.image ? 'En respaldo JSON' : 'SIN IMAGEN');
-    return [m.code,m.description,m.unit,m.priority||'',(m.aliases||[]).join(' | '),m.image?'SI':'NO',link,new Date()];
+  // Sustituir data:image/... por una URL central de Drive antes de guardar
+  // el respaldo JSON. El navegador seguirá mostrando la imagen usando esa URL.
+  materials.forEach(m=>{
+    if (!m || !m.code) return;
+    const imgInfo=imgMap[m.code];
+    if (imgInfo && imgInfo.url) m.image=imgInfo.url;
+    else if (m.image && String(m.image).startsWith('data:image/') && !imgInfo) m.image='';
+  });
+
+  writeTable_(ss,'Materiales',['MATRICULA','DESCRIPCION','UNIDAD','PRIORIDAD','ALIAS','IMAGEN_ESTADO','LINK_IMAGEN_DRIVE','ACTUALIZADO'],materials.map(m=>{
+    const image=String(m.image||'').trim();
+    const hasImage=!!image;
+    const link=hasImage?image:'SIN IMAGEN';
+    return [m.code,m.description,m.unit,m.priority||'',(m.aliases||[]).join(' | '),hasImage?'SI':'NO',link,new Date()];
   }));
   const initials=(data.app&&data.app.supervisorInitials)||{};
   writeTable_(ss,'Supervisores',['NOMBRE','INICIALES'],(data.app&&data.app.supervisors||[]).map(x=>[x,initials[x]||'']));
@@ -308,25 +375,71 @@ function writeTable_(ss,name,headers,rows) {
   sh.setFrozenRows(1);
 }
 
+function imageHash_(bytes) {
+  const digest=Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, bytes);
+  return digest.map(b=>('0'+(b&0xff).toString(16)).slice(-2)).join('');
+}
+
+function cleanupImageFiles_(imgs, code, keepName) {
+  const prefix=String(code)+'__';
+  const candidates=imgs.getFiles();
+  while(candidates.hasNext()) {
+    const f=candidates.next();
+    const name=f.getName();
+    if ((name.indexOf(prefix)===0 || name===String(code)+'.webp' || name===String(code)+'.jpg') && name!==keepName) {
+      try { f.setTrashed(true); } catch(_) {}
+    }
+  }
+}
+
 function saveImages_(materials) {
   const folder=getFolder_();
   const it=folder.getFoldersByName('imagenes_materiales');
   const imgs=it.hasNext()?it.next():folder.createFolder('imagenes_materiales');
   const imgMap = {};
-  const matsWithImage = materials.filter(m=>m&&m.image&&String(m.image).startsWith('data:image/'));
-  // Guardar hasta 20 imágenes por lote para no exceder cuota de tiempo
-  matsWithImage.slice(0, 20).forEach(m=>{
+
+  // Procesar todas las imágenes, no solo las primeras 20. Cada imagen se identifica
+  // por hash para no volver a subirla si no cambió.
+  materials.forEach(m=>{
+    if (!m || !m.code) return;
     try {
-      const parts=m.image.split(','), mime=parts[0].match(/data:(.*?);/)[1], bytes=Utilities.base64Decode(parts[1]), ext=mime.indexOf('webp')>=0?'webp':'jpg', name=m.code+'.'+ext;
-      const olds=imgs.getFilesByName(name);
-      if (olds.hasNext()) {
-        const existing = olds.next();
-        imgMap[m.code] = { name: name, url: existing.getUrl() };
+      const image=String(m.image||'');
+
+      if (!image) {
+        cleanupImageFiles_(imgs,m.code,'');
         return;
       }
-      const file = imgs.createFile(Utilities.newBlob(bytes,mime,name));
-      file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-      imgMap[m.code] = { name: name, url: file.getUrl() };
+
+      if (!image.startsWith('data:image/')) {
+        imgMap[m.code]={url:image};
+        return;
+      }
+
+      const comma=image.indexOf(',');
+      if (comma<0) throw new Error('Imagen data URI inválida');
+      const header=image.slice(0,comma);
+      const payload=image.slice(comma+1);
+      const mimeMatch=header.match(/data:(.*?);/);
+      if (!mimeMatch) throw new Error('MIME de imagen no identificado');
+      const mime=mimeMatch[1];
+      const bytes=Utilities.base64Decode(payload);
+      const hash=imageHash_(bytes);
+      const ext=mime.indexOf('png')>=0?'png':mime.indexOf('jpeg')>=0?'jpg':mime.indexOf('gif')>=0?'gif':'webp';
+      const name=String(m.code)+'__'+hash+'.'+ext;
+
+      const same=imgs.getFilesByName(name);
+      let file;
+      if (same.hasNext()) {
+        file=same.next();
+      } else {
+        file=imgs.createFile(Utilities.newBlob(bytes,mime,name));
+        file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+      }
+
+      cleanupImageFiles_(imgs,m.code,name);
+      // getUrl() abre Drive; para <img> necesitamos una URL de visualización del archivo.
+      const viewUrl='https://drive.google.com/uc?export=view&id='+file.getId();
+      imgMap[m.code]={name:name,url:viewUrl,id:file.getId()};
     } catch(err) {
       Logger.log('Error guardando imagen de ' + m.code + ': ' + err);
     }
