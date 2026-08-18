@@ -1,4 +1,5 @@
 const { chromium } = require('playwright');
+const path = require('path');
 
 (async () => {
   const url = process.env.PREVIEW_URL;
@@ -53,9 +54,6 @@ const { chromium } = require('playwright');
     };
   };
 
-  // Extract only the material code from a cell/card. The UI can render
-  // additional labels such as "PRIORIDAD P" beside the code, so the whole
-  // innerText must never be used as the search term.
   const extractMaterialCode = text => {
     const normalized = String(text || '').replace(/\s+/g, ' ').trim();
     const matches = normalized.match(/\b\d{4,}\b/g);
@@ -118,17 +116,13 @@ const { chromium } = require('playwright');
       const codeLocator = firstRow.locator('.v34-code, .v29-code, td:nth-child(2)').first();
       const codeText = await codeLocator.innerText().catch(() => '');
       searchTerm = extractMaterialCode(codeText);
-      if (!searchTerm) {
-        searchTerm = extractMaterialCode(await firstRow.innerText().catch(() => ''));
-      }
+      if (!searchTerm) searchTerm = extractMaterialCode(await firstRow.innerText().catch(() => ''));
     } else {
       const firstCard = legacyCardsLocator.first();
       const codeLocator = firstCard.locator('.code').first();
       const codeText = await codeLocator.innerText().catch(() => '');
       searchTerm = extractMaterialCode(codeText);
-      if (!searchTerm) {
-        searchTerm = extractMaterialCode(await firstCard.innerText().catch(() => ''));
-      }
+      if (!searchTerm) searchTerm = extractMaterialCode(await firstCard.innerText().catch(() => ''));
     }
 
     if (!searchTerm) {
@@ -138,9 +132,6 @@ const { chromium } = require('playwright');
     console.log(`Loaded material rows: ${initialResultCount}`);
     console.log(`Using real material code from loaded data: ${searchTerm}`);
 
-    // The search input may be controlled by application state and can reject a
-    // normal fill() while another catalog update is rendering. Set the value
-    // through the native setter and dispatch the same events a user generates.
     await searchInput.click();
     await searchInput.evaluate((el, value) => {
       const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')?.set;
@@ -187,6 +178,53 @@ const { chromium } = require('playwright');
 
     console.log(`Real search: PASS (${filteredResultCount} result row/card(s))`);
 
+    // Functional asset checks: broken images, file-selection controls and
+    // download links are validated when the application exposes them.
+    console.log('Checking functional assets...');
+
+    const imageCount = await page.locator('img').count();
+    let brokenImages = 0;
+    for (let i = 0; i < imageCount; i += 1) {
+      const img = page.locator('img').nth(i);
+      if (!(await img.isVisible().catch(() => false))) continue;
+      const ok = await img.evaluate(el => {
+        if (!el.currentSrc && !el.src) return true;
+        return el.complete && el.naturalWidth > 0;
+      }).catch(() => false);
+      if (!ok) brokenImages += 1;
+    }
+    if (brokenImages > 0) {
+      throw new Error(`Broken visible images detected: ${brokenImages}/${imageCount}.`);
+    }
+    console.log(`Visible image integrity: PASS (${imageCount} image element(s))`);
+
+    const fileInputs = page.locator('input[type="file"]');
+    const fileInputCount = await fileInputs.count();
+    if (fileInputCount > 0) {
+      const fixture = path.resolve('tests/fixtures/hugo-test-image.svg');
+      const target = fileInputs.first();
+      await target.setInputFiles(fixture);
+      const selectedFiles = await target.evaluate(el => el.files?.length || 0);
+      if (selectedFiles !== 1) {
+        throw new Error(`File input did not accept the QA fixture. selected=${selectedFiles}`);
+      }
+      console.log(`File selection: PASS (${fileInputCount} file input(s))`);
+    } else {
+      console.log('File selection: SKIP (no file input exposed on this page state)');
+    }
+
+    const downloadLinks = page.locator('a[download], a[href$=".pdf"], a[href$=".xlsx"], a[href$=".csv"], a[href$=".zip"]');
+    const downloadCount = await downloadLinks.count();
+    if (downloadCount > 0) {
+      for (let i = 0; i < Math.min(downloadCount, 3); i += 1) {
+        const href = await downloadLinks.nth(i).getAttribute('href');
+        if (!href || href === '#') throw new Error(`Download link ${i + 1} has no usable target.`);
+      }
+      console.log(`Download targets: PASS (${downloadCount} link(s) detected)`);
+    } else {
+      console.log('Download targets: SKIP (no download link exposed on this page state)');
+    }
+
     await page.setViewportSize({ width: 390, height: 844 });
     await page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 });
     await page.waitForTimeout(1000);
@@ -215,6 +253,9 @@ const { chromium } = require('playwright');
     console.log('Desktop search control: PASS');
     console.log('Search input interaction: PASS');
     console.log('Real search and result validation: PASS');
+    console.log('Functional image check: PASS');
+    console.log('Functional file-selection check: PASS/SKIP');
+    console.log('Functional download-target check: PASS/SKIP');
     console.log('Mobile viewport overflow: PASS');
     console.log('Page errors: 0');
     console.log('API failures: 0');
