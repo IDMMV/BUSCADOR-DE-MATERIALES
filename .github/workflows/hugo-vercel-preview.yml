@@ -64,7 +64,10 @@ jobs:
           fi
 
           echo "Checking $PREVIEW_URL"
+          rm -f /tmp/vercel-cookies.txt
           curl --fail --silent --show-error --location --max-time 30 \
+            -c /tmp/vercel-cookies.txt \
+            -b /tmp/vercel-cookies.txt \
             -H "x-vercel-protection-bypass: $VERCEL_AUTOMATION_BYPASS_SECRET" \
             -H "x-vercel-set-bypass-cookie: true" \
             "$PREVIEW_URL" > /tmp/hugo-preview.html
