@@ -56,9 +56,18 @@ jobs:
       - name: Check Vercel Preview HTTP response
         env:
           PREVIEW_URL: ${{ steps.deploy.outputs.url }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
         run: |
+          if [ -z "$VERCEL_AUTOMATION_BYPASS_SECRET" ]; then
+            echo "VERCEL_AUTOMATION_BYPASS_SECRET is not configured in GitHub Secrets."
+            exit 1
+          fi
+
           echo "Checking $PREVIEW_URL"
-          curl --fail --silent --show-error --location --max-time 30 "$PREVIEW_URL" > /tmp/hugo-preview.html
+          curl --fail --silent --show-error --location --max-time 30 \
+            -H "x-vercel-protection-bypass: $VERCEL_AUTOMATION_BYPASS_SECRET" \
+            -H "x-vercel-set-bypass-cookie: true" \
+            "$PREVIEW_URL" > /tmp/hugo-preview.html
           test -s /tmp/hugo-preview.html
           echo "HUGO VERCEL PREVIEW: PASS"
 
@@ -70,17 +79,29 @@ jobs:
       - name: Hugo Browser QA
         env:
           PREVIEW_URL: ${{ steps.deploy.outputs.url }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
         run: |
           node <<'NODE'
           const { chromium } = require('playwright');
 
           (async () => {
             const url = process.env.PREVIEW_URL;
+            const bypassSecret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+
+            if (!bypassSecret) {
+              throw new Error('VERCEL_AUTOMATION_BYPASS_SECRET is not configured.');
+            }
+
             const browser = await chromium.launch({ headless: true });
-            const page = await browser.newPage({
+            const context = await browser.newContext({
               viewport: { width: 1440, height: 900 },
-              deviceScaleFactor: 1
+              deviceScaleFactor: 1,
+              extraHTTPHeaders: {
+                'x-vercel-protection-bypass': bypassSecret,
+                'x-vercel-set-bypass-cookie': 'true'
+              }
             });
+            const page = await context.newPage();
 
             const consoleErrors = [];
             const pageErrors = [];
