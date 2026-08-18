@@ -12,7 +12,7 @@ permissions:
 jobs:
   preview-qa:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     env:
       VERCEL_ORG_ID: team_xKrCqcyTSHNLjjkmAWtOsIPc
       VERCEL_PROJECT_ID: prj_hSOpojbBScMrA5eP2gqRdtpGik7i
@@ -32,8 +32,7 @@ jobs:
       - name: Validate server source
         run: node --check server.js
 
-      - name: Deploy Hugo branch to Vercel Preview
-        id: deploy
+      - name: Pull Vercel Preview environment
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
@@ -41,8 +40,19 @@ jobs:
             echo "VERCEL_TOKEN is not configured in GitHub Secrets."
             exit 1
           fi
+          npx vercel@latest pull --yes --environment=preview --git-branch="hugo/automation-pilot" --token="$VERCEL_TOKEN" --scope="jose-hugo-s-projects"
 
-          npx vercel@latest deploy --token="$VERCEL_TOKEN" --scope="jose-hugo-s-projects" --yes > vercel-deploy.txt
+      - name: Build with Vercel Preview environment
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: npx vercel@latest build --token="$VERCEL_TOKEN" --scope="jose-hugo-s-projects"
+
+      - name: Deploy Hugo branch to Vercel Preview
+        id: deploy
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          npx vercel@latest deploy --prebuilt --token="$VERCEL_TOKEN" --scope="jose-hugo-s-projects" > vercel-deploy.txt
           cat vercel-deploy.txt
 
           DEPLOYMENT_URL=$(tail -n 1 vercel-deploy.txt | tr -d '\r')
