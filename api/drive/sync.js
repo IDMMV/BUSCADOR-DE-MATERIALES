@@ -1,4 +1,5 @@
-const DRIVE_TIMEOUT_MS = 12000;
+const DRIVE_TIMEOUT_MS = 50000;
+
 function fetchWithTimeout(url, options = {}, timeoutMs = DRIVE_TIMEOUT_MS) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -36,7 +37,7 @@ export default async function handler(req, res) {
     delete payload.targetUrl;
     delete payload.url;
 
-    // Priorizar el token configurado en Vercel/servidor para que cualquier equipo se conecte sin ingresar clave
+    // Priorizar el token configurado en Vercel/servidor para que cualquier equipo se conecte sin ingresar clave.
     if (envToken) {
       payload.token = envToken;
     } else if (!payload.token && body?.token) {
@@ -62,6 +63,11 @@ export default async function handler(req, res) {
     return res.status(200).json(data);
   } catch (err) {
     console.error('Error in /api/drive/sync serverless function:', err);
-    return res.status(err?.name==='AbortError'?504:500).json({ ok: false, error: err?.name==='AbortError' ? `Google Apps Script no respondió en ${DRIVE_TIMEOUT_MS/1000} segundos.` : 'Error de conexión con Google Apps Script: ' + (err?.message || err) });
+    return res.status(err?.name === 'AbortError' ? 504 : 500).json({
+      ok: false,
+      error: err?.name === 'AbortError'
+        ? `Google Apps Script no respondió en ${DRIVE_TIMEOUT_MS / 1000} segundos.`
+        : 'Error de conexión con Google Apps Script: ' + (err?.message || err)
+    });
   }
 }
