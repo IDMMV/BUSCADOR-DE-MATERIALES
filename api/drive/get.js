@@ -1,4 +1,5 @@
-const DRIVE_TIMEOUT_MS = 12000;
+const DRIVE_TIMEOUT_MS = 50000;
+
 function fetchWithTimeout(url, options = {}, timeoutMs = DRIVE_TIMEOUT_MS) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -45,6 +46,11 @@ export default async function handler(req, res) {
     return res.status(200).json(data);
   } catch (err) {
     console.error('Error in /api/drive/get serverless function:', err);
-    return res.status(err?.name==='AbortError'?504:500).json({ ok: false, error: err?.name==='AbortError' ? `Google Apps Script no respondió en ${DRIVE_TIMEOUT_MS/1000} segundos.` : 'Error al consultar Google Apps Script: ' + (err?.message || err) });
+    return res.status(err?.name === 'AbortError' ? 504 : 500).json({
+      ok: false,
+      error: err?.name === 'AbortError'
+        ? `Google Apps Script no respondió en ${DRIVE_TIMEOUT_MS / 1000} segundos.`
+        : 'Error al consultar Google Apps Script: ' + (err?.message || err)
+    });
   }
 }
