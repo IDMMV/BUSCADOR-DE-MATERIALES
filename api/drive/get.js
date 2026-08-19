@@ -1,8 +1,36 @@
 const DRIVE_TIMEOUT_MS = 12000;
+
 function fetchWithTimeout(url, options = {}, timeoutMs = DRIVE_TIMEOUT_MS) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   return fetch(url, { ...options, signal: controller.signal }).finally(() => clearTimeout(timer));
+}
+
+function extractDriveFileId(value = '') {
+  const text = String(value || '').trim();
+  if (!text || text === 'SIN IMAGEN') return '';
+  const match = text.match(/[?&]id=([A-Za-z0-9_-]+)/) || text.match(/\/d\/([A-Za-z0-9_-]+)/);
+  return match?.[1] || '';
+}
+
+function hydrateImageProxyUrls(data) {
+  const materials = data?.app?.materials;
+  if (!Array.isArray(materials)) return data;
+
+  const base = '/api/drive/image?fileId=';
+  for (const material of materials) {
+    if (!material || typeof material !== 'object') continue;
+    const id = String(material.imageDriveId || extractDriveFileId(material.imageDriveUrl || material.image || '')).trim();
+    if (!id) continue;
+    material.imageDriveId = id;
+    material.imageDriveUrl = material.imageDriveUrl || material.image || '';
+    // The browser never requests Drive directly. Vercel asks Apps Script for the
+    // file bytes, so private/domain-restricted Drive files work on every device.
+    material.image = `${base}${encodeURIComponent(id)}`;
+    material.imageProxy = material.image;
+    material.imageStatus = 'SI';
+  }
+  return data;
 }
 
 export default async function handler(req, res) {
@@ -10,14 +38,11 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
+  if (req.method === 'OPTIONS') return res.status(200).end();
 
   try {
     const envUrl = (process.env.GOOGLE_APPS_SCRIPT_URL || '').trim();
     const envToken = (process.env.GOOGLE_APPS_SCRIPT_TOKEN || '').trim();
-
     const targetUrl = (envUrl || req.query?.url || '').trim();
     const token = envToken || req.query?.token || '';
     const action = req.query?.action || 'getAll';
@@ -28,7 +53,6 @@ export default async function handler(req, res) {
 
     const cleanBase = targetUrl.replace(/\?.*$/, '');
     const urlWithParams = `${cleanBase}?action=${encodeURIComponent(action)}&token=${encodeURIComponent(token)}&_=${Date.now()}`;
-
     const response = await fetchWithTimeout(urlWithParams, {
       method: 'GET',
       headers: { 'Accept': 'application/json' },
@@ -42,9 +66,14 @@ export default async function handler(req, res) {
     } catch (_) {
       return res.status(502).json({ ok: false, error: 'Respuesta no válida de Google Apps Script: ' + text.slice(0, 200) });
     }
-    return res.status(200).json(data);
+
+    if (action === 'getAll' && data?.ok) {
+      data.data = hydrateImageProxyUrls(data.data || {});
+    }
+
+    return res.status(response.ok ? 200 : response.status).json(data);
   } catch (err) {
     console.error('Error in /api/drive/get serverless function:', err);
-    return res.status(err?.name==='AbortError'?504:500).json({ ok: false, error: err?.name==='AbortError' ? `Google Apps Script no respondió en ${DRIVE_TIMEOUT_MS/1000} segundos.` : 'Error al consultar Google Apps Script: ' + (err?.message || err) });
+    return res.status(err?.name === 'AbortError' ? 504 : 500).json({ ok: false, error: err?.name === 'AbortError' ? `Google Apps Script no respondió en ${DRIVE_TIMEOUT_MS / 1000} segundos.` : 'Error al consultar Google Apps Script: ' + (err?.message || err) });
   }
 }
