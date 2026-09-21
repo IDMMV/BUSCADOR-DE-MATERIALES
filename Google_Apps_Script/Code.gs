@@ -14,22 +14,12 @@ function doGet(e) {
     if (action === 'getAll') {
       const backup = readLatestBackup_();
       const stock = readStockFromSheets_();
-      const materials = readMaterialsFromSheets_();
       const data = Object.assign({}, backup || {});
-
       // Google Sheets es la fuente oficial del stock compartido.
       if (stock.stockRows && stock.stockRows.length) {
         data.stockRows = stock.stockRows;
         data.stockMeta = stock.stockMeta;
       }
-
-      // Google Sheets + Drive son la fuente oficial de imágenes compartidas.
-      // Esto evita depender del localStorage/base64 de una sola PC.
-      if (materials && materials.length) {
-        data.app = data.app || {};
-        data.app.materials = mergeMaterialsWithDriveImages_(data.app.materials || [], materials);
-      }
-
       return json_({ ok: true, data: data, serverTime: new Date().toISOString() });
     }
 
@@ -279,90 +269,6 @@ function normalizeDateTime_(value) {
   return String(value);
 }
 
-function normalizeDriveImageUrl_(url) {
-  const text = String(url || '').trim();
-  if (!text || text === 'SIN IMAGEN') return '';
-  const idMatch = text.match(/[?&]id=([A-Za-z0-9_-]+)/) || text.match(/\/d\/([A-Za-z0-9_-]+)/);
-  if (idMatch && idMatch[1]) {
-    return 'https://drive.google.com/thumbnail?id=' + idMatch[1] + '&sz=w1200';
-  }
-  return text;
-}
-
-function readMaterialsFromSheets_() {
-  const ss = getSpreadsheet_();
-  const sh = ss.getSheetByName('Materiales');
-  if (!sh || sh.getLastRow() <= 1) return [];
-
-  const lastCol = Math.max(8, sh.getLastColumn());
-  const values = sh.getRange(2, 1, sh.getLastRow() - 1, lastCol).getValues();
-  const out = [];
-
-  values.forEach(r => {
-    const code = String(r[0] || '').replace(/\.0$/, '').trim();
-    if (!code) return;
-    const aliases = String(r[4] || '')
-      .split('|')
-      .map(x => x.trim().toUpperCase())
-      .filter(Boolean);
-    const imageUrl = normalizeDriveImageUrl_(r[6]);
-    out.push({
-      code,
-      description: String(r[1] || '').trim(),
-      unit: String(r[2] || 'UND').trim().toUpperCase(),
-      priority: String(r[3] || '').trim().toUpperCase(),
-      aliases,
-      image: imageUrl,
-      imageStatus: String(r[5] || '').trim().toUpperCase(),
-      imageDriveUrl: imageUrl
-    });
-  });
-  return out;
-}
-
-function mergeMaterialsWithDriveImages_(backupMaterials, sheetMaterials) {
-  const backup = Array.isArray(backupMaterials) ? backupMaterials : [];
-  const byCode = {};
-
-  sheetMaterials.forEach(m => { byCode[String(m.code)] = m; });
-
-  const merged = backup.map(m => {
-    const sheet = byCode[String(m.code)];
-    if (!sheet) return m;
-    const next = Object.assign({}, m);
-    if (sheet.description) next.description = sheet.description;
-    if (sheet.unit) next.unit = sheet.unit;
-    if (sheet.priority !== undefined) next.priority = sheet.priority;
-    if (sheet.aliases && sheet.aliases.length) {
-      next.aliases = Array.from(new Set([...(m.aliases || []), ...sheet.aliases]));
-    }
-    if (sheet.image) {
-      next.image = sheet.image;
-      next.imageDriveUrl = sheet.imageDriveUrl;
-      next.imageStatus = 'SI';
-    }
-    return next;
-  });
-
-  const existing = new Set(merged.map(m => String(m.code)));
-  sheetMaterials.forEach(m => {
-    if (!existing.has(String(m.code))) {
-      merged.push({
-        code: m.code,
-        description: m.description,
-        unit: m.unit || 'UND',
-        priority: m.priority || '',
-        aliases: m.aliases || [],
-        image: m.image || '',
-        imageDriveUrl: m.imageDriveUrl || '',
-        imageStatus: m.imageStatus || ''
-      });
-    }
-  });
-
-  return merged;
-}
-
 function writeSheets_(data) {
   const ss=getSpreadsheet_();
   let imgMap = {};
@@ -372,9 +278,8 @@ function writeSheets_(data) {
 
   writeTable_(ss,'Materiales',['MATRICULA','DESCRIPCION','UNIDAD','PRIORIDAD','ALIAS','IMAGEN_ESTADO','LINK_IMAGEN_DRIVE','ACTUALIZADO'],(data.app&&data.app.materials||[]).map(m=>{
     const imgInfo = imgMap[m.code] || {};
-    const link = imgInfo.thumbnail || normalizeDriveImageUrl_(imgInfo.url || '') || (m.image && !String(m.image).startsWith('data:') ? normalizeDriveImageUrl_(m.image) : 'SIN IMAGEN');
-    const hasImage = !!link && link !== 'SIN IMAGEN';
-    return [m.code,m.description,m.unit,m.priority||'',(m.aliases||[]).join(' | '),hasImage?'SI':'NO',link || 'SIN IMAGEN',new Date()];
+    const link = imgInfo.url ? imgInfo.url : (m.image ? 'En respaldo JSON' : 'SIN IMAGEN');
+    return [m.code,m.description,m.unit,m.priority||'',(m.aliases||[]).join(' | '),m.image?'SI':'NO',link,new Date()];
   }));
   const initials=(data.app&&data.app.supervisorInitials)||{};
   writeTable_(ss,'Supervisores',['NOMBRE','INICIALES'],(data.app&&data.app.supervisors||[]).map(x=>[x,initials[x]||'']));
@@ -390,6 +295,38 @@ function writeSheets_(data) {
   ])));
   writeTable_(ss,'HistorialMateriales',['PEDIDO','OM','FECHA','RETIRADO_POR','MATRICULA','DESCRIPCION','CANTIDAD','UNIDAD','CENTRO','ALMACEN','LOTE','UNIDAD_RECOJO','ALIMENTADOR','DISTRITO_DESTINO','MOVIMIENTO','CREADO_EN'],detailRows);
   writeTable_(ss,'ControlSolicitudes',['PEDIDO','OM','FECHA','SUPERVISOR','CENTRO','UNIDAD_RECOJO','ALIMENTADOR','DISTRITO','MOVIMIENTO','CANTIDAD_TOTAL','ESTADO','CREADO_EN'],history.map(x=>[x.id,x.om||'',x.fecha,x.supervisor,x.centro,x.unidadRecojo||'',x.alimentador||'',x.distrito||'',x.movimiento||'',x.total||0,'FINALIZADO',x.createdAt||'']));
+
+  const reservasEdits = (data.app && data.app.reservasEdits) || {};
+  const controlEdits = (data.app && data.app.controlEdits) || {};
+  const reservasRows = [];
+  history.forEach((order, orderIdx) => {
+    const orderKey = String(order.id || (order.om ? (order.om + '_' + String(order.centro || '') + '_' + String(order.createdAt || '')) : ('order_' + orderIdx)));
+    const orderEdit = controlEdits[orderKey] || {};
+    const orderReserva = orderEdit.reserva !== undefined ? orderEdit.reserva : (order.reserva || '');
+    const items = Array.isArray(order.items) && order.items.length ? order.items : [{
+      code: '', description: 'Pedido general', qty: order.total || 0, unit: 'UND', reserva: orderReserva
+    }];
+
+    items.forEach((item, itemIdx) => {
+      const itemKey = `${orderKey}_item_${itemIdx}_${item.code || item.MATRICULA || 'mat'}`;
+      const itemEdit = reservasEdits[itemKey] || {};
+      const reservaVal = itemEdit.reserva !== undefined ? itemEdit.reserva : (item.reserva || orderReserva || '');
+      const qtyVal = itemEdit.qty !== undefined ? Number(itemEdit.qty) : Number(item.qty || item.CANT || 0);
+      reservasRows.push([
+        reservaVal,
+        order.om || '',
+        item.code || item.MATRICULA || '',
+        item.description || item.DESCRIPCION || '',
+        qtyVal,
+        item.unit || item.UNIDAD || 'UND',
+        order.supervisor || '',
+        String(order.centro || '') === '1003' ? '1003 - San Juan' : String(order.centro || '') === '1004' ? '1004 - Vitarte' : String(order.centro || ''),
+        order.fecha || '',
+        order.createdAt || ''
+      ]);
+    });
+  });
+  writeTable_(ss, 'ControlReservas', ['RESERVA', 'OM', 'MATRÍCULA', 'DESCRIPCIÓN', 'CANTIDAD', 'UNIDAD', 'RETIRADO_POR', 'CENTRO', 'FECHA', 'CREADO_EN'], reservasRows);
 }
 
 function writeTable_(ss,name,headers,rows) {
@@ -409,23 +346,19 @@ function saveImages_(materials) {
   const imgs=it.hasNext()?it.next():folder.createFolder('imagenes_materiales');
   const imgMap = {};
   const matsWithImage = materials.filter(m=>m&&m.image&&String(m.image).startsWith('data:image/'));
-
-  matsWithImage.forEach(m=>{
+  // Guardar hasta 20 imágenes por lote para no exceder cuota de tiempo
+  matsWithImage.slice(0, 20).forEach(m=>{
     try {
-      const parts=m.image.split(','), mimeMatch=parts[0].match(/data:(.*?);/);
-      if(!mimeMatch) return;
-      const mime=mimeMatch[1], bytes=Utilities.base64Decode(parts[1]), ext=mime.indexOf('webp')>=0?'webp':'jpg', name=m.code+'.'+ext;
+      const parts=m.image.split(','), mime=parts[0].match(/data:(.*?);/)[1], bytes=Utilities.base64Decode(parts[1]), ext=mime.indexOf('webp')>=0?'webp':'jpg', name=m.code+'.'+ext;
       const olds=imgs.getFilesByName(name);
-      let file=null;
       if (olds.hasNext()) {
-        file = olds.next();
-      } else {
-        file = imgs.createFile(Utilities.newBlob(bytes,mime,name));
+        const existing = olds.next();
+        imgMap[m.code] = { name: name, url: existing.getUrl() };
+        return;
       }
-      try { file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (_) {}
-      const id=file.getId();
-      const thumbnail='https://drive.google.com/thumbnail?id='+id+'&sz=w1200';
-      imgMap[m.code] = { name:name, id:id, url:file.getUrl(), thumbnail:thumbnail };
+      const file = imgs.createFile(Utilities.newBlob(bytes,mime,name));
+      file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+      imgMap[m.code] = { name: name, url: file.getUrl() };
     } catch(err) {
       Logger.log('Error guardando imagen de ' + m.code + ': ' + err);
     }

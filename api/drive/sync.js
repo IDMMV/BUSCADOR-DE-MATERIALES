@@ -1,8 +1,36 @@
+import fs from 'fs';
+
 const DRIVE_TIMEOUT_MS = 12000;
+const TMP_CONFIG_FILE = '/tmp/server-config.json';
+
 function fetchWithTimeout(url, options = {}, timeoutMs = DRIVE_TIMEOUT_MS) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   return fetch(url, { ...options, signal: controller.signal }).finally(() => clearTimeout(timer));
+}
+
+function getTmpConfig() {
+  let cfg = {};
+  if (fs.existsSync(TMP_CONFIG_FILE)) {
+    try { cfg = JSON.parse(fs.readFileSync(TMP_CONFIG_FILE, 'utf8')) || {}; } catch (_) {}
+  }
+  return {
+    url: (process.env.GOOGLE_APPS_SCRIPT_URL || cfg.scriptUrl || '').trim(),
+    token: (process.env.GOOGLE_APPS_SCRIPT_TOKEN || cfg.scriptToken || '').trim()
+  };
+}
+
+function saveTmpConfig(url, token) {
+  if (!url) return;
+  const cur = getTmpConfig();
+  const data = {
+    scriptUrl: url || cur.url,
+    scriptToken: token || cur.token,
+    updatedAt: new Date().toISOString()
+  };
+  try {
+    fs.writeFileSync(TMP_CONFIG_FILE, JSON.stringify(data, null, 2), 'utf8');
+  } catch (_) {}
 }
 
 export default async function handler(req, res) {
@@ -24,23 +52,27 @@ export default async function handler(req, res) {
       try { body = JSON.parse(body); } catch (_) {}
     }
 
-    const envUrl = (process.env.GOOGLE_APPS_SCRIPT_URL || '').trim();
-    const envToken = (process.env.GOOGLE_APPS_SCRIPT_TOKEN || '').trim();
+    const tmpCfg = getTmpConfig();
+    const reqUrl = (body?.targetUrl || body?.url || body?.scriptUrl || '').trim();
+    const reqToken = (body?.token || body?.scriptToken || '').trim();
 
-    const targetUrl = (envUrl || body?.targetUrl || body?.url || '').trim();
+    if (reqUrl) {
+      saveTmpConfig(reqUrl, reqToken);
+    }
+
+    const targetUrl = (tmpCfg.url || reqUrl).trim();
     if (!targetUrl) {
-      return res.status(400).json({ ok: false, error: 'URL de Google Apps Script no configurada en Vercel o en la app.' });
+      return res.status(400).json({ ok: false, error: 'URL de Google Apps Script no configurada en el servidor o en la app.' });
     }
 
     const payload = body?.payload ? { ...body.payload } : { ...body };
     delete payload.targetUrl;
     delete payload.url;
 
-    // Priorizar el token configurado en Vercel/servidor para que cualquier equipo se conecte sin ingresar clave
-    if (envToken) {
-      payload.token = envToken;
-    } else if (!payload.token && body?.token) {
-      payload.token = body.token;
+    if (tmpCfg.token) {
+      payload.token = tmpCfg.token;
+    } else if (!payload.token && reqToken) {
+      payload.token = reqToken;
     }
 
     const response = await fetchWithTimeout(targetUrl, {

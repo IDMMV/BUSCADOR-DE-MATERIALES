@@ -1,5 +1,6 @@
 import express from 'express';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -7,6 +8,46 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+const CONFIG_FILE = path.join(__dirname, 'data', 'server-config.json');
+
+function ensureDataDir(){
+  const dir = path.join(__dirname, 'data');
+  if(!fs.existsSync(dir)){
+    fs.mkdirSync(dir, { recursive: true });
+  }
+}
+
+function readSavedConfig(){
+  ensureDataDir();
+  let fileCfg = {};
+  if(fs.existsSync(CONFIG_FILE)){
+    try{ fileCfg = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8')) || {}; }catch(_){}
+  }
+  return {
+    scriptUrl: (process.env.GOOGLE_APPS_SCRIPT_URL || fileCfg.scriptUrl || '').trim(),
+    scriptToken: (process.env.GOOGLE_APPS_SCRIPT_TOKEN || fileCfg.scriptToken || '').trim()
+  };
+}
+
+function writeSavedConfig(url, token){
+  ensureDataDir();
+  const cur = readSavedConfig();
+  const nextUrl = (url || cur.scriptUrl || '').trim();
+  const nextToken = (token || cur.scriptToken || '').trim();
+  if(!nextUrl && !nextToken) return cur;
+  const data = {
+    scriptUrl: nextUrl,
+    scriptToken: nextToken,
+    updatedAt: new Date().toISOString()
+  };
+  try{
+    fs.writeFileSync(CONFIG_FILE, JSON.stringify(data, null, 2), 'utf8');
+  }catch(e){
+    console.warn('Could not save server config to file:', e.message);
+  }
+  return data;
+}
 
 const DRIVE_TIMEOUT_MS = 12000;
 function fetchWithTimeout(url, options={}, timeoutMs=DRIVE_TIMEOUT_MS){
@@ -29,29 +70,42 @@ app.use(express.static(__dirname, {
 }));
 
 app.get('/api/config', (req, res) => {
+  const cfg = readSavedConfig();
   res.json({
-    scriptUrl: process.env.GOOGLE_APPS_SCRIPT_URL || '',
-    scriptToken: process.env.GOOGLE_APPS_SCRIPT_TOKEN || ''
+    scriptUrl: cfg.scriptUrl,
+    scriptToken: cfg.scriptToken
   });
+});
+
+app.post('/api/config', (req, res) => {
+  const url = (req.body?.scriptUrl || req.body?.url || '').trim();
+  const token = (req.body?.scriptToken || req.body?.token || '').trim();
+  const saved = writeSavedConfig(url, token);
+  res.json({ ok: true, config: saved });
 });
 
 app.post('/api/drive/sync', async (req, res) => {
   try {
-    const envUrl = (process.env.GOOGLE_APPS_SCRIPT_URL || '').trim();
-    const envToken = (process.env.GOOGLE_APPS_SCRIPT_TOKEN || '').trim();
+    const cfg = readSavedConfig();
+    const reqUrl = (req.body?.targetUrl || req.body?.url || req.body?.scriptUrl || '').trim();
+    const reqToken = (req.body?.token || req.body?.scriptToken || '').trim();
 
-    const targetUrl = (envUrl || req.body?.targetUrl || req.body?.url || '').trim();
+    if (reqUrl) {
+      writeSavedConfig(reqUrl, reqToken);
+    }
+
+    const targetUrl = (cfg.scriptUrl || reqUrl).trim();
     if (!targetUrl) {
-      return res.status(400).json({ ok: false, error: 'URL de Google Apps Script no configurada en el servidor o en la app.' });
+      return res.status(400).json({ ok: false, error: 'URL de Google Apps Script no configurada en el servidor ni en la app.' });
     }
     const payload = req.body?.payload ? { ...req.body.payload } : { ...req.body };
     delete payload.targetUrl;
     delete payload.url;
 
-    if (envToken) {
-      payload.token = envToken;
-    } else if (!payload.token && req.body?.token) {
-      payload.token = req.body.token;
+    if (cfg.scriptToken) {
+      payload.token = cfg.scriptToken;
+    } else if (!payload.token && reqToken) {
+      payload.token = reqToken;
     }
 
     const response = await fetchWithTimeout(targetUrl, {
@@ -81,15 +135,20 @@ app.post('/api/drive/sync', async (req, res) => {
 
 app.get('/api/drive/get', async (req, res) => {
   try {
-    const envUrl = (process.env.GOOGLE_APPS_SCRIPT_URL || '').trim();
-    const envToken = (process.env.GOOGLE_APPS_SCRIPT_TOKEN || '').trim();
+    const cfg = readSavedConfig();
+    const reqUrl = (req.query?.url || '').trim();
+    const reqToken = (req.query?.token || '').trim();
 
-    const targetUrl = (envUrl || req.query?.url || '').trim();
-    const token = envToken || req.query?.token || '';
+    if (reqUrl) {
+      writeSavedConfig(reqUrl, reqToken);
+    }
+
+    const targetUrl = (cfg.scriptUrl || reqUrl).trim();
+    const token = cfg.scriptToken || reqToken;
     const action = req.query?.action || 'getAll';
 
     if (!targetUrl) {
-      return res.status(400).json({ ok: false, error: 'URL de Google Apps Script no configurada en el servidor o en la app.' });
+      return res.status(400).json({ ok: false, error: 'URL de Google Apps Script no configurada en el servidor ni en la app.' });
     }
 
     const cleanBase = targetUrl.replace(/\?.*$/, '');
@@ -133,4 +192,3 @@ app.get('*', async (req, res) => {
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on http://0.0.0.0:${PORT}`);
 });
-
