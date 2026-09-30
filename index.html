@@ -495,14 +495,18 @@ html[data-theme="dark"] .stock-status.stale{background:#493a16!important;color:#
 body:not(.v439-admin-mode) .side-btn[data-view="newMatView"],
 body:not(.v439-admin-mode) .side-btn[data-view="supView"],
 body:not(.v439-admin-mode) .side-btn[data-view="unitsView"],
-body:not(.v439-admin-mode) .side-btn[data-view="driveView"],
-body:not(.v439-admin-mode) #sideDriveOnly,
 body:not(.v439-admin-mode) [data-config-page="mat"],
 body:not(.v439-admin-mode) [data-config-page="new-mat"],
 body:not(.v439-admin-mode) [data-config-page="sup"],
-body:not(.v439-admin-mode) [data-config-page="units"],
-body:not(.v439-admin-mode) [data-config-page="github"],
-body:not(.v439-admin-mode) [data-config-page="drive"] {
+body:not(.v439-admin-mode) [data-config-page="units"] {
+  display: none !important;
+}
+/* La pestaña y vista de Google Drive ya no aparecen en la web porque todo está configurado en Vercel */
+.side-btn[data-view="driveView"],
+#sideDriveOnly,
+#driveView,
+[data-config-page="github"],
+[data-config-page="drive"] {
   display: none !important;
 }
 </style>
@@ -940,15 +944,13 @@ body:not(.v439-admin-mode) [data-config-page="drive"] {
 <nav class="side-nav">
 <button class="side-btn active" data-view="searchView">🔎 Buscar materiales</button>
 <button class="side-btn" data-view="orderView">📋 Pedido de materiales <span class="side-count" id="sideCartCount">0</span></button>
-<button class="side-btn" data-view="controlView">📑 Solicitud y Reservas</button>
-<button class="side-btn" data-view="reservasView">🔄 Devoluciones</button>
+<button class="side-btn" data-view="controlView">📑 Solicitud y Reservas <span class="side-count hidden" id="controlNewCount">0</span></button>
+<button class="side-btn" data-view="reservasView">🔄 Devoluciones <span class="side-count hidden" id="devolucionesNewCount">0</span></button>
 <button class="side-btn" data-view="historyView">🕘 Historial <span class="side-count hidden" id="historyNewCount">0</span></button>
-<button class="side-btn" data-view="consultaView" id="v46ConsultaSideBtn">🔍 Consulta <span class="side-count" id="sideConsultaCount">0</span></button>
 <button class="side-btn" data-view="newMatView">📊 Base de materiales</button>
 <button class="side-btn" data-view="supView">👷 Supervisores</button>
 <button class="side-btn" data-view="unitsView">🚚 Unidades móviles</button>
 <button class="side-btn hidden" data-view="stockView" aria-hidden="true" tabindex="-1">📦 Stock SAP</button>
-<button class="side-btn" data-view="driveView" id="sideDriveOnly">☁ Google Drive</button>
 <button class="side-btn hidden" id="sideConfig" aria-hidden="true" tabindex="-1">⚙ Configuración</button>
 </nav>
 </aside>
@@ -960,9 +962,8 @@ body:not(.v439-admin-mode) [data-config-page="drive"] {
 <div class="stock-status stale" id="stockStatus">⚠ Stock no actualizado hoy. Carga el Excel diario de SAP.</div>
 <div class="stock-help">Columnas reconocidas: Material, Texto breve de material, Centro, Almacén, Lote, Libre utilización y Unidad medida base. ALIM, CE y LOTE se completan automáticamente al copiar o exportar.</div>
 </section><section class="panel"><div class="head"><h2>1. Buscar materiales</h2><div class="head-actions"><button class="btn secondary" id="v439GoToOrder" type="button">📋 Ir a pedido seleccionado</button><span class="badge" id="count"></span></div></div><div class="search"><input id="q" placeholder="Buscar por matrícula, descripción o alias..."/><button aria-label="Buscar por voz" class="mic" id="voiceSearch" title="Buscar por voz">🎤</button><button aria-label="Limpiar búsqueda" id="clear" title="Limpiar búsqueda">×</button></div><div class="results" id="results"></div></section></section>
-<section class="view" id="orderView"><main class="layout"><section class="panel" id="orderPanel"><div class="head v39-history-head" style="margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px"><div><h2 style="margin:0;display:inline-flex;align-items:center;gap:10px" id="v45OrderTitleText">2. Pedido seleccionado <span class="badge" id="cartCount">0 materiales</span></h2><p class="small" style="margin:4px 0 0 0;color:var(--muted)" id="v45OrderSubtitleText">Verifica el supervisor, fecha y cantidades antes de grabar o imprimir tu pedido.</p></div><div class="v39-history-actions" id="orderHeaderActions" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button type="button" id="v31FinalizeOrder" class="btn success v31-finalize" style="font-weight:700;padding:8px 16px;display:inline-flex;align-items:center;gap:6px">💾 Grabar pedido</button><button type="button" id="v31PrintOrderTop" class="btn secondary" style="font-weight:700;padding:8px 16px;display:inline-flex;align-items:center;gap:6px" title="Imprimir documento de pedido">🖨️ Imprimir pedido</button><button type="button" id="v449ClearAllOrdersBtn" class="btn danger v449-clear-all" style="font-weight:700;padding:8px 16px;display:inline-flex;align-items:center;gap:6px">🗑️ Borrar pedidos</button></div></div><div class="v438-back-row" style="margin-bottom:14px"><button type="button" class="btn secondary v438-back-btn" id="v438BackToSearch">← Volver a buscar materiales</button></div><div class="fields-and-actions-row" style="margin:14px 0" id="v46OrderFieldsWrap"><div class="fields" style="width:100%;margin:0"><label class="field" id="v46TipoMovWrap">Tipo de movimiento<select id="puesto"><option value="PEDIDO">PEDIDO</option><option value="RESERVA">RESERVA</option><option value="RECUPERO">RECUPERO</option><option value="DEVOLUCION">DEVOLUCIÓN</option><option value="CONSULTA">CONSULTA</option></select></label><label class="field" id="v45OmWrap">OM<input id="omPedido" placeholder="Ej.: OM-12345"/></label><label class="field" id="v45DestWrap">Supervisor<select id="dest"></select></label><label class="field fg-reserva" id="fieldReserva" style="display:none">N° Reserva (SAP)<input id="reservaPedido" inputmode="numeric" placeholder="Ej.: 100045892"/></label><label class="field" id="v45FechaWrap">Fecha<input id="fechaPedido" type="date"/></label><label class="field" id="v45MovilWrap">Unidad móvil<select id="movil"></select></label><label class="field" id="v45AlimWrap">Alimentador<input id="alimentadorPedido" placeholder="Ej.: A-01"/></label><label class="field" id="v45DistWrap">Distrito<input id="distritoPedido" placeholder="Ej.: Vitarte"/></label></div></div><select class="hidden" id="ce"><option value="1003">1003 - San Juan</option><option value="1004">1004 - Vitarte</option></select><div class="auto-fields-note">El Centro se toma del selector superior. ALIM, CE y LOTE se completan automáticamente desde el Excel diario de stock SAP.</div><p class="small">La cantidad inicia en 0 (amarillo). Al colocar un valor mayor a 0 cambia a verde. Puedes dictar cantidades con el micrófono.</p><div class="tablewrap"><table><thead><tr><th>Matrícula</th><th>Descripción</th><th>Cant.</th><th>Unidad</th><th></th></tr></thead><tbody id="cart"></tbody></table><div class="empty" id="empty">Agrega materiales desde el buscador.</div></div><div class="sap-preview-wrap"><div class="sap-preview-title"><div><h3>Vista previa exacta para SAP / Excel</h3><p class="small">Muestra almacén, centro y lote de donde se obtiene cada cantidad.</p></div><span class="badge" id="previewRowsCount">0 filas</span></div><div class="sap-preview"><table><thead><tr><th>MATRÍCULA</th><th>DESCRIPCIÓN</th><th>C1</th><th>CANT</th><th>UNIDAD</th><th>TP</th><th>C2</th><th>C3</th><th>ALIM</th><th>CE</th><th>OPERACIÓN</th><th>LOTE</th><th>TIPO DE APROVISIONAMIENTO</th><th>POS</th><th>DESTINATARIO</th><th>PUESTO DE DESCARGA</th><th>UBICACIÓN FINAL</th></tr></thead><tbody id="sapPreviewBody"></tbody></table><div class="preview-empty" id="sapPreviewEmpty">Agrega materiales y completa sus cantidades para generar la vista previa.</div></div></div><div class="actions" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:16px"><button class="btn primary" id="copy" style="font-weight:700">📋 Copiar para SAP</button><button class="btn success" id="excel" style="font-weight:700">📊 Exportar Excel</button><button class="btn secondary" id="csv" style="font-weight:700">📄 Exportar CSV</button><button class="btn danger" id="clean" style="font-weight:700">🧹 Limpiar vista previa</button></div><div class="pending-panel hidden" id="pendingPanel"><div class="head"><h3>⏳ Pendientes por coordinar</h3><span class="badge" id="pendingCount">0</span></div><div id="pendingList"></div></div><p class="status" id="status"></p></section></main></section>
+<section class="view" id="orderView"><main class="layout"><section class="panel" id="orderPanel"><div class="head v39-history-head" style="margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px"><div><h2 style="margin:0;display:inline-flex;align-items:center;gap:10px" id="v45OrderTitleText">2. Pedido seleccionado <span class="badge" id="cartCount">0 materiales</span></h2><p class="small" style="margin:4px 0 0 0;color:var(--muted)" id="v45OrderSubtitleText">Verifica el supervisor, fecha y cantidades antes de grabar o imprimir tu pedido.</p></div><div class="v39-history-actions" id="orderHeaderActions" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button type="button" id="v31FinalizeOrder" class="btn success v31-finalize" style="font-weight:700;padding:8px 16px;display:inline-flex;align-items:center;gap:6px">💾 Grabar pedido</button><button type="button" id="v31PrintOrderTop" class="btn secondary" style="font-weight:700;padding:8px 16px;display:inline-flex;align-items:center;gap:6px" title="Imprimir documento de pedido">🖨️ Imprimir pedido</button><button type="button" id="v449ClearAllOrdersBtn" class="btn danger v449-clear-all" style="font-weight:700;padding:8px 16px;display:inline-flex;align-items:center;gap:6px">🗑️ Borrar pedidos</button></div></div><div class="v438-back-row" style="margin-bottom:14px"><button type="button" class="btn secondary v438-back-btn" id="v438BackToSearch">← Volver a buscar materiales</button></div><div class="fields-and-actions-row" style="margin:14px 0" id="v46OrderFieldsWrap"><div class="fields" style="width:100%;margin:0"><label class="field" id="v46TipoMovWrap">Tipo de movimiento<select id="puesto"><option value="PEDIDO">PEDIDO</option><option value="RESERVA">RESERVA</option><option value="RECUPERO">RECUPERO</option><option value="DEVOLUCION">DEVOLUCIÓN</option></select></label><label class="field" id="v45OmWrap">OM<input id="omPedido" placeholder="Ej.: OM-12345"/></label><label class="field" id="v45DestWrap">Supervisor<select id="dest"></select></label><label class="field fg-reserva" id="fieldReserva" style="display:none">N° Reserva (SAP)<input id="reservaPedido" inputmode="numeric" placeholder="Ej.: 100045892"/></label><label class="field" id="v45FechaWrap">Fecha<input id="fechaPedido" type="date"/></label><label class="field" id="v45MovilWrap">Unidad móvil<select id="movil"></select></label><label class="field" id="v45AlimWrap">Alimentador<input id="alimentadorPedido" list="alimentadoresList" placeholder="Ej.: A-01" autocomplete="off"/><datalist id="alimentadoresList"></datalist></label><label class="field" id="v45DistWrap">Distrito<input id="distritoPedido" placeholder="Ej.: Vitarte"/></label></div></div><select class="hidden" id="ce"><option value="1003">1003 - San Juan</option><option value="1004">1004 - Vitarte</option></select><div class="auto-fields-note">El Centro se toma del selector superior. ALIM, CE y LOTE se completan automáticamente desde el Excel diario de stock SAP.</div><p class="small">La cantidad inicia en 0 (amarillo). Al colocar un valor mayor a 0 cambia a verde. Puedes dictar cantidades con el micrófono.</p><div class="tablewrap"><table><thead><tr><th>Matrícula</th><th>Descripción</th><th>Cant.</th><th>Unidad</th><th></th></tr></thead><tbody id="cart"></tbody></table><div class="empty" id="empty">Agrega materiales desde el buscador.</div></div><div class="sap-preview-wrap"><div class="sap-preview-title"><div><h3>Vista previa exacta para SAP / Excel</h3><p class="small">Muestra almacén, centro y lote de donde se obtiene cada cantidad.</p></div><span class="badge" id="previewRowsCount">0 filas</span></div><div class="sap-preview"><table><thead><tr><th>MATRÍCULA</th><th>DESCRIPCIÓN</th><th>C1</th><th>CANT</th><th>UNIDAD</th><th>TP</th><th>C2</th><th>C3</th><th>ALIM</th><th>CE</th><th>OPERACIÓN</th><th>LOTE</th><th>TIPO DE APROVISIONAMIENTO</th><th>POS</th><th>DESTINATARIO</th><th>PUESTO DE DESCARGA</th><th>UBICACIÓN FINAL</th></tr></thead><tbody id="sapPreviewBody"></tbody></table><div class="preview-empty" id="sapPreviewEmpty">Agrega materiales y completa sus cantidades para generar la vista previa.</div></div></div><div class="actions" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:16px"><button class="btn primary" id="copy" style="font-weight:700">📋 Copiar para SAP</button><button class="btn success" id="excel" style="font-weight:700">📊 Exportar Excel</button><button class="btn secondary" id="csv" style="font-weight:700">📄 Exportar CSV</button><button class="btn danger" id="clean" style="font-weight:700">🧹 Limpiar vista previa</button></div><div class="pending-panel hidden" id="pendingPanel"><div class="head"><h3>⏳ Pendientes por coordinar</h3><span class="badge" id="pendingCount">0</span></div><div id="pendingList"></div></div><p class="status" id="status"></p></section></main></section>
 
-<section class="view" id="consultaView"><main class="layout" style="grid-template-columns:1fr"><section class="panel"><div class="head v39-history-head" style="margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px"><div><h2 style="margin:0;display:inline-flex;align-items:center;gap:10px">🔍 Consulta de Materiales <span class="badge" id="consultaCountBadge">0 materiales</span></h2><p class="small" style="margin:4px 0 0 0;color:var(--muted)">Listado de matrículas y cantidades seleccionadas para consulta e informe.</p></div><div class="v39-history-actions" style="display:flex;gap:8px;align-items:center"><button type="button" id="v46PrintConsultaTop" class="btn secondary" style="font-weight:700;padding:8px 16px;display:inline-flex;align-items:center;gap:6px" title="Imprimir lista de consulta">🖨️ Imprimir</button></div></div><div class="v438-back-row" style="margin-bottom:14px"><button type="button" class="btn secondary v438-back-btn" id="v46ConsultaBackToSearch">← Volver a buscar materiales</button></div><div class="tablewrap"><table><thead><tr><th>Matrícula</th><th>Descripción</th><th>Cant.</th><th>Unidad</th><th>Acción</th></tr></thead><tbody id="consultaTableBody"></tbody></table><div class="empty" id="consultaEmpty">No hay materiales en la lista de consulta. Agrega materiales desde el buscador en modo Consulta.</div></div><div class="actions" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:16px"><button class="btn primary" id="copyConsultaBtn" style="font-weight:700">📋 Copiar datos</button><button class="btn success" id="excelConsultaBtn" style="font-weight:700">📊 Exportar Excel</button><button class="btn danger" id="cleanConsultaBtn" style="font-weight:700">🧹 Limpiar consulta</button></div></section></main></section>
 <section class="view" id="stockView"><section class="stock-toolbar">
 <label>Centro de trabajo<select id="centroGlobal2"><option value="1003">1003 - San Juan</option><option value="1004">1004 - Vitarte</option></select></label>
 <div class="stock-file-wrap"><label>Excel diario de stock SAP<input accept=".xlsx,.xls,.csv" id="stockFile2" type="file"/></label></div>
@@ -991,7 +992,7 @@ body:not(.v439-admin-mode) [data-config-page="drive"] {
         </div>
         <button type="button" class="btn secondary modal-close-btn" id="adminLoginClose">×</button>
       </div>
-      <p id="adminLoginSubtitle">Ingresa tu contraseña para ver las pestañas ocultas en la barra lateral (Crear o modificar, Supervisores, Unidades móviles, Historial y Google Drive).</p>
+      <p id="adminLoginSubtitle">Ingresa tu contraseña para ver las pestañas ocultas en la barra lateral (Base de materiales, Supervisores, Unidades móviles e Historial).</p>
       
       <label class="form-group" style="margin-top:14px;display:block">
         <span style="font-weight:600;display:block;margin-bottom:6px">Contraseña</span>
@@ -1033,7 +1034,7 @@ function migrateState(x){x=x&&Array.isArray(x.materials)?x:clone(BASE_DATA);let 
 function load(){try{return migrateState(JSON.parse(localStorage.getItem(KEY)))}catch{return migrateState(clone(BASE_DATA))}}
 function save(){state=migrateState(state);localStorage.setItem(KEY,JSON.stringify(state));if(typeof queueSync==='function')queueSync('app');if(typeof scheduleDriveSync==='function')scheduleDriveSync(800,'app');}function fill(el,a){let cur=el.value;el.innerHTML=a.map(x=>`<option>${esc(x)}</option>`).join('');if(a.includes(cur))el.value=cur}function localISODate(){let d=new Date(),off=d.getTimezoneOffset();return new Date(d.getTime()-off*60000).toISOString().slice(0,10)}
 function showView(id){
-  const adminProtected=['newMatView','supView','unitsView','driveView'];
+  const adminProtected=['newMatView','supView','unitsView'];
   if(adminProtected.includes(id)&&typeof isAdmin==='function'&&!isAdmin()){
     if(typeof openAdminDialog==='function')openAdminDialog(id);
     return;
@@ -1049,7 +1050,7 @@ function showView(id){
   if(id==='historyView'&&typeof renderHistory37==='function')setTimeout(renderHistory37,0);
   window.scrollTo({top:0,behavior:'smooth'})
 }
-function openConfigPage(page){const pageMap={'new-mat':'newMatView','mat':'newMatView','sup':'supView','units':'unitsView','github':'driveView','drive':'driveView'};showView(pageMap[page]||'newMatView')}
+function openConfigPage(page){const pageMap={'new-mat':'newMatView','mat':'newMatView','sup':'supView','units':'unitsView'};showView(pageMap[page]||'newMatView')}
 function renderSapPreview(){let body=document.getElementById('sapPreviewBody'),empty=document.getElementById('sapPreviewEmpty'),count=document.getElementById('previewRowsCount');if(!body)return;let r=[];try{r=rows()}catch{};body.innerHTML=r.map(x=>`<tr>${Object.values(x).map(v=>`<td>${esc(v)}</td>`).join('')}</tr>`).join('');empty.style.display=r.length?'none':'block';count.textContent=`${r.length} fila${r.length===1?'':'s'}`;let side=document.getElementById('sideCartCount');if(side)side.textContent=cart.length;}
 
 function updateMobileOrderSummary(){let sup=$('#dest')?.value||'Sin supervisor',unit=$('#movil')?.value||'Sin unidad';let el=$('#mobileOrderSummary');if(el)el.textContent=sup+' · '+unit}
@@ -3087,43 +3088,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
   window.add=function(code){
     const m=state.materials.find(x=>x.code===code);if(!m)return;
     const isDev=typeof window.isDevolucion==='function'?window.isDevolucion():isDevolucion();
-    const isCon=typeof window.isConsulta==='function'?window.isConsulta():false;
     const input=document.querySelector(`[data-v34-qty="${CSS.escape(String(code))}"]`)||document.querySelector(`[data-v36-qty="${CSS.escape(String(code))}"]`)||document.querySelector(`[data-v29-qty="${CSS.escape(String(code))}"]`),qty=Number(input?.value)||1;
-
-    if(isCon){
-      window.consultaItems = window.consultaItems || (state && state.consultaItems) || [];
-      const existingCon = window.consultaItems.find(x => String(x.code) === String(code));
-      if(existingCon){
-        const prevQty = Number(existingCon.qty) || 0;
-        const totalQty = prevQty + qty;
-        const confirmFn = () => {
-          existingCon.qty = String(totalQty);
-          if(state) state.consultaItems = window.consultaItems;
-          if(typeof save === 'function') save();
-          if(typeof renderConsulta === 'function') renderConsulta();
-          renderResults();
-          msg(`✓ Se agregaron ${qty} ${normalizedUnit(m)} adicionales de ${code} a la Consulta (Total: ${totalQty}).`);
-        };
-        const confirmMsg = `¿Desea agregar más material?\n\nLa matrícula ${code} (${m.description}) ya se encuentra en la Consulta con cantidad ${prevQty} ${normalizedUnit(m)}.\n\n¿Desea sumar ${qty} ${normalizedUnit(m)} más? (Cantidad total resultante: ${totalQty} ${normalizedUnit(m)})`;
-        if(typeof window.customConfirm === 'function'){
-          window.customConfirm(confirmMsg, confirmFn, null, {
-            title: '¿Desea agregar más material?',
-            okText: 'Sí, agregar más',
-            okClass: 'btn primary'
-          });
-        } else {
-          confirmFn();
-        }
-        return;
-      }
-      window.consultaItems.push({...clone(m), qty: String(qty)});
-      if(state) state.consultaItems = window.consultaItems;
-      if(typeof save === 'function') save();
-      renderResults();
-      if(typeof renderConsulta === 'function') renderConsulta();
-      msg(`✓ Material ${code} (${qty} ${normalizedUnit(m)}) agregado a la Consulta.`);
-      return;
-    }
 
     if(!isDev&&stockMeta.date!==todayKey())return msg(expiredStockMessage(),true);
     let item=cart.find(x=>x.code===code);
@@ -3238,7 +3203,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
     const a=exactFiltered(),results=$30('#results'),primary=String($30('#centroGlobal')?.value||'1003'),other=primary==='1003'?'1004':'1003';
     $30('#count').textContent=`${a.length} de ${state.materials.length}`;results.classList.add('v29-results');
     if(!a.length){results.innerHTML='<div class="v29-empty">No se encontraron materiales.</div>';return;}
-    results.innerHTML=`<div class="v29-table-wrap"><table class="v29-stock-table"><thead><tr><th>Matrícula SAP</th><th>Descripción oficial</th><th>Disponible 1003 San Juan</th><th>Disponible 1004 Vitarte</th><th>Unidad</th><th>Agregar</th></tr></thead><tbody>${a.map(m=>{const s3=stock30(m.code,'1003'),s4=stock30(m.code,'1004'),cur=primary==='1003'?s3:s4,alt=primary==='1003'?s4:s3,aliasCount=(m.aliases||[]).length,cls=n=>n>0?'good':'none',isCon=typeof window.isConsulta==='function'?window.isConsulta():false,inList=isCon?(window.consultaItems||[]).some(x=>String(x.code)===String(m.code)):(cart||[]).some(x=>String(x.code)===String(m.code)),movSingular=isCon?'Consulta':(typeof window.getMovementNameSingular==='function'?window.getMovementNameSingular():'Pedido'),badgeHtml=inList?` <span class="badge" style="background:#16a34a;color:#fff;font-size:10px;margin-left:6px;padding:2px 6px">✓ En ${movSingular.toLowerCase()}</span>`:'';return `<tr class="${inList?'v36-incart-row':''}"><td class="v29-code">${esc30(m.code)}</td><td><b>${esc30(m.description)}</b>${badgeHtml}<br><button class="v29-alias-link" data-quick-edit="${esc30(m.code)}">Alias: ${aliasCount} · Ver/editar</button>${cur<=0&&alt>0?`<div class="v29-warning">En ${centerLabel30(other)} hay ${alt} ${esc30(normalizedUnit(m))} disponibles.</div>`:''}</td><td><span class="v29-stock-pill ${cls(s3)}">${s3} ${esc30(normalizedUnit(m))}</span></td><td><span class="v29-stock-pill ${cls(s4)}">${s4} ${esc30(normalizedUnit(m))}</span></td><td>${esc30(normalizedUnit(m))}</td><td><div class="v29-add-box"><input type="number" min="0" step="1" placeholder="0" data-v29-qty="${esc30(m.code)}"><button class="btn primary" data-add="${esc30(m.code)}">＋</button></div></td></tr>`}).join('')}</tbody></table></div>`;
+    results.innerHTML=`<div class="v29-table-wrap"><table class="v29-stock-table"><thead><tr><th>Matrícula SAP</th><th>Descripción oficial</th><th>Disponible 1003 San Juan</th><th>Disponible 1004 Vitarte</th><th>Unidad</th><th>Agregar</th></tr></thead><tbody>${a.map(m=>{const s3=stock30(m.code,'1003'),s4=stock30(m.code,'1004'),cur=primary==='1003'?s3:s4,alt=primary==='1003'?s4:s3,aliasCount=(m.aliases||[]).length,cls=n=>n>0?'good':'none',inList=(cart||[]).some(x=>String(x.code)===String(m.code)),movSingular=typeof window.getMovementNameSingular==='function'?window.getMovementNameSingular():'Pedido',badgeHtml=inList?` <span class="badge" style="background:#16a34a;color:#fff;font-size:10px;margin-left:6px;padding:2px 6px">✓ En ${movSingular.toLowerCase()}</span>`:'';return `<tr class="${inList?'v36-incart-row':''}"><td class="v29-code">${esc30(m.code)}</td><td><b>${esc30(m.description)}</b>${badgeHtml}<br><button class="v29-alias-link" data-quick-edit="${esc30(m.code)}">Alias: ${aliasCount} · Ver/editar</button>${cur<=0&&alt>0?`<div class="v29-warning">En ${centerLabel30(other)} hay ${alt} ${esc30(normalizedUnit(m))} disponibles.</div>`:''}</td><td><span class="v29-stock-pill ${cls(s3)}">${s3} ${esc30(normalizedUnit(m))}</span></td><td><span class="v29-stock-pill ${cls(s4)}">${s4} ${esc30(normalizedUnit(m))}</span></td><td>${esc30(normalizedUnit(m))}</td><td><div class="v29-add-box"><input type="number" min="0" step="1" placeholder="0" data-v29-qty="${esc30(m.code)}"><button class="btn primary" data-add="${esc30(m.code)}">＋</button></div></td></tr>`}).join('')}</tbody></table></div>`;
   };
   window.add=function(code){
     const m=state.materials.find(x=>x.code===code);if(!m)return;
@@ -3249,6 +3214,9 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
       const date=$30('#fechaPedido')?.value||todayKey();
       const om=$30('#omPedido')?.value.trim()||'';
       const reserva=$30('#reservaPedido')?.value.trim()||'';
+      const unit=$30('#movil')?.value||'';
+      const alim=$30('#alimentadorPedido')?.value.trim()||defaults().alimentador||'';
+      const dist=$30('#distritoPedido')?.value.trim()||defaults().distrito||'';
       const now=new Date().toISOString();
       const base=`DEV-${date.replaceAll('-','')}-${Date.now()}`;
       const devOrder={
@@ -3259,24 +3227,24 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
         om,
         reserva,
         centro:primary,
-        unidadRecojo:reserva?`Reserva: ${reserva}`:'DEVOLUCION',
+        unidadRecojo:unit||(reserva?`Reserva: ${reserva}`:'DEVOLUCION'),
+        alimentador:alim,
+        distrito:dist,
         movimiento:'DEVOLUCION',
         total:qty,
         createdAt:now,
+        guardadoEnHistorial:false,
         items:[{code:m.code,description:m.description,qty:qty,unit:normalizedUnit(m),warehouse:'ALM1',lot:'LDA-000000',reserva}]
       };
       if(typeof ensureHistory==='function')ensureHistory().push(devOrder);
       else{state.orderHistory=state.orderHistory||[];state.orderHistory.push(devOrder);}
-      state.historyUnread=(Number(state.historyUnread)||0)+1;
       save();
-      if(typeof updateHistoryBadgeV41==='function')updateHistoryBadgeV41();
+      if(typeof updateDevolucionesBadge==='function')updateDevolucionesBadge();
       if(typeof renderReservas==='function')renderReservas();
-      if(typeof renderHistory37==='function')renderHistory37();
-      if(typeof renderControl37==='function')renderControl37();
       if(typeof queueSync==='function')queueSync('order');
       if(typeof scheduleDriveSync==='function')scheduleDriveSync(600,'order');
       renderResults();
-      msg(`✓ Material ${m.code} (${qty} ${normalizedUnit(m)}) registrado directamente en Control de Reservas.`);
+      msg(`✓ Material ${m.code} (${qty} ${normalizedUnit(m)}) agregado a Devoluciones pendientes.`);
       return;
     }
     if(!isDev&&stockMeta.date!==todayKey())return msg(expiredStockMessage(),true);
@@ -3340,8 +3308,6 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
   function allocationRows31(){return typeof rows==='function'?rows():[]}
   function deductStock(allocs){
     const isDev=typeof window.isDevolucion==='function'?window.isDevolucion():isDevolucion();
-    const isCon=typeof window.isConsulta==='function'?window.isConsulta():false;
-    if(isCon) return; // En modo consulta es simulación: no se descuenta ni altera el stock
     for(const a of allocs){let left=Number(a.CANT)||0;if(left<=0)continue;
       const matches=stockRows.filter(r=>String(r.material)===String(a.MATRICULA)&&String(r.centro)===String(a.CE)&&String(r.almacen||'')===String(a.ALIM||'')&&String(r.lote||'')===String(a.LOTE||''));
       for(const r of matches){if(left<=0)break;if(isDev){r.libre=(Number(r.libre)||0)+left;left=0;break;}else{const take=Math.min(left,Number(r.libre)||0);r.libre=Math.max(0,(Number(r.libre)||0)-take);left-=take;}}
@@ -3355,16 +3321,45 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
   }
   function groupHistory(allocs){
     const sup=$31('#dest')?.value||'',date=$31('#fechaPedido')?.value||todayKey(),om=$31('#omPedido')?.value.trim()||'',unit=$31('#movil')?.value||'',movement=$31('#puesto')?.value||'PEDIDO',now=new Date().toISOString(),base=`PED-${date.replaceAll('-','')}-${Date.now()}`;
-    let reserva=$31('#reservaPedido')?.value.trim()||'';
-    if(movement === 'DEVOLUCION'){
-      reserva = ''; // Devoluciones son independientes, sin código de reserva
+    const alim=$31('#alimentadorPedido')?.value.trim()||'';
+    const dist=$31('#distritoPedido')?.value.trim()||'';
+    let reserva = '';
+    if(movement === 'RESERVA'){
+      reserva = $31('#reservaPedido')?.value.trim() || '';
     }
-    let finalMovement = movement;
-    if((movement === 'PEDIDO' || movement === 'RESERVA') && reserva){
-      finalMovement = 'RESERVA'; // Agrupa los materiales por código de reserva
-    }
-    const centers=[...new Set(allocs.map(x=>String(x.CE)))];
-    return centers.map(center=>{const rowsC=allocs.filter(x=>String(x.CE)===center),total=rowsC.reduce((a,x)=>a+(Number(x.CANT)||0),0);return {id:`${base}-${center}`,pedidoBase:base,supervisor:sup,fecha:date,om,reserva,centro:center,unidadRecojo:unit,movimiento:finalMovement,total,createdAt:now,items:rowsC.map(x=>({code:x.MATRICULA,description:x.DESCRIPCION,qty:x.CANT,unit:x.UNIDAD,warehouse:x.ALIM,lot:x.LOTE,reserva:(finalMovement==='DEVOLUCION'?'':reserva)}))}})
+    const finalMovement = movement;
+    const isRes = finalMovement === 'RESERVA';
+    const isDev = finalMovement === 'DEVOLUCION';
+    const centers = [...new Set(allocs.map(x => String(x.CE)))];
+    return centers.map(center => {
+      const rowsC = allocs.filter(x => String(x.CE) === center), total = rowsC.reduce((a, x) => a + (Number(x.CANT) || 0), 0);
+      return {
+        id: `${base}-${center}`,
+        pedidoBase: base,
+        supervisor: sup,
+        fecha: date,
+        om,
+        reserva: (isRes ? reserva : ''),
+        centro: center,
+        unidadRecojo: unit,
+        alimentador: alim,
+        distrito: dist,
+        movimiento: finalMovement,
+        total,
+        createdAt: now,
+        guardadoEnHistorial: (!isRes && !isDev),
+        reservaGuardada: false,
+        items: rowsC.map(x => ({
+          code: x.MATRICULA,
+          description: x.DESCRIPCION,
+          qty: x.CANT,
+          unit: x.UNIDAD,
+          warehouse: x.ALIM,
+          lot: x.LOTE,
+          reserva: (isRes ? reserva : '')
+        }))
+      };
+    });
   }
   function renderHistory(){
     const view=$31('#historyView');if(!view)return;const h=ensureHistory().slice().sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
@@ -3429,17 +3424,20 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
     if(!valid())return;const allocs=allocationRows31();if(!allocs.length)return msg('No se generaron filas de stock para finalizar.',true);
     const isDev=typeof window.isDevolucion==='function'?window.isDevolucion():isDevolucion();
     const isRec=document.getElementById('puesto')?.value==='RECUPERO';
-    const isRes=document.getElementById('puesto')?.value==='RESERVA' || (Boolean(document.getElementById('reservaPedido')?.value.trim()) && !isDev);
+    const isRes=document.getElementById('puesto')?.value==='RESERVA';
     const actionLabel = isDev ? 'la devolución' : (isRec ? 'el recupero' : (isRes ? 'la reserva' : 'el pedido'));
-    customConfirm(`¿Desea guardar ${actionLabel}? El registro quedará guardado y se registrará en el historial.`, function(){
+    customConfirm(`¿Desea guardar ${actionLabel}? El registro quedará guardado y se registrará en el sistema.`, function(){
       try{
         const records=groupHistory(allocs);
         const addedDetails=records.reduce((n,r)=>n+(Array.isArray(r.items)?r.items.length:0),0);
         deductStock(allocs);
         ensureHistory().push(...records);
-        state.historyUnread=(Number(state.historyUnread)||0)+addedDetails;
+        if(!isRes && !isDev){
+          state.historyUnread=(Number(state.historyUnread)||0)+addedDetails;
+        }
         save();
         if(typeof window.updateHistoryBadgeV41==='function')window.updateHistoryBadgeV41();
+        if(typeof window.updateDevolucionesBadge==='function')window.updateDevolucionesBadge();
         if(typeof renderHistory37==='function')renderHistory37();
         else if(typeof renderHistory34==='function')renderHistory34();
         else renderHistory();
@@ -3452,7 +3450,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
         if(typeof renderSearchOrder==='function')renderSearchOrder();
         if(typeof queueSync==='function')queueSync('order');
         if(typeof scheduleDriveSync==='function')scheduleDriveSync(700,'order');
-        msg(isDev?`✅ Devolución guardada con éxito y registrada en el historial (${addedDetails} materiales independientes).`:(isRec?`✅ Recupero guardado con éxito y registrado en el historial (${addedDetails} materiales).`:(isRes?`✅ Reserva guardada con éxito y registrada en el historial (${addedDetails} materiales agrupados por código de reserva).`:`✅ Pedido guardado con éxito y registrado en el historial (${addedDetails} materiales independientes).`)));
+        msg(isDev?`✅ Devolución agregada a Control de Devoluciones (${addedDetails} materiales).`:(isRec?`✅ Recupero guardado con éxito y registrado en el historial (${addedDetails} materiales).`:(isRes?`✅ Reserva registrada en Solicitud y Control de Reservas (${addedDetails} materiales).`:`✅ Pedido guardado con éxito y registrado en el historial (${addedDetails} materiales).`)));
       }catch(e){msg('No se pudo guardar: '+e.message,true)}
     });
   }
@@ -3545,12 +3543,20 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
   const norm=v=>String(v||'').trim().toUpperCase().replace(/^M-/,'').replace(/\s+/g,'');
   function defaults(){state.defaults=state.defaults||{};return state.defaults}
   function updateReservaVisibility(){
-    const pVal = $('#puesto')?.value;
-    const isDev = pVal === 'DEVOLUCION' || (typeof window.isDevolucion === 'function' ? window.isDevolucion() : false);
-    const showRes = (pVal === 'RESERVA' || pVal === 'PEDIDO') && !isDev;
+    const pVal = $('#puesto')?.value || 'PEDIDO';
+    const showRes = pVal === 'RESERVA';
     document.querySelectorAll('#reservaFieldWrap, #fieldReserva, .fg-reserva').forEach(el=>{
-      el.style.display = showRes ? 'block' : 'none';
+      el.style.display = showRes ? '' : 'none';
+      if(!showRes){
+        const inp = el.querySelector('input');
+        if(inp) inp.value = '';
+      }
     });
+    if(!showRes){
+      const resInp = document.getElementById('reservaPedido');
+      if(resInp) resInp.value = '';
+      defaults().reserva = '';
+    }
   }
   window.updateReservaVisibility = updateReservaVisibility;
   function arrangeFields(){
@@ -3570,28 +3576,106 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
       rWrap.querySelector('input').value=defaults().reserva||'';
       rWrap.querySelector('input').addEventListener('input',e=>{defaults().reserva=e.target.value.trim();save()});
     }
-    if(!$('#alimentadorPedido')){
-      const dl=document.createElement('datalist');dl.id='alimentadoresList';dl.innerHTML=Object.keys(ALIMENTADORES).sort().map(x=>`<option value="${esc(x)}"></option>`).join('');fields.appendChild(dl);
-      const a=document.createElement('label');a.className='field';a.innerHTML='Alimentador<input id="alimentadorPedido" list="alimentadoresList" placeholder="Ej.: A-15">';fields.appendChild(a);
-      const d=document.createElement('label');d.className='field';d.innerHTML='Distrito<select id="distritoPedido"><option value="">Se completa automáticamente</option></select>';fields.appendChild(d);
-      const n=document.createElement('div');n.className='v34-district-note';n.textContent='Escribe el alimentador. La web ubicará automáticamente el distrito según la base fija de circuitos y alimentadores.';fields.appendChild(n);
-      a.querySelector('input').value=defaults().alimentador||'';
-      a.querySelector('input').addEventListener('input',updateDistrict);
-      d.querySelector('select').addEventListener('change',e=>{defaults().distrito=e.target.value;save()});
-      updateDistrict();
+    let dl = document.getElementById('alimentadoresList');
+    if(!dl){
+      dl = document.createElement('datalist');
+      dl.id = 'alimentadoresList';
+      document.body.appendChild(dl);
     }
+    dl.innerHTML = Object.keys(ALIMENTADORES).sort().map(k => {
+      const d = (ALIMENTADORES[k] || []).join(' / ');
+      return `<option value="${esc(k)}">${esc(k)}${d ? ' - ' + esc(d) : ''}</option>`;
+    }).join('');
+    
+    const alimInput = document.getElementById('alimentadorPedido');
+    const distInput = document.getElementById('distritoPedido');
+    if(alimInput){
+      alimInput.setAttribute('list', 'alimentadoresList');
+      alimInput.setAttribute('autocomplete', 'off');
+      alimInput.removeEventListener('input', updateDistrict);
+      alimInput.addEventListener('input', updateDistrict);
+      alimInput.removeEventListener('change', updateDistrict);
+      alimInput.addEventListener('change', updateDistrict);
+    }
+    if(distInput){
+      distInput.removeEventListener('input', onDistChange);
+      distInput.addEventListener('input', onDistChange);
+      distInput.removeEventListener('change', onDistChange);
+      distInput.addEventListener('change', onDistChange);
+    }
+    function onDistChange(e){ defaults().distrito = e.target.value; save(); }
+
     $('#emplazamientoPedido')?.closest('.field')?.remove();
     document.querySelectorAll('.v33-geo-note').forEach(x=>x.remove());
     updateReservaVisibility();
+    updateDistrict();
   }
-  function updateDistrict(){
-    const input=$('#alimentadorPedido'),sel=$('#distritoPedido');if(!input||!sel)return;
-    const key=norm(input.value),districts=ALIMENTADORES[key]||[];
-    input.classList.toggle('v34-invalid',!!input.value&&!districts.length);
-    sel.innerHTML=districts.length?districts.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join(''):'<option value="">No identificado</option>';
-    const saved=defaults().distrito;if(saved&&districts.includes(saved))sel.value=saved;
-    defaults().alimentador=key;defaults().distrito=sel.value||'';save();
+  function updateDistrict(isBlur = false){
+    const input = document.getElementById('alimentadorPedido'), distEl = document.getElementById('distritoPedido');
+    if(!input || !distEl) return;
+    let raw = String(input.value || '').trim();
+    if(!raw){
+      input.classList.remove('v34-invalid');
+      distEl.value = '';
+      defaults().alimentador = '';
+      defaults().distrito = '';
+      save();
+      return;
+    }
+    if(raw.includes(' - ')){
+      raw = raw.split(' - ')[0].trim();
+    }
+    const clean = raw.toUpperCase();
+    let districts = (typeof ALIMENTADORES !== 'undefined' && ALIMENTADORES[clean]) ? ALIMENTADORES[clean] : null;
+    let matchedKey = clean;
+    if((!districts || !districts.length) && typeof ALIMENTADORES !== 'undefined'){
+      const withHyphen = clean.replace(/^([A-Z]+)(\d+)$/, '$1-$2');
+      if(ALIMENTADORES[withHyphen]){ districts = ALIMENTADORES[withHyphen]; matchedKey = withHyphen; }
+    }
+    if((!districts || !districts.length) && typeof ALIMENTADORES !== 'undefined'){
+      const noHyphen = clean.replace(/[^A-Z0-9]/g, '');
+      for(const [k, v] of Object.entries(ALIMENTADORES)){
+        if(k.replace(/[^A-Z0-9]/g, '') === noHyphen){ districts = v; matchedKey = k; break; }
+      }
+    }
+    if((!districts || !districts.length) && clean.startsWith('BA-') && typeof ALIMENTADORES !== 'undefined'){
+      const alias = 'B-' + clean.slice(3);
+      if(ALIMENTADORES[alias]){ districts = ALIMENTADORES[alias]; matchedKey = alias; }
+    }
+    if(districts && districts.length){
+      if(input.value.includes(' - ') || input.value !== matchedKey){
+        input.value = matchedKey;
+      }
+      const valStr = districts.join(' / ');
+      if(distEl.tagName === 'SELECT'){
+        distEl.innerHTML = districts.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');
+        distEl.value = districts[0];
+      } else {
+        distEl.value = valStr;
+      }
+      distEl.dispatchEvent(new Event('input', { bubbles: true }));
+      distEl.dispatchEvent(new Event('change', { bubbles: true }));
+      input.classList.remove('v34-invalid');
+      defaults().alimentador = matchedKey;
+      defaults().distrito = distEl.value || '';
+      save();
+    } else {
+      if(isBlur === true && raw.length >= 3){
+        input.classList.add('v34-invalid');
+      } else {
+        input.classList.remove('v34-invalid');
+      }
+    }
   }
+  window.updateDistrict = updateDistrict;
+  ['input', 'change', 'keyup', 'paste'].forEach(evt => {
+    document.addEventListener(evt, e => {
+      if(e.target && e.target.id === 'alimentadorPedido') updateDistrict(false);
+    }, true);
+  });
+  document.addEventListener('blur', e => {
+    if(e.target && e.target.id === 'alimentadorPedido') updateDistrict(true);
+  }, true);
   function geo(){return {alimentador:norm($('#alimentadorPedido')?.value||defaults().alimentador||''),distrito:$('#distritoPedido')?.value||defaults().distrito||''}}
   function patchHistoryAfterFinalize(){
     const b=$('#v31FinalizeOrder');if(!b||b.dataset.v34)return;b.dataset.v34='1';
@@ -3760,8 +3844,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
     const rawTokens = qRaw.trim().split(/[\s,;\n\r\t]+/).filter(Boolean);
     const isMultiSearch = rawTokens.length > 1;
     const isDev = typeof window.isDevolucion === 'function' ? window.isDevolucion() : false;
-    const isCon = typeof window.isConsulta === 'function' ? window.isConsulta() : false;
-    const isNoStockLimit = isDev || isCon;
+    const isNoStockLimit = isDev;
 
     const qtyCache = {};
     document.querySelectorAll('[data-v36-qty]').forEach(inp => {
@@ -3806,7 +3889,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
       const inCart = (cart || []).some(x => String(x.code) === String(m.code));
       const val = qtyCache[m.code] || '';
 
-      return `<tr class="${sel ? 'v36-selected-row' : ''} ${inCart ? 'v36-incart-row' : ''} ${isP ? 'v36-prio-p-row' : ''}"><td class="v42-material-image cursor-pointer" data-open-image="${escv(m.code)}">${img}</td><td class="v29-code cursor-pointer" data-copy-code="${escv(m.code)}" title="Tocar para copiar matrícula">${escv(m.code)}${isP ? '<br><span class="prio-p-badge">⚡ PRIORIDAD P</span>' : ''}</td><td><b>${escv(m.description)}</b>${inCart ? ' <span class="badge" style="background:#16a34a;color:#fff;font-size:10px;margin-left:6px;padding:2px 6px">✓ Agregado</span>' : ''}<br><button class="v29-alias-link" data-quick-edit="${escv(m.code)}">Alias: ${aliases} · Ver/editar</button>${sel ? `<div class="v36-select-note">${isCon ? '🔍 Consulta (Simulación): ingresa la cantidad sin restricciones de stock.' : (isDev ? '📦 Devolución habilitada: ingresa la cantidad a devolver (sin restricción de stock) y confirma.' : 'Material seleccionado para el centro actual. Ingresa una cantidad que no supere su stock y confirma.')}</div>` : ''}</td><td><span class="v29-stock-pill ${s3 > 0 ? 'good' : 'none'}">${s3} ${escv(normalizedUnit(m))}</span></td><td><span class="v29-stock-pill ${s4 > 0 ? 'good' : 'none'}">${s4} ${escv(normalizedUnit(m))}</span></td><td>${escv(normalizedUnit(m))}</td><td>${showQtyBox ? `<div class="v36-select-box"><input type="number" min="0" step="1" placeholder="Cantidad" value="${escv(val)}" data-v36-qty="${escv(m.code)}" ${isNoStockLimit ? '' : `max="${totalStock(m.code, String($v('#centroGlobal')?.value || '1003'))}"`} ${sel && !isMultiSearch ? 'autofocus' : ''}><button type="button" class="btn primary" data-v36-confirm="${escv(m.code)}">${isCon ? 'Agregar a consulta' : (isDev ? 'Agregar devolución' : 'Agregar al pedido')}</button>${sel && !isMultiSearch ? `<button type="button" class="btn secondary" data-v36-cancel>Cancelar</button>` : ''}</div>` : `<button type="button" class="btn primary" data-v36-select="${escv(m.code)}">Seleccionar</button>`}</td></tr>`;
+      return `<tr class="${sel ? 'v36-selected-row' : ''} ${inCart ? 'v36-incart-row' : ''} ${isP ? 'v36-prio-p-row' : ''}"><td class="v42-material-image cursor-pointer" data-open-image="${escv(m.code)}">${img}</td><td class="v29-code cursor-pointer" data-copy-code="${escv(m.code)}" title="Tocar para copiar matrícula">${escv(m.code)}${isP ? '<br><span class="prio-p-badge">⚡ PRIORIDAD P</span>' : ''}</td><td><b>${escv(m.description)}</b>${inCart ? ' <span class="badge" style="background:#16a34a;color:#fff;font-size:10px;margin-left:6px;padding:2px 6px">✓ Agregado</span>' : ''}<br><button class="v29-alias-link" data-quick-edit="${escv(m.code)}">Alias: ${aliases} · Ver/editar</button>${sel ? `<div class="v36-select-note">${isDev ? '📦 Devolución habilitada: ingresa la cantidad a devolver (sin restricción de stock) y confirma.' : 'Material seleccionado para el centro actual. Ingresa una cantidad que no supere su stock y confirma.'}</div>` : ''}</td><td><span class="v29-stock-pill ${s3 > 0 ? 'good' : 'none'}">${s3} ${escv(normalizedUnit(m))}</span></td><td><span class="v29-stock-pill ${s4 > 0 ? 'good' : 'none'}">${s4} ${escv(normalizedUnit(m))}</span></td><td>${escv(normalizedUnit(m))}</td><td>${showQtyBox ? `<div class="v36-select-box"><input type="number" min="0" step="1" placeholder="Cantidad" value="${escv(val)}" data-v36-qty="${escv(m.code)}" ${isNoStockLimit ? '' : `max="${totalStock(m.code, String($v('#centroGlobal')?.value || '1003'))}"`} ${sel && !isMultiSearch ? 'autofocus' : ''}><button type="button" class="btn primary" data-v36-confirm="${escv(m.code)}">${isDev ? 'Agregar devolución' : 'Agregar al pedido'}</button>${sel && !isMultiSearch ? `<button type="button" class="btn secondary" data-v36-cancel>Cancelar</button>` : ''}</div>` : `<button type="button" class="btn primary" data-v36-select="${escv(m.code)}">Seleccionar</button>`}</td></tr>`;
     }).join('')}</tbody></table></div>`;
 
     if (results.innerHTML !== newHtml) {
@@ -3821,6 +3904,9 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
           const date = $v('#fechaPedido')?.value || todayKey();
           const om = $v('#omPedido')?.value.trim() || '';
           const reserva = $v('#reservaPedido')?.value.trim() || '';
+          const unit = $v('#movil')?.value || '';
+          const alim = $v('#alimentadorPedido')?.value.trim() || defaults().alimentador || '';
+          const dist = $v('#distritoPedido')?.value.trim() || defaults().distrito || '';
           const now = new Date().toISOString();
           const base = `DEV-${date.replaceAll('-', '')}-${Date.now()}`;
           const itemsToAdd = [];
@@ -3853,24 +3939,24 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
               om: om,
               reserva: reserva,
               centro: primary,
-              unidadRecojo: reserva ? `Reserva: ${reserva}` : 'DEVOLUCION',
+              unidadRecojo: unit || (reserva ? `Reserva: ${reserva}` : 'DEVOLUCION'),
+              alimentador: alim,
+              distrito: dist,
               movimiento: 'DEVOLUCION',
               total: itemsToAdd.reduce((a, x) => a + x.qty, 0),
               createdAt: now,
+              guardadoEnHistorial: false,
               items: itemsToAdd
             };
             if (typeof ensureHistory === 'function') ensureHistory().push(devOrder);
             else { state.orderHistory = state.orderHistory || []; state.orderHistory.push(devOrder); }
-            state.historyUnread = (Number(state.historyUnread) || 0) + 1;
             save();
-            if (typeof updateHistoryBadgeV41 === 'function') updateHistoryBadgeV41();
+            if (typeof updateDevolucionesBadge === 'function') updateDevolucionesBadge();
             if (typeof renderReservas === 'function') renderReservas();
-            if (typeof renderHistory37 === 'function') renderHistory37();
-            if (typeof renderControl37 === 'function') renderControl37();
             if (typeof queueSync === 'function') queueSync('order');
             if (typeof scheduleDriveSync === 'function') scheduleDriveSync(600, 'order');
             renderResults();
-            msg(`✓ Se registraron ${itemsToAdd.length} material(es) directamente en Control de Reservas.`);
+            msg(`✓ Se agregaron ${itemsToAdd.length} material(es) a Devoluciones pendientes.`);
           } else {
             msg('Ingresa una cantidad mayor a 0 en los materiales que deseas registrar.', true);
           }
@@ -3913,47 +3999,11 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
   function addConfirmed(code){
     const m=(state.materials||[]).find(x=>String(x.code)===String(code));if(!m)return;
     const isDev = typeof window.isDevolucion === 'function' ? window.isDevolucion() : false;
-    const isCon = typeof window.isConsulta === 'function' ? window.isConsulta() : false;
-    const isNoStockLimit = isDev || isCon;
+    const isNoStockLimit = isDev;
     if(!isNoStockLimit&&stockMeta.date!==todayKey())return msg(expiredStockMessage(),true);
     const input=$v(`[data-v36-qty="${CSS.escape(String(code))}"]`),qty=Number(input?.value)||0;
     if(qty<=0)return msg('Ingresa una cantidad mayor a 0 antes de agregar el material.',true);
 
-    if(isCon){
-      window.consultaItems = window.consultaItems || (state && state.consultaItems) || [];
-      const existingCon = window.consultaItems.find(x => String(x.code) === String(code));
-      if(existingCon){
-        const prevQty = Number(existingCon.qty) || 0;
-        const totalQty = prevQty + qty;
-        const confirmFn = () => {
-          existingCon.qty = String(totalQty);
-          if(state) state.consultaItems = window.consultaItems;
-          if(typeof save === 'function') save();
-          if(typeof renderConsulta === 'function') renderConsulta();
-          renderResults();
-          msg(`✓ Se agregaron ${qty} ${normalizedUnit(m)} adicionales de ${code} a la Consulta (Total: ${totalQty}).`);
-        };
-        const confirmMsg = `¿Desea agregar más material?\n\nLa matrícula ${code} (${m.description}) ya se encuentra en la Consulta con cantidad ${prevQty} ${normalizedUnit(m)}.\n\n¿Desea sumar ${qty} ${normalizedUnit(m)} más? (Cantidad total resultante: ${totalQty} ${normalizedUnit(m)})`;
-        if(typeof window.customConfirm === 'function'){
-          window.customConfirm(confirmMsg, confirmFn, null, {
-            title: '¿Desea agregar más material?',
-            okText: 'Sí, agregar más',
-            okClass: 'btn primary'
-          });
-        } else {
-          confirmFn();
-        }
-        return;
-      }
-      window.consultaItems.push({...clone(m), qty: String(qty)});
-      if(state) state.consultaItems = window.consultaItems;
-      if(typeof save === 'function') save();
-      selectedCode = '';
-      renderResults();
-      if(typeof renderConsulta === 'function') renderConsulta();
-      msg(`✓ Material ${code} (${qty} ${normalizedUnit(m)}) agregado a la Consulta.`);
-      return;
-    }
     const primary=String($v('#centroGlobal')?.value||'1003'),available=totalStock(code,primary);
     if(!isNoStockLimit&&qty>available){if(input){input.classList.add('insufficient');input.focus()}return msg(`No puedes agregar ${qty} ${normalizedUnit(m)}. En ${primary==='1003'?'1003 - San Juan':'1004 - Vitarte'} solo hay ${available} disponibles. Corrige la cantidad.`,true)}
     
@@ -3962,6 +4012,9 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
       const date = $v('#fechaPedido')?.value || todayKey();
       const om = $v('#omPedido')?.value.trim() || '';
       const reserva = $v('#reservaPedido')?.value.trim() || '';
+      const unit = $v('#movil')?.value || '';
+      const alim = $v('#alimentadorPedido')?.value.trim() || defaults().alimentador || '';
+      const dist = $v('#distritoPedido')?.value.trim() || defaults().distrito || '';
       const now = new Date().toISOString();
       const base = `DEV-${date.replaceAll('-', '')}-${Date.now()}`;
       
@@ -3973,10 +4026,13 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
         om: om,
         reserva: reserva,
         centro: primary,
-        unidadRecojo: reserva ? `Reserva: ${reserva}` : 'DEVOLUCION',
+        unidadRecojo: unit || (reserva ? `Reserva: ${reserva}` : 'DEVOLUCION'),
+        alimentador: alim,
+        distrito: dist,
         movimiento: 'DEVOLUCION',
         total: qty,
         createdAt: now,
+        guardadoEnHistorial: false,
         items: [{
           code: m.code,
           description: m.description,
@@ -3991,17 +4047,14 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
       if(typeof ensureHistory === 'function') ensureHistory().push(devOrder);
       else { state.orderHistory = state.orderHistory || []; state.orderHistory.push(devOrder); }
 
-      state.historyUnread = (Number(state.historyUnread) || 0) + 1;
       save();
       selectedCode = '';
-      if(typeof updateHistoryBadgeV41 === 'function') updateHistoryBadgeV41();
+      if(typeof updateDevolucionesBadge === 'function') updateDevolucionesBadge();
       if(typeof renderReservas === 'function') renderReservas();
-      if(typeof renderHistory37 === 'function') renderHistory37();
-      if(typeof renderControl37 === 'function') renderControl37();
       if(typeof queueSync === 'function') queueSync('order');
       if(typeof scheduleDriveSync === 'function') scheduleDriveSync(600, 'order');
       renderResults();
-      msg(`✓ Material ${m.code} (${qty} ${normalizedUnit(m)}) registrado directamente en Control de Reservas.`);
+      msg(`✓ Material ${m.code} (${qty} ${normalizedUnit(m)}) agregado a Devoluciones pendientes.`);
       return;
     }
 
@@ -4037,7 +4090,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
     }
 
     cart.push({...clone(m),qty:String(qty),centerChoices:[primary],centerMode:primary,cartLineId:`${code}-${primary}-${Date.now()}`});
-    selectedCode='';renderCart();renderResults();if(typeof renderConsulta==='function')renderConsulta();
+    selectedCode='';renderCart();renderResults();
     const targetTxt = typeof window.getMovementTargetText === 'function' ? window.getMovementTargetText() : 'el pedido';
     msg(`✓ Material ${code} (${qty} ${normalizedUnit(m)}) agregado a ${targetTxt}.`);
   }
@@ -4067,15 +4120,14 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
   window.renderCart=function(){
     const tbody=$v('#cart'),empty=$v('#empty');if(!tbody)return;
     const isDev = typeof window.isDevolucion === 'function' ? window.isDevolucion() : false;
-    const isInf = typeof window.isInforme === 'function' ? window.isInforme() : false;
-    const isNoStockLimit = isDev || isInf;
+    const isNoStockLimit = isDev;
     const cc=$v('#cartCount');if(cc)cc.textContent=`${cart.length} material${cart.length===1?'':'es'}`;if(empty)empty.style.display=cart.length?'none':'block';
     const table=tbody.closest('table'),hr=table?.querySelector('thead tr');if(hr)hr.innerHTML='<th>Matrícula</th><th>Descripción</th><th>Cant.</th><th>Unidad</th><th>Centro de atención</th><th></th>';
     tbody.innerHTML=cart.map((m,i)=>{
       const qty=Number(m.qty)||0,p=allocate36(m),s3=totalStock(m.code,'1003'),s4=totalStock(m.code,'1004'),mode=m.centerMode||String($v('#centroGlobal')?.value||'1003');
       const isGood = qty>0 && (isNoStockLimit || p.missing===0);
       const isBad = !isNoStockLimit && p.missing>0;
-      return `<tr class="${isGood?'':'row-pending'}"><td><b>${escv(m.code)}</b></td><td>${escv(m.description)}<span class="stock-info">${isInf?'Material para informe · Sin restricción de stock':(isDev?'Devolución (D) · Ingreso sin restricción de stock':`Disponible: 1003 San Juan ${s3} · 1004 Vitarte ${s4} ${escv(normalizedUnit(m))}`)}</span>${isBad?`<span class="stock-alt-note">Faltan <strong>${p.missing} ${escv(normalizedUnit(m))}</strong>. Elige 1003, 1004 o Ambos.</span>`:''}</td><td class="v36-cart-qty"><input class="qty ${isGood?'ready':''} ${isBad?'insufficient':''}" type="number" min="0" step="1" value="${escv(m.qty||'')}" placeholder="0" data-qty="${i}"></td><td>${escv(normalizedUnit(m))}</td><td><div class="v36-center-actions"><button type="button" class="v36-center-btn ${mode==='1003'?'active':''}" data-v36-mode="1003" data-v36-index="${i}">Usar 1003 · ${s3}</button><button type="button" class="v36-center-btn ${mode==='1004'?'active':''}" data-v36-mode="1004" data-v36-index="${i}">Usar 1004 · ${s4}</button><button type="button" class="v36-center-btn both ${mode==='both'?'active':''}" data-v36-mode="both" data-v36-index="${i}">Ambos</button></div><span class="v36-center-summary">${mode==='both'?'Se distribuirá entre ambos centros.':`Se usará solo el centro ${mode}.`}</span></td><td><button class="btn danger" data-rm="${i}">Quitar</button></td></tr>`;
+      return `<tr class="${isGood?'':'row-pending'}"><td><b>${escv(m.code)}</b></td><td>${escv(m.description)}<span class="stock-info">${isDev?'Devolución (D) · Ingreso sin restricción de stock':`Disponible: 1003 San Juan ${s3} · 1004 Vitarte ${s4} ${escv(normalizedUnit(m))}`}</span>${isBad?`<span class="stock-alt-note">Faltan <strong>${p.missing} ${escv(normalizedUnit(m))}</strong>. Elige 1003, 1004 o Ambos.</span>`:''}</td><td class="v36-cart-qty"><input class="qty ${isGood?'ready':''} ${isBad?'insufficient':''}" type="number" min="0" step="1" value="${escv(m.qty||'')}" placeholder="0" data-qty="${i}"></td><td>${escv(normalizedUnit(m))}</td><td><div class="v36-center-actions"><button type="button" class="v36-center-btn ${mode==='1003'?'active':''}" data-v36-mode="1003" data-v36-index="${i}">Usar 1003 · ${s3}</button><button type="button" class="v36-center-btn ${mode==='1004'?'active':''}" data-v36-mode="1004" data-v36-index="${i}">Usar 1004 · ${s4}</button><button type="button" class="v36-center-btn both ${mode==='both'?'active':''}" data-v36-mode="both" data-v36-index="${i}">Ambos</button></div><span class="v36-center-summary">${mode==='both'?'Se distribuirá entre ambos centros.':`Se usará solo el centro ${mode}.`}</span></td><td><button class="btn danger" data-rm="${i}">Quitar</button></td></tr>`;
     }).join('');
     if(typeof renderSapPreview==='function')renderSapPreview();if(typeof renderSearchOrder==='function')renderSearchOrder();
   };
@@ -4205,6 +4257,13 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
       const rawMov = String(order.movimiento || 'PEDIDO').toUpperCase();
       const isDev = rawMov === 'DEVOLUCION';
       const isRec = rawMov === 'RECUPERO';
+      const isRes = rawMov === 'RESERVA' || Boolean(order.reserva);
+
+      // Las devoluciones pendientes se gestionan en Devoluciones; solo se graban en Historial tras guardarlas
+      if (isDev && !order.guardadoEnHistorial) return;
+
+      // Las reservas pendientes se gestionan en Solicitud y Control de Reservas; solo se graban en Historial tras guardarlas
+      if (isRes && !order.guardadoEnHistorial && !order.reservaGuardada) return;
 
       const items = Array.isArray(order.items) && order.items.length ? order.items : [{
         code: '', description: 'Material registrado', qty: order.total || 0, unit: 'UND', warehouse: '', lot: '', reserva: (isDev ? '' : orderReserva)
@@ -4216,8 +4275,9 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
         
         // Devoluciones are independent materials without reservation code
         let resVal = '';
-        if (!isDev) {
-          resVal = itemEdit.reserva !== undefined ? itemEdit.reserva : (item.reserva || orderReserva || '');
+        if (isRes) {
+          // El número de reserva es único por una cantidad de materiales y se debe repetir en todos los materiales relacionados
+          resVal = String(orderReserva || item.reserva || itemEdit.reserva || order.reserva || '').trim();
         }
 
         let tipo = 'PEDIDO';
@@ -4225,8 +4285,8 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
           tipo = 'DEVOLUCION';
         } else if (isRec) {
           tipo = 'RECUPERO';
-        } else if (resVal.trim() || rawMov === 'RESERVA') {
-          tipo = 'RESERVA'; // Groups materials under this reservation code
+        } else if (isRes) {
+          tipo = 'RESERVA'; // Agrupa materiales bajo este número de reserva
         } else {
           tipo = 'PEDIDO';
         }
@@ -4266,17 +4326,31 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
 
   function controlRows37(){
     state.controlEdits=state.controlEdits&&typeof state.controlEdits==='object'?state.controlEdits:{};
-    return (state.orderHistory||[]).slice().sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt))).map((o,idx)=>{
+    return (state.orderHistory||[]).slice().sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt))).filter(o => {
+      const mov = String(o.movimiento||'').toUpperCase();
+      const isRes = mov === 'RESERVA' || Boolean(o.reserva);
+      // Solo salen las reservas pendientes; al guardarse se registran en historial y se borran de aquí
+      return isRes && !o.guardadoEnHistorial && !o.reservaGuardada;
+    }).map((o,idx)=>{
       const key=String(o.id || (o.om ? (o.om + '_' + String(o.centro||'') + '_' + String(o.createdAt || '')) : ('order_' + idx)));
       const edit=state.controlEdits[key]||{};
+      const resVal = edit.reserva!==undefined?edit.reserva:(o.reserva||'');
       return {
-        key,pedido:o.id||'',
-        reserva:edit.reserva!==undefined?edit.reserva:(o.reserva||''),
-        almacen:String(o.centro||''),
-        encargado:o.supervisor||'',om:o.om||'',fecha:o.fecha||'',unidadRecojo:o.unidadRecojo||'',
+        key,
+        pedido:o.id||'',
+        reserva:resVal,
+        almacen:String(o.centro||'')==='1003'?'1003 - San Juan':(String(o.centro||'')==='1004'?'1004 - Vitarte':String(o.centro||'')),
+        encargado:o.supervisor||'',
+        om:o.om||'',
+        fecha:o.fecha||'',
+        unidadRecojo:o.unidadRecojo||'',
         conductor:edit.conductor!==undefined?edit.conductor:(o.conductor||''),
-        alimentador:o.alimentador||'',distrito:o.distrito||'',
-        status:o.movimiento||'',unidadRecupero:'',total:Number(o.total||0),createdAt:o.createdAt||''
+        alimentador:o.alimentador||'',
+        distrito:o.distrito||'',
+        status:'RESERVA',
+        total:Number(o.total||0),
+        createdAt:o.createdAt||'',
+        items:Array.isArray(o.items)?o.items:[]
       };
     });
   }
@@ -4284,29 +4358,35 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
   function exportControl37(){
     if(!window.XLSX)return msg('No se cargó el generador de Excel.',true);
     const data=controlRows37().map(r=>({
-      'RESERVA':r.reserva,'ALMACEN':r.almacen,'ENCARGADO':r.encargado,'OM':r.om,
-      'FECHA PEDIDO':r.fecha,'UNIDAD (RECOJO)':r.unidadRecojo,'CONDUCTOR':r.conductor,
-      'ALIM.':r.alimentador,'DISTRITO':r.distrito,'STATUS':r.status,
-      'UNIDAD (RECUPERO)':r.unidadRecupero
+      'RESERVA':r.reserva,
+      'ALMACÉN':r.almacen,
+      'ENCARGADO':r.encargado,
+      'OM':r.om,
+      'FECHA':r.fecha,
+      'UNIDAD MÓVIL':r.unidadRecojo,
+      'CONDUCTOR':r.conductor,
+      'ALIMENTADOR':r.alimentador,
+      'DISTRITO':r.distrito,
+      'MATERIALES':(r.items||[]).map(i=>`${i.code} (${i.qty} ${i.unit||'UND'})`).join('; ')
     }));
-    if(!data.length)return msg('Todavía no hay solicitudes registradas.',true);
-    const headers=['RESERVA','ALMACEN','ENCARGADO','OM','FECHA PEDIDO','UNIDAD (RECOJO)','CONDUCTOR','ALIM.','DISTRITO','STATUS','UNIDAD (RECUPERO)'];
+    if(!data.length)return msg('No hay reservas pendientes por exportar.',true);
+    const headers=['RESERVA','ALMACÉN','ENCARGADO','OM','FECHA','UNIDAD MÓVIL','CONDUCTOR','ALIMENTADOR','DISTRITO','MATERIALES'];
     const ws=XLSX.utils.json_to_sheet(data,{header:headers});
-    ws['!cols']=[12,11,20,15,14,18,18,14,20,14,19].map(wch=>({wch}));
-    ws['!autofilter']={ref:`A1:K${data.length+1}`};
-    const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'CONTROL PEDIDOS');
-    XLSX.writeFile(wb,`Control_Solicitudes_${new Date().toISOString().slice(0,10)}.xlsx`);
+    ws['!cols']=[14,14,20,15,14,18,18,14,20,35].map(wch=>({wch}));
+    ws['!autofilter']={ref:`A1:J${data.length+1}`};
+    const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'RESERVAS PENDIENTES');
+    XLSX.writeFile(wb,`Control_Reservas_${new Date().toISOString().slice(0,10)}.xlsx`);
   }
 
   function printControlDocument(){
     const data=controlRows37();
-    if(!data.length)return msg('No hay solicitudes registradas para imprimir.',true);
+    if(!data.length)return msg('No hay reservas pendientes para imprimir.',true);
     const docHtml = `
       <div class="print-doc">
         <div class="print-header">
           <div class="print-title">
-            <h2>📑 CONTROL DE SOLICITUDES Y RESERVAS DE MATERIALES</h2>
-            <p>Reporte de Control · Generado el ${new Date().toLocaleString('es-PE')}</p>
+            <h2>📑 CONTROL DE RESERVAS DE MATERIALES</h2>
+            <p>Reporte de Reservas Pendientes · Generado el ${new Date().toLocaleString('es-PE')}</p>
           </div>
           <div style="text-align:right;font-size:9pt;color:#64748b">
             <b>Fecha:</b> ${new Date().toLocaleDateString('es-PE')}
@@ -4315,8 +4395,8 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
         <table class="print-table">
           <thead>
             <tr>
-              <th>RESERVA</th><th>ALMACEN</th><th>ENCARGADO</th><th>OM</th><th>FECHA PEDIDO</th>
-              <th>UNIDAD (RECOJO)</th><th>CONDUCTOR</th><th>ALIM.</th><th>DISTRITO</th><th>STATUS</th><th>UNIDAD (RECUPERO)</th>
+              <th>RESERVA</th><th>ALMACÉN</th><th>ENCARGADO</th><th>OM</th><th>FECHA</th>
+              <th>UNIDAD MÓVIL</th><th>CONDUCTOR</th><th>ALIMENTADOR</th><th>DISTRITO</th><th>MATERIALES RELACIONADOS</th>
             </tr>
           </thead>
           <tbody>
@@ -4331,18 +4411,17 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
                 <td>${esc(r.conductor||'---')}</td>
                 <td>${esc(r.alimentador||'')}</td>
                 <td>${esc(r.distrito||'')}</td>
-                <td>${esc(r.status||'')}</td>
-                <td>${esc(r.unidadRecupero||'')}</td>
+                <td>${(r.items||[]).map(i=>`${esc(i.code)} × ${esc(i.qty)} ${esc(i.unit||'UND')}`).join('<br>')}</td>
               </tr>
             `).join('')}
           </tbody>
         </table>
         <div class="print-summary">
-          <span>Total de solicitudes: <b>${data.length}</b></span>
+          <span>Total de órdenes en reserva: <b>${data.length}</b></span>
         </div>
       </div>
     `;
-    openPrintModal('📑 CONTROL DE SOLICITUDES Y RESERVAS', docHtml, `Control_Solicitudes_${new Date().toISOString().slice(0,10)}.html`);
+    openPrintModal('📑 CONTROL DE RESERVAS DE MATERIALES', docHtml, `Control_Reservas_${new Date().toISOString().slice(0,10)}.html`);
   }
   window.printControlDocument = printControlDocument;
 
@@ -4350,17 +4429,28 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
     const view=$('#controlView'); if(!view)return;
     const controls=controlRows37();
     const controlHtml=controls.map(r=>{
-      const isDev = r.status === 'DEVOLUCION';
-      const reservaCell = isDev
-        ? '<span style="color:var(--muted);font-size:11px;font-weight:600;display:inline-block;padding:5px 8px;background:rgba(0,0,0,0.03);border-radius:6px">Devolución (independiente)</span>'
-        : `<input class="v41-edit-input res-edit-input" data-control-key="${esc(r.key)}" data-control-field="reserva" value="${esc(r.reserva)}" placeholder="N° Reserva SAP" title="Escribe la reserva (agrupa los materiales)">`;
-
       return `<tr>
-        <td style="min-width:140px">${reservaCell}</td>
-        <td>${esc(r.almacen)}</td><td>${esc(r.encargado)}</td><td><b>${esc(r.om)}</b></td><td>${esc(r.fecha)}</td>
+        <td style="min-width:145px">
+          <input class="v41-edit-input res-edit-input" data-control-key="${esc(r.key)}" data-control-field="reserva" value="${esc(r.reserva)}" placeholder="N° Reserva SAP" title="Número de reserva (se repetirá en todos los materiales relacionados)">
+        </td>
+        <td>${esc(r.almacen)}</td>
+        <td>${esc(r.encargado)}</td>
+        <td><b>${esc(r.om)}</b></td>
+        <td>${esc(r.fecha)}</td>
         <td>${esc(r.unidadRecojo)}</td>
-        <td style="min-width:150px"><input class="v41-edit-input res-edit-input" data-control-key="${esc(r.key)}" data-control-field="conductor" value="${esc(r.conductor)}" placeholder="Nombre conductor" title="Escribe el conductor"></td>
-        <td>${esc(r.alimentador)}</td><td>${esc(r.distrito)}</td><td><b>${esc(r.status)}</b></td><td>${esc(r.unidadRecupero)}</td>
+        <td style="min-width:150px">
+          <input class="v41-edit-input res-edit-input" data-control-key="${esc(r.key)}" data-control-field="conductor" value="${esc(r.conductor)}" placeholder="Nombre conductor" title="Escribe el conductor">
+        </td>
+        <td>${esc(r.alimentador)}</td>
+        <td>${esc(r.distrito)}</td>
+        <td style="min-width:220px">
+          <div style="font-size:12px;line-height:1.45">
+            ${(r.items||[]).map(i=>`<div><b>${esc(i.code)}</b> × ${esc(i.qty)} ${esc(i.unit||'UND')} <span style="color:var(--muted)">(${esc(i.description||'')})</span></div>`).join('')}
+          </div>
+        </td>
+        <td style="text-align:center;min-width:90px">
+          <button type="button" class="btn danger" data-rm-reserva="${esc(r.key)}" style="padding:4px 10px;font-size:12px;font-weight:700">🗑️ Quitar</button>
+        </td>
       </tr>`;
     }).join('');
 
@@ -4368,59 +4458,83 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
       <div class="v39-history-head">
         <div>
           <h2>📑 Solicitud y Control de Reservas</h2>
-          <p class="small">Asigna número de reserva SAP para agrupar materiales y conductor de entrega. Presiona "Guardar" para registrar los cambios en el historial.</p>
+          <p class="small">Aquí se muestran <b>únicamente las reservas de material</b>. Cada número de reserva agrupa sus materiales relacionados. Al pulsar <b>💾 Guardar reservas</b>, se registrarán en el Historial y se borrarán de esta lista.</p>
         </div>
         <div class="v39-history-actions">
-          <button class="btn success" id="v39SaveControl" type="button" style="font-weight:800;padding:8px 18px;display:inline-flex;align-items:center;gap:6px">💾 Guardar solicitudes y reservas</button>
-          <button class="btn primary" id="v39ExportControl">📊 Exportar control de solicitudes</button>
-          <button class="btn secondary" id="v39PrintControl" type="button">🖨️ Imprimir control</button>
+          <button class="btn success" id="v39SaveControl" type="button" style="font-weight:800;padding:8px 18px;display:inline-flex;align-items:center;gap:6px">💾 Guardar reservas</button>
+          <button class="btn primary" id="v39ExportControl">📊 Exportar reservas</button>
+          <button class="btn secondary" id="v39PrintControl" type="button">🖨️ Imprimir reservas</button>
         </div>
       </div>
-      <p class="v41-control-note">💡 Completa <b>RESERVA</b> (agrupa los materiales del pedido) y <b>CONDUCTOR</b>. Haz clic en <b>💾 Guardar solicitudes y reservas</b> para sincronizar con el historial unificado.</p>
+      <p class="v41-control-note">💡 Verifica o ingresa el <b>N° RESERVA</b> (se replicará automáticamente en todos los materiales relacionados de la orden) y el <b>CONDUCTOR</b>. Haz clic en <b>💾 Guardar reservas</b> para grabar en el Historial permanente y borrarlas de esta lista.</p>
       <div class="v39-table">
         <table>
           <thead>
-            <tr><th>RESERVA</th><th>ALMACEN</th><th>ENCARGADO</th><th>OM</th><th>FECHA PEDIDO</th><th>UNIDAD (RECOJO)</th><th>CONDUCTOR</th><th>ALIM.</th><th>DISTRITO</th><th>STATUS</th><th>UNIDAD (RECUPERO)</th></tr>
+            <tr><th>N° RESERVA</th><th>ALMACÉN</th><th>ENCARGADO</th><th>OM</th><th>FECHA</th><th>UNIDAD MÓVIL</th><th>CONDUCTOR</th><th>ALIMENTADOR</th><th>DISTRITO</th><th>MATERIALES RELACIONADOS</th><th style="text-align:center">ACCIONES</th></tr>
           </thead>
           <tbody>${controlHtml}</tbody>
         </table>
-        ${!controls.length?'<div class="v39-empty">Todavía no hay solicitudes registradas. Realiza un pedido desde el buscador para verlas aquí.</div>':''}
+        ${!controls.length?'<div class="v39-empty">No hay reservas pendientes por procesar. Todas las reservas guardadas se encuentran registradas en el <b>Historial</b>.</div>':''}
       </div>
     </div>`;
     $('#v39ExportControl')?.addEventListener('click',exportControl37);
     $('#v39PrintControl')?.addEventListener('click',printControlDocument);
 
     $('#v39SaveControl')?.addEventListener('click', ()=>{
-      view.querySelectorAll('[data-control-key]').forEach(input=>{
-        state.controlEdits=state.controlEdits&&typeof state.controlEdits==='object'?state.controlEdits:{};
-        const key=input.dataset.controlKey,field=input.dataset.controlField;
-        if(!key||!field)return;
-        const val=input.value.trim();
-        state.controlEdits[key]=state.controlEdits[key]||{};
-        state.controlEdits[key][field]=val;
-        const target=(state.orderHistory||[]).find((o,i)=>{
-          const k=String(o.id || (o.om ? (o.om + '_' + String(o.centro||'') + '_' + String(o.createdAt || '')) : ('order_' + i)));
-          return k===key;
-        });
-        if(target){
-          target[field]=val;
-          if(field==='reserva'){
-            if(val && target.movimiento === 'PEDIDO') target.movimiento = 'RESERVA';
-            if(!val && target.movimiento === 'RESERVA') target.movimiento = 'PEDIDO';
-            if(Array.isArray(target.items)){
+      const pending = controlRows37();
+      if(!pending.length){
+        return msg('No hay reservas pendientes por guardar.', true);
+      }
+      customConfirm(`¿Desea guardar las reservas pendientes (${pending.length})?\n\nSe registrarán en el Historial definitivo (repitiendo el número de reserva en cada uno de los materiales relacionados) y se borrarán de esta lista de reservas.`, function(){
+        // Recoger valores editados de los inputs
+        view.querySelectorAll('[data-control-key]').forEach(input=>{
+          state.controlEdits=state.controlEdits&&typeof state.controlEdits==='object'?state.controlEdits:{};
+          const key=input.dataset.controlKey,field=input.dataset.controlField;
+          if(!key||!field)return;
+          const val=input.value.trim();
+          state.controlEdits[key]=state.controlEdits[key]||{};
+          state.controlEdits[key][field]=val;
+          const target=(state.orderHistory||[]).find((o,i)=>{
+            const k=String(o.id || (o.om ? (o.om + '_' + String(o.centro||'') + '_' + String(o.createdAt || '')) : ('order_' + i)));
+            return k===key;
+          });
+          if(target){
+            target[field]=val;
+            if(field==='reserva' && Array.isArray(target.items)){
               target.items.forEach(it=>{ it.reserva = val; });
             }
           }
-        }
-        input.classList.add('saved');
-        setTimeout(()=>input.classList.remove('saved'), 1200);
-      });
-      save();
-      if(typeof queueSync==='function')queueSync('control');
-      if(typeof scheduleDriveSync==='function')scheduleDriveSync(600,'control');
-      if(typeof renderHistory37==='function')renderHistory37();
-      if(typeof renderReservas==='function')renderReservas();
-      msg('✅ Solicitudes y reservas guardadas con éxito y registradas en el historial.');
+        });
+
+        let savedCount = 0;
+        (state.orderHistory||[]).forEach(o=>{
+          const mov = String(o.movimiento||'').toUpperCase();
+          const isRes = mov === 'RESERVA' || Boolean(o.reserva);
+          if(isRes && !o.guardadoEnHistorial && !o.reservaGuardada){
+            o.guardadoEnHistorial = true;
+            o.reservaGuardada = true;
+            o.fechaGuardadoHistorial = new Date().toISOString();
+            const resCode = String(o.reserva||'').trim();
+            if(Array.isArray(o.items)){
+              o.items.forEach(it=>{ it.reserva = resCode; });
+              savedCount += o.items.length;
+            } else {
+              savedCount += 1;
+            }
+          }
+        });
+
+        state.historyUnread = (Number(state.historyUnread)||0) + savedCount;
+        state.controlEdits = {};
+        save();
+        if(typeof queueSync==='function')queueSync('control');
+        if(typeof scheduleDriveSync==='function')scheduleDriveSync(600,'control');
+        if(typeof updateControlBadge==='function')updateControlBadge();
+        if(typeof updateHistoryBadgeV41==='function')updateHistoryBadgeV41();
+        renderControl37();
+        if(typeof renderHistory37==='function')renderHistory37();
+        msg(`✅ Reservas guardadas con éxito (${savedCount} materiales): registradas en el historial y borradas de reservas pendientes.`);
+      }, null, { title: 'Guardar reservas en Historial', okText: '💾 Guardar reservas', okClass: 'btn success' });
     });
 
     view.querySelectorAll('[data-control-key]').forEach(input=>{
@@ -4438,8 +4552,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
         if(target){
           target[field]=val;
           if(field==='reserva'){
-            if(val && target.movimiento === 'PEDIDO') target.movimiento = 'RESERVA';
-            if(!val && target.movimiento === 'RESERVA') target.movimiento = 'PEDIDO';
+            target.reserva = val;
             if(Array.isArray(target.items)){
               target.items.forEach(it=>{ it.reserva = val; });
             }
@@ -4451,8 +4564,42 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
       input.addEventListener('change',saveHandler);
       input.addEventListener('blur',saveHandler);
     });
+
+    view.querySelectorAll('[data-rm-reserva]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const orderKey = btn.dataset.rmReserva;
+        customConfirm('¿Desea descartar esta reserva pendiente?', ()=>{
+          const idx = (state.orderHistory||[]).findIndex((o,i)=>{
+            const k=String(o.id || (o.om ? (o.om + '_' + String(o.centro||'') + '_' + String(o.createdAt || '')) : ('order_' + i)));
+            return k===orderKey;
+          });
+          if(idx !== -1){
+            state.orderHistory.splice(idx, 1);
+            delete state.controlEdits[orderKey];
+            save();
+            if(typeof updateControlBadge==='function')updateControlBadge();
+            renderControl37();
+            msg('Reserva pendiente eliminada.');
+          }
+        }, null, { title: 'Eliminar reserva pendiente', okText: 'Sí, eliminar', okClass: 'btn danger' });
+      });
+    });
+
+    if(typeof updateControlBadge==='function') updateControlBadge();
   }
   window.renderControl37 = renderControl37;
+
+  function updateControlBadge(){
+    const badge = document.getElementById('controlNewCount');
+    if(!badge) return;
+    const count = (state.orderHistory || []).filter(o => {
+      const mov = String(o.movimiento || '').toUpperCase();
+      return (mov === 'RESERVA' || o.reserva) && !o.guardadoEnHistorial && !o.reservaGuardada;
+    }).length;
+    badge.textContent = String(count);
+    badge.classList.toggle('hidden', count === 0);
+  }
+  window.updateControlBadge = updateControlBadge;
 
   // Unified History Filter State
   let histFilterType = 'ALL'; // 'ALL' | 'RESERVA' | 'PEDIDO' | 'DEVOLUCION' | 'RECUPERO'
@@ -4834,8 +4981,8 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
       const movimiento = String(order.movimiento || 'PEDIDO').toUpperCase();
       const isDev = movimiento === 'DEVOLUCION';
 
-      // We only include independent returned materials in the Devoluciones view
-      if (!isDev) return;
+      // Solo incluir devoluciones pendientes en esta vista (al guardarse se borran de aquí y pasan al Historial)
+      if (!isDev || order.guardadoEnHistorial) return;
 
       const items = Array.isArray(order.items) && order.items.length ? order.items : [{
         code: '', description: 'Material devuelto', qty: order.total || 0, unit: 'UND'
@@ -5018,7 +5165,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
           <option value="1004" ${devCenterFilter === '1004' ? 'selected' : ''}>1004 - Vitarte</option>
         </select>
       </div>
-      <p class="v41-control-note">💡 Modifica directamente la <b>CANTIDAD</b> devuelta en la tabla. Haz clic en <b>💾 Guardar devoluciones</b> para confirmar y sincronizar con el historial.</p>
+      <p class="v41-control-note">💡 Modifica directamente la <b>CANTIDAD</b> devuelta en la tabla si es necesario. Haz clic en <b>💾 Guardar devoluciones</b> para <b>grabar en el historial permanente y borrarlas de esta lista</b>.</p>
       <div class="v39-table">
         <table>
           <thead>
@@ -5036,48 +5183,91 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
           </thead>
           <tbody>${rowsHtml}</tbody>
         </table>
-        ${!filtered.length ? '<div class="v39-empty">No se encontraron registros de devoluciones con los filtros aplicados. Registra devoluciones desde el módulo de pedidos seleccionando tipo "Devolución".</div>' : ''}
+        ${!filtered.length ? '<div class="v39-empty">No hay devoluciones pendientes. Puedes registrar devoluciones desde el buscador seleccionando tipo "Devolución". Al presionar "💾 Guardar devoluciones", se grabarán en el Historial y se limpiarán de esta lista.</div>' : ''}
       </div>
     </div>`;
 
     $('#v39ExportReservas')?.addEventListener('click', exportReservasExcel);
     $('#v39PrintReservas')?.addEventListener('click', printReservasDocument);
 
-    // Save modified quantities
+    // Guardar devoluciones: grabar en Historial y borrar de Devoluciones
     $('#v39SaveReservas')?.addEventListener('click', () => {
-      view.querySelectorAll('.res-qty-input').forEach(input => {
-        const orderId = input.dataset.orderId;
-        const orderKey = input.dataset.orderKey;
-        const itemIdx = Number(input.dataset.itemIdx);
-        const itemKey = input.dataset.itemKey;
-        const val = Number(input.value) || 0;
+      const currentRows = reservasRows();
+      if (!currentRows.length) {
+        return msg('No hay devoluciones pendientes para guardar.', true);
+      }
 
-        (state.orderHistory || []).forEach((o, i) => {
-          const k = String(o.id || (o.om ? (o.om + '_' + String(o.centro || '') + '_' + String(o.createdAt || '')) : ('order_' + i)));
-          if (String(o.id) === String(orderId) || k === orderKey) {
-            if (Array.isArray(o.items) && o.items[itemIdx]) {
-              o.items[itemIdx].qty = val;
-              o.items[itemIdx].CANT = val;
+      const executeSaveAndRecord = () => {
+        // 1. Sincronizar cantidades editadas desde los inputs a state.orderHistory
+        view.querySelectorAll('.res-qty-input').forEach(input => {
+          const orderId = input.dataset.orderId;
+          const orderKey = input.dataset.orderKey;
+          const itemIdx = Number(input.dataset.itemIdx);
+          const val = Number(input.value) || 0;
+
+          (state.orderHistory || []).forEach((o, i) => {
+            const k = String(o.id || (o.om ? (o.om + '_' + String(o.centro || '') + '_' + String(o.createdAt || '')) : ('order_' + i)));
+            if (String(o.id) === String(orderId) || k === orderKey) {
+              if (Array.isArray(o.items) && o.items[itemIdx]) {
+                o.items[itemIdx].qty = val;
+                o.items[itemIdx].CANT = val;
+              }
+              o.total = (o.items || []).reduce((a, x) => a + (Number(x.qty || x.CANT) || 0), 0);
             }
-            o.total = (o.items || []).reduce((a, x) => a + (Number(x.qty || x.CANT) || 0), 0);
+          });
+        });
+
+        // 2. Grabar en Historial y marcar como procesadas (borrándolas de Devoluciones pendientes)
+        const nowIso = new Date().toISOString();
+        let savedOrdersCount = 0;
+        let savedItemsCount = 0;
+
+        (state.orderHistory || []).forEach((o) => {
+          const rawMov = String(o.movimiento || '').toUpperCase();
+          if (rawMov === 'DEVOLUCION' && !o.guardadoEnHistorial) {
+            o.guardadoEnHistorial = true;
+            o.devolucionGuardada = true;
+            o.fechaGuardadoHistorial = nowIso;
+            savedOrdersCount++;
+            savedItemsCount += Array.isArray(o.items) ? o.items.length : 1;
           }
         });
 
-        if (itemKey) {
-          state.reservasEdits = state.reservasEdits || {};
-          state.reservasEdits[itemKey] = state.reservasEdits[itemKey] || {};
-          state.reservasEdits[itemKey].qty = val;
-        }
-        input.classList.add('saved');
-        setTimeout(() => input.classList.remove('saved'), 1200);
-      });
+        // 3. Limpiar ediciones temporales de la vista de devoluciones
+        state.reservasEdits = {};
 
-      save();
-      if (typeof queueSync === 'function') queueSync('order');
-      if (typeof scheduleDriveSync === 'function') scheduleDriveSync(600, 'order');
-      if (typeof renderHistory37 === 'function') renderHistory37();
-      if (typeof renderControl37 === 'function') renderControl37();
-      msg('✅ Devoluciones guardadas con éxito y registradas en el historial.');
+        // 4. Actualizar contador no leído en Historial
+        state.historyUnread = (Number(state.historyUnread) || 0) + savedItemsCount;
+
+        // 5. Guardar en almacenamiento local y sincronizar
+        save();
+        if (typeof queueSync === 'function') queueSync('order');
+        if (typeof scheduleDriveSync === 'function') scheduleDriveSync(600, 'order');
+
+        // 6. Actualizar vistas y badges
+        renderReservas();
+        if (typeof updateHistoryBadgeV41 === 'function') updateHistoryBadgeV41();
+        if (typeof updateDevolucionesBadge === 'function') updateDevolucionesBadge();
+        if (typeof renderHistory37 === 'function') renderHistory37();
+        if (typeof renderControl37 === 'function') renderControl37();
+
+        msg(`✅ Se guardaron ${savedItemsCount} material(es) de devolución: registrados en el Historial y borrados de Devoluciones.`);
+      };
+
+      if (typeof window.customConfirm === 'function') {
+        window.customConfirm(
+          `¿Deseas guardar las ${currentRows.length} devoluciones pendientes?\n\nSe grabarán definitivamente en el Historial de Materiales y se borrarán de la lista de Devoluciones.`,
+          executeSaveAndRecord,
+          null,
+          {
+            title: 'Guardar devoluciones en Historial',
+            okText: 'Sí, guardar en Historial',
+            okClass: 'btn success'
+          }
+        );
+      } else {
+        executeSaveAndRecord();
+      }
     });
     
     // Search input
@@ -5194,9 +5384,19 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
     const count=Math.max(0,Number(state.historyUnread)||0);badge.textContent=String(count);badge.classList.toggle('hidden',count===0);
   }
   window.updateHistoryBadgeV41=updateHistoryBadgeV41;
+
+  function updateDevolucionesBadge(){
+    const badge=document.getElementById('devolucionesNewCount');if(!badge)return;
+    const pending=(state.orderHistory||[]).filter(o=>String(o.movimiento||'').toUpperCase()==='DEVOLUCION'&&!o.guardadoEnHistorial);
+    const count=pending.reduce((n,o)=>n+(Array.isArray(o.items)?o.items.length:1),0);
+    badge.textContent=String(count);badge.classList.toggle('hidden',count===0);
+  }
+  window.updateDevolucionesBadge=updateDevolucionesBadge;
+
   function init37(){
-    ensurePreloadedStock37();updateHistoryBadgeV41();
+    ensurePreloadedStock37();updateHistoryBadgeV41();updateDevolucionesBadge();if(typeof updateControlBadge==='function')updateControlBadge();
     document.querySelector('[data-view="controlView"]')?.addEventListener('click',()=>{
+      if(typeof updateControlBadge==='function')updateControlBadge();
       setTimeout(renderControl37,50);
     });
     document.querySelector('[data-view="reservasView"]')?.addEventListener('click',()=>{
@@ -5205,7 +5405,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
     document.querySelector('[data-view="historyView"]')?.addEventListener('click',()=>{
       state.historyUnread=0;save();updateHistoryBadgeV41();setTimeout(renderHistory37,80);
     });
-    setTimeout(()=>{ensurePreloadedStock37();renderControl37();renderReservas();renderHistory37();updateHistoryBadgeV41();},500);
+    setTimeout(()=>{ensurePreloadedStock37();renderControl37();renderReservas();renderHistory37();updateHistoryBadgeV41();updateDevolucionesBadge();if(typeof updateControlBadge==='function')updateControlBadge();},500);
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init37);else init37();
 })();
@@ -6025,7 +6225,7 @@ html[data-theme="dark"] .admin-change-pass-box{background:#13263e;border-color:#
 
   function protectedElements(){
     return [
-      ...document.querySelectorAll('.side-btn[data-view="newMatView"], .side-btn[data-view="supView"], .side-btn[data-view="unitsView"], .side-btn[data-view="historyView"], .side-btn[data-view="driveView"], #sideDriveOnly, [data-config-page="mat"], [data-config-page="new-mat"], [data-config-page="sup"], [data-config-page="units"], [data-config-page="github"], [data-config-page="drive"]')
+      ...document.querySelectorAll('.side-btn[data-view="newMatView"], .side-btn[data-view="supView"], .side-btn[data-view="unitsView"], .side-btn[data-view="historyView"], [data-config-page="mat"], [data-config-page="new-mat"], [data-config-page="sup"], [data-config-page="units"]')
     ].filter(Boolean);
   }
 
@@ -6063,12 +6263,12 @@ html[data-theme="dark"] .admin-change-pass-box{background:#13263e;border-color:#
     const toggle=qs('#adminTogglePassword');if(toggle)toggle.textContent='👁️';
 
     if(targetView){
-      const names={'newMatView':'Crear o modificar materiales','supView':'Supervisores','unitsView':'Unidades móviles','driveView':'Google Drive','historyView':'Historial'};
+      const names={'newMatView':'Base de materiales','supView':'Supervisores','unitsView':'Unidades móviles','historyView':'Historial'};
       if(title)title.textContent='🔐 Acceso Restringido';
       if(subtitle)subtitle.textContent=`Ingresa tu contraseña de supervisor/administrador para ver "${names[targetView]||targetView}" y desbloquear las pestañas ocultas.`;
     }else{
       if(title)title.textContent='🔐 Acceso de Administrador';
-      if(subtitle)subtitle.textContent='Ingresa tu contraseña para ver las pestañas ocultas en la barra lateral (Crear o modificar, Supervisores, Unidades móviles, Historial y Google Drive).';
+      if(subtitle)subtitle.textContent='Ingresa tu contraseña para ver las pestañas ocultas en la barra lateral (Base de materiales, Supervisores, Unidades móviles e Historial).';
     }
 
     try{
@@ -6122,7 +6322,7 @@ html[data-theme="dark"] .admin-change-pass-box{background:#13263e;border-color:#
     const d=qs('#adminLoginDialog');
     if(d){if(typeof d.close==='function')d.close();else d.removeAttribute('open');}
     const currentActiveView=document.querySelector('.view.active')?.id;
-    if(['newMatView','supView','unitsView','historyView','driveView'].includes(currentActiveView)){
+    if(['newMatView','supView','unitsView','historyView'].includes(currentActiveView)){
       if(typeof showView==='function')showView('searchView');
     }
     if(typeof msg==='function')msg('Sesión de administrador cerrada. Pestañas ocultadas.');
@@ -6149,7 +6349,7 @@ html[data-theme="dark"] .admin-change-pass-box{background:#13263e;border-color:#
   qs('#adminTogglePassword')?.addEventListener('click',togglePasswordView);
 
   // Intercept Protected Views in Sidebar when NOT Admin
-  const adminViews=['newMatView','supView','unitsView','driveView','historyView'];
+  const adminViews=['newMatView','supView','unitsView','historyView'];
   document.addEventListener('click',e=>{
     const sideBtn=e.target.closest('.side-btn[data-view]');
     if(sideBtn){
@@ -6259,12 +6459,12 @@ html[data-theme="dark"] #v439SearchOrderCount{background:#173a60;color:#d9ecff}
     const val = document.getElementById('puesto')?.value || 'PEDIDO';
     if(badge)badge.textContent=String(count);
     if(button){
-      if(val === 'CONSULTA'){
-        button.textContent = '🔍 Ir a consulta'+(count?' ('+count+')':'');
-      } else if(val === 'DEVOLUCION'){
-        button.textContent = '📋 Ir a reserva'+(count?' ('+count+')':'');
+      if(val === 'DEVOLUCION'){
+        button.textContent = '🔄 Ir a devoluciones'+(count?' ('+count+')':'');
       } else if(val === 'RECUPERO'){
         button.textContent = '🛠️ Ir a recupero'+(count?' ('+count+')':'');
+      } else if(val === 'RESERVA'){
+        button.textContent = '📑 Ir a reserva seleccionada'+(count?' ('+count+')':'');
       } else {
         button.textContent = '📋 Ir a pedido seleccionado'+(count?' ('+count+')':'');
       }
@@ -6273,10 +6473,7 @@ html[data-theme="dark"] #v439SearchOrderCount{background:#173a60;color:#d9ecff}
   byId('v439GoToOrder')?.addEventListener('click',function(e){
     e.preventDefault();
     const val = document.getElementById('puesto')?.value || 'PEDIDO';
-    if(val === 'CONSULTA'){
-      if(typeof showView==='function')showView('consultaView');
-      if(typeof renderConsulta==='function')renderConsulta();
-    } else if(val === 'DEVOLUCION'){
+    if(val === 'DEVOLUCION'){
       if(typeof showView==='function')showView('reservasView');
       if(typeof renderReservas==='function')renderReservas();
     } else {
@@ -6531,20 +6728,17 @@ html[data-theme="dark"] .v45-op-card.active{background:#1e293b}
 <script id="v45OperationModalScript">
 (function(){
   'use strict';
-  window.isConsulta = function(){
-    const v = document.getElementById('puesto')?.value;
-    return v === 'CONSULTA' || v === 'INFORME';
-  };
-  window.isInforme = window.isConsulta;
   window.isDevolucion = function(){
     return document.getElementById('puesto')?.value === 'DEVOLUCION';
   };
   window.isRecupero = function(){
     return document.getElementById('puesto')?.value === 'RECUPERO';
   };
+  window.isReserva = function(){
+    return document.getElementById('puesto')?.value === 'RESERVA';
+  };
   window.getMovementTargetText = function(){
     const v = document.getElementById('puesto')?.value;
-    if(v === 'CONSULTA' || v === 'INFORME') return 'la Consulta';
     if(v === 'DEVOLUCION') return 'la Devolución';
     if(v === 'RECUPERO') return 'el Recupero';
     if(v === 'RESERVA') return 'la Reserva';
@@ -6552,7 +6746,6 @@ html[data-theme="dark"] .v45-op-card.active{background:#1e293b}
   };
   window.getMovementNameSingular = function(){
     const v = document.getElementById('puesto')?.value;
-    if(v === 'CONSULTA' || v === 'INFORME') return 'Consulta';
     if(v === 'DEVOLUCION') return 'Devolución';
     if(v === 'RECUPERO') return 'Recupero';
     if(v === 'RESERVA') return 'Reserva';
@@ -6560,7 +6753,6 @@ html[data-theme="dark"] .v45-op-card.active{background:#1e293b}
   };
 
   function getOpName(val){
-    if(val==='CONSULTA' || val==='INFORME') return 'CONSULTA';
     if(val==='DEVOLUCION') return 'DEVOLUCIÓN';
     if(val==='RECUPERO') return 'RECUPERO';
     if(val==='RESERVA') return 'RESERVA';
@@ -6568,49 +6760,71 @@ html[data-theme="dark"] .v45-op-card.active{background:#1e293b}
   }
 
   window.updateMovementFieldsVisibility = function(){
-    const p = document.getElementById('puesto');
-    const val = p ? p.value : 'PEDIDO';
+    try {
+      const p = document.getElementById('puesto');
+      const val = p ? p.value : 'PEDIDO';
 
-    const omWrap = document.getElementById('v45OmWrap') || document.getElementById('omPedido')?.closest('.field, label');
-    const destWrap = document.getElementById('v45DestWrap') || document.getElementById('dest')?.closest('.field, label');
-    const reservaWrap = document.getElementById('fieldReserva');
-    const fechaWrap = document.getElementById('v45FechaWrap') || document.getElementById('fechaPedido')?.closest('.field, label');
-    const movilWrap = document.getElementById('v45MovilWrap') || document.getElementById('movil')?.closest('.field, label');
-    const alimWrap = document.getElementById('v45AlimWrap') || document.getElementById('alimentadorPedido')?.closest('.field, label');
-    const distWrap = document.getElementById('v45DistWrap') || document.getElementById('distritoPedido')?.closest('.field, label');
+      const omWrap = document.getElementById('v45OmWrap') || document.getElementById('omPedido')?.closest('.field, label');
+      const destWrap = document.getElementById('v45DestWrap') || document.getElementById('dest')?.closest('.field, label');
+      const fechaWrap = document.getElementById('v45FechaWrap') || document.getElementById('fechaPedido')?.closest('.field, label');
+      const movilWrap = document.getElementById('v45MovilWrap') || document.getElementById('movil')?.closest('.field, label');
+      const alimWrap = document.getElementById('v45AlimWrap') || document.getElementById('alimentadorPedido')?.closest('.field, label');
+      const distWrap = document.getElementById('v45DistWrap') || document.getElementById('distritoPedido')?.closest('.field, label');
 
-    if(val === 'CONSULTA' || val === 'INFORME'){
-      if(omWrap) omWrap.style.display = 'none';
-      if(destWrap) destWrap.style.display = 'none';
-      if(reservaWrap) reservaWrap.style.display = 'none';
-      if(fechaWrap) fechaWrap.style.display = 'none';
-      if(movilWrap) movilWrap.style.display = 'none';
-      if(alimWrap) alimWrap.style.display = 'none';
-      if(distWrap) distWrap.style.display = 'none';
-    } else if(val === 'DEVOLUCION'){
-      if(omWrap) omWrap.style.display = '';
-      if(destWrap) destWrap.style.display = '';
-      if(reservaWrap) reservaWrap.style.display = 'none'; // Sin código de reserva para Devoluciones independientes
-      if(fechaWrap) fechaWrap.style.display = '';
-      if(movilWrap) movilWrap.style.display = 'none';
-      if(alimWrap) alimWrap.style.display = 'none';
-      if(distWrap) distWrap.style.display = 'none';
-    } else if(val === 'RECUPERO'){
-      if(omWrap) omWrap.style.display = '';
-      if(destWrap) destWrap.style.display = '';
-      if(reservaWrap) reservaWrap.style.display = 'none';
-      if(fechaWrap) fechaWrap.style.display = '';
-      if(movilWrap) movilWrap.style.display = '';
-      if(alimWrap) alimWrap.style.display = '';
-      if(distWrap) distWrap.style.display = '';
-    } else { // PEDIDO or RESERVA
-      if(omWrap) omWrap.style.display = '';
-      if(destWrap) destWrap.style.display = '';
-      if(reservaWrap) reservaWrap.style.display = ''; // Permitir código de reserva SAP
-      if(fechaWrap) fechaWrap.style.display = '';
-      if(movilWrap) movilWrap.style.display = '';
-      if(alimWrap) alimWrap.style.display = '';
-      if(distWrap) distWrap.style.display = '';
+      const setReservaDisplay = (show) => {
+        document.querySelectorAll('#fieldReserva, #reservaFieldWrap, .fg-reserva').forEach(el => {
+          if(!el) return;
+          el.style.display = show ? '' : 'none';
+          if(!show){
+            const inp = el.querySelector('input');
+            if(inp) inp.value = '';
+          }
+        });
+        if(!show){
+          const rInp = document.getElementById('reservaPedido');
+          if(rInp) rInp.value = '';
+          if(typeof defaults === 'function' && defaults().reserva) defaults().reserva = '';
+        }
+      };
+
+      if(val === 'DEVOLUCION'){
+        // PEDIDO y DEVOLUCION tienen exactamente los mismos campos a elegir
+        if(omWrap) omWrap.style.display = '';
+        if(destWrap) destWrap.style.display = '';
+        setReservaDisplay(false);
+        if(fechaWrap) fechaWrap.style.display = '';
+        if(movilWrap) movilWrap.style.display = '';
+        if(alimWrap) alimWrap.style.display = '';
+        if(distWrap) distWrap.style.display = '';
+      } else if(val === 'RECUPERO'){
+        if(omWrap) omWrap.style.display = '';
+        if(destWrap) destWrap.style.display = '';
+        setReservaDisplay(false);
+        if(fechaWrap) fechaWrap.style.display = '';
+        if(movilWrap) movilWrap.style.display = '';
+        if(alimWrap) alimWrap.style.display = '';
+        if(distWrap) distWrap.style.display = '';
+      } else if(val === 'RESERVA'){
+        // En RESERVA sí debe salir el número de reserva
+        if(omWrap) omWrap.style.display = '';
+        if(destWrap) destWrap.style.display = '';
+        setReservaDisplay(true);
+        if(fechaWrap) fechaWrap.style.display = '';
+        if(movilWrap) movilWrap.style.display = '';
+        if(alimWrap) alimWrap.style.display = '';
+        if(distWrap) distWrap.style.display = '';
+      } else { // PEDIDO
+        // Al seleccionar PEDIDO no debe salir el número de reserva
+        if(omWrap) omWrap.style.display = '';
+        if(destWrap) destWrap.style.display = '';
+        setReservaDisplay(false);
+        if(fechaWrap) fechaWrap.style.display = '';
+        if(movilWrap) movilWrap.style.display = '';
+        if(alimWrap) alimWrap.style.display = '';
+        if(distWrap) distWrap.style.display = '';
+      }
+    } catch(err){
+      console.warn('updateMovementFieldsVisibility error:', err);
     }
   };
 
@@ -6624,195 +6838,39 @@ html[data-theme="dark"] .v45-op-card.active{background:#1e293b}
     const subtitleText = document.getElementById('v45OrderSubtitleText');
     const copyBtn = document.getElementById('copy');
 
-    const isCon = val === 'CONSULTA' || val === 'INFORME';
     const isDev = val === 'DEVOLUCION';
     const isRec = val === 'RECUPERO';
+    const isRes = val === 'RESERVA';
 
     if(titleText){
-      if(isCon) titleText.childNodes[0].nodeValue = '2. Lista de Consulta ';
-      else if(isDev) titleText.childNodes[0].nodeValue = '2. Devolución de Materiales ';
+      if(isDev) titleText.childNodes[0].nodeValue = '2. Devolución de Materiales ';
       else if(isRec) titleText.childNodes[0].nodeValue = '2. Recupero de Materiales ';
+      else if(isRes) titleText.childNodes[0].nodeValue = '2. Reserva de Materiales ';
       else titleText.childNodes[0].nodeValue = '2. Pedido seleccionado ';
     }
 
     if(subtitleText){
-      if(isCon) subtitleText.textContent = 'Matrículas agregadas para consulta (Simulación: sin descuento de stock ni restricción por desactualización).';
-      else if(isDev) subtitleText.textContent = 'Verifica el N° de reserva, supervisor, fecha y cantidades a devolver.';
+      if(isDev) subtitleText.textContent = 'Verifica el supervisor, fecha y cantidades a devolver.';
       else if(isRec) subtitleText.textContent = 'Verifica supervisor, unidad móvil, fecha y cantidades recuperadas.';
+      else if(isRes) subtitleText.textContent = 'Verifica el N° de reserva SAP, supervisor, fecha y cantidades reservadas.';
       else subtitleText.textContent = 'Verifica el supervisor, fecha y cantidades antes de grabar o imprimir tu pedido.';
     }
 
     if(copyBtn){
-      copyBtn.textContent = isCon ? '📋 Copiar para Consulta' : '📋 Copiar para SAP';
+      copyBtn.textContent = '📋 Copiar para SAP';
     }
 
     window.updateMovementFieldsVisibility();
+    if(typeof window.updateReservaVisibility === 'function') window.updateReservaVisibility();
 
     document.querySelectorAll('.v45-op-card').forEach(card=>{
       card.classList.toggle('active', card.getAttribute('data-op-mode') === val);
     });
 
-    let banner = document.getElementById('v46ConsultaNoticeBanner');
-    if(!banner){
-      banner = document.createElement('div');
-      banner.id = 'v46ConsultaNoticeBanner';
-      banner.className = 'v34-district-note';
-      banner.style.cssText = 'margin:6px 0 10px;background:#fefce8;border:1px solid #fde047;color:#854d0e;font-weight:700;border-radius:8px;padding:10px 14px;font-size:13px;display:none;width:100%';
-      banner.innerHTML = '⚠️ <b>Modo Consulta (Simulación de pedido):</b> Puedes agregar cualquier material. El stock no se descontará y la información de disponibilidad puede estar desactualizada.';
-      const panel = document.querySelector('#searchView>.panel');
-      const results = document.getElementById('results');
-      if(panel && results){
-        panel.insertBefore(banner, results);
-      }
-    }
-    if(banner){
-      banner.style.display = isCon ? 'block' : 'none';
-      const panel = document.querySelector('#searchView>.panel');
-      const results = document.getElementById('results');
-      if(panel && results && banner.parentNode !== panel){
-        panel.insertBefore(banner, results);
-      }
-    }
+    const banner = document.getElementById('v46ConsultaNoticeBanner');
+    if(banner) banner.remove();
 
     if(typeof renderResults === 'function') renderResults();
-    if(typeof renderConsulta === 'function') renderConsulta();
-  }
-
-  window.renderConsulta = function(){
-    const tbody = document.getElementById('consultaTableBody');
-    const empty = document.getElementById('consultaEmpty');
-    const badge = document.getElementById('consultaCountBadge');
-    const sideBadge = document.getElementById('sideConsultaCount');
-
-    if(!Array.isArray(window.consultaItems)){
-      window.consultaItems = (typeof state !== 'undefined' && Array.isArray(state.consultaItems)) ? state.consultaItems : [];
-    }
-    const list = window.consultaItems;
-
-    if(badge) badge.textContent = `${list.length} material${list.length===1?'':'es'}`;
-    if(sideBadge) sideBadge.textContent = String(list.length);
-    if(empty) empty.style.display = list.length ? 'none' : 'block';
-    if(!tbody) return;
-
-    tbody.innerHTML = list.map((m, i) => {
-      const qty = Number(m.qty) || 0;
-      const unit = typeof normalizedUnit === 'function' ? normalizedUnit(m) : (m.unit || 'UND');
-      return `<tr>
-        <td><b>${m.code}</b></td>
-        <td>${m.description || ''}</td>
-        <td style="width:130px"><input class="qty ready" type="number" min="0" step="1" value="${qty}" placeholder="0" data-v46-consulta-qty="${i}" style="width:100%;padding:6px 10px;border-radius:6px;border:1px solid var(--line);font-weight:700;text-align:center" title="Modificar cantidad"/></td>
-        <td>${unit}</td>
-        <td style="width:100px;text-align:center"><button class="btn danger" type="button" data-v46-rm-consulta="${i}" style="padding:4px 10px;font-size:12px;font-weight:700">🗑️ Quitar</button></td>
-      </tr>`;
-    }).join('');
-  };
-
-  document.addEventListener('input', function(e){
-    const qEl = e.target.closest('[data-v46-consulta-qty]');
-    if(qEl){
-      const index = Number(qEl.getAttribute('data-v46-consulta-qty'));
-      if(Array.isArray(window.consultaItems) && window.consultaItems[index]){
-        window.consultaItems[index].qty = Math.max(0, Number(qEl.value) || 0);
-        if(typeof state !== 'undefined') state.consultaItems = window.consultaItems;
-        if(typeof save === 'function') save();
-        window.renderConsulta();
-      }
-    }
-  }, true);
-
-  document.addEventListener('click', function(e){
-    const rmBtn = e.target.closest('[data-v46-rm-consulta]');
-    if(rmBtn){
-      const index = Number(rmBtn.getAttribute('data-v46-rm-consulta'));
-      if(Array.isArray(window.consultaItems) && window.consultaItems[index]){
-        window.consultaItems.splice(index, 1);
-        if(typeof state !== 'undefined') state.consultaItems = window.consultaItems;
-        if(typeof save === 'function') save();
-        window.renderConsulta();
-        if(typeof renderResults === 'function') renderResults();
-      }
-      return;
-    }
-
-    if(e.target.closest('#copyConsultaBtn')){
-      const list = window.consultaItems || [];
-      if(!list.length){
-        msg('Agrega materiales antes de copiar los datos de consulta.', true);
-        return;
-      }
-      let lines = ['MATRÍCULA\tDESCRIPCIÓN\tCANTIDAD\tUNIDAD'];
-      list.forEach(m=>{
-        const qty = Number(m.qty) || 0;
-        const unit = typeof normalizedUnit === 'function' ? normalizedUnit(m) : (m.unit || 'UND');
-        lines.push(`${m.code}\t${m.description || ''}\t${qty}\t${unit}`);
-      });
-      navigator.clipboard.writeText(lines.join('\n')).then(()=>{
-        msg('📋 Datos de consulta copiados al portapapeles.');
-      }).catch(err=>{
-        msg('Error al copiar: ' + err.message, true);
-      });
-      return;
-    }
-
-    if(e.target.closest('#excelConsultaBtn')){
-      const list = window.consultaItems || [];
-      if(!list.length){
-        msg('Agrega materiales antes de exportar a Excel.', true);
-        return;
-      }
-      if(!window.XLSX){
-        msg('Cargando librería de Excel, reintenta en un momento.', true);
-        return;
-      }
-      const data = list.map(m=>({
-        'MATRÍCULA': m.code,
-        'DESCRIPCIÓN': m.description || '',
-        'CANTIDAD': Number(m.qty) || 0,
-        'UNIDAD': typeof normalizedUnit === 'function' ? normalizedUnit(m) : (m.unit || 'UND')
-      }));
-      const ws = XLSX.utils.json_to_sheet(data);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'CONSULTA');
-      XLSX.writeFile(wb, `Consulta_Materiales_${typeof todayKey === 'function' ? todayKey() : 'HOY'}.xlsx`);
-      msg('📊 Excel de consulta descargado.');
-      return;
-    }
-
-    if(e.target.closest('#cleanConsultaBtn')){
-      const list = window.consultaItems || [];
-      if(!list.length) return;
-      list.length = 0;
-      if(typeof state !== 'undefined') state.consultaItems = list;
-      if(typeof save === 'function') save();
-      window.renderConsulta();
-      if(typeof renderResults === 'function') renderResults();
-      msg('🧹 Consulta limpiada.');
-      return;
-    }
-
-    if(e.target.closest('#v46PrintConsultaTop')){
-      window.print();
-      return;
-    }
-
-    if(e.target.closest('#v46ConsultaBackToSearch')){
-      if(typeof showView === 'function') showView('searchView');
-      return;
-    }
-  }, true);
-
-  function openOpModal(){
-    // Operación modal deshabilitada por solicitud del usuario
-    return;
-  }
-
-  function closeOpModal(){
-    const modal = document.getElementById('v45OperationModal');
-    if(modal){
-      if(typeof modal.close === 'function') modal.close();
-      else modal.removeAttribute('open');
-      modal.style.display = 'none';
-    }
   }
 
   function selectOpMode(mode){
@@ -6822,50 +6880,22 @@ html[data-theme="dark"] .v45-op-card.active{background:#1e293b}
       p.dispatchEvent(new Event('change', { bubbles: true }));
     }
     updateModeUI();
-    closeOpModal();
     if(typeof updateReservaVisibility === 'function') updateReservaVisibility();
     if(typeof renderResults === 'function') renderResults();
     if(typeof renderCart === 'function') renderCart();
   }
 
-  document.addEventListener('click', function(e){
-    const openBtn = e.target.closest('#v45OpenOpModalBtn');
-    if(openBtn){
-      e.preventDefault();
-      // No abrir modal
-      return;
-    }
-
-    const closeBtn = e.target.closest('#v45OpCloseBtn');
-    if(closeBtn){
-      e.preventDefault();
-      closeOpModal();
-      return;
-    }
-
-    const card = e.target.closest('.v45-op-card');
-    if(card){
-      e.preventDefault();
-      const mode = card.getAttribute('data-op-mode');
-      if(mode) selectOpMode(mode);
-      return;
-    }
-  }, true);
-
   document.addEventListener('change', function(e){
     if(e.target && e.target.id === 'puesto'){
       updateModeUI();
-      if(e.target.value === 'CONSULTA' || e.target.value === 'INFORME'){
-        if(typeof window.msg === 'function'){
-          window.msg('⚠️ Modo Consulta: Simulación de pedido activa. Puedes agregar cualquier material, el stock no se descontará.');
-        }
-      }
+      if(typeof updateReservaVisibility === 'function') updateReservaVisibility();
     }
   }, true);
 
   const boot = function(){
     updateModeUI();
-    // Modal startup suppressed completely
+    const banner = document.getElementById('v46ConsultaNoticeBanner');
+    if(banner) banner.remove();
     const m = document.getElementById('v45OperationModal');
     if(m) {
       m.style.display = 'none';

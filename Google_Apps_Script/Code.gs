@@ -288,23 +288,36 @@ function writeSheets_(data) {
   writeTable_(ss,'Stock',['MATERIAL','CENTRO','ALMACEN','LOTE','LIBRE','UNIDAD','TEXTO'],(data.stockRows||[]).map(x=>[x.material,x.centro,x.almacen,x.lote,x.libre,x.unidad,x.texto]));
   const history=(data.app&&data.app.orderHistory||[]);
   const detailRows=[];
-  history.forEach(x=>(x.items||[]).forEach(i=>detailRows.push([
-    x.id,x.om||'',x.fecha,x.supervisor,i.code||'',i.description||'',i.qty||0,i.unit||'',
-    x.centro,i.warehouse||'',i.lot||'',x.unidadRecojo||'',x.alimentador||'',x.distrito||'',
-    x.movimiento||'',x.createdAt||''
-  ])));
-  writeTable_(ss,'HistorialMateriales',['PEDIDO','OM','FECHA','RETIRADO_POR','MATRICULA','DESCRIPCION','CANTIDAD','UNIDAD','CENTRO','ALMACEN','LOTE','UNIDAD_RECOJO','ALIMENTADOR','DISTRITO_DESTINO','MOVIMIENTO','CREADO_EN'],detailRows);
-  writeTable_(ss,'ControlSolicitudes',['PEDIDO','OM','FECHA','SUPERVISOR','CENTRO','UNIDAD_RECOJO','ALIMENTADOR','DISTRITO','MOVIMIENTO','CANTIDAD_TOTAL','ESTADO','CREADO_EN'],history.map(x=>[x.id,x.om||'',x.fecha,x.supervisor,x.centro,x.unidadRecojo||'',x.alimentador||'',x.distrito||'',x.movimiento||'',x.total||0,'FINALIZADO',x.createdAt||'']));
+  history.forEach(x=>{
+    if (x.movimiento === 'DEVOLUCION' && !x.guardadoEnHistorial) return;
+    if (x.movimiento === 'RESERVA' && !x.guardadoEnHistorial && !x.reservaGuardada) return;
+    const resVal = String(x.reserva || '').trim();
+    const condVal = String(x.conductor || '').trim();
+    (x.items||[]).forEach(i=>detailRows.push([
+      x.id, (i.reserva || resVal || ''), x.om||'', x.fecha, x.supervisor, condVal, i.code||'', i.description||'', i.qty||0, i.unit||'',
+      x.centro, i.warehouse||'', i.lot||'', x.unidadRecojo||'', x.alimentador||'', x.distrito||'',
+      x.movimiento||'', x.createdAt||''
+    ]));
+  });
+  writeTable_(ss,'HistorialMateriales',['PEDIDO','RESERVA','OM','FECHA','RETIRADO_POR','CONDUCTOR','MATRICULA','DESCRIPCION','CANTIDAD','UNIDAD','CENTRO','ALMACEN','LOTE','UNIDAD_RECOJO','ALIMENTADOR','DISTRITO_DESTINO','MOVIMIENTO','CREADO_EN'],detailRows);
+  writeTable_(ss,'ControlSolicitudes',['PEDIDO','RESERVA','OM','FECHA','SUPERVISOR','CONDUCTOR','CENTRO','UNIDAD_RECOJO','ALIMENTADOR','DISTRITO','MOVIMIENTO','CANTIDAD_TOTAL','ESTADO','CREADO_EN'],history.filter(x=>{
+    if (x.movimiento === 'DEVOLUCION' && !x.guardadoEnHistorial) return false;
+    if (x.movimiento === 'RESERVA' && !x.guardadoEnHistorial && !x.reservaGuardada) return false;
+    return true;
+  }).map(x=>[x.id, x.reserva||'', x.om||'', x.fecha, x.supervisor, x.conductor||'', x.centro, x.unidadRecojo||'', x.alimentador||'', x.distrito||'', x.movimiento||'', x.total||0, 'FINALIZADO', x.createdAt||'']));
 
   const reservasEdits = (data.app && data.app.reservasEdits) || {};
   const controlEdits = (data.app && data.app.controlEdits) || {};
   const reservasRows = [];
   history.forEach((order, orderIdx) => {
+    const mov = String(order.movimiento || '').toUpperCase();
+    const isRes = mov === 'RESERVA' || Boolean(order.reserva);
+    if (!isRes || order.guardadoEnHistorial || order.reservaGuardada) return;
     const orderKey = String(order.id || (order.om ? (order.om + '_' + String(order.centro || '') + '_' + String(order.createdAt || '')) : ('order_' + orderIdx)));
     const orderEdit = controlEdits[orderKey] || {};
     const orderReserva = orderEdit.reserva !== undefined ? orderEdit.reserva : (order.reserva || '');
     const items = Array.isArray(order.items) && order.items.length ? order.items : [{
-      code: '', description: 'Pedido general', qty: order.total || 0, unit: 'UND', reserva: orderReserva
+      code: '', description: 'Reserva general', qty: order.total || 0, unit: 'UND', reserva: orderReserva
     }];
 
     items.forEach((item, itemIdx) => {
