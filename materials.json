@@ -8,7 +8,8 @@
         "ABRAZADERA CHICA"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/abrazadera_cuatro_pernos.jpg"
     },
     {
       "code": "3004045",
@@ -18,7 +19,8 @@
         "ABRAZADERA MEDIANA"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/abrazadera_cuatro_pernos.jpg"
     },
     {
       "code": "3004005",
@@ -28,7 +30,8 @@
         "ABRAZADERA GRANDE"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/abrazadera_cuatro_pernos.jpg"
     },
     {
       "code": "3004041",
@@ -38,7 +41,8 @@
         "ABRAZADERA"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/abrazadera_cable_platina.jpg"
     },
     {
       "code": "3004040",
@@ -48,7 +52,8 @@
         "ABRAZADERA"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/abrazadera_cable_platina.jpg"
     },
     {
       "code": "3004039",
@@ -58,7 +63,8 @@
         "ABRAZADERA PARA CABLE"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/abrazadera_cable_platina.jpg"
     },
     {
       "code": "3004038",
@@ -68,7 +74,8 @@
         "ABRAZADERA PARA CABLE"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/abrazadera_cable_platina.jpg"
     },
     {
       "code": "3004044",
@@ -78,7 +85,8 @@
         "ABRAZADERA"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/abrazadera_cable_platina.jpg"
     },
     {
       "code": "3004020",
@@ -88,7 +96,8 @@
         "ABRAZADERA PARA VIENTO PEQUEÑA"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/abrazadera_viento_galvanizada.jpg"
     },
     {
       "code": "3004023",
@@ -98,7 +107,8 @@
         "ABRAZADERA PARA VIENTO GRANDE"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/abrazadera_viento_galvanizada.jpg"
     },
     {
       "code": "8002821",
@@ -108,7 +118,8 @@
         "ACEITE"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/aceite_multiuso_lata.jpg"
     },
     {
       "code": "3000907",
@@ -118,7 +129,8 @@
         "AISLADOR EXTENSOR"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/aislador_extensor_polimerico.jpg"
     },
     {
       "code": "3000942",
@@ -128,7 +140,8 @@
         "AISLADOR PIN 10KV"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/aislador_post_polimerico.jpg"
     },
     {
       "code": "3000944",
@@ -138,7 +151,8 @@
         "AISLADOR PIN 22,9KV"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/aislador_pin_22kv.jpg"
     },
     {
       "code": "3000935",
@@ -148,7 +162,8 @@
         "AISLADOR SUSPENSION 10KV"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/aislador_suspension_polimerico.jpg"
     },
     {
       "code": "3000971",
@@ -158,7 +173,8 @@
         "AISLADOR SUSPENSION  22,9KV"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/aislador_suspension_22kv.jpg"
     },
     {
       "code": "8002192",
@@ -168,7 +184,8 @@
         "AMARRES"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/amarre_doble_aluminio.jpg"
     },
     {
       "code": "8002193",
@@ -178,7 +195,8 @@
         "PREFORMADO PARA VIENTO"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/retencion_preformada_viento.jpg"
     },
     {
       "code": "8002189",
@@ -188,7 +206,8 @@
         "AMARRE SIMPLE PARA AISLADOR"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/amarre_aluminio_preformado.jpg"
     },
     {
       "code": "8000505",
@@ -199,7 +218,8 @@
         "ARANDELAS"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/arandela_cuadrada_curva.jpg"
     },
     {
       "code": "8000564",
@@ -210,7 +230,8 @@
         "ARANDELAS"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/arandela_cuadrada_galvanizada.jpg"
     },
     {
       "code": "8000568",
@@ -221,7 +242,8 @@
         "ARANDELAS"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/arandela_plana_redonda.jpg"
     },
     {
       "code": "8000566",
@@ -232,7 +254,8 @@
         "ARANDELAS"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/arandela_plana_redonda.jpg"
     },
     {
       "code": "8000392",
@@ -243,7 +266,8 @@
         "ARANDELAS"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/arandela_presion_helicoidal.jpg"
     },
     {
       "code": "8000388",
@@ -254,7 +278,8 @@
         "ARANDELAS"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/arandela_presion_helicoidal.jpg"
     },
     {
       "code": "8002027",
@@ -264,7 +289,8 @@
         "VIOLIN PARA RETENIDA"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/brazo_violin_retenida.jpg"
     },
     {
       "code": "3001692",
@@ -274,7 +300,8 @@
         "CABLE PARA RETENIDA"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/cable_acero_retenida.jpg"
     },
     {
       "code": "8002023",
@@ -284,7 +311,8 @@
         "CANALETA PARA RETENIDA"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/canaleta_protectora_viento.jpg"
     },
     {
       "code": "8001058",
@@ -294,7 +322,8 @@
         "CARTEL PARA DMS"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/cartel_peligro_electrico.jpg"
     },
     {
       "code": "3001107",
@@ -304,7 +333,8 @@
         "CINTA GRIS"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/cinta_silicona_gris.jpg"
     },
     {
       "code": "3001339",
@@ -315,7 +345,8 @@
         "CINTA NEGRA ANCHA"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/cinta_aislante_negra.jpg"
     },
     {
       "code": "3001330",
@@ -325,7 +356,8 @@
         "CINTA BLANCA"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/cinta_aislante_blanca.jpg"
     },
     {
       "code": "3001332",
@@ -335,7 +367,8 @@
         "CINTA ROJA"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/cinta_aislante_roja.jpg"
     },
     {
       "code": "3001333",
@@ -345,7 +378,8 @@
         "CINTA VERDE"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/cinta_aislante_verde.jpg"
     },
     {
       "code": "3001316",
@@ -355,7 +389,8 @@
         "CINTA BLANCA"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/cinta_aislante_blanca.jpg"
     },
     {
       "code": "3001318",
@@ -365,7 +400,8 @@
         "CINTA ROJA"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/cinta_aislante_roja.jpg"
     },
     {
       "code": "3001319",
@@ -375,7 +411,8 @@
         "CINTA VERDE"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/cinta_aislante_verde.jpg"
     },
     {
       "code": "3001323",
@@ -383,7 +420,8 @@
       "unit": "UN",
       "aliases": [],
       "priority": "",
-      "source": "DRE"
+      "source": "DRE",
+      "image": "/material-images/cinta_aislante_blanca.jpg"
     },
     {
       "code": "3001327",
@@ -391,7 +429,8 @@
       "unit": "UN",
       "aliases": [],
       "priority": "",
-      "source": "DRE"
+      "source": "DRE",
+      "image": "/material-images/cinta_aislante_roja.jpg"
     },
     {
       "code": "3001329",
@@ -399,7 +438,8 @@
       "unit": "UN",
       "aliases": [],
       "priority": "",
-      "source": "DRE"
+      "source": "DRE",
+      "image": "/material-images/cinta_aislante_verde.jpg"
     },
     {
       "code": "8002548",
@@ -411,7 +451,8 @@
         "L"
       ],
       "priority": "GG01",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/cintillo_nylon_negro.jpg"
     },
     {
       "code": "3001719",
@@ -421,7 +462,8 @@
         "AL 120"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/conductor_aluminio_desnudo.jpg"
     },
     {
       "code": "3001723",
@@ -431,7 +473,8 @@
         "AL 185"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/conductor_aluminio_desnudo.jpg"
     },
     {
       "code": "3001715",
@@ -441,7 +484,8 @@
         "AL 70"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/conductor_aluminio_desnudo.jpg"
     },
     {
       "code": "3001671",
@@ -453,7 +497,8 @@
         "L"
       ],
       "priority": "GG01",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/conductor_tw_amarillo.jpg"
     },
     {
       "code": "3001673",
@@ -464,7 +509,8 @@
         "Conductor TW 70mm2"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/conductor_tw_amarillo.jpg"
     },
     {
       "code": "3001675",
@@ -475,7 +521,8 @@
         "Conductor TW 120mm2"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/conductor_tw_amarillo.jpg"
     },
     {
       "code": "3001624",
@@ -486,7 +533,8 @@
         "Conductor TW 185mm2"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/conductor_tw_amarillo.jpg"
     },
     {
       "code": "8002506",
@@ -496,7 +544,8 @@
         "H 450"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/conector_tipo_h.jpg"
     },
     {
       "code": "8002503",
@@ -506,7 +555,8 @@
         "H 500"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/conector_tipo_h.jpg"
     },
     {
       "code": "8002504",
@@ -518,7 +568,8 @@
         "L"
       ],
       "priority": "GG01",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/conector_tipo_h.jpg"
     },
     {
       "code": "8002500",
@@ -528,7 +579,8 @@
         "H 200"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/conector_tipo_h.jpg"
     },
     {
       "code": "8002502",
@@ -538,7 +590,8 @@
         "H 300"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/conector_tipo_h.jpg"
     },
     {
       "code": "3001371",
@@ -548,7 +601,8 @@
         "G PARA TIERRA"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/conector_cobre_tipo_c.jpg"
     },
     {
       "code": "8002494",
@@ -560,7 +614,8 @@
         "L"
       ],
       "priority": "GG01",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/conector_cobre_g.jpg"
     },
     {
       "code": "8002496",
@@ -571,7 +626,8 @@
         "Conectores G 70/35mm"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/conector_cobre_g.jpg"
     },
     {
       "code": "8002495",
@@ -582,7 +638,8 @@
         "Conectores G 70mm"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/conector_cobre_g.jpg"
     },
     {
       "code": "8002350",
@@ -592,7 +649,8 @@
         "BORNE"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/conector_doble_perno.jpg"
     },
     {
       "code": "8002349",
@@ -602,7 +660,8 @@
         "BORNE"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/conector_doble_perno.jpg"
     },
     {
       "code": "3001406",
@@ -613,7 +672,8 @@
         "conectores terminales de 120mm2"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/terminal_compresion_cobre.jpg"
     },
     {
       "code": "3001393",
@@ -624,7 +684,8 @@
         "conectores terminales de 35mm2 (PARA SECCIONADORES Y RIGIDOS)"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/terminal_compresion_cobre.jpg"
     },
     {
       "code": "3001402",
@@ -635,7 +696,8 @@
         "conectores terminales de 35mm2 (PARA ANCLAJE, PINES, VARILLAS)"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/terminal_compresion_cobre.jpg"
     },
     {
       "code": "3001404",
@@ -646,7 +708,8 @@
         "conectores terminales de 70mm2"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/terminal_compresion_cobre.jpg"
     },
     {
       "code": "3000674",
@@ -656,7 +719,8 @@
         "CRUCETA 5 PIES"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/cruceta_madera_tratada.jpg"
     },
     {
       "code": "3000677",
@@ -666,7 +730,8 @@
         "CRUCETA 7 PIES"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/cruceta_madera_tratada.jpg"
     },
     {
       "code": "3000727",
@@ -676,7 +741,8 @@
         "CRUCETA 9 PIES"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/cruceta_madera_tratada.jpg"
     },
     {
       "code": "3000719",
@@ -686,7 +752,8 @@
         "CRUCETA PARA TACO"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/cruceta_taco_madera.jpg"
     },
     {
       "code": "8002172",
@@ -696,7 +763,8 @@
         "MVLC-CHINO 15KV"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/cubierta_conductor_mvlc.jpg"
     },
     {
       "code": "8002169",
@@ -706,7 +774,8 @@
         "MVLC 18 CON MASTIL"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/cubierta_conductor_mvlc.jpg"
     },
     {
       "code": "3001305",
@@ -716,7 +785,8 @@
         "MVLC 14"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/cubierta_conductor_mvlc.jpg"
     },
     {
       "code": "3001306",
@@ -726,7 +796,8 @@
         "MVLC 18 SIN MASTIL"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/cubierta_conductor_mvlc.jpg"
     },
     {
       "code": "3000689",
@@ -736,7 +807,8 @@
         "DIAGONAL PEQUEÑA"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/diagonal_acero_galvanizado.jpg"
     },
     {
       "code": "3000690",
@@ -746,7 +818,8 @@
         "DIAGONAL GRANDE"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/diagonal_acero_galvanizado.jpg"
     },
     {
       "code": "8002200",
@@ -756,7 +829,8 @@
         "PREFORMADO 70"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/empalme_preformado_aluminio.jpg"
     },
     {
       "code": "8002202",
@@ -766,7 +840,8 @@
         "PREFORMADO120"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/empalme_preformado_aluminio.jpg"
     },
     {
       "code": "8002206",
@@ -776,7 +851,8 @@
         "PREFORMADO 185"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/empalme_preformado_aluminio.jpg"
     },
     {
       "code": "8002076",
@@ -786,7 +862,8 @@
         "ESLABON"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/eslabon_doble_galvanizado.jpg"
     },
     {
       "code": "8000519",
@@ -796,7 +873,8 @@
         "FLEJE"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/fleje_acero_inoxidable.jpg"
     },
     {
       "code": "8001828",
@@ -808,7 +886,8 @@
         "cutouts de 22.9 KV"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/cutout_fusible_aereo.jpg"
     },
     {
       "code": "8001850",
@@ -819,7 +898,8 @@
         "FUSIBLE DE 100A"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/fusible_expulsion_k.jpg"
     },
     {
       "code": "8001887",
@@ -830,7 +910,8 @@
         "FUSIBLE DE 10A"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/fusible_expulsion_k.jpg"
     },
     {
       "code": "8001888",
@@ -841,7 +922,8 @@
         "FUSIBLE DE 12A"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/fusible_expulsion_k.jpg"
     },
     {
       "code": "8001889",
@@ -853,7 +935,8 @@
         "L"
       ],
       "priority": "GG01",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/fusible_expulsion_k.jpg"
     },
     {
       "code": "8001891",
@@ -864,7 +947,8 @@
         "FUSIBLE DE 20A"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/fusible_expulsion_k.jpg"
     },
     {
       "code": "8001895",
@@ -875,7 +959,8 @@
         "FUSIBLE DE 30A"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/fusible_expulsion_k.jpg"
     },
     {
       "code": "8001882",
@@ -886,7 +971,8 @@
         "FUSIBLE DE 3A"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/fusible_expulsion_k.jpg"
     },
     {
       "code": "8001847",
@@ -897,7 +983,8 @@
         "FUSIBLE DE 65A"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/fusible_expulsion_k.jpg"
     },
     {
       "code": "8001883",
@@ -908,7 +995,8 @@
         "FUSIBLE DE 6A"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/fusible_expulsion_k.jpg"
     },
     {
       "code": "8001886",
@@ -919,7 +1007,8 @@
         "FUSIBLE DE 8A"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/fusible_expulsion_k.jpg"
     },
     {
       "code": "8001845",
@@ -930,7 +1019,8 @@
         "FUSIBLE"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/fusible_expulsion_k.jpg"
     },
     {
       "code": "8001817",
@@ -942,7 +1032,8 @@
         "L"
       ],
       "priority": "GG01",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/cutout_fusible_aereo.jpg"
     },
     {
       "code": "8002097",
@@ -952,7 +1043,8 @@
         "GRAPA"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/grapa_anclaje_pistola.jpg"
     },
     {
       "code": "8002140",
@@ -962,7 +1054,8 @@
         "GRAPA 120"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/grapa_anclaje_pistola.jpg"
     },
     {
       "code": "8002083",
@@ -972,7 +1065,8 @@
         "GRAPA 185"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/grapa_anclaje_pistola.jpg"
     },
     {
       "code": "8002136",
@@ -982,7 +1076,8 @@
         "GRAPA 70"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/grapa_anclaje_pistola.jpg"
     },
     {
       "code": "8002118",
@@ -992,7 +1087,8 @@
         "GRAPA PARA AUTOSOPORTADO"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/grapa_fin_autosoportado.jpg"
     },
     {
       "code": "8002149",
@@ -1002,7 +1098,8 @@
         "GRAPA SUSPENCION 70"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/grapa_suspension_aluminio.jpg"
     },
     {
       "code": "8002153",
@@ -1012,7 +1109,8 @@
         "GRAPA SUSPENCION 185"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/grapa_suspension_varillas.jpg"
     },
     {
       "code": "8002151",
@@ -1022,7 +1120,8 @@
         "GRAPA SUSPENCION 120"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/grapa_suspension_varillas.jpg"
     },
     {
       "code": "2000073",
@@ -1032,7 +1131,8 @@
         "GUANTE NITRILO PEQUEÑO"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/guante_nitrilo_industrial.jpg"
     },
     {
       "code": "2000388",
@@ -1042,7 +1142,8 @@
         "GUANTE NITRILO GRANDE"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/guante_nitrilo_industrial.jpg"
     },
     {
       "code": "8000687",
@@ -1052,7 +1153,8 @@
         "GUARDACABO PARA VIENTO"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/guardacabo_acero_galvanizado.jpg"
     },
     {
       "code": "8000535",
@@ -1062,7 +1164,8 @@
         "HEBILLAS"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/hebilla_acero_inoxidable.jpg"
     },
     {
       "code": "8003160",
@@ -1072,7 +1175,8 @@
         "HOJA DE SIERRA"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/hoja_sierra_bimetal.jpg"
     },
     {
       "code": "3001051",
@@ -1082,7 +1186,8 @@
         "PAD"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/manta_aislante_epr.jpg"
     },
     {
       "code": "3001048",
@@ -1092,7 +1197,8 @@
         "PAD"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/manta_aislante_epr.jpg"
     },
     {
       "code": "3000685",
@@ -1102,7 +1208,8 @@
         "CRUCETA 6PIES"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/cruceta_madera_tratada.jpg"
     },
     {
       "code": "3000687",
@@ -1112,7 +1219,8 @@
         "CRUCETA 7PIES"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/cruceta_madera_tratada.jpg"
     },
     {
       "code": "8001981",
@@ -1122,7 +1230,8 @@
         "OJAL 3/4"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/ojal_roscado_galvanizado.jpg"
     },
     {
       "code": "8001977",
@@ -1132,7 +1241,8 @@
         "OJAL 5/8"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/ojal_roscado_galvanizado.jpg"
     },
     {
       "code": "8002663",
@@ -1142,7 +1252,8 @@
         "PENETROX"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/pasta_inhibidora_electrica.jpg"
     },
     {
       "code": "8000647",
@@ -1152,7 +1263,8 @@
         "PERNO 1/2"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/perno_hexagonal_galvanizado.jpg"
     },
     {
       "code": "8001122",
@@ -1162,7 +1274,8 @@
         "PERNO"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/perno_hexagonal_galvanizado.jpg"
     },
     {
       "code": "8001124",
@@ -1172,7 +1285,8 @@
         "PERNO 3/8"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/perno_hexagonal_galvanizado.jpg"
     },
     {
       "code": "8001126",
@@ -1182,7 +1296,8 @@
         "PERNO"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/perno_hexagonal_galvanizado.jpg"
     },
     {
       "code": "8002003",
@@ -1193,7 +1308,8 @@
         "Chapas de tierra"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/plancha_cobre_tierra.jpg"
     },
     {
       "code": "8002007",
@@ -1204,7 +1320,8 @@
         "Chapas de tierra"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/plancha_cobre_tierra.jpg"
     },
     {
       "code": "2000424",
@@ -1214,7 +1331,8 @@
         "AVES"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/protector_aves_fibra.jpg"
     },
     {
       "code": "3000809",
@@ -1224,7 +1342,8 @@
         "PROTECTOR PDS (TRIANGULO)"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/protector_pds_triangulo.jpg"
     },
     {
       "code": "3000807",
@@ -1234,7 +1353,8 @@
         "PROTECTOR PDS PARALELO PREDIO"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/protector_pds_triangulo.jpg"
     },
     {
       "code": "3000808",
@@ -1244,7 +1364,8 @@
         "PROTECTOR PDS PERPEND PREDIO"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/protector_pds_triangulo.jpg"
     },
     {
       "code": "3000806",
@@ -1254,7 +1375,8 @@
         "PROTECTOR DE SAB"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/protector_pds_triangulo.jpg"
     },
     {
       "code": "3000802",
@@ -1264,7 +1386,8 @@
         "AVES"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/protector_pds_triangulo.jpg"
     },
     {
       "code": "3000797",
@@ -1274,7 +1397,8 @@
         "AVES"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/protector_aves_fibra.jpg"
     },
     {
       "code": "3000795",
@@ -1284,7 +1408,8 @@
         "AVES"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/protector_punta_poste.jpg"
     },
     {
       "code": "3000801",
@@ -1294,7 +1419,8 @@
         "AVES"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/protector_aves_fibra.jpg"
     },
     {
       "code": "3000800",
@@ -1304,7 +1430,8 @@
         "AVES"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/protector_aves_fibra.jpg"
     },
     {
       "code": "3000803",
@@ -1314,7 +1441,8 @@
         "AVES"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/protector_punta_poste.jpg"
     },
     {
       "code": "3000798",
@@ -1324,7 +1452,8 @@
         "AVES"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/protector_aves_fibra.jpg"
     },
     {
       "code": "3000793",
@@ -1334,7 +1463,8 @@
         "AVES"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/protector_punta_poste.jpg"
     },
     {
       "code": "4000576",
@@ -1345,7 +1475,8 @@
         "seccionador rigido 10kv"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/seccionador_unipolar_aereo.jpg"
     },
     {
       "code": "4000578",
@@ -1356,7 +1487,8 @@
         "seccionador rigido 22.9kv"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/seccionador_unipolar_aereo.jpg"
     },
     {
       "code": "8002689",
@@ -1366,7 +1498,8 @@
         "SOLVENTE"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/solvente_dielectrico_envase.jpg"
     },
     {
       "code": "8002030",
@@ -1376,7 +1509,8 @@
         "LATERAL PARA 22,9KV"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/soporte_lateral_l.jpg"
     },
     {
       "code": "8002028",
@@ -1386,7 +1520,8 @@
         "LATERAL PARA 10KV"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/soporte_lateral_l.jpg"
     },
     {
       "code": "8002020",
@@ -1396,7 +1531,8 @@
         "LATERAL"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/soporte_pasante_recto.jpg"
     },
     {
       "code": "8000856",
@@ -1406,7 +1542,8 @@
         "TIRAFON PEQUEÑO"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/tirafondo_acero_galvanizado.jpg"
     },
     {
       "code": "8000858",
@@ -1416,7 +1553,8 @@
         "TIRAFON MEDIANO"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/tirafondo_acero_galvanizado.jpg"
     },
     {
       "code": "8000860",
@@ -1426,7 +1564,8 @@
         "TIRAFON GRANDE"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/tirafondo_acero_galvanizado.jpg"
     },
     {
       "code": "8000862",
@@ -1436,7 +1575,8 @@
         "TIRAFON EXTRAGRANDE"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/tirafondo_acero_galvanizado.jpg"
     },
     {
       "code": "8002570",
@@ -1446,7 +1586,8 @@
         "TOCUYO"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/tocuyo_tela_algodon.jpg"
     },
     {
       "code": "8002568",
@@ -1456,7 +1597,8 @@
         "TRAPO"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/trapo_industrial_algodon.jpg"
     },
     {
       "code": "8001781",
@@ -1467,7 +1609,8 @@
         "CAÑA 10KV"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/tubo_portafusible_aereo.jpg"
     },
     {
       "code": "8001785",
@@ -1478,7 +1621,8 @@
         "CAÑA 22,9KV"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/tubo_portafusible_aereo.jpg"
     },
     {
       "code": "8002291",
@@ -1488,7 +1632,8 @@
         "AUTOMATICO 120"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/empalme_automatico_aluminio.jpg"
     },
     {
       "code": "8002235",
@@ -1498,7 +1643,8 @@
         "AUTOMATICO 185"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/empalme_automatico_aluminio.jpg"
     },
     {
       "code": "8002289",
@@ -1508,7 +1654,8 @@
         "AUTOMATICO 70"
       ],
       "priority": "",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/empalme_automatico_aluminio.jpg"
     },
     {
       "code": "8002033",
@@ -1518,7 +1665,8 @@
         "VARILLA 250"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/varilla_roscada_galvanizada.jpg"
     },
     {
       "code": "8002034",
@@ -1528,7 +1676,8 @@
         "VARILLA 300"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/varilla_roscada_galvanizada.jpg"
     },
     {
       "code": "8002035",
@@ -1538,7 +1687,8 @@
         "VARILLA 350"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/varilla_roscada_galvanizada.jpg"
     },
     {
       "code": "8002038",
@@ -1548,7 +1698,8 @@
         "VARILLA 450"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/varilla_roscada_galvanizada.jpg"
     },
     {
       "code": "8002041",
@@ -1558,7 +1709,8 @@
         "VARILLA 550"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/varilla_roscada_galvanizada.jpg"
     },
     {
       "code": "8002043",
@@ -1568,7 +1720,8 @@
         "VARILLA 650"
       ],
       "priority": "P",
-      "source": "ALIAS"
+      "source": "ALIAS",
+      "image": "/material-images/varilla_roscada_galvanizada.jpg"
     }
   ],
   "supervisors": [

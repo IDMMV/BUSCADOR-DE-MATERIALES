@@ -1,8 +1,10 @@
 // Service Worker for Buscador de Materiales SAP PWA
-const CACHE_NAME = 'materiales-sap-v1';
+const CACHE_NAME = 'materiales-sap-v5';
 const PRECACHE_ASSETS = [
   '/',
   '/index.html',
+  '/data.js?v=458',
+  '/preloaded-stock.js?v=458',
   '/manifest.webmanifest',
   '/icon-192.png',
   '/icon-512.png',
@@ -66,7 +68,23 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Stale-while-revalidate for static assets
+  // Network-first for scripts, styles, JSON, and manifest so updates apply immediately
+  if (/\.(js|css|json|svg|webmanifest)$/i.test(url.pathname)) {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const clone = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          }
+          return networkResponse;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // Stale-while-revalidate for static binary icons/images
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       const fetchPromise = fetch(event.request)

@@ -143,10 +143,17 @@ html[data-theme="dark"] .mat-alias-inline-wrap { background: #0f172a; border-col
 .qa-row input:focus { border-color: #2563eb; outline: none; box-shadow: 0 0 0 2px rgba(37,99,235,0.2); }
 .mat-pill { cursor: pointer; transition: all 0.15s; border-radius: 6px; }
 .mat-pill.active { background: #19385f !important; color: #fff !important; border-color: #19385f !important; font-weight: 700 !important; }
-.mat-photo-cell { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-width: 68px; }
-.mat-thumb-img { width: 44px; height: 44px; object-fit: cover; border-radius: 6px; border: 1px solid var(--line); cursor: pointer; background: #f8fafc; transition: transform 0.15s, box-shadow 0.15s; }
-.mat-thumb-img:hover { transform: scale(1.08); box-shadow: 0 3px 8px rgba(0,0,0,0.18); }
-.mat-empty-thumb { width: 44px; height: 44px; border-radius: 6px; border: 1px dashed var(--line); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--muted); background: rgba(0,0,0,0.02); text-align: center; line-height: 1.1; }
+.mat-photo-cell { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; min-width: 82px; }
+.mat-thumb-img { width: 64px; height: 64px; object-fit: contain; border-radius: 8px; border: 1.5px solid #b8ceea; cursor: pointer; background: #ffffff; padding: 3px; transition: transform 0.15s, box-shadow 0.15s; }
+.mat-thumb-img:hover { transform: scale(1.08); box-shadow: 0 4px 12px rgba(0,0,0,0.2); border-color: var(--blue); }
+.mat-empty-thumb { width: 64px; height: 64px; border-radius: 8px; border: 1px dashed var(--line); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--muted); background: rgba(0,0,0,0.02); text-align: center; line-height: 1.15; }
+.qa-photo-box { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 14px; align-items: center; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); }
+.qa-photo-thumb { width: 112px; height: 112px; object-fit: contain; border-radius: 10px; border: 1.5px solid #b8ceea; background: #ffffff; padding: 5px; cursor: pointer; box-shadow: 0 2px 8px rgba(15,41,66,0.08); }
+.qa-photo-empty { width: 112px; height: 112px; border-radius: 10px; border: 1px dashed var(--line); display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--muted); text-align: center; background: var(--panel); padding: 6px; }
+.qa-photo-controls { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.qa-photo-btns { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.qa-photo-url-row { display: flex; gap: 6px; align-items: center; }
+.qa-photo-url-row input { flex: 1; min-width: 0; padding: 6px 9px; border: 1px solid var(--line); border-radius: 7px; font-size: 12px; background: var(--panel); color: var(--text); }
 </style>
 <style id="order-buttons-fix">
 #v26SaveRow, div#v26SaveRow.order-save-row {
@@ -461,11 +468,12 @@ html[data-theme="dark"] .prio-p-badge {
 .order-data-search .field{margin:0!important}
 .order-data-search .field input,.order-data-search .field select{padding:9px 11px!important;min-height:39px!important}
 .order-data-search .v34-district-note{grid-column:1/-1!important;margin-top:0!important;padding:7px 10px!important}
-.v42-material-image img{cursor:zoom-in;transition:transform .18s ease,box-shadow .18s ease}
-.v42-material-image img:hover{transform:scale(1.04);box-shadow:0 5px 18px #0003}
-#materialImageViewer{border:0;padding:0;background:transparent;max-width:none;max-height:none;width:100vw;height:100vh}
+.v42-material-image img{cursor:zoom-in;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.v42-material-image img:hover{transform:scale(1.05);box-shadow:0 6px 20px rgba(15,41,66,0.22);border-color:#0284c7}
+#materialImageViewer{border:0!important;padding:0!important;background:transparent!important;max-width:none!important;max-height:none!important;width:100vw!important;height:100dvh!important;margin:0!important;border-radius:0!important}
 #materialImageViewer::backdrop{background:rgba(3,10,22,.94);backdrop-filter:blur(8px)}
-.image-viewer-shell{height:100%;display:grid;grid-template-rows:auto minmax(180px,1fr) auto;background:radial-gradient(circle at 50% 35%,rgba(30,64,175,0.22),transparent 65%),linear-gradient(180deg,#060f1c,#0b192c);color:#fff;padding:12px 18px;gap:10px;overflow:hidden}
+.image-viewer-shell{height:100%;display:grid;grid-template-rows:auto minmax(0,1fr);background:radial-gradient(circle at 35% 45%,rgba(30,64,175,0.24),transparent 65%),linear-gradient(180deg,#060f1c,#0b192c);color:#fff;padding:12px 18px;gap:12px;overflow:hidden}
+.image-viewer-body{display:grid;grid-template-columns:minmax(0,1.42fr) minmax(360px,0.92fr);gap:16px;min-height:0;align-items:stretch}
 .image-viewer-head{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid rgba(148,163,184,0.18);padding-bottom:10px;flex-wrap:wrap}
 .image-viewer-title{display:flex;align-items:center;gap:10px;min-width:0;flex:1 1 240px}
 .image-viewer-title-text{min-width:0}
@@ -483,15 +491,18 @@ html[data-theme="dark"] .prio-p-badge {
 .image-viewer-only-img input{margin:0;accent-color:#38bdf8;cursor:pointer}
 .image-viewer-close{background:rgba(220,38,38,0.9)!important;color:#fff!important;min-width:94px;font-weight:700!important;border-radius:10px!important;border:1px solid rgba(252,165,165,0.3)!important;padding:8px 14px!important}
 .image-viewer-close:hover{background:#dc2626!important}
-.image-viewer-stage{position:relative;display:flex;align-items:center;justify-content:center;min-height:0;padding:4px 58px}
-.image-viewer-img-wrap{display:flex;align-items:center;justify-content:center;width:100%;height:100%;min-height:0}
-.image-viewer-stage img{max-width:100%;max-height:100%;object-fit:contain;border-radius:14px;background:#fff;padding:6px;box-shadow:0 18px 50px rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.15);transition:transform .2s ease}
-.image-viewer-no-img{display:flex;flex-direction:column;align-items:center;justify-content:center;width:290px;height:190px;background:rgba(255,255,255,0.05);border:2px dashed rgba(148,163,184,0.28);border-radius:16px;color:#cbd5e1;padding:16px;text-align:center;gap:6px}
-.image-viewer-no-img p{margin:0;font-size:13px;color:#94a3b8}
-.image-viewer-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:60px;border-radius:12px;border:1px solid rgba(255,255,255,0.2);background:rgba(30,58,138,0.88);color:#fff;font-size:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s ease;z-index:2;backdrop-filter:blur(4px)}.image-viewer-nav:hover{background:#2563eb;transform:translateY(-50%) scale(1.06)}
-.image-viewer-prev{left:4px}.image-viewer-next{right:4px}
-.image-viewer-foot{padding-top:2px}
-.cat-bottom-card{max-width:860px;margin:0 auto;background:linear-gradient(180deg,rgba(15,28,46,0.96),rgba(11,22,38,0.98));border:1px solid rgba(148,163,184,0.24);border-radius:16px;padding:13px 16px 11px;backdrop-filter:blur(10px);box-shadow:0 12px 34px rgba(0,0,0,0.5);display:flex;flex-direction:column;gap:10px}
+.image-viewer-stage{position:relative;display:flex;align-items:center;justify-content:center;min-height:300px;height:100%;padding:12px 58px;background:rgba(15,23,42,0.45);border:1px solid rgba(148,163,184,0.18);border-radius:18px;overflow:hidden}
+.image-viewer-img-wrap{display:flex;align-items:center;justify-content:center;width:100%;height:100%;min-height:0;overflow:auto;position:relative}
+.image-viewer-stage img{width:min(100%,640px);height:min(100%,600px);max-width:100%;max-height:100%;object-fit:contain;border-radius:16px;background:#fff;padding:12px;box-shadow:0 20px 55px rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.18);transition:transform .2s ease;cursor:zoom-in}
+.image-viewer-stage img.is-zoomed{transform:scale(1.65);transform-origin:center center;cursor:zoom-out}
+.image-viewer-zoom-btn{position:absolute;right:14px;bottom:14px;z-index:3;border:1px solid rgba(148,163,184,0.38);background:rgba(15,23,42,0.84);color:#f1f5f9;font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;cursor:pointer;backdrop-filter:blur(6px);transition:all .15s ease}
+.image-viewer-zoom-btn:hover{background:rgba(37,99,235,0.9);border-color:#7dd3fc;color:#fff}
+.image-viewer-no-img{display:flex;flex-direction:column;align-items:center;justify-content:center;width:min(360px,90%);height:230px;background:rgba(255,255,255,0.05);border:2px dashed rgba(148,163,184,0.28);border-radius:16px;color:#cbd5e1;padding:18px;text-align:center;gap:8px}
+.image-viewer-no-img p{margin:0;font-size:13.5px;color:#94a3b8}
+.image-viewer-nav{position:absolute;top:50%;transform:translateY(-50%);width:46px;height:68px;border-radius:12px;border:1px solid rgba(255,255,255,0.22);background:rgba(30,58,138,0.88);color:#fff;font-size:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s ease;z-index:3;backdrop-filter:blur(4px)}.image-viewer-nav:hover{background:#2563eb;transform:translateY(-50%) scale(1.06)}
+.image-viewer-prev{left:8px}.image-viewer-next{right:8px}
+.image-viewer-foot{min-height:0;overflow-y:auto;display:flex;flex-direction:column;justify-content:center}
+.cat-bottom-card{width:100%;max-width:none;margin:0;background:linear-gradient(180deg,rgba(15,28,46,0.96),rgba(11,22,38,0.98));border:1px solid rgba(148,163,184,0.24);border-radius:16px;padding:15px 17px 13px;backdrop-filter:blur(10px);box-shadow:0 12px 34px rgba(0,0,0,0.5);display:flex;flex-direction:column;gap:11px}
 .cat-bottom-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px solid rgba(148,163,184,0.14);padding-bottom:9px}
 .cat-bottom-meta{display:flex;flex-direction:column;gap:5px;min-width:0;flex:1 1 360px;text-align:left}
 .cat-bottom-badges{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
@@ -529,6 +540,57 @@ html[data-theme="dark"] .prio-p-badge {
 .cat-counter{font-size:12px;color:#e0f2fe;font-weight:800;background:rgba(56,189,248,0.16);border:1px solid rgba(56,189,248,0.32);padding:4px 10px;border-radius:999px;white-space:nowrap}
 .cat-viewer-status{font-size:12.5px;font-weight:700;min-height:17px;color:#86efac;text-align:center}
 .cat-viewer-status.error{color:#fca5a5}
+.cat-photo-tools{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding-top:4px}
+.cat-photo-btn{appearance:none;-webkit-appearance:none;border:1px solid rgba(148,163,184,0.35);background:rgba(255,255,255,0.09);color:#f1f5f9;font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .15s ease;white-space:nowrap}
+.cat-photo-btn:hover{background:rgba(56,189,248,0.22);border-color:#38bdf8;color:#fff}
+.cat-photo-btn.danger-soft{border-color:rgba(248,113,113,0.45);background:rgba(220,38,38,0.2);color:#fecaca}
+.cat-photo-btn.danger-soft:hover{background:rgba(220,38,38,0.42);color:#fff}
+.cat-photo-btn.drive-sync-btn{border-color:rgba(74,222,128,0.45);background:rgba(22,163,74,0.24);color:#bbf7d0}
+.cat-photo-btn.drive-sync-btn:hover{background:rgba(22,163,74,0.42);color:#fff}
+.cat-photo-btn.drive-sync-btn.is-synced{border-color:rgba(56,189,248,0.35);background:rgba(14,116,144,0.28);color:#bae6fd}
+.cat-url-box{display:flex;align-items:center;gap:6px;flex-wrap:wrap;background:rgba(15,23,42,0.85);border:1px solid rgba(56,189,248,0.4);border-radius:10px;padding:7px 9px}
+.cat-url-box input{flex:1 1 220px;min-width:0;padding:6px 10px!important;border-radius:7px!important;border:1px solid rgba(148,163,184,0.35)!important;background:rgba(15,23,42,0.9)!important;color:#fff!important;font-size:12.5px!important}
+.cat-suppliers-box{display:flex;flex-direction:column;gap:6px;background:rgba(255,255,255,0.04);border:1px solid rgba(148,163,184,0.18);border-radius:11px;padding:8px 11px}
+.cat-suppliers-title{font-size:11px;font-weight:800;letter-spacing:0.6px;text-transform:uppercase;color:#93c5fd;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.cat-suppliers-list{display:flex;flex-wrap:wrap;gap:6px}
+.cat-supplier-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:8px;font-size:11.5px;font-weight:700;text-decoration:none;border:1px solid rgba(56,189,248,0.34);background:rgba(15,23,42,0.75);color:#e0f2fe;transition:all .15s ease}
+.cat-supplier-chip:hover{background:rgba(37,99,235,0.45);border-color:#7dd3fc;color:#fff}
+.cat-supplier-chip.is-peru{border-color:rgba(250,204,21,0.48);background:rgba(120,53,15,0.34);color:#fef08a}
+.cat-supplier-chip.is-peru:hover{background:rgba(180,83,9,0.55);border-color:#fde047;color:#fff}
+.cat-supplier-origin{font-size:10px;opacity:.85;font-weight:600}
+.sup-dir-toolbar{display:flex;flex-direction:column;gap:10px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:14px}
+.sup-dir-search-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.sup-dir-search-row input{flex:1 1 240px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--text);font-size:13.5px}
+.sup-dir-filters{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.sup-filter-pill{border:1px solid var(--line);background:var(--panel);color:var(--navy);border-radius:8px;padding:6px 11px;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s ease}
+.sup-filter-pill:hover{border-color:var(--blue);background:#e8f1fb}
+.sup-filter-pill.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.suppliers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:12px}
+.supplier-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 15px;display:flex;flex-direction:column;gap:9px;box-shadow:0 3px 10px rgba(15,41,66,0.06);transition:border-color .15s ease,transform .15s ease}
+.supplier-card:hover{border-color:var(--blue);transform:translateY(-1px)}
+.supplier-card.is-featured{border-color:#f59e0b;box-shadow:0 4px 16px rgba(245,158,11,0.14)}
+.supplier-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.supplier-card-title{margin:0;font-size:15.5px;font-weight:800;color:var(--navy);line-height:1.25}
+.supplier-badge{font-size:11px;font-weight:800;padding:3px 9px;border-radius:6px;white-space:nowrap;border:1px solid var(--line);background:#eef4fa;color:var(--navy)}
+.supplier-badge.peru{background:#fef3c7;border-color:#f59e0b;color:#92400e}
+.supplier-badge.eeuu{background:#dbeafe;border-color:#60a5fa;color:#1e40af}
+.supplier-badge.europa{background:#dcfce7;border-color:#4ade80;color:#166534}
+.supplier-card-desc{margin:0;font-size:13px;color:var(--text);line-height:1.4}
+.supplier-lines{display:flex;flex-wrap:wrap;gap:5px}
+.supplier-line-tag{font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--bg);border:1px solid var(--line);color:var(--muted)}
+.supplier-card-foot{margin-top:auto;padding-top:8px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.supplier-domain{font-size:11.5px;color:var(--muted);font-weight:600}
+.supplier-link-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 12px;border-radius:8px;background:var(--blue);color:#fff;text-decoration:none;font-size:12.5px;font-weight:700}
+.supplier-link-btn:hover{background:var(--blue-strong)}
+html[data-theme="dark"] .sup-filter-pill{background:#12253e;color:#dceaff;border-color:#2b496a}
+html[data-theme="dark"] .sup-filter-pill:hover{background:#1b385c;border-color:#38bdf8}
+html[data-theme="dark"] .sup-filter-pill.active{background:#2563eb;color:#fff;border-color:#60a5fa}
+html[data-theme="dark"] .supplier-card{background:#0e2138;border-color:#274463}
+html[data-theme="dark"] .supplier-card.is-featured{border-color:#f59e0b}
+html[data-theme="dark"] .supplier-card-title{color:#f0f6fe}
+html[data-theme="dark"] .supplier-line-tag{background:#091728;border-color:#233d5a;color:#cbd5e1}
+.v42-material-image img{object-fit:contain!important;background:#ffffff!important}
+html[data-theme="dark"] .v42-material-image img{background:#ffffff!important}
 html[data-theme="dark"]{--bg:#071221!important;--panel:#0d1d31!important;--line:#2d4665!important;--text:#eff6ff!important;--muted:#aec0d8!important;--blue-strong:#2f82cd!important}
 html[data-theme="dark"] .top{background:#09182a!important;border-color:#24405e!important}
 html[data-theme="dark"] .sidebar{background:#0a1a2e!important;border-right:1px solid #274665!important}
@@ -542,15 +604,22 @@ html[data-theme="dark"] .v29-stock-table tbody td{background:#0d1e33!important;c
 html[data-theme="dark"] .v29-stock-pill.good{background:#123c2c!important;color:#69e69a!important;border-color:#2b7950!important}
 html[data-theme="dark"] .stock-status.ok{background:#123c2c!important;color:#87efac!important;border-color:#347a55!important}
 html[data-theme="dark"] .stock-status.stale{background:#493a16!important;color:#ffdc75!important;border-color:#8f6f25!important}
+@media(max-width:960px){
+ .image-viewer-shell{overflow-y:auto}
+ .image-viewer-body{grid-template-columns:1fr;grid-template-rows:auto auto}
+ .image-viewer-stage{min-height:clamp(260px,46dvh,430px);height:clamp(260px,46dvh,430px);padding:10px 48px}
+ .image-viewer-stage img{width:min(100%,420px);height:100%}
+ .image-viewer-foot{overflow-y:visible;justify-content:flex-start}
+}
 @media(max-width:900px){
  .stock-toolbar{position:static!important;grid-template-columns:1fr 1fr!important;padding:7px 10px!important}
  .stock-toolbar .stock-file-wrap,.stock-toolbar .stock-status,.stock-toolbar .stock-help{grid-column:1/-1!important}
  .order-data-search .fields{grid-template-columns:1fr 1fr!important}
- .image-viewer-stage{padding:8px 46px}.image-viewer-title span{max-width:52vw}
+ .image-viewer-title span{max-width:52vw}
 }
 @media(max-width:640px){
  .order-data-search .fields{grid-template-columns:1fr!important}
- .image-viewer-shell{padding:10px;gap:8px}.image-viewer-stage{padding:6px 36px}.image-viewer-nav{width:34px;height:48px;font-size:26px}.image-viewer-close{min-width:78px;padding:7px 10px!important}
+ .image-viewer-shell{padding:10px;gap:8px}.image-viewer-stage{min-height:clamp(240px,42dvh,360px);height:clamp(240px,42dvh,360px);padding:8px 38px}.image-viewer-nav{width:34px;height:48px;font-size:26px}.image-viewer-close{min-width:78px;padding:7px 10px!important}
  .cat-bottom-card{padding:10px 11px}.cat-stock-grid{grid-template-columns:1fr}.cat-bottom-actions{flex-direction:column;align-items:stretch}.cat-order-controls{justify-content:space-between}.cat-active-center-tag{justify-content:center}
 }
 .v30-field-missing{background:linear-gradient(180deg,#fef2f2,#fee2e2)!important;border:1.5px solid #ef4444!important;border-radius:10px!important;padding:5px 7px!important;box-shadow:0 0 0 3px rgba(239,68,68,0.16)!important;color:#991b1b!important;font-weight:800!important;transition:all .18s ease}
@@ -1033,6 +1102,7 @@ body:not(.v439-admin-mode) [data-config-page="units"] {
 <button class="side-btn" data-view="reservasView">🔄 Devoluciones <span class="side-count hidden" id="devolucionesNewCount">0</span></button>
 <button class="side-btn" data-view="templatesView">📐 Plantillas <span class="side-count hidden" id="sideTemplatesCount">0</span></button>
 <button class="side-btn" data-view="historyView">🕘 Historial <span class="side-count hidden" id="historyNewCount">0</span></button>
+<button class="side-btn" data-view="suppliersView">🏭 Proveedores MT</button>
 <button class="side-btn" data-view="newMatView">📊 Base de materiales</button>
 <button class="side-btn" data-view="supView">👷 Supervisores</button>
 <button class="side-btn" data-view="unitsView">🚚 Unidades móviles</button>
@@ -1048,7 +1118,7 @@ body:not(.v439-admin-mode) [data-config-page="units"] {
 <button class="btn primary" id="loadStock">📥 Cargar y validar stock</button>
 <div class="stock-status stale" id="stockStatus">⚠ Stock no actualizado hoy. Carga el Excel diario de SAP.</div>
 <div class="stock-help">Columnas reconocidas: Material, Texto breve de material, Centro, Almacén, Lote, Libre utilización y Unidad medida base. ALIM, CE y LOTE se completan automáticamente al copiar o exportar.</div>
-</section><section class="panel"><div class="head"><h2>1. Buscar materiales</h2><div class="head-actions"><button class="btn secondary hidden" id="v46ToggleOrderDataBtn" type="button" title="Mostrar u ocultar los datos del pedido">📋 Mostrar datos del pedido</button><button class="btn primary" id="openImageCatalogBtn" type="button" title="Explorar y pedir materiales viendo su imagen y stock">🖼️ Buscar por imagen</button><button class="btn secondary" id="v439GoToOrder" type="button">📋 Ir a pedido seleccionado</button><span class="badge" id="count"></span></div></div><div class="search"><input id="q" placeholder="Buscar por matrícula, descripción, alias o nombre de plantilla..."/><button aria-label="Buscar por voz" class="mic" id="voiceSearch" title="Buscar por voz">🎤</button><button aria-label="Limpiar búsqueda" id="clear" title="Limpiar búsqueda">×</button></div><div class="results" id="results"></div></section></section>
+</section><section class="panel"><div class="head"><h2>1. Buscar materiales</h2><div class="head-actions"><button class="btn secondary hidden" id="v46ToggleOrderDataBtn" type="button" title="Mostrar u ocultar los datos del pedido">📋 Mostrar datos del pedido</button><button class="btn secondary hidden" id="searchSyncDrivePhotosBtn" type="button" onclick="syncAllPhotosToDrive(this); return false;" title="Subir a Google Drive las imágenes del catálogo o editadas para conservarlas en cualquier PC">☁️ Guardar fotos en Drive</button><button class="btn primary" id="openImageCatalogBtn" type="button" title="Explorar y pedir materiales viendo su imagen y stock">🖼️ Buscar por imagen</button><button class="btn secondary" id="v439GoToOrder" type="button">📋 Ir a pedido seleccionado</button><span class="badge" id="count"></span></div></div><div class="search"><input id="q" placeholder="Buscar por matrícula, descripción, alias o nombre de plantilla..."/><button aria-label="Buscar por voz" class="mic" id="voiceSearch" title="Buscar por voz">🎤</button><button aria-label="Limpiar búsqueda" id="clear" title="Limpiar búsqueda">×</button></div><div class="results" id="results"></div></section></section>
 <section class="view" id="orderView"><main class="layout"><section class="panel" id="orderPanel"><div class="head v39-history-head" style="margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px"><div><h2 style="margin:0;display:inline-flex;align-items:center;gap:10px" id="v45OrderTitleText">2. Pedido seleccionado <span class="badge" id="cartCount">0 materiales</span></h2><p class="small" style="margin:4px 0 0 0;color:var(--muted)" id="v45OrderSubtitleText">Verifica el supervisor, fecha y cantidades antes de grabar o imprimir tu pedido.</p></div><div class="v39-history-actions" id="orderHeaderActions" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button type="button" id="v31FinalizeOrder" class="btn success v31-finalize" style="font-weight:700;padding:8px 16px;display:inline-flex;align-items:center;gap:6px">💾 Grabar pedido</button><button type="button" id="v31PrintOrderTop" class="btn secondary" style="font-weight:700;padding:8px 16px;display:inline-flex;align-items:center;gap:6px" title="Imprimir documento de pedido">🖨️ Imprimir pedido</button><button type="button" id="v449ClearAllOrdersBtn" class="btn danger v449-clear-all" style="font-weight:700;padding:8px 16px;display:inline-flex;align-items:center;gap:6px">🗑️ Borrar pedidos</button></div></div><div class="v438-back-row" style="margin-bottom:14px"><button type="button" class="btn secondary v438-back-btn" id="v438BackToSearch">← Volver a buscar materiales</button></div><div class="fields-and-actions-row" style="margin:14px 0" id="v46OrderFieldsWrap"><div class="fields" style="width:100%;margin:0"><label class="field" id="v46TipoMovWrap">Tipo de movimiento<select id="puesto"><option value="PEDIDO">PEDIDO</option><option value="RESERVA">RESERVA</option><option value="RECUPERO">RECUPERO</option><option value="DEVOLUCION">DEVOLUCIÓN</option></select></label><label class="field" id="v45OmWrap">OM<input id="omPedido" inputmode="numeric" placeholder="Ej.: 6000021031"/></label><label class="field" id="v45DestWrap">Supervisor<select id="dest"></select></label><label class="field fg-reserva" id="fieldReserva" style="display:none">N° Reserva (SAP)<input id="reservaPedido" inputmode="numeric" placeholder="Ej.: 100045892"/></label><label class="field" id="v45FechaWrap">Fecha<input id="fechaPedido" type="date"/></label><label class="field" id="v45MovilWrap">Unidad móvil<select id="movil"></select></label><label class="field" id="v45AlimWrap">Alimentador<input id="alimentadorPedido" list="alimentadoresList" placeholder="Ej.: A-01" autocomplete="off"/><datalist id="alimentadoresList"></datalist></label><label class="field" id="v45DistWrap">Distrito<input id="distritoPedido" placeholder="Ej.: Vitarte"/></label></div></div><select class="hidden" id="ce"><option value="1003">1003 - San Juan</option><option value="1004">1004 - Vitarte</option></select><div class="auto-fields-note">El Centro se toma del selector superior. ALIM, CE y LOTE se completan automáticamente desde el Excel diario de stock SAP.</div><p class="small">La cantidad inicia en 0 (amarillo). Al colocar un valor mayor a 0 cambia a verde. Puedes dictar cantidades con el micrófono.</p><div class="tablewrap"><table><thead><tr><th>Matrícula</th><th>Descripción</th><th>Cant.</th><th>Unidad</th><th></th></tr></thead><tbody id="cart"></tbody></table><div class="empty" id="empty">Agrega materiales desde el buscador.</div></div><div class="sap-preview-wrap"><div class="sap-preview-title"><div><h3>Vista previa exacta para SAP / Excel</h3><p class="small">Muestra almacén, centro y lote de donde se obtiene cada cantidad.</p></div><span class="badge" id="previewRowsCount">0 filas</span></div><div class="sap-preview"><table><thead><tr><th>MATRÍCULA</th><th>DESCRIPCIÓN</th><th>C1</th><th>CANT</th><th>UNIDAD</th><th>TP</th><th>C2</th><th>C3</th><th>ALIM</th><th>CE</th><th>OPERACIÓN</th><th>LOTE</th><th>TIPO DE APROVISIONAMIENTO</th><th>POS</th><th>DESTINATARIO</th><th>PUESTO DE DESCARGA</th><th>UBICACIÓN FINAL</th></tr></thead><tbody id="sapPreviewBody"></tbody></table><div class="preview-empty" id="sapPreviewEmpty">Agrega materiales y completa sus cantidades para generar la vista previa.</div></div></div><div class="actions" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:16px"><button class="btn primary" id="copy" style="font-weight:700">📋 Copiar para SAP</button><button class="btn success" id="excel" style="font-weight:700">📊 Exportar Excel</button><button class="btn secondary" id="csv" style="font-weight:700">📄 Exportar CSV</button><button class="btn danger" id="clean" style="font-weight:700">🧹 Limpiar vista previa</button></div><div class="pending-panel hidden" id="pendingPanel"><div class="head"><h3>⏳ Pendientes por coordinar</h3><span class="badge" id="pendingCount">0</span></div><div id="pendingList"></div></div><p class="status" id="status"></p></section></main></section>
 
 <section class="view" id="stockView"><section class="stock-toolbar">
@@ -1067,6 +1137,7 @@ body:not(.v439-admin-mode) [data-config-page="units"] {
 <section class="view" id="driveView"><section class="panel"><section class="page active" id="p-github"><h3>Sincronización con Google Drive</h3><p>Configura la URL <b>/exec</b> de tu Google Apps Script. Los cambios se guardan primero en este dispositivo y se sincronizan cuando haya internet.</p><div class="labeled-form drive-grid"><label class="form-group">URL de Apps Script<input id="scriptUrl" placeholder="https://script.google.com/macros/s/.../exec"/></label><label class="form-group">Clave de acceso<input id="scriptToken" placeholder="Clave definida en Code.gs" type="password"/></label><label class="form-group">Estado<input id="syncState" readonly="" value="Sin configurar"/></label><label class="form-group">Última sincronización<input id="lastSync" readonly=""/></label></div><div class="actions"><button type="button" class="btn primary" id="saveScriptConfig" onclick="saveSyncConfig(); return false;">Guardar conexión</button><button type="button" class="btn success" id="syncNow" onclick="syncToDrive(); return false;">Sincronizar ahora</button><button type="button" class="btn secondary" id="restoreDrive" onclick="restoreFromDrive(); return false;">Recuperar desde Drive</button><a class="btn secondary" href="https://drive.google.com/drive/my-drive" id="openDriveLink" rel="noopener" target="_blank">☁ Abrir Google Drive</a><button class="btn secondary" id="downloadJson">Descargar respaldo JSON</button><button class="btn danger" id="reset">Restablecer datos originales</button></div><div class="drive-note"><b>Modo sin red:</b> alias, fotos, supervisores, unidades y pendientes se guardan localmente. Al volver internet, pulsa “Sincronizar ahora” o abre nuevamente la aplicación.</div></section></section></section>
 <section class="view" id="templatesView"><section class="panel"><div id="v46TemplatesContainer"></div></section></section>
 <section class="view" id="usersView"><section class="panel"><div id="v46UsersContainer"></div></section></section>
+<section class="view" id="suppliersView"><section class="panel"><div class="head" style="margin-bottom:12px;flex-wrap:wrap"><div><h2>🏭 Proveedores de Media Tensión (Perú y Extranjeros)</h2><p class="small" style="margin:4px 0 0">Directorio técnico de proveedores locales (Promelsa) y fabricantes internacionales para instalaciones aéreas y subterráneas de Media y Baja Tensión.</p></div><span class="badge" id="supDirCountBadge">0 proveedores</span></div><div class="sup-dir-toolbar"><div class="sup-dir-search-row"><input type="search" id="supDirSearch" placeholder="🔍 Buscar proveedor, marca o material (ej. Promelsa, Cut Out, aislador, Raychem, PLP, grapa, 3M)..."><button type="button" class="btn secondary" id="supDirClear">✕ Limpiar</button></div><div class="sup-dir-filters" id="supOriginFilters"><span class="small" style="font-weight:800;margin-right:4px">Origen:</span><button type="button" class="sup-filter-pill active" data-sup-origin="all">Todos</button><button type="button" class="sup-filter-pill" data-sup-origin="Perú">🇵🇪 Perú</button><button type="button" class="sup-filter-pill" data-sup-origin="EE.UU.">🇺🇸 EE.UU.</button><button type="button" class="sup-filter-pill" data-sup-origin="Europa">🇪🇺 Europa</button></div><div class="sup-dir-filters" id="supLineFilters"><span class="small" style="font-weight:800;margin-right:4px">Línea:</span><button type="button" class="sup-filter-pill active" data-sup-line="all">Todas</button><button type="button" class="sup-filter-pill" data-sup-line="Aisladores">Aisladores</button><button type="button" class="sup-filter-pill" data-sup-line="Seccionamiento">Seccionamiento / Cut-Out</button><button type="button" class="sup-filter-pill" data-sup-line="Ferretería">Ferretería y Grapas</button><button type="button" class="sup-filter-pill" data-sup-line="Conectores">Conectores y Empalmes</button><button type="button" class="sup-filter-pill" data-sup-line="Conductores">Conductores y Cables</button><button type="button" class="sup-filter-pill" data-sup-line="Protección">Cintas, PRFV y Señalización</button><button type="button" class="sup-filter-pill" data-sup-line="Herramientas">Herramientas y Flejes</button></div></div><div class="suppliers-grid" id="supDirGrid"></div></section></section>
 </div></div>
 <dialog id="stockDecision"><div class="modal decision-modal"><div class="modalhead"><div><div class="ey">VALIDACIÓN DE STOCK</div><h2 id="decisionTitle">Stock insuficiente</h2></div><button class="btn secondary" id="closeDecision">×</button></div><div class="decision-summary" id="decisionSummary"></div><div class="decision-options" id="decisionOptions"></div></div></dialog>
 <dialog id="dlg"><div class="modal"><div class="modalhead"><div><div class="ey">ADMINISTRACIÓN</div><h2 id="modalTitle">Panel de Administración</h2></div><button class="btn secondary" id="close">×</button></div></div></dialog>
@@ -1107,16 +1178,35 @@ body:not(.v439-admin-mode) [data-config-page="units"] {
 <dialog id="userAuthDialog" aria-label="Inicio de sesión de usuario con doble candado">
   <div class="v46-auth-card" id="v46AuthCard"></div>
 </dialog>
-<dialog id="materialImageViewer" aria-label="Catálogo de imágenes de materiales"><div class="image-viewer-shell"><div class="image-viewer-head"><div class="image-viewer-title"><span class="cat-counter" id="imageViewerCounter">1 / 1</span><div class="image-viewer-title-text"><b id="imageViewerCode">🖼️ Buscar por imagen</b><span id="imageViewerDesc">Selecciona un almacén y registra tu pedido</span></div></div><div class="image-viewer-search-wrap"><div class="image-viewer-search-box"><input type="search" id="imageViewerSearch" placeholder="🔍 Buscar por matrícula, descripción o alias..."/><button type="button" id="imageViewerSearchClear" class="image-viewer-search-clear hidden" title="Limpiar búsqueda" aria-label="Limpiar búsqueda">✕</button></div><label class="image-viewer-only-img"><input type="checkbox" id="imageViewerOnlyWithImg"/> Solo con foto</label><button type="button" class="btn image-viewer-close" id="imageViewerClose">✕ Cerrar</button></div></div><div class="image-viewer-stage"><button type="button" class="image-viewer-nav image-viewer-prev" id="imageViewerPrev" aria-label="Imagen anterior">‹</button><div class="image-viewer-img-wrap"><img id="imageViewerImg" alt="Imagen ampliada del material"><div id="imageViewerNoImg" class="image-viewer-no-img hidden"><span style="font-size:40px">📦</span><p>Sin imagen registrada para este material</p></div></div><button type="button" class="image-viewer-nav image-viewer-next" id="imageViewerNext" aria-label="Imagen siguiente">›</button></div><div class="image-viewer-foot" id="imageViewerFoot"><div class="cat-bottom-card"><div class="cat-bottom-top"><div class="cat-bottom-meta"><div class="cat-bottom-badges"><span class="cat-mat-badge">MATRÍCULA SAP: <strong id="imageViewerCodeFoot">---</strong></span><span class="cat-unit-badge" id="imageViewerUnitFoot">UND</span></div><div class="cat-bottom-desc" id="imageViewerDescFoot">---</div></div><span class="cat-in-cart-badge hidden" id="imageViewerInCartBadge">✓ En pedido</span></div><div class="cat-warehouse-section"><div class="cat-section-label" id="imageViewerWarehouseLabel">1. Selecciona el almacén (haz clic en una tarjeta)</div><div class="cat-stock-grid" id="imageViewerStockGrid"></div></div><div class="cat-bottom-actions"><div class="cat-active-center-tag" id="imageViewerActiveCenterTag">📍 Almacén: 1003 San Juan</div><div class="cat-order-controls"><div class="cat-qty-group"><input type="number" id="imageViewerQty" class="cat-qty-input" min="0" step="any" placeholder="Cantidad"/><span class="cat-qty-unit-txt" id="imageViewerQtyUnit">UND</span></div><button type="button" class="btn success cat-save-btn" id="imageViewerSaveBtn">💾 Guardar en pedido</button><button type="button" class="btn cat-go-btn hidden" id="imageViewerGoOrderBtn">📋 Ver pedido</button></div></div><div class="cat-viewer-status" id="imageViewerStatus"></div></div></div></div></dialog>
-<dialog id="quickAliasDialog" aria-label="Corregir alias del material">
+<dialog id="materialImageViewer" aria-label="Catálogo de imágenes de materiales"><div class="image-viewer-shell"><div class="image-viewer-head"><div class="image-viewer-title"><span class="cat-counter" id="imageViewerCounter">1 / 1</span><div class="image-viewer-title-text"><b id="imageViewerCode">🖼️ Buscar por imagen</b><span id="imageViewerDesc">Selecciona un almacén y registra tu pedido</span></div></div><div class="image-viewer-search-wrap"><div class="image-viewer-search-box"><input type="search" id="imageViewerSearch" placeholder="🔍 Buscar por matrícula, descripción o alias..."/><button type="button" id="imageViewerSearchClear" class="image-viewer-search-clear hidden" title="Limpiar búsqueda" aria-label="Limpiar búsqueda">✕</button></div><label class="image-viewer-only-img"><input type="checkbox" id="imageViewerOnlyWithImg"/> Solo con foto</label><button type="button" class="btn image-viewer-close" id="imageViewerClose">✕ Cerrar</button></div></div><div class="image-viewer-body"><div class="image-viewer-stage"><button type="button" class="image-viewer-nav image-viewer-prev" id="imageViewerPrev" aria-label="Imagen anterior">‹</button><div class="image-viewer-img-wrap"><img id="imageViewerImg" alt="Imagen ampliada del material" referrerpolicy="no-referrer" title="Clic para ampliar o reducir"><div id="imageViewerNoImg" class="image-viewer-no-img hidden"><span style="font-size:46px">📦</span><p>Sin imagen registrada para este material</p></div></div><button type="button" class="image-viewer-zoom-btn" id="imageViewerZoomBtn" title="Ampliar o reducir imagen">🔍 Ampliar</button><button type="button" class="image-viewer-nav image-viewer-next" id="imageViewerNext" aria-label="Imagen siguiente">›</button></div><div class="image-viewer-foot" id="imageViewerFoot"><div class="cat-bottom-card"><div class="cat-bottom-top"><div class="cat-bottom-meta"><div class="cat-bottom-badges"><span class="cat-mat-badge">MATRÍCULA SAP: <strong id="imageViewerCodeFoot">---</strong></span><span class="cat-unit-badge" id="imageViewerUnitFoot">UND</span></div><div class="cat-bottom-desc" id="imageViewerDescFoot">---</div><div class="cat-photo-tools"><input type="file" id="viewerPhotoFileInput" accept="image/*" style="display:none"/><button type="button" class="cat-photo-btn" id="viewerUploadImgBtn" title="Subir nueva foto desde este equipo o pegar con Ctrl+V">📷 Cambiar foto</button><button type="button" class="cat-photo-btn" id="viewerUrlImgBtn" title="Pegar enlace (URL) de una imagen">🔗 Pegar URL</button><button type="button" class="cat-photo-btn hidden" id="viewerRestoreImgBtn" title="Volver a la imagen original del catálogo">🔄 Restaurar original</button><button type="button" class="cat-photo-btn danger-soft" id="viewerRemoveImgBtn" title="Quitar imagen de este material">✕ Quitar foto</button><button type="button" class="cat-photo-btn drive-sync-btn" id="viewerSyncDriveBtn" title="Guardar y sincronizar fotos con Google Drive">☁️ Sincronizar con Drive</button></div><div class="cat-url-box hidden" id="viewerUrlBox"><input type="url" id="viewerUrlInput" placeholder="https://... (pega enlace de imagen o usa Ctrl+V en el visor)"/><button type="button" class="btn primary" id="viewerUrlApplyBtn" style="padding:6px 11px;font-size:12px">Aplicar</button><button type="button" class="btn secondary" id="viewerUrlCancelBtn" style="padding:6px 10px;font-size:12px">Cancelar</button></div></div><span class="cat-in-cart-badge hidden" id="imageViewerInCartBadge">✓ En pedido</span></div><div class="cat-suppliers-box" id="imageViewerSuppliers"></div><div class="cat-warehouse-section"><div class="cat-section-label" id="imageViewerWarehouseLabel">1. Selecciona el almacén (haz clic en una tarjeta)</div><div class="cat-stock-grid" id="imageViewerStockGrid"></div></div><div class="cat-bottom-actions"><div class="cat-active-center-tag" id="imageViewerActiveCenterTag">📍 Almacén: 1003 San Juan</div><div class="cat-order-controls"><div class="cat-qty-group"><input type="number" id="imageViewerQty" class="cat-qty-input" min="0" step="any" placeholder="Cantidad"/><span class="cat-qty-unit-txt" id="imageViewerQtyUnit">UND</span></div><button type="button" class="btn success cat-save-btn" id="imageViewerSaveBtn">💾 Guardar en pedido</button><button type="button" class="btn cat-go-btn hidden" id="imageViewerGoOrderBtn">📋 Ver pedido</button></div></div><div class="cat-viewer-status" id="imageViewerStatus"></div></div></div></div></div></dialog>
+<dialog id="quickAliasDialog" aria-label="Corregir alias e imagen del material">
   <div class="qa-shell">
     <div class="qa-head">
       <div>
-        <div class="ey">CORREGIR SINÓNIMOS DE BÚSQUEDA</div>
+        <div class="ey">CORREGIR SINÓNIMOS E IMAGEN</div>
         <h3 id="qaTitle" style="margin:4px 0 0;font-size:17px">Matrícula</h3>
         <div id="qaDesc" class="small" style="color:var(--muted);margin-top:2px"></div>
       </div>
       <button type="button" class="btn secondary" id="qaCloseBtn">✕</button>
+    </div>
+    <div class="qa-photo-box">
+      <div style="display:flex;align-items:center;justify-content:center">
+        <img id="qaImgPreview" class="qa-photo-thumb" alt="Foto del material" referrerpolicy="no-referrer" title="Clic para abrir en el visor"/>
+        <div id="qaImgEmpty" class="qa-photo-empty hidden">Sin foto</div>
+      </div>
+      <div class="qa-photo-controls">
+        <div class="small" style="font-weight:700;color:var(--navy)">Imagen del material <span id="qaImgDriveState" style="font-weight:600;color:var(--muted)"></span></div>
+        <div class="qa-photo-btns">
+          <input type="file" id="qaPhotoFileInput" accept="image/*" style="display:none"/>
+          <button type="button" class="btn secondary" id="qaUploadImgBtn" style="padding:5px 9px;font-size:12px;font-weight:700">📷 Cambiar foto</button>
+          <button type="button" class="btn secondary hidden" id="qaRestoreImgBtn" style="padding:5px 9px;font-size:12px" title="Volver a la imagen original del catálogo">🔄 Original</button>
+          <button type="button" class="btn danger" id="qaRemoveImgBtn" style="padding:5px 9px;font-size:12px" title="Quitar imagen">✕ Quitar</button>
+        </div>
+        <div class="qa-photo-url-row">
+          <input type="url" id="qaImgUrlInput" placeholder="O pega aquí una URL de imagen (https://...)"/>
+          <button type="button" class="btn secondary" id="qaApplyUrlBtn" style="padding:5px 9px;font-size:11.5px;font-weight:700">Usar URL</button>
+        </div>
+      </div>
     </div>
     <div class="qa-list" id="qaList"></div>
     <div style="display:flex;gap:6px;align-items:center">
@@ -1128,7 +1218,7 @@ body:not(.v439-admin-mode) [data-config-page="units"] {
       <button type="button" class="btn secondary" id="qaOpenExcelBtn" style="font-size:12px">📊 Ver en Base de materiales</button>
       <div style="display:flex;gap:8px">
         <button type="button" class="btn secondary" id="qaCancelBtn">Cancelar</button>
-        <button type="button" class="btn success" id="qaSaveBtn" style="font-weight:800">💾 Guardar alias</button>
+        <button type="button" class="btn success" id="qaSaveBtn" style="font-weight:800">💾 Guardar cambios</button>
       </div>
     </div>
   </div>
@@ -1147,10 +1237,21 @@ body:not(.v439-admin-mode) [data-config-page="units"] {
   </div>
 </dialog>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="data.js"></script>
-<script src="preloaded-stock.js"></script>
+<script src="data.js?v=458"></script>
+<script src="preloaded-stock.js?v=458"></script>
 <script>
-const EMBEDDED_DATA={"materials":[{"code":"3004042","description":"ABRAZADERA DE ACERO GALV. 160 - 190MM DIAM. C.4 PERNOS DE AJUSTE P.SOPORTE DEL BRAZO DE APOYO","unit":"UND","aliases":["ABRAZADERA CHICA"],"priority":"P","source":"ALIAS"},{"code":"3004045","description":"ABRAZADERA DE ACERO GALV. 190 - 225MM DIAM. C.4 PERNOS DE AJUSTE P.SOPORTE DEL BRAZO DE APOYO","unit":"UND","aliases":["ABRAZADERA MEDIANA"],"priority":"P","source":"ALIAS"},{"code":"3004005","description":"ABRAZADERA DE ACERO GALV. 230 - 267MM DIAM. C.4 PERNOS DE AJUSTE P.SOPORTE DEL BRAZO DE APOYO","unit":"UND","aliases":["ABRAZADERA GRANDE"],"priority":"P","source":"ALIAS"},{"code":"3004041","description":"ABRAZADERA DE ACERO GALV. P.CABLE 120MM2 C.ARCO CENTRAL 80MM DIAM. EN PLATINA DE ACERO 40X140X3MM","unit":"UND","aliases":["ABRAZADERA"],"priority":"","source":"ALIAS"},{"code":"3004040","description":"ABRAZADERA DE ACERO GALV. P.CABLE 25MM2 C.ARCO CENTRAL 36MM DIAM. EN PLATINA DE ACERO 90X130X6,35MM","unit":"UND","aliases":["ABRAZADERA"],"priority":"","source":"ALIAS"},{"code":"3004039","description":"ABRAZADERA METALICA P.CABLE UNIPOLAR 40.5-43.5MM C.ARCO CENTRAL 32MM RADIO EN PLATINA DE 90X148X4MM","unit":"UND","aliases":["ABRAZADERA PARA CABLE"],"priority":"","source":"ALIAS"},{"code":"3004038","description":"ABRAZADERA METALICA PARA CABLE UNIPOLAR 31.2-38MM C.ARCO CENTRAL 25MM RADIO EN PLATINA DE 90X130X4MM","unit":"UND","aliases":["ABRAZADERA PARA CABLE"],"priority":"","source":"ALIAS"},{"code":"3004044","description":"ABRAZADERA METALICA PARA CABLE UNIPOLAR 47.1-49MM C.ARCO CENTRAL 38MM RADIO EN PLATINA DE 90X150X4MM","unit":"UND","aliases":["ABRAZADERA"],"priority":"","source":"ALIAS"},{"code":"3004020","description":"ABRAZADERA PARA VIENTO AC.GALV. 120-160MMD.M.T.","unit":"UND","aliases":["ABRAZADERA PARA VIENTO PEQUEÑA","ABRAZADERA PARA VIENTO CHICA"],"priority":"","source":"ALIAS"},{"code":"3004023","description":"ABRAZADERA PARA VIENTO AC.GALV. 170-245MMD. M.T.","unit":"UND","aliases":["ABRAZADERA PARA VIENTO GRANDE"],"priority":"","source":"ALIAS"},{"code":"8002821","description":"ACEITE 3 EN 1","unit":"UND","aliases":["ACEITE"],"priority":"","source":"ALIAS"},{"code":"3000907","description":"AISLADOR POLIMERICO EXTENSOR 24KV P/CUT-OUT","unit":"UND","aliases":["AISLADOR EXTENSOR"],"priority":"","source":"ALIAS"},{"code":"3000942","description":"AISLADOR POLIMERICO TP. LINE POST (CON LINEA FUGA PROTEGIDA) PARA LINEAS DE 10 KV.","unit":"UND","aliases":["AISLADOR PIN 10KV"],"priority":"P","source":"ALIAS"},{"code":"3000944","description":"AISLADOR POLIMERICO TP.LINE POST P/LINEAS AEREAS 22,9KV.","unit":"UND","aliases":["AISLADOR PIN 22,9KV"],"priority":"P","source":"ALIAS"},{"code":"3000935","description":"AISLADOR POLIMERICO TP.SUSPENSION / ANCLAJE 10KV 400MM LONG. L.F. 600MM 45KN C.ACCESORIOS","unit":"UND","aliases":["AISLADOR SUSPENSION 10KV"],"priority":"P","source":"ALIAS"},{"code":"3000971","description":"AISLADOR SUSP.POLIMERICO P.REDES DISTRIB. DE 22,9KV.","unit":"UND","aliases":["AISLADOR SUSPENSION  22,9KV"],"priority":"P","source":"ALIAS"},{"code":"8002192","description":"AMARRE DOBLE DE ALUMINIO 4 AWG 1800MM LONG. P.AISLADOR PIN C.CONDUCTOR ALUMINIO MAYOR A 70MM2 EN M.T","unit":"UND","aliases":["AMARRES"],"priority":"","source":"ALIAS"},{"code":"8002193","description":"AMARRE PREFORMADO P.SUJECION CABLE DE VIENTO DE ACERO GALV. 5/16\" DIAM. CLASE C","unit":"UND","aliases":["PREFORMADO PARA VIENTO","PREFORMADO VIENTO"],"priority":"","source":"ALIAS"},{"code":"8002189","description":"AMARRE SIMPLE DE ALUMINIO 4 AWG 1000MM LONG. P.AISLADOR PIN C.CONDUCTOR ALUMINIO HASTA 70MM2 EN M.T.","unit":"UND","aliases":["AMARRE SIMPLE PARA AISLADOR","AMARRE SIMPLE","AMARRE AL-BLANDO","AMARRE BLANDO"],"priority":"P","source":"ALIAS"},{"code":"8000505","description":"ARANDELA CUADRADA CURVA DE ACERO GALV. 55 X 5MM C.AGUJERO 17,5MM DIAM","unit":"UND","aliases":["ARANDELA CURVA","ARANDELAS"],"priority":"","source":"ALIAS"},{"code":"8000564","description":"ARANDELA CUADRADA PLANA DE ACERO GALV. 55 X 4,5MM C.AGUJERO 17,5MM DIAM","unit":"UND","aliases":["ARANDELA PLANA","ARANDELAS"],"priority":"P","source":"ALIAS"},{"code":"8000568","description":"ARANDELA PLANA AC.GALV. PERNO 1/2\"","unit":"UND","aliases":["ARANDELA 1/2","ARANDELAS"],"priority":"P","source":"ALIAS"},{"code":"8000566","description":"ARANDELA PLANA AC.GALV. PERNO 3/8\"","unit":"UND","aliases":["ARANDELA 3/8","ARANDELAS"],"priority":"P","source":"ALIAS"},{"code":"8000392","description":"ARANDELA PRESION AC.GALV. P.PERNO DE 1/2\"","unit":"UND","aliases":["ARANDELA","ARANDELAS"],"priority":"","source":"ALIAS"},{"code":"8000388","description":"ARANDELA PRESION AC.GALV. P.PERNO DE 3/8\"","unit":"UND","aliases":["ARANDELA","ARANDELAS"],"priority":"","source":"ALIAS"},{"code":"8002027","description":"BRAZO DE APOYO TP.VIOLIN DE ACERO GALV. 2\" X 875MM C.ACCESORIOS","unit":"UND","aliases":["VIOLIN PARA RETENIDA"],"priority":"","source":"ALIAS"},{"code":"3001692","description":"CABLE AO.GO.TIPO \"B\" DE 5/16\".5080KG.MANO IZQ.7 HILOS.P.RETENIDA","unit":"M","aliases":["CABLE PARA RETENIDA","CABLE VIENTO"],"priority":"","source":"ALIAS"},{"code":"8002023","description":"CANALETA PROTECTORA ACERO GALV. 2200MM P.PROTEGER CABLE P.VIENTO","unit":"UND","aliases":["CANALETA PARA RETENIDA","CANALETA"],"priority":"","source":"ALIAS"},{"code":"8001058","description":"CARTEL DE SENALIZACION LIMITACION / INTERDICCION - PELIGRO DE MUERTE 230 X 265 X 2MM","unit":"UND","aliases":["CARTEL PARA DMS"],"priority":"P","source":"ALIAS"},{"code":"3001107","description":"CINTA AISLANTE ANTITRACKING AUTOFUNDENTE DE SILICONA COLOR GRIS 15KV DE 50MM X 11M","unit":"UND","aliases":["CINTA GRIS"],"priority":"P","source":"ALIAS"},{"code":"3001339","description":"CINTA AISLANTE TERMOPLASTICA DE PVC ALTA PERFORMANCE 38MM X 33M X 0,18MM 600V COLOR NEGRO","unit":"UND","aliases":["CINTA ANCHA","CINTA NEGRA ANCHA"],"priority":"P","source":"ALIAS"},{"code":"3001330","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 18,3M X 0,18MM 600V COLOR BLANCO USO EN INTERIORES","unit":"UND","aliases":["CINTA BLANCA"],"priority":"P","source":"ALIAS"},{"code":"3001332","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 18,3M X 0,18MM 600V COLOR ROJO USO EN INTERIORES","unit":"UND","aliases":["CINTA ROJA"],"priority":"P","source":"ALIAS"},{"code":"3001333","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 18,3M X 0,18MM 600V COLOR VERDE USO EN INTERIORES","unit":"UND","aliases":["CINTA VERDE"],"priority":"P","source":"ALIAS"},{"code":"3001316","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,15MM 600V COLOR BLANCO USO EN INTERIORES","unit":"UND","aliases":["CINTA BLANCA"],"priority":"","source":"ALIAS"},{"code":"3001318","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,15MM 600V COLOR ROJO USO EN INTERIORES","unit":"UND","aliases":["CINTA ROJA"],"priority":"","source":"ALIAS"},{"code":"3001319","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,15MM 600V COLOR VERDE USO EN INTERIORES","unit":"UND","aliases":["CINTA VERDE"],"priority":"","source":"ALIAS"},{"code":"3001323","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,18MM 600V COLOR BLANCO USO EN INTERIORES","unit":"UND","aliases":["CINTA BLANCA"],"priority":"","source":"DRE"},{"code":"3001327","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,18MM 600V COLOR ROJO USO EN INTERIORES","unit":"UND","aliases":["CINTA ROJA"],"priority":"","source":"DRE"},{"code":"3001329","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,18MM 600V COLOR VERDE USO EN INTERIORES","unit":"UND","aliases":["CINTA VERDE"],"priority":"","source":"DRE"},{"code":"8002548","description":"CINTILLO DE NYLON COLOR NEGRO 14 1/2\" (368MM) LONG., 7,6MM (0,30\") ANCHO, 54.4KG (120LB) DE TENSION","unit":"UND","aliases":["10","UND","L"],"priority":"GG01","source":"ALIAS"},{"code":"3001719","description":"CONDUCTOR CABLEADO DESNUDO ALEACION ALUMINIO 120MM2 19 HILOS C.GRASA","unit":"M","aliases":["AL 120"],"priority":"","source":"ALIAS"},{"code":"3001723","description":"CONDUCTOR CABLEADO DESNUDO ALEACION ALUMINIO 185MM2 37 HILOS C.GRASA","unit":"M","aliases":["AL 185"],"priority":"P","source":"ALIAS"},{"code":"3001715","description":"CONDUCTOR CABLEADO DESNUDO ALEACION ALUMINIO 70MM2 7 HILOS C.GRASA","unit":"M","aliases":["AL 70"],"priority":"P","source":"ALIAS"},{"code":"3001671","description":"CONDUCTOR CABLEADO TW 750V.UNIP.AMARI. 1X 35 MM2","unit":"M","aliases":["TW 35","CONDUCTOR TW 35MM2"],"priority":"GG01","source":"ALIAS"},{"code":"3001673","description":"CONDUCTOR CABLEADO TW 750V.UNIP.AMARI. 1X 70 MM2","unit":"M","aliases":["TW 70","CONDUCTOR TW 70MM2"],"priority":"P","source":"ALIAS"},{"code":"3001675","description":"CONDUCTOR CABLEADO TW 750V.UNIP.AMARI. 1X120 MM2","unit":"M","aliases":["TW 120","CONDUCTOR TW 120MM2"],"priority":"P","source":"ALIAS"},{"code":"3001624","description":"CONDUCTOR CABLEADO TW 750V.UNIP.AMARI. 1X185 MM2","unit":"M","aliases":["TW 185","CONDUCTOR TW 185MM2"],"priority":"P","source":"ALIAS"},{"code":"8002506","description":"CONECTOR BIMETALICO DE DERIVACION A COMPRESION TIPO H P.CONDUCTOR 120-185 / 120-185MM2 P.RED AEREA","unit":"UND","aliases":["H 450","CONECTOR H 450"],"priority":"","source":"ALIAS"},{"code":"8002503","description":"CONECTOR BIMETALICO DE DERIVACION A COMPRESION TIPO H P.CONDUCTOR 120-185/16-70MM2 P.RED AEREA","unit":"UND","aliases":["H 500","CONECTOR H 500"],"priority":"","source":"ALIAS"},{"code":"8002504","description":"CONECTOR BIMETALICO DE DERIVACION A COMPRESION TIPO H P.CONDUCTOR 120-240 / 120-240MM2 P.RED AEREA","unit":"UND","aliases":["H 525","CONECTOR H 525"],"priority":"GG01","source":"ALIAS"},{"code":"8002500","description":"CONECTOR BIMETALICO DE DERIVACION A COMPRESION TIPO H P.CONDUCTOR 70 / 16-35MM2 P.RED AEREA","unit":"UND","aliases":["H 200","CONECTOR H 200"],"priority":"","source":"ALIAS"},{"code":"8002502","description":"CONECTOR BIMETALICO DE DERIVACION A COMPRESION TIPO H P.CONDUCTOR 70 / 50-70MM2 P.RED AEREA","unit":"UND","aliases":["H 300","CONECTOR H 300"],"priority":"","source":"ALIAS"},{"code":"3001371","description":"CONECTOR DE DERIVACION A COMPRESION TIPO C P.CONDUCTOR 35-70 / 35-70MM2 P.REDES M.T.Y B.T.","unit":"UND","aliases":["G PARA TIERRA","C PARA TIERRA","CONECTOR C PARA TIERRA"],"priority":"","source":"ALIAS"},{"code":"8002494","description":"CONECTOR DE DERIVACION A COMPRESION TIPO G P.CONDUCTOR DE COBRE 16-35 / 16-35MM2 P.RED AEREA","unit":"UND","aliases":["G 35/35","CONECTOR G 35/35"],"priority":"GG01","source":"ALIAS"},{"code":"8002496","description":"CONECTOR DE DERIVACION A COMPRESION TIPO G P.CONDUCTOR DE COBRE 70 / 35MM2 P.RED AEREA","unit":"UND","aliases":["G 70/35","CONECTORES G 70/35MM","CONECTOR G 70/35"],"priority":"","source":"ALIAS"},{"code":"8002495","description":"CONECTOR DE DERIVACION A COMPRESION TIPO G P.CONDUCTOR DE COBRE 70 / 70MM2 P.RED AEREA","unit":"UND","aliases":["G 70","CONECTORES G 70MM","G 70/70","CONECTOR G 70/70"],"priority":"","source":"ALIAS"},{"code":"8002350","description":"CONECTOR DE DOBLE PERNO DE AJUSTE RANGO 120-185 MM2, DISTANCIA ENTRE EJES DE PERNOS 44,45MM (1 3/4\")","unit":"UND","aliases":["BORNE"],"priority":"","source":"ALIAS"},{"code":"8002349","description":"CONECTOR DE DOBLE PERNO DE AJUSTE RANGO 35-70 MM2, DISTANCIA ENTRE EJES DE PERNOS 44,45MM (1 3/4\")","unit":"UND","aliases":["BORNE"],"priority":"","source":"ALIAS"},{"code":"3001406","description":"CONECTOR TERMINAL A COMPRESION DE COBRE P.CABLE 120MM2, SIMPLE FIJACION","unit":"UND","aliases":["TERMINAL 120","CONECTORES TERMINALES DE 120MM2","TERMINAL 120 MM2"],"priority":"","source":"ALIAS"},{"code":"3001393","description":"CONECTOR TERMINAL A COMPRESION DE COBRE P.CABLE 35MM2, SIMPLE FIJACION","unit":"UND","aliases":["TERMINAL 35","CONECTORES TERMINALES DE 35MM2 (PARA SECCIONADORES Y RIGIDOS)","TERMINAL 35 MM2"],"priority":"","source":"ALIAS"},{"code":"3001402","description":"CONECTOR TERMINAL A COMPRESION DE COBRE P.CABLE 35MM2, SIMPLE FIJACION P.PERNO 1/2\" DIAM.","unit":"UND","aliases":["TERMINAL 35 AGUJERO GRANDE","CONECTORES TERMINALES DE 35MM2 (PARA ANCLAJE, PINES, VARILLAS)","TERMINAL 35 GRANDE"],"priority":"","source":"ALIAS"},{"code":"3001404","description":"CONECTOR TERMINAL A COMPRESION DE COBRE P.CABLE 70MM2, SIMPLE FIJACION","unit":"UND","aliases":["TERMINAL 70","CONECTORES TERMINALES DE 70MM2","TERMINAL 70 MM2"],"priority":"","source":"ALIAS"},{"code":"3000674","description":"CRUCETA ASIMETRICA DE MADERA DE 4\" X 5\" X 5,58 PIES CON TRATAMIENTO CCB","unit":"UND","aliases":["CRUCETA 5 PIES"],"priority":"","source":"ALIAS"},{"code":"3000677","description":"CRUCETA ASIMETRICA DE MADERA DE 4\" X 5\" X 6,6 PIES CON TRATAMIENTO CCB","unit":"UND","aliases":["CRUCETA 7 PIES"],"priority":"P","source":"ALIAS"},{"code":"3000727","description":"CRUCETA DE MADERA 4\" X 5\" X 9 PIES CON TRATAMIENTO CCB","unit":"UND","aliases":["CRUCETA 9 PIES"],"priority":"P","source":"ALIAS"},{"code":"3000719","description":"CRUCETA SIMETRICA DE MADERA DE 4\" X 4\" X 1,3 PIES CON TRATAMIENTO CCB","unit":"UND","aliases":["CRUCETA PARA TACO"],"priority":"P","source":"ALIAS"},{"code":"8002172","description":"CUBIERTA AISLANTE DE PROTECCION P.CONDUCTOR AEREO DESNUDO 4 - 25MM DIAM. CL.15KV","unit":"UND","aliases":["MVLC-CHINO 15KV"],"priority":"","source":"ALIAS"},{"code":"8002169","description":"CUBIERTA AISLANTE PROTECCION P.CONDUCTOR AEREO DESNUDO 35 - 185MM2 CL.25KV","unit":"M","aliases":["MVLC 18 CON MASTIL"],"priority":"P","source":"ALIAS"},{"code":"3001305","description":"CUBIERTA.AISLA.PROTEC.P/COND.AEREO DESN.MT.16-70MM2.15KV.","unit":"M","aliases":["MVLC 14"],"priority":"P","source":"ALIAS"},{"code":"3001306","description":"CUBIERTA.AISLA.PROTEC.P/COND.AEREO DESN.MT.70-185MM2.15KV.","unit":"M","aliases":["MVLC 18 SIN MASTIL"],"priority":"P","source":"ALIAS"},{"code":"3000689","description":"DIAGONAL ACERO GALV. 45MM X 45MM X 1,07M X 4MM","unit":"UND","aliases":["DIAGONAL PEQUEÑA"],"priority":"P","source":"ALIAS"},{"code":"3000690","description":"DIAGONAL ACERO GALV. 45MM X 45MM X 1,48M X 4MM","unit":"UND","aliases":["DIAGONAL GRANDE"],"priority":"P","source":"ALIAS"},{"code":"8002200","description":"EMPALME PREFORM. DE ALUMOWELD P.COND.AA. 70MM2.","unit":"UND","aliases":["PREFORMADO 70","PREFORMADO 70 MM2","PREFORMADO 70 MM2 MARRON"],"priority":"","source":"ALIAS"},{"code":"8002202","description":"EMPALME PREFORMADO DE ALEACION DE ALUMINIO P.CONDUCTOR AAAC 120MM2 / 13,84 - 14,41MM DIAM.","unit":"UND","aliases":["PREFORMADO120","PREFORMADO 120","PREFORMADO 120 MM2","PREFORMADO 120 MM2 ROJO"],"priority":"","source":"ALIAS"},{"code":"8002206","description":"EMPALME PREFORMADO DE ALEACION DE ALUMINIO P.CONDUCTOR AAAC 185MM2 / 17,06 - 17,79MM DIAM.","unit":"UND","aliases":["PREFORMADO 185","PREFORMADO 185 MM2","PREFORMADO 185 MM2 NARANJA"],"priority":"","source":"ALIAS"},{"code":"8002076","description":"ESLABON DOBLE TP.8 GIRATORIO DE ACERO GALV. P.FIJAR CONDUCTORES A AISLADORES EN LINEAS AREAS M.T.","unit":"UND","aliases":["ESLABON"],"priority":"","source":"ALIAS"},{"code":"8000519","description":"FLEJE DE ACERO INOXIDABLE TIPO AISI 316 DE 19MM (3/4\") ANCHO P.ALTA CORROSION","unit":"M","aliases":["FLEJE"],"priority":"P","source":"ALIAS"},{"code":"8001828","description":"FUSI.SEC.UNIP.AE.22.9KV.100A.12KA.600MM.L.FUG.MIN","unit":"UND","aliases":["CUT OUT 22.9KV","CUT-OUT DE 22.9KV","CUTOUTS DE 22.9 KV"],"priority":"","source":"ALIAS"},{"code":"8001850","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 100A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 100A","FUSIBLE DE 100A","FUSIBLE 100K"],"priority":"","source":"ALIAS"},{"code":"8001887","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 10A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 10A","FUSIBLE DE 10A","FUSIBLE 10K"],"priority":"","source":"ALIAS"},{"code":"8001888","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 12A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 12A","FUSIBLE DE 12A","FUSIBLE 12K"],"priority":"","source":"ALIAS"},{"code":"8001889","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 15A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 15A","FUSIBLE DE 15A","FUSIBLE 15K"],"priority":"GG01","source":"ALIAS"},{"code":"8001891","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 20A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 20A","FUSIBLE DE 20A","FUSIBLE 20K"],"priority":"","source":"ALIAS"},{"code":"8001895","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 30A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 30A","FUSIBLE DE 30A","FUSIBLE 30K"],"priority":"","source":"ALIAS"},{"code":"8001882","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 3A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 3A","FUSIBLE DE 3A","FUSIBLE 3K"],"priority":"","source":"ALIAS"},{"code":"8001847","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 65A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 65A","FUSIBLE DE 65A","FUSIBLE 65K"],"priority":"","source":"ALIAS"},{"code":"8001883","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 6A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 6A","FUSIBLE DE 6A","FUSIBLE 6K"],"priority":"","source":"ALIAS"},{"code":"8001886","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 8A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 8A","FUSIBLE DE 8A","FUSIBLE 8K"],"priority":"","source":"ALIAS"},{"code":"8001845","description":"FUSIBLE EXPULSION 10KV. 50A.P.FUS.SECC.UNIP.INTEMP","unit":"UND","aliases":["FUSIBLE","FUSIBLE 50A","FUSIBLE 50K"],"priority":"","source":"ALIAS"},{"code":"8001817","description":"FUSIBLE SECC.UNIP. AEREO 10KV, 100A, MINIMO 95KV BIL, 12KA","unit":"UND","aliases":["CUT OUT 10KV","CUTOUT 10KV","SECCIONADOR FUSIBLE 10KV"],"priority":"GG01","source":"ALIAS"},{"code":"8002097","description":"GRAPA DE ANCLAJE TP.PISTOLA DE ACERO GALV. P.CONDUCTOR CU 16 - 70MM2","unit":"UND","aliases":["GRAPA"],"priority":"","source":"ALIAS"},{"code":"8002140","description":"GRAPA DE ANCLAJE TP.PISTOLA DE ALEACION DE ALUMINIO P.CONDUCTOR AAAC 120MM2","unit":"UND","aliases":["GRAPA 120"],"priority":"P","source":"ALIAS"},{"code":"8002083","description":"GRAPA DE ANCLAJE TP.PISTOLA DE ALEACION DE ALUMINIO P.CONDUCTOR AAAC 185MM2","unit":"UND","aliases":["GRAPA 185"],"priority":"P","source":"ALIAS"},{"code":"8002136","description":"GRAPA DE ANCLAJE TP.PISTOLA DE ALEACION DE ALUMINIO P.CONDUCTOR AAAC 70MM2","unit":"UND","aliases":["GRAPA 70"],"priority":"P","source":"ALIAS"},{"code":"8002118","description":"GRAPA FIN DE LINEA 360MML 12,6MMD P.CAB.AUTOP.MT","unit":"UND","aliases":["GRAPA PARA AUTOSOPORTADO"],"priority":"","source":"ALIAS"},{"code":"8002149","description":"GRAPA SUSPENS. DE ALEAC.AL.P.COND. 70 MM2.","unit":"UND","aliases":["GRAPA SUSPENCION 70"],"priority":"","source":"ALIAS"},{"code":"8002153","description":"GRAPA SUSPENS. DE ALEAC.AL.P.COND.185MM2. C/VAR. ARMADO","unit":"UND","aliases":["GRAPA SUSPENCION 185"],"priority":"","source":"ALIAS"},{"code":"8002151","description":"GRAPA SUSPENS.DE ALEAC.AL.P.COND.120MM2.C/VAR.ARMADO","unit":"UND","aliases":["GRAPA SUSPENCION 120"],"priority":"","source":"ALIAS"},{"code":"2000073","description":"GUANTE DE NITRILO DESECHABLE TALLA L DE 23CM X 0,13MM C.PUÑO REFORZADO, PUNTAS TEXTURIZADAS","unit":"UND","aliases":["GUANTE NITRILO PEQUEÑO"],"priority":"","source":"ALIAS"},{"code":"2000388","description":"GUANTE DE NITRILO DESECHABLE TALLA XL DE 23CM X 0,13MM C.PUÑO REFORZADO, PUNTAS TEXTURIZADAS","unit":"UND","aliases":["GUANTE NITRILO GRANDE"],"priority":"","source":"ALIAS"},{"code":"8000687","description":"GUARDACABO DE ACERO GALV. P.CABLE 13MM DIAM. 1,5MM ESPESOR P.PROTEGER CABLE PORTANTE","unit":"UND","aliases":["GUARDACABO PARA VIENTO","GUARDACABO"],"priority":"","source":"ALIAS"},{"code":"8000535","description":"HEBILLA (HEBILLA) DE ACERO INOXIDABLE TIPO AISI 316 P.FLEJES DE 19MM (3/4\") ANCHO P.ALTA CORROSION","unit":"UND","aliases":["HEBILLAS"],"priority":"P","source":"ALIAS"},{"code":"8003160","description":"HOJA DE SIERRA SANFLEX 12\", 18 DIENTES POR PULG. 3806-300-18-100P","unit":"UND","aliases":["HOJA DE SIERRA","HOJA SIERRA"],"priority":"P","source":"ALIAS"},{"code":"3001051","description":"MANTA AISLANTE ANTITRACKING AUTOFUNDENTE C.CAPA EPR DE 102MM X 3M COLOR NEGRO 15KV","unit":"UND","aliases":["PAD"],"priority":"P","source":"ALIAS"},{"code":"3001048","description":"MANTA AISLANTE ANTITRACKING AUTOFUNDENTE C.CAPA EPR DE 200MM X 3M COLOR NEGRO CL.2A 15KV","unit":"UND","aliases":["PAD"],"priority":"","source":"ALIAS"},{"code":"3000685","description":"MENSULA DE MADERA DE 4\" X 5\" X 6 PIES CON TRATAMIENTO CCB","unit":"UND","aliases":["CRUCETA 6PIES"],"priority":"","source":"ALIAS"},{"code":"3000687","description":"MENSULA DE MADERA DE 4\" X 5\" X 7 PIES CON TRATAMIENTO CCB","unit":"UND","aliases":["CRUCETA 7PIES"],"priority":"P","source":"ALIAS"},{"code":"8001981","description":"OJAL ROSCADO AC.GALV.,DE 3/4PULG.D. X86MML. P.L.A.","unit":"UND","aliases":["OJAL 3/4"],"priority":"","source":"ALIAS"},{"code":"8001977","description":"OJAL ROSCADO AC.GALV.,DE 5/8PULG.D. X80MML. P.L.A.","unit":"UND","aliases":["OJAL 5/8"],"priority":"P","source":"ALIAS"},{"code":"8002663","description":"PASTA ANTICORROSIVA CONDUCTORA DE USO ELECTRICO PENETROX E.EN ENVASE DE 8 ONZAS","unit":"UND","aliases":["PENETROX"],"priority":"","source":"ALIAS"},{"code":"8000647","description":"PERNO HO.GALV.CAB.EXAG. 1/2\" X 1.1/2 P.C/TUERCA SID-127","unit":"UND","aliases":["PERNO 1/2"],"priority":"P","source":"ALIAS"},{"code":"8001122","description":"PERNO HO.GALV.CAB.EXAG. 3/8\" X 1\" C/TUERCA","unit":"UND","aliases":["PERNO"],"priority":"","source":"ALIAS"},{"code":"8001124","description":"PERNO HO.GALV.CAB.EXAG. 3/8\" X 1.1/2\" C/TUERCA","unit":"UND","aliases":["PERNO 3/8"],"priority":"P","source":"ALIAS"},{"code":"8001126","description":"PERNO HO.GALV.CAB.EXAG. 3/8\" X 2\" C/TUERCA","unit":"UND","aliases":["PERNO"],"priority":"","source":"ALIAS"},{"code":"8002003","description":"PLANCHA DE COBRE P.LINEA A TIERRA C.AGUJERO 20MM DIAM.","unit":"UND","aliases":["PLANCHA J GRANDE","CHAPAS DE TIERRA"],"priority":"P","source":"ALIAS"},{"code":"8002007","description":"PLANCHA DE COBRE PARA LINEA A TIERRA CON AGUJERO DE 13MM DE DIAMETRO","unit":"UND","aliases":["PLANCHA J PEQUEÑO","CHAPAS DE TIERRA"],"priority":"P","source":"ALIAS"},{"code":"2000424","description":"PROTECTOR DE FIBRA DE VIDRIO ANTI AVES PARA MENSULA, AUTOAJUSTABLE","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS"},{"code":"3000809","description":"PROTECTOR DE FIBRA DE VIDRIO P.SECCIONADOR AEREO EN PDS ASIMETRICO 1100 X 800 X 600MM","unit":"UND","aliases":["PROTECTOR PDS (TRIANGULO)"],"priority":"","source":"ALIAS"},{"code":"3000807","description":"PROTECTOR DE FIBRA DE VIDRIO P.SECCIONADOR AEREO EN PDS PARALELO AL PREDIO 2100 X 1110MM","unit":"UND","aliases":["PROTECTOR PDS PARALELO PREDIO"],"priority":"","source":"ALIAS"},{"code":"3000808","description":"PROTECTOR DE FIBRA DE VIDRIO P.SECCIONADOR AEREO EN PDS PERPENDICULAR AL PREDIO 1700 X 1110MM","unit":"UND","aliases":["PROTECTOR PDS PERPEND PREDIO"],"priority":"","source":"ALIAS"},{"code":"3000806","description":"PROTECTOR DE FIBRA DE VIDRIO P.SECCIONADOR AEREO EN SAB 2200 X 1110MM","unit":"UND","aliases":["PROTECTOR DE SAB"],"priority":"","source":"ALIAS"},{"code":"3000802","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P. SECCIONADOR RIGIDO PARA REDES AEREAS MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS"},{"code":"3000797","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P.MENSULA DE MADERA CON AISLADOR TIPO PIN PARA REDES AEREAS MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS"},{"code":"3000795","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P.MENSULAS DE CONCRETO DE 1 Y 0.60 METROS PARA REDES AEREAS MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS"},{"code":"3000801","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P.MENSULAS DE MADERA CON DIAGONAL EN PDS PARA REDES AEREAS MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS"},{"code":"3000800","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P.MENSULAS DE MADERA SIN DIAGONAL EN PDS PARA REDES AEREAS MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS"},{"code":"3000803","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P.PUNTA DE POSTE DE CONCRETO PARA REDES AEREAS MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS"},{"code":"3000798","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR PARA MENSULA DE MADERA SIN AISLADORES PARA REDES AEREAS DE MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS"},{"code":"3000793","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR PARA PALOMILLAS DE CONCRETO PARA REDES AEREAS DE MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS"},{"code":"4000576","description":"SECCIONADOR UNIP. AEREO 22,9KV 600A 25KA 150KVBIL LF 700MM ARCO 253MM EXT.CORROS.SEVERA SIN CONECTOR","unit":"UND","aliases":["RIGIDO 10KV","SECCIONADOR RIGIDO 10KV","RIGIDO 22.9KV","SECCIONADOR RIGIDO 22.9KV"],"priority":"","source":"ALIAS"},{"code":"4000578","description":"SECCIONADOR UNIPOLAR AEREO 10KV 600A 25KA 95KV BIL LF 430MM EXTERIOR P.CORROSION SEVERA SIN CONECTOR","unit":"UND","aliases":["RIGIDO 22.9KV","SECCIONADOR RIGIDO 22.9KV","RIGIDO 10KV","SECCIONADOR RIGIDO 10KV"],"priority":"","source":"ALIAS"},{"code":"8002689","description":"SOLVENTE DIELECTRICO ECOLOGICO NO CLORADO M.T.","unit":"UND","aliases":["SOLVENTE","SOLVENTE DIELECTRICO"],"priority":"P","source":"ALIAS"},{"code":"8002030","description":"SOPORTE LATERAL DE ACERO GALV. P.AISLADOR TP.PIN HIBRIDO O POLIMERICO 22,9KV","unit":"UND","aliases":["LATERAL PARA 22,9KV"],"priority":"","source":"ALIAS"},{"code":"8002028","description":"SOPORTE LATERAL PARA AISLADOR HIBRIDO PIN 10KV.","unit":"UND","aliases":["LATERAL PARA 10KV"],"priority":"P","source":"ALIAS"},{"code":"8002020","description":"SOPORTE PASANTE ACERO GALV. 201MM LONG. 22MM / 3/4\" DIAM. P.AISLADORES TP.PIN C.ACCESORIOS","unit":"UND","aliases":["LATERAL"],"priority":"","source":"ALIAS"},{"code":"8000856","description":"TIRAFONDO HO.GALV. 3/8\" X 1.1/2\"","unit":"UND","aliases":["TIRAFON PEQUEÑO"],"priority":"","source":"ALIAS"},{"code":"8000858","description":"TIRAFONDO HO.GALV. 3/8\" X 2\"","unit":"UND","aliases":["TIRAFON MEDIANO"],"priority":"","source":"ALIAS"},{"code":"8000860","description":"TIRAFONDO HO.GALV. 3/8\" X 2.1/2\"","unit":"UND","aliases":["TIRAFON GRANDE"],"priority":"P","source":"ALIAS"},{"code":"8000862","description":"TIRAFONDO HO.GALV. 3/8\" X 3\"","unit":"UND","aliases":["TIRAFON EXTRAGRANDE"],"priority":"P","source":"ALIAS"},{"code":"8002570","description":"TOCUYO DE ALGODON 100% 0.60/0.80 X 1 M.","unit":"UND","aliases":["TOCUYO","TOCUYO DE ALGODON"],"priority":"P","source":"ALIAS"},{"code":"8002568","description":"TRAPO INDUSTRIAL","unit":"UND","aliases":["TRAPO","TRAPO INDUSTRIAL"],"priority":"P","source":"ALIAS"},{"code":"8001781","description":"TUBO PORTAFUSIBLE PARA SECC. UNIP. AEREO 100A, 10KV, CORR.SEVERA","unit":"UND","aliases":["PORTAFUSIBLE 10KV","CAÑA 10KV","TUBO PORTAFUSIBLE 10KV"],"priority":"","source":"ALIAS"},{"code":"8001785","description":"TUBO PORTAFUSIBLE PARA SECC. UNIP. AEREO 100A, 22,9KV, CORR.MODERADA","unit":"UND","aliases":["PORTAFUSIBLE 22.9KV","CAÑA 22.9KV","TUBO PORTAFUSIBLE 22.9KV"],"priority":"","source":"ALIAS"},{"code":"8002291","description":"UNION P.EMPALME AUTOMATICO P.CONDUCTOR AAAC 120MM2","unit":"UND","aliases":["AUTOMATICO 120","AUTOMATICO 120 MM2"],"priority":"","source":"ALIAS"},{"code":"8002235","description":"UNION P.EMPALME AUTOMATICO P.CONDUCTOR AAAC 185MM2","unit":"UND","aliases":["AUTOMATICO 185","AUTOMATICO 185 MM2"],"priority":"","source":"ALIAS"},{"code":"8002289","description":"UNION P.EMPALME AUTOMATICO P.CONDUCTOR AAAC 70MM2","unit":"UND","aliases":["AUTOMATICO 70","AUTOMATICO 70 MM2"],"priority":"","source":"ALIAS"},{"code":"8002033","description":"VARILLA ROSCADA AC.GALV. 16MMD. X 250MML. L.AEREAS","unit":"UND","aliases":["VARILLA 250"],"priority":"P","source":"ALIAS"},{"code":"8002034","description":"VARILLA ROSCADA AC.GALV. 16MMD. X 300MML. L.AEREAS","unit":"UND","aliases":["VARILLA 300"],"priority":"P","source":"ALIAS"},{"code":"8002035","description":"VARILLA ROSCADA AC.GALV. 16MMD. X 350MML. L.AEREAS","unit":"UND","aliases":["VARILLA 350"],"priority":"P","source":"ALIAS"},{"code":"8002038","description":"VARILLA ROSCADA AC.GALV. 16MMD. X 450MML. L.AEREAS","unit":"UND","aliases":["VARILLA 450"],"priority":"P","source":"ALIAS"},{"code":"8002041","description":"VARILLA ROSCADA AC.GALV. 16MMD. X 550MML. L.AEREAS","unit":"UND","aliases":["VARILLA 550"],"priority":"P","source":"ALIAS"},{"code":"8002043","description":"VARILLA ROSCADA AC.GALV. 16MMD. X 650MML. L.AEREAS","unit":"UND","aliases":["VARILLA 650"],"priority":"P","source":"ALIAS"}],"supervisors":["EBLAS","HTORRES","BHIDALGO","ELIENDO","RDIAZ","OSOTELO","SLINARES","IDAMIAN","PLAZARO","DFERRE","GCANDIA","JQUISPE","WCENTENO"],"units":["F5X-815","BTJ-860","BTD-712","BHL-875","ARE-823","BHM-832","F5W-883"],"observations":["FALTA CORREO DE RECHAZO","FALTA DEVOLVER MATERIAL","FALTA INFORME","FALTA LIBERAR ORDEN","FALTA LIQUIDAR POR INSPECTOR","FALTA NOTIFICAR","FALTA NORMA DE LIQUIDACION","FALTA PEDIDO DE MATERIAL","FALTA RECOGER Y DEVOLVER MATERIAL","FALTA RECOJO DE MATERIAL","FALTA REVISIÓN GCA"],"movements":["DEV","PED","REC"],"defaults":{"destinatario":"SLINARES","puestoDescarga":"RECUPERO","ubicacionFinal":"","c1":"","tp":"L","c2":"","c3":"","alim":"GG01","ce":"1003","operacion":"0010","lote":"LDA-000000","tipoAprovisionamiento":"Reserva para orden","pos":"0"},"supervisorInitials":{"EBLAS":"EB","HTORRES":"UT","BHIDALGO":"BH","ELIENDO":"EL","RDIAZ":"RD","OSOTELO":"OS","SLINARES":"SL","IDAMIAN":"ID","PLAZARO":"PL","DFERRE":"DF","GCANDIA":"GC","JQUISPE":"JQ","WCENTENO":"WC"}};
+const EMBEDDED_DATA={"materials":[{"code":"3004042","description":"ABRAZADERA DE ACERO GALV. 160 - 190MM DIAM. C.4 PERNOS DE AJUSTE P.SOPORTE DEL BRAZO DE APOYO","unit":"UND","aliases":["ABRAZADERA CHICA"],"priority":"P","source":"ALIAS","image":"/material-images/abrazadera_cuatro_pernos.jpg"},{"code":"3004045","description":"ABRAZADERA DE ACERO GALV. 190 - 225MM DIAM. C.4 PERNOS DE AJUSTE P.SOPORTE DEL BRAZO DE APOYO","unit":"UND","aliases":["ABRAZADERA MEDIANA"],"priority":"P","source":"ALIAS","image":"/material-images/abrazadera_cuatro_pernos.jpg"},{"code":"3004005","description":"ABRAZADERA DE ACERO GALV. 230 - 267MM DIAM. C.4 PERNOS DE AJUSTE P.SOPORTE DEL BRAZO DE APOYO","unit":"UND","aliases":["ABRAZADERA GRANDE"],"priority":"P","source":"ALIAS","image":"/material-images/abrazadera_cuatro_pernos.jpg"},{"code":"3004041","description":"ABRAZADERA DE ACERO GALV. P.CABLE 120MM2 C.ARCO CENTRAL 80MM DIAM. EN PLATINA DE ACERO 40X140X3MM","unit":"UND","aliases":["ABRAZADERA"],"priority":"","source":"ALIAS","image":"/material-images/abrazadera_cable_platina.jpg"},{"code":"3004040","description":"ABRAZADERA DE ACERO GALV. P.CABLE 25MM2 C.ARCO CENTRAL 36MM DIAM. EN PLATINA DE ACERO 90X130X6,35MM","unit":"UND","aliases":["ABRAZADERA"],"priority":"","source":"ALIAS","image":"/material-images/abrazadera_cable_platina.jpg"},{"code":"3004039","description":"ABRAZADERA METALICA P.CABLE UNIPOLAR 40.5-43.5MM C.ARCO CENTRAL 32MM RADIO EN PLATINA DE 90X148X4MM","unit":"UND","aliases":["ABRAZADERA PARA CABLE"],"priority":"","source":"ALIAS","image":"/material-images/abrazadera_cable_platina.jpg"},{"code":"3004038","description":"ABRAZADERA METALICA PARA CABLE UNIPOLAR 31.2-38MM C.ARCO CENTRAL 25MM RADIO EN PLATINA DE 90X130X4MM","unit":"UND","aliases":["ABRAZADERA PARA CABLE"],"priority":"","source":"ALIAS","image":"/material-images/abrazadera_cable_platina.jpg"},{"code":"3004044","description":"ABRAZADERA METALICA PARA CABLE UNIPOLAR 47.1-49MM C.ARCO CENTRAL 38MM RADIO EN PLATINA DE 90X150X4MM","unit":"UND","aliases":["ABRAZADERA"],"priority":"","source":"ALIAS","image":"/material-images/abrazadera_cable_platina.jpg"},{"code":"3004020","description":"ABRAZADERA PARA VIENTO AC.GALV. 120-160MMD.M.T.","unit":"UND","aliases":["ABRAZADERA PARA VIENTO PEQUEÑA","ABRAZADERA PARA VIENTO CHICA"],"priority":"","source":"ALIAS","image":"/material-images/abrazadera_viento_galvanizada.jpg"},{"code":"3004023","description":"ABRAZADERA PARA VIENTO AC.GALV. 170-245MMD. M.T.","unit":"UND","aliases":["ABRAZADERA PARA VIENTO GRANDE"],"priority":"","source":"ALIAS","image":"/material-images/abrazadera_viento_galvanizada.jpg"},{"code":"8002821","description":"ACEITE 3 EN 1","unit":"UND","aliases":["ACEITE"],"priority":"","source":"ALIAS","image":"/material-images/aceite_multiuso_lata.jpg"},{"code":"3000907","description":"AISLADOR POLIMERICO EXTENSOR 24KV P/CUT-OUT","unit":"UND","aliases":["AISLADOR EXTENSOR"],"priority":"","source":"ALIAS","image":"/material-images/aislador_extensor_polimerico.jpg"},{"code":"3000942","description":"AISLADOR POLIMERICO TP. LINE POST (CON LINEA FUGA PROTEGIDA) PARA LINEAS DE 10 KV.","unit":"UND","aliases":["AISLADOR PIN 10KV"],"priority":"P","source":"ALIAS","image":"/material-images/aislador_post_polimerico.jpg"},{"code":"3000944","description":"AISLADOR POLIMERICO TP.LINE POST P/LINEAS AEREAS 22,9KV.","unit":"UND","aliases":["AISLADOR PIN 22,9KV"],"priority":"P","source":"ALIAS","image":"/material-images/aislador_pin_22kv.jpg"},{"code":"3000935","description":"AISLADOR POLIMERICO TP.SUSPENSION / ANCLAJE 10KV 400MM LONG. L.F. 600MM 45KN C.ACCESORIOS","unit":"UND","aliases":["AISLADOR SUSPENSION 10KV"],"priority":"P","source":"ALIAS","image":"/material-images/aislador_suspension_polimerico.jpg"},{"code":"3000971","description":"AISLADOR SUSP.POLIMERICO P.REDES DISTRIB. DE 22,9KV.","unit":"UND","aliases":["AISLADOR SUSPENSION  22,9KV"],"priority":"P","source":"ALIAS","image":"/material-images/aislador_suspension_22kv.jpg"},{"code":"8002192","description":"AMARRE DOBLE DE ALUMINIO 4 AWG 1800MM LONG. P.AISLADOR PIN C.CONDUCTOR ALUMINIO MAYOR A 70MM2 EN M.T","unit":"UND","aliases":["AMARRES"],"priority":"","source":"ALIAS","image":"/material-images/amarre_doble_aluminio.jpg"},{"code":"8002193","description":"AMARRE PREFORMADO P.SUJECION CABLE DE VIENTO DE ACERO GALV. 5/16\" DIAM. CLASE C","unit":"UND","aliases":["PREFORMADO PARA VIENTO","PREFORMADO VIENTO"],"priority":"","source":"ALIAS","image":"/material-images/retencion_preformada_viento.jpg"},{"code":"8002189","description":"AMARRE SIMPLE DE ALUMINIO 4 AWG 1000MM LONG. P.AISLADOR PIN C.CONDUCTOR ALUMINIO HASTA 70MM2 EN M.T.","unit":"UND","aliases":["AMARRE SIMPLE PARA AISLADOR","AMARRE SIMPLE","AMARRE AL-BLANDO","AMARRE BLANDO"],"priority":"P","source":"ALIAS","image":"/material-images/amarre_aluminio_preformado.jpg"},{"code":"8000505","description":"ARANDELA CUADRADA CURVA DE ACERO GALV. 55 X 5MM C.AGUJERO 17,5MM DIAM","unit":"UND","aliases":["ARANDELA CURVA","ARANDELAS"],"priority":"","source":"ALIAS","image":"/material-images/arandela_cuadrada_curva.jpg"},{"code":"8000564","description":"ARANDELA CUADRADA PLANA DE ACERO GALV. 55 X 4,5MM C.AGUJERO 17,5MM DIAM","unit":"UND","aliases":["ARANDELA PLANA","ARANDELAS"],"priority":"P","source":"ALIAS","image":"/material-images/arandela_cuadrada_galvanizada.jpg"},{"code":"8000568","description":"ARANDELA PLANA AC.GALV. PERNO 1/2\"","unit":"UND","aliases":["ARANDELA 1/2","ARANDELAS"],"priority":"P","source":"ALIAS","image":"/material-images/arandela_plana_redonda.jpg"},{"code":"8000566","description":"ARANDELA PLANA AC.GALV. PERNO 3/8\"","unit":"UND","aliases":["ARANDELA 3/8","ARANDELAS"],"priority":"P","source":"ALIAS","image":"/material-images/arandela_plana_redonda.jpg"},{"code":"8000392","description":"ARANDELA PRESION AC.GALV. P.PERNO DE 1/2\"","unit":"UND","aliases":["ARANDELA","ARANDELAS"],"priority":"","source":"ALIAS","image":"/material-images/arandela_presion_helicoidal.jpg"},{"code":"8000388","description":"ARANDELA PRESION AC.GALV. P.PERNO DE 3/8\"","unit":"UND","aliases":["ARANDELA","ARANDELAS"],"priority":"","source":"ALIAS","image":"/material-images/arandela_presion_helicoidal.jpg"},{"code":"8002027","description":"BRAZO DE APOYO TP.VIOLIN DE ACERO GALV. 2\" X 875MM C.ACCESORIOS","unit":"UND","aliases":["VIOLIN PARA RETENIDA"],"priority":"","source":"ALIAS","image":"/material-images/brazo_violin_retenida.jpg"},{"code":"3001692","description":"CABLE AO.GO.TIPO \"B\" DE 5/16\".5080KG.MANO IZQ.7 HILOS.P.RETENIDA","unit":"M","aliases":["CABLE PARA RETENIDA","CABLE VIENTO"],"priority":"","source":"ALIAS","image":"/material-images/cable_acero_retenida.jpg"},{"code":"8002023","description":"CANALETA PROTECTORA ACERO GALV. 2200MM P.PROTEGER CABLE P.VIENTO","unit":"UND","aliases":["CANALETA PARA RETENIDA","CANALETA"],"priority":"","source":"ALIAS","image":"/material-images/canaleta_protectora_viento.jpg"},{"code":"8001058","description":"CARTEL DE SENALIZACION LIMITACION / INTERDICCION - PELIGRO DE MUERTE 230 X 265 X 2MM","unit":"UND","aliases":["CARTEL PARA DMS"],"priority":"P","source":"ALIAS","image":"/material-images/cartel_peligro_electrico.jpg"},{"code":"3001107","description":"CINTA AISLANTE ANTITRACKING AUTOFUNDENTE DE SILICONA COLOR GRIS 15KV DE 50MM X 11M","unit":"UND","aliases":["CINTA GRIS"],"priority":"P","source":"ALIAS","image":"/material-images/cinta_silicona_gris.jpg"},{"code":"3001339","description":"CINTA AISLANTE TERMOPLASTICA DE PVC ALTA PERFORMANCE 38MM X 33M X 0,18MM 600V COLOR NEGRO","unit":"UND","aliases":["CINTA ANCHA","CINTA NEGRA ANCHA"],"priority":"P","source":"ALIAS","image":"/material-images/cinta_aislante_negra.jpg"},{"code":"3001330","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 18,3M X 0,18MM 600V COLOR BLANCO USO EN INTERIORES","unit":"UND","aliases":["CINTA BLANCA"],"priority":"P","source":"ALIAS","image":"/material-images/cinta_aislante_blanca.jpg"},{"code":"3001332","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 18,3M X 0,18MM 600V COLOR ROJO USO EN INTERIORES","unit":"UND","aliases":["CINTA ROJA"],"priority":"P","source":"ALIAS","image":"/material-images/cinta_aislante_roja.jpg"},{"code":"3001333","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 18,3M X 0,18MM 600V COLOR VERDE USO EN INTERIORES","unit":"UND","aliases":["CINTA VERDE"],"priority":"P","source":"ALIAS","image":"/material-images/cinta_aislante_verde.jpg"},{"code":"3001316","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,15MM 600V COLOR BLANCO USO EN INTERIORES","unit":"UND","aliases":["CINTA BLANCA"],"priority":"","source":"ALIAS","image":"/material-images/cinta_aislante_blanca.jpg"},{"code":"3001318","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,15MM 600V COLOR ROJO USO EN INTERIORES","unit":"UND","aliases":["CINTA ROJA"],"priority":"","source":"ALIAS","image":"/material-images/cinta_aislante_roja.jpg"},{"code":"3001319","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,15MM 600V COLOR VERDE USO EN INTERIORES","unit":"UND","aliases":["CINTA VERDE"],"priority":"","source":"ALIAS","image":"/material-images/cinta_aislante_verde.jpg"},{"code":"3001323","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,18MM 600V COLOR BLANCO USO EN INTERIORES","unit":"UND","aliases":["CINTA BLANCA"],"priority":"","source":"DRE","image":"/material-images/cinta_aislante_blanca.jpg"},{"code":"3001327","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,18MM 600V COLOR ROJO USO EN INTERIORES","unit":"UND","aliases":["CINTA ROJA"],"priority":"","source":"DRE","image":"/material-images/cinta_aislante_roja.jpg"},{"code":"3001329","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,18MM 600V COLOR VERDE USO EN INTERIORES","unit":"UND","aliases":["CINTA VERDE"],"priority":"","source":"DRE","image":"/material-images/cinta_aislante_verde.jpg"},{"code":"8002548","description":"CINTILLO DE NYLON COLOR NEGRO 14 1/2\" (368MM) LONG., 7,6MM (0,30\") ANCHO, 54.4KG (120LB) DE TENSION","unit":"UND","aliases":["10","UND","L"],"priority":"GG01","source":"ALIAS","image":"/material-images/cintillo_nylon_negro.jpg"},{"code":"3001719","description":"CONDUCTOR CABLEADO DESNUDO ALEACION ALUMINIO 120MM2 19 HILOS C.GRASA","unit":"M","aliases":["AL 120"],"priority":"","source":"ALIAS","image":"/material-images/conductor_aluminio_desnudo.jpg"},{"code":"3001723","description":"CONDUCTOR CABLEADO DESNUDO ALEACION ALUMINIO 185MM2 37 HILOS C.GRASA","unit":"M","aliases":["AL 185"],"priority":"P","source":"ALIAS","image":"/material-images/conductor_aluminio_desnudo.jpg"},{"code":"3001715","description":"CONDUCTOR CABLEADO DESNUDO ALEACION ALUMINIO 70MM2 7 HILOS C.GRASA","unit":"M","aliases":["AL 70"],"priority":"P","source":"ALIAS","image":"/material-images/conductor_aluminio_desnudo.jpg"},{"code":"3001671","description":"CONDUCTOR CABLEADO TW 750V.UNIP.AMARI. 1X 35 MM2","unit":"M","aliases":["TW 35","CONDUCTOR TW 35MM2"],"priority":"GG01","source":"ALIAS","image":"/material-images/conductor_tw_amarillo.jpg"},{"code":"3001673","description":"CONDUCTOR CABLEADO TW 750V.UNIP.AMARI. 1X 70 MM2","unit":"M","aliases":["TW 70","CONDUCTOR TW 70MM2"],"priority":"P","source":"ALIAS","image":"/material-images/conductor_tw_amarillo.jpg"},{"code":"3001675","description":"CONDUCTOR CABLEADO TW 750V.UNIP.AMARI. 1X120 MM2","unit":"M","aliases":["TW 120","CONDUCTOR TW 120MM2"],"priority":"P","source":"ALIAS","image":"/material-images/conductor_tw_amarillo.jpg"},{"code":"3001624","description":"CONDUCTOR CABLEADO TW 750V.UNIP.AMARI. 1X185 MM2","unit":"M","aliases":["TW 185","CONDUCTOR TW 185MM2"],"priority":"P","source":"ALIAS","image":"/material-images/conductor_tw_amarillo.jpg"},{"code":"8002506","description":"CONECTOR BIMETALICO DE DERIVACION A COMPRESION TIPO H P.CONDUCTOR 120-185 / 120-185MM2 P.RED AEREA","unit":"UND","aliases":["H 450","CONECTOR H 450"],"priority":"","source":"ALIAS","image":"/material-images/conector_tipo_h.jpg"},{"code":"8002503","description":"CONECTOR BIMETALICO DE DERIVACION A COMPRESION TIPO H P.CONDUCTOR 120-185/16-70MM2 P.RED AEREA","unit":"UND","aliases":["H 500","CONECTOR H 500"],"priority":"","source":"ALIAS","image":"/material-images/conector_tipo_h.jpg"},{"code":"8002504","description":"CONECTOR BIMETALICO DE DERIVACION A COMPRESION TIPO H P.CONDUCTOR 120-240 / 120-240MM2 P.RED AEREA","unit":"UND","aliases":["H 525","CONECTOR H 525"],"priority":"GG01","source":"ALIAS","image":"/material-images/conector_tipo_h.jpg"},{"code":"8002500","description":"CONECTOR BIMETALICO DE DERIVACION A COMPRESION TIPO H P.CONDUCTOR 70 / 16-35MM2 P.RED AEREA","unit":"UND","aliases":["H 200","CONECTOR H 200"],"priority":"","source":"ALIAS","image":"/material-images/conector_tipo_h.jpg"},{"code":"8002502","description":"CONECTOR BIMETALICO DE DERIVACION A COMPRESION TIPO H P.CONDUCTOR 70 / 50-70MM2 P.RED AEREA","unit":"UND","aliases":["H 300","CONECTOR H 300"],"priority":"","source":"ALIAS","image":"/material-images/conector_tipo_h.jpg"},{"code":"3001371","description":"CONECTOR DE DERIVACION A COMPRESION TIPO C P.CONDUCTOR 35-70 / 35-70MM2 P.REDES M.T.Y B.T.","unit":"UND","aliases":["G PARA TIERRA","C PARA TIERRA","CONECTOR C PARA TIERRA"],"priority":"","source":"ALIAS","image":"/material-images/conector_cobre_tipo_c.jpg"},{"code":"8002494","description":"CONECTOR DE DERIVACION A COMPRESION TIPO G P.CONDUCTOR DE COBRE 16-35 / 16-35MM2 P.RED AEREA","unit":"UND","aliases":["G 35/35","CONECTOR G 35/35"],"priority":"GG01","source":"ALIAS","image":"/material-images/conector_cobre_g.jpg"},{"code":"8002496","description":"CONECTOR DE DERIVACION A COMPRESION TIPO G P.CONDUCTOR DE COBRE 70 / 35MM2 P.RED AEREA","unit":"UND","aliases":["G 70/35","CONECTORES G 70/35MM","CONECTOR G 70/35"],"priority":"","source":"ALIAS","image":"/material-images/conector_cobre_g.jpg"},{"code":"8002495","description":"CONECTOR DE DERIVACION A COMPRESION TIPO G P.CONDUCTOR DE COBRE 70 / 70MM2 P.RED AEREA","unit":"UND","aliases":["G 70","CONECTORES G 70MM","G 70/70","CONECTOR G 70/70"],"priority":"","source":"ALIAS","image":"/material-images/conector_cobre_g.jpg"},{"code":"8002350","description":"CONECTOR DE DOBLE PERNO DE AJUSTE RANGO 120-185 MM2, DISTANCIA ENTRE EJES DE PERNOS 44,45MM (1 3/4\")","unit":"UND","aliases":["BORNE"],"priority":"","source":"ALIAS","image":"/material-images/conector_doble_perno.jpg"},{"code":"8002349","description":"CONECTOR DE DOBLE PERNO DE AJUSTE RANGO 35-70 MM2, DISTANCIA ENTRE EJES DE PERNOS 44,45MM (1 3/4\")","unit":"UND","aliases":["BORNE"],"priority":"","source":"ALIAS","image":"/material-images/conector_doble_perno.jpg"},{"code":"3001406","description":"CONECTOR TERMINAL A COMPRESION DE COBRE P.CABLE 120MM2, SIMPLE FIJACION","unit":"UND","aliases":["TERMINAL 120","CONECTORES TERMINALES DE 120MM2","TERMINAL 120 MM2"],"priority":"","source":"ALIAS","image":"/material-images/terminal_compresion_cobre.jpg"},{"code":"3001393","description":"CONECTOR TERMINAL A COMPRESION DE COBRE P.CABLE 35MM2, SIMPLE FIJACION","unit":"UND","aliases":["TERMINAL 35","CONECTORES TERMINALES DE 35MM2 (PARA SECCIONADORES Y RIGIDOS)","TERMINAL 35 MM2"],"priority":"","source":"ALIAS","image":"/material-images/terminal_compresion_cobre.jpg"},{"code":"3001402","description":"CONECTOR TERMINAL A COMPRESION DE COBRE P.CABLE 35MM2, SIMPLE FIJACION P.PERNO 1/2\" DIAM.","unit":"UND","aliases":["TERMINAL 35 AGUJERO GRANDE","CONECTORES TERMINALES DE 35MM2 (PARA ANCLAJE, PINES, VARILLAS)","TERMINAL 35 GRANDE"],"priority":"","source":"ALIAS","image":"/material-images/terminal_compresion_cobre.jpg"},{"code":"3001404","description":"CONECTOR TERMINAL A COMPRESION DE COBRE P.CABLE 70MM2, SIMPLE FIJACION","unit":"UND","aliases":["TERMINAL 70","CONECTORES TERMINALES DE 70MM2","TERMINAL 70 MM2"],"priority":"","source":"ALIAS","image":"/material-images/terminal_compresion_cobre.jpg"},{"code":"3000674","description":"CRUCETA ASIMETRICA DE MADERA DE 4\" X 5\" X 5,58 PIES CON TRATAMIENTO CCB","unit":"UND","aliases":["CRUCETA 5 PIES"],"priority":"","source":"ALIAS","image":"/material-images/cruceta_madera_tratada.jpg"},{"code":"3000677","description":"CRUCETA ASIMETRICA DE MADERA DE 4\" X 5\" X 6,6 PIES CON TRATAMIENTO CCB","unit":"UND","aliases":["CRUCETA 7 PIES"],"priority":"P","source":"ALIAS","image":"/material-images/cruceta_madera_tratada.jpg"},{"code":"3000727","description":"CRUCETA DE MADERA 4\" X 5\" X 9 PIES CON TRATAMIENTO CCB","unit":"UND","aliases":["CRUCETA 9 PIES"],"priority":"P","source":"ALIAS","image":"/material-images/cruceta_madera_tratada.jpg"},{"code":"3000719","description":"CRUCETA SIMETRICA DE MADERA DE 4\" X 4\" X 1,3 PIES CON TRATAMIENTO CCB","unit":"UND","aliases":["CRUCETA PARA TACO"],"priority":"P","source":"ALIAS","image":"/material-images/cruceta_taco_madera.jpg"},{"code":"8002172","description":"CUBIERTA AISLANTE DE PROTECCION P.CONDUCTOR AEREO DESNUDO 4 - 25MM DIAM. CL.15KV","unit":"UND","aliases":["MVLC-CHINO 15KV"],"priority":"","source":"ALIAS","image":"/material-images/cubierta_conductor_mvlc.jpg"},{"code":"8002169","description":"CUBIERTA AISLANTE PROTECCION P.CONDUCTOR AEREO DESNUDO 35 - 185MM2 CL.25KV","unit":"M","aliases":["MVLC 18 CON MASTIL"],"priority":"P","source":"ALIAS","image":"/material-images/cubierta_conductor_mvlc.jpg"},{"code":"3001305","description":"CUBIERTA.AISLA.PROTEC.P/COND.AEREO DESN.MT.16-70MM2.15KV.","unit":"M","aliases":["MVLC 14"],"priority":"P","source":"ALIAS","image":"/material-images/cubierta_conductor_mvlc.jpg"},{"code":"3001306","description":"CUBIERTA.AISLA.PROTEC.P/COND.AEREO DESN.MT.70-185MM2.15KV.","unit":"M","aliases":["MVLC 18 SIN MASTIL"],"priority":"P","source":"ALIAS","image":"/material-images/cubierta_conductor_mvlc.jpg"},{"code":"3000689","description":"DIAGONAL ACERO GALV. 45MM X 45MM X 1,07M X 4MM","unit":"UND","aliases":["DIAGONAL PEQUEÑA"],"priority":"P","source":"ALIAS","image":"/material-images/diagonal_acero_galvanizado.jpg"},{"code":"3000690","description":"DIAGONAL ACERO GALV. 45MM X 45MM X 1,48M X 4MM","unit":"UND","aliases":["DIAGONAL GRANDE"],"priority":"P","source":"ALIAS","image":"/material-images/diagonal_acero_galvanizado.jpg"},{"code":"8002200","description":"EMPALME PREFORM. DE ALUMOWELD P.COND.AA. 70MM2.","unit":"UND","aliases":["PREFORMADO 70","PREFORMADO 70 MM2","PREFORMADO 70 MM2 MARRON"],"priority":"","source":"ALIAS","image":"/material-images/empalme_preformado_aluminio.jpg"},{"code":"8002202","description":"EMPALME PREFORMADO DE ALEACION DE ALUMINIO P.CONDUCTOR AAAC 120MM2 / 13,84 - 14,41MM DIAM.","unit":"UND","aliases":["PREFORMADO120","PREFORMADO 120","PREFORMADO 120 MM2","PREFORMADO 120 MM2 ROJO"],"priority":"","source":"ALIAS","image":"/material-images/empalme_preformado_aluminio.jpg"},{"code":"8002206","description":"EMPALME PREFORMADO DE ALEACION DE ALUMINIO P.CONDUCTOR AAAC 185MM2 / 17,06 - 17,79MM DIAM.","unit":"UND","aliases":["PREFORMADO 185","PREFORMADO 185 MM2","PREFORMADO 185 MM2 NARANJA"],"priority":"","source":"ALIAS","image":"/material-images/empalme_preformado_aluminio.jpg"},{"code":"8002076","description":"ESLABON DOBLE TP.8 GIRATORIO DE ACERO GALV. P.FIJAR CONDUCTORES A AISLADORES EN LINEAS AREAS M.T.","unit":"UND","aliases":["ESLABON"],"priority":"","source":"ALIAS","image":"/material-images/eslabon_doble_galvanizado.jpg"},{"code":"8000519","description":"FLEJE DE ACERO INOXIDABLE TIPO AISI 316 DE 19MM (3/4\") ANCHO P.ALTA CORROSION","unit":"M","aliases":["FLEJE"],"priority":"P","source":"ALIAS","image":"/material-images/fleje_acero_inoxidable.jpg"},{"code":"8001828","description":"FUSI.SEC.UNIP.AE.22.9KV.100A.12KA.600MM.L.FUG.MIN","unit":"UND","aliases":["CUT OUT 22.9KV","CUT-OUT DE 22.9KV","CUTOUTS DE 22.9 KV"],"priority":"","source":"ALIAS","image":"/material-images/cutout_fusible_aereo.jpg"},{"code":"8001850","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 100A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 100A","FUSIBLE DE 100A","FUSIBLE 100K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg"},{"code":"8001887","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 10A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 10A","FUSIBLE DE 10A","FUSIBLE 10K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg"},{"code":"8001888","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 12A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 12A","FUSIBLE DE 12A","FUSIBLE 12K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg"},{"code":"8001889","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 15A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 15A","FUSIBLE DE 15A","FUSIBLE 15K"],"priority":"GG01","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg"},{"code":"8001891","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 20A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 20A","FUSIBLE DE 20A","FUSIBLE 20K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg"},{"code":"8001895","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 30A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 30A","FUSIBLE DE 30A","FUSIBLE 30K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg"},{"code":"8001882","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 3A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 3A","FUSIBLE DE 3A","FUSIBLE 3K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg"},{"code":"8001847","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 65A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 65A","FUSIBLE DE 65A","FUSIBLE 65K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg"},{"code":"8001883","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 6A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 6A","FUSIBLE DE 6A","FUSIBLE 6K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg"},{"code":"8001886","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 8A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 8A","FUSIBLE DE 8A","FUSIBLE 8K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg"},{"code":"8001845","description":"FUSIBLE EXPULSION 10KV. 50A.P.FUS.SECC.UNIP.INTEMP","unit":"UND","aliases":["FUSIBLE","FUSIBLE 50A","FUSIBLE 50K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg"},{"code":"8001817","description":"FUSIBLE SECC.UNIP. AEREO 10KV, 100A, MINIMO 95KV BIL, 12KA","unit":"UND","aliases":["CUT OUT 10KV","CUTOUT 10KV","SECCIONADOR FUSIBLE 10KV"],"priority":"GG01","source":"ALIAS","image":"/material-images/cutout_fusible_aereo.jpg"},{"code":"8002097","description":"GRAPA DE ANCLAJE TP.PISTOLA DE ACERO GALV. P.CONDUCTOR CU 16 - 70MM2","unit":"UND","aliases":["GRAPA"],"priority":"","source":"ALIAS","image":"/material-images/grapa_anclaje_pistola.jpg"},{"code":"8002140","description":"GRAPA DE ANCLAJE TP.PISTOLA DE ALEACION DE ALUMINIO P.CONDUCTOR AAAC 120MM2","unit":"UND","aliases":["GRAPA 120"],"priority":"P","source":"ALIAS","image":"/material-images/grapa_anclaje_pistola.jpg"},{"code":"8002083","description":"GRAPA DE ANCLAJE TP.PISTOLA DE ALEACION DE ALUMINIO P.CONDUCTOR AAAC 185MM2","unit":"UND","aliases":["GRAPA 185"],"priority":"P","source":"ALIAS","image":"/material-images/grapa_anclaje_pistola.jpg"},{"code":"8002136","description":"GRAPA DE ANCLAJE TP.PISTOLA DE ALEACION DE ALUMINIO P.CONDUCTOR AAAC 70MM2","unit":"UND","aliases":["GRAPA 70"],"priority":"P","source":"ALIAS","image":"/material-images/grapa_anclaje_pistola.jpg"},{"code":"8002118","description":"GRAPA FIN DE LINEA 360MML 12,6MMD P.CAB.AUTOP.MT","unit":"UND","aliases":["GRAPA PARA AUTOSOPORTADO"],"priority":"","source":"ALIAS","image":"/material-images/grapa_fin_autosoportado.jpg"},{"code":"8002149","description":"GRAPA SUSPENS. DE ALEAC.AL.P.COND. 70 MM2.","unit":"UND","aliases":["GRAPA SUSPENCION 70"],"priority":"","source":"ALIAS","image":"/material-images/grapa_suspension_aluminio.jpg"},{"code":"8002153","description":"GRAPA SUSPENS. DE ALEAC.AL.P.COND.185MM2. C/VAR. ARMADO","unit":"UND","aliases":["GRAPA SUSPENCION 185"],"priority":"","source":"ALIAS","image":"/material-images/grapa_suspension_varillas.jpg"},{"code":"8002151","description":"GRAPA SUSPENS.DE ALEAC.AL.P.COND.120MM2.C/VAR.ARMADO","unit":"UND","aliases":["GRAPA SUSPENCION 120"],"priority":"","source":"ALIAS","image":"/material-images/grapa_suspension_varillas.jpg"},{"code":"2000073","description":"GUANTE DE NITRILO DESECHABLE TALLA L DE 23CM X 0,13MM C.PUÑO REFORZADO, PUNTAS TEXTURIZADAS","unit":"UND","aliases":["GUANTE NITRILO PEQUEÑO"],"priority":"","source":"ALIAS","image":"/material-images/guante_nitrilo_industrial.jpg"},{"code":"2000388","description":"GUANTE DE NITRILO DESECHABLE TALLA XL DE 23CM X 0,13MM C.PUÑO REFORZADO, PUNTAS TEXTURIZADAS","unit":"UND","aliases":["GUANTE NITRILO GRANDE"],"priority":"","source":"ALIAS","image":"/material-images/guante_nitrilo_industrial.jpg"},{"code":"8000687","description":"GUARDACABO DE ACERO GALV. P.CABLE 13MM DIAM. 1,5MM ESPESOR P.PROTEGER CABLE PORTANTE","unit":"UND","aliases":["GUARDACABO PARA VIENTO","GUARDACABO"],"priority":"","source":"ALIAS","image":"/material-images/guardacabo_acero_galvanizado.jpg"},{"code":"8000535","description":"HEBILLA (HEBILLA) DE ACERO INOXIDABLE TIPO AISI 316 P.FLEJES DE 19MM (3/4\") ANCHO P.ALTA CORROSION","unit":"UND","aliases":["HEBILLAS"],"priority":"P","source":"ALIAS","image":"/material-images/hebilla_acero_inoxidable.jpg"},{"code":"8003160","description":"HOJA DE SIERRA SANFLEX 12\", 18 DIENTES POR PULG. 3806-300-18-100P","unit":"UND","aliases":["HOJA DE SIERRA","HOJA SIERRA"],"priority":"P","source":"ALIAS","image":"/material-images/hoja_sierra_bimetal.jpg"},{"code":"3001051","description":"MANTA AISLANTE ANTITRACKING AUTOFUNDENTE C.CAPA EPR DE 102MM X 3M COLOR NEGRO 15KV","unit":"UND","aliases":["PAD"],"priority":"P","source":"ALIAS","image":"/material-images/manta_aislante_epr.jpg"},{"code":"3001048","description":"MANTA AISLANTE ANTITRACKING AUTOFUNDENTE C.CAPA EPR DE 200MM X 3M COLOR NEGRO CL.2A 15KV","unit":"UND","aliases":["PAD"],"priority":"","source":"ALIAS","image":"/material-images/manta_aislante_epr.jpg"},{"code":"3000685","description":"MENSULA DE MADERA DE 4\" X 5\" X 6 PIES CON TRATAMIENTO CCB","unit":"UND","aliases":["CRUCETA 6PIES"],"priority":"","source":"ALIAS","image":"/material-images/cruceta_madera_tratada.jpg"},{"code":"3000687","description":"MENSULA DE MADERA DE 4\" X 5\" X 7 PIES CON TRATAMIENTO CCB","unit":"UND","aliases":["CRUCETA 7PIES"],"priority":"P","source":"ALIAS","image":"/material-images/cruceta_madera_tratada.jpg"},{"code":"8001981","description":"OJAL ROSCADO AC.GALV.,DE 3/4PULG.D. X86MML. P.L.A.","unit":"UND","aliases":["OJAL 3/4"],"priority":"","source":"ALIAS","image":"/material-images/ojal_roscado_galvanizado.jpg"},{"code":"8001977","description":"OJAL ROSCADO AC.GALV.,DE 5/8PULG.D. X80MML. P.L.A.","unit":"UND","aliases":["OJAL 5/8"],"priority":"P","source":"ALIAS","image":"/material-images/ojal_roscado_galvanizado.jpg"},{"code":"8002663","description":"PASTA ANTICORROSIVA CONDUCTORA DE USO ELECTRICO PENETROX E.EN ENVASE DE 8 ONZAS","unit":"UND","aliases":["PENETROX"],"priority":"","source":"ALIAS","image":"/material-images/pasta_inhibidora_electrica.jpg"},{"code":"8000647","description":"PERNO HO.GALV.CAB.EXAG. 1/2\" X 1.1/2 P.C/TUERCA SID-127","unit":"UND","aliases":["PERNO 1/2"],"priority":"P","source":"ALIAS","image":"/material-images/perno_hexagonal_galvanizado.jpg"},{"code":"8001122","description":"PERNO HO.GALV.CAB.EXAG. 3/8\" X 1\" C/TUERCA","unit":"UND","aliases":["PERNO"],"priority":"","source":"ALIAS","image":"/material-images/perno_hexagonal_galvanizado.jpg"},{"code":"8001124","description":"PERNO HO.GALV.CAB.EXAG. 3/8\" X 1.1/2\" C/TUERCA","unit":"UND","aliases":["PERNO 3/8"],"priority":"P","source":"ALIAS","image":"/material-images/perno_hexagonal_galvanizado.jpg"},{"code":"8001126","description":"PERNO HO.GALV.CAB.EXAG. 3/8\" X 2\" C/TUERCA","unit":"UND","aliases":["PERNO"],"priority":"","source":"ALIAS","image":"/material-images/perno_hexagonal_galvanizado.jpg"},{"code":"8002003","description":"PLANCHA DE COBRE P.LINEA A TIERRA C.AGUJERO 20MM DIAM.","unit":"UND","aliases":["PLANCHA J GRANDE","CHAPAS DE TIERRA"],"priority":"P","source":"ALIAS","image":"/material-images/plancha_cobre_tierra.jpg"},{"code":"8002007","description":"PLANCHA DE COBRE PARA LINEA A TIERRA CON AGUJERO DE 13MM DE DIAMETRO","unit":"UND","aliases":["PLANCHA J PEQUEÑO","CHAPAS DE TIERRA"],"priority":"P","source":"ALIAS","image":"/material-images/plancha_cobre_tierra.jpg"},{"code":"2000424","description":"PROTECTOR DE FIBRA DE VIDRIO ANTI AVES PARA MENSULA, AUTOAJUSTABLE","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS","image":"/material-images/protector_aves_fibra.jpg"},{"code":"3000809","description":"PROTECTOR DE FIBRA DE VIDRIO P.SECCIONADOR AEREO EN PDS ASIMETRICO 1100 X 800 X 600MM","unit":"UND","aliases":["PROTECTOR PDS (TRIANGULO)"],"priority":"","source":"ALIAS","image":"/material-images/protector_pds_triangulo.jpg"},{"code":"3000807","description":"PROTECTOR DE FIBRA DE VIDRIO P.SECCIONADOR AEREO EN PDS PARALELO AL PREDIO 2100 X 1110MM","unit":"UND","aliases":["PROTECTOR PDS PARALELO PREDIO"],"priority":"","source":"ALIAS","image":"/material-images/protector_pds_triangulo.jpg"},{"code":"3000808","description":"PROTECTOR DE FIBRA DE VIDRIO P.SECCIONADOR AEREO EN PDS PERPENDICULAR AL PREDIO 1700 X 1110MM","unit":"UND","aliases":["PROTECTOR PDS PERPEND PREDIO"],"priority":"","source":"ALIAS","image":"/material-images/protector_pds_triangulo.jpg"},{"code":"3000806","description":"PROTECTOR DE FIBRA DE VIDRIO P.SECCIONADOR AEREO EN SAB 2200 X 1110MM","unit":"UND","aliases":["PROTECTOR DE SAB"],"priority":"","source":"ALIAS","image":"/material-images/protector_pds_triangulo.jpg"},{"code":"3000802","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P. SECCIONADOR RIGIDO PARA REDES AEREAS MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS","image":"/material-images/protector_pds_triangulo.jpg"},{"code":"3000797","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P.MENSULA DE MADERA CON AISLADOR TIPO PIN PARA REDES AEREAS MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS","image":"/material-images/protector_aves_fibra.jpg"},{"code":"3000795","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P.MENSULAS DE CONCRETO DE 1 Y 0.60 METROS PARA REDES AEREAS MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS","image":"/material-images/protector_punta_poste.jpg"},{"code":"3000801","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P.MENSULAS DE MADERA CON DIAGONAL EN PDS PARA REDES AEREAS MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS","image":"/material-images/protector_aves_fibra.jpg"},{"code":"3000800","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P.MENSULAS DE MADERA SIN DIAGONAL EN PDS PARA REDES AEREAS MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS","image":"/material-images/protector_aves_fibra.jpg"},{"code":"3000803","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P.PUNTA DE POSTE DE CONCRETO PARA REDES AEREAS MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS","image":"/material-images/protector_punta_poste.jpg"},{"code":"3000798","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR PARA MENSULA DE MADERA SIN AISLADORES PARA REDES AEREAS DE MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS","image":"/material-images/protector_aves_fibra.jpg"},{"code":"3000793","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR PARA PALOMILLAS DE CONCRETO PARA REDES AEREAS DE MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS","image":"/material-images/protector_punta_poste.jpg"},{"code":"4000576","description":"SECCIONADOR UNIP. AEREO 22,9KV 600A 25KA 150KVBIL LF 700MM ARCO 253MM EXT.CORROS.SEVERA SIN CONECTOR","unit":"UND","aliases":["RIGIDO 10KV","SECCIONADOR RIGIDO 10KV","RIGIDO 22.9KV","SECCIONADOR RIGIDO 22.9KV"],"priority":"","source":"ALIAS","image":"/material-images/seccionador_unipolar_aereo.jpg"},{"code":"4000578","description":"SECCIONADOR UNIPOLAR AEREO 10KV 600A 25KA 95KV BIL LF 430MM EXTERIOR P.CORROSION SEVERA SIN CONECTOR","unit":"UND","aliases":["RIGIDO 22.9KV","SECCIONADOR RIGIDO 22.9KV","RIGIDO 10KV","SECCIONADOR RIGIDO 10KV"],"priority":"","source":"ALIAS","image":"/material-images/seccionador_unipolar_aereo.jpg"},{"code":"8002689","description":"SOLVENTE DIELECTRICO ECOLOGICO NO CLORADO M.T.","unit":"UND","aliases":["SOLVENTE","SOLVENTE DIELECTRICO"],"priority":"P","source":"ALIAS","image":"/material-images/solvente_dielectrico_envase.jpg"},{"code":"8002030","description":"SOPORTE LATERAL DE ACERO GALV. P.AISLADOR TP.PIN HIBRIDO O POLIMERICO 22,9KV","unit":"UND","aliases":["LATERAL PARA 22,9KV"],"priority":"","source":"ALIAS","image":"/material-images/soporte_lateral_l.jpg"},{"code":"8002028","description":"SOPORTE LATERAL PARA AISLADOR HIBRIDO PIN 10KV.","unit":"UND","aliases":["LATERAL PARA 10KV"],"priority":"P","source":"ALIAS","image":"/material-images/soporte_lateral_l.jpg"},{"code":"8002020","description":"SOPORTE PASANTE ACERO GALV. 201MM LONG. 22MM / 3/4\" DIAM. P.AISLADORES TP.PIN C.ACCESORIOS","unit":"UND","aliases":["LATERAL"],"priority":"","source":"ALIAS","image":"/material-images/soporte_pasante_recto.jpg"},{"code":"8000856","description":"TIRAFONDO HO.GALV. 3/8\" X 1.1/2\"","unit":"UND","aliases":["TIRAFON PEQUEÑO"],"priority":"","source":"ALIAS","image":"/material-images/tirafondo_acero_galvanizado.jpg"},{"code":"8000858","description":"TIRAFONDO HO.GALV. 3/8\" X 2\"","unit":"UND","aliases":["TIRAFON MEDIANO"],"priority":"","source":"ALIAS","image":"/material-images/tirafondo_acero_galvanizado.jpg"},{"code":"8000860","description":"TIRAFONDO HO.GALV. 3/8\" X 2.1/2\"","unit":"UND","aliases":["TIRAFON GRANDE"],"priority":"P","source":"ALIAS","image":"/material-images/tirafondo_acero_galvanizado.jpg"},{"code":"8000862","description":"TIRAFONDO HO.GALV. 3/8\" X 3\"","unit":"UND","aliases":["TIRAFON EXTRAGRANDE"],"priority":"P","source":"ALIAS","image":"/material-images/tirafondo_acero_galvanizado.jpg"},{"code":"8002570","description":"TOCUYO DE ALGODON 100% 0.60/0.80 X 1 M.","unit":"UND","aliases":["TOCUYO","TOCUYO DE ALGODON"],"priority":"P","source":"ALIAS","image":"/material-images/tocuyo_tela_algodon.jpg"},{"code":"8002568","description":"TRAPO INDUSTRIAL","unit":"UND","aliases":["TRAPO","TRAPO INDUSTRIAL"],"priority":"P","source":"ALIAS","image":"/material-images/trapo_industrial_algodon.jpg"},{"code":"8001781","description":"TUBO PORTAFUSIBLE PARA SECC. UNIP. AEREO 100A, 10KV, CORR.SEVERA","unit":"UND","aliases":["PORTAFUSIBLE 10KV","CAÑA 10KV","TUBO PORTAFUSIBLE 10KV"],"priority":"","source":"ALIAS","image":"/material-images/tubo_portafusible_aereo.jpg"},{"code":"8001785","description":"TUBO PORTAFUSIBLE PARA SECC. UNIP. AEREO 100A, 22,9KV, CORR.MODERADA","unit":"UND","aliases":["PORTAFUSIBLE 22.9KV","CAÑA 22.9KV","TUBO PORTAFUSIBLE 22.9KV"],"priority":"","source":"ALIAS","image":"/material-images/tubo_portafusible_aereo.jpg"},{"code":"8002291","description":"UNION P.EMPALME AUTOMATICO P.CONDUCTOR AAAC 120MM2","unit":"UND","aliases":["AUTOMATICO 120","AUTOMATICO 120 MM2"],"priority":"","source":"ALIAS","image":"/material-images/empalme_automatico_aluminio.jpg"},{"code":"8002235","description":"UNION P.EMPALME AUTOMATICO P.CONDUCTOR AAAC 185MM2","unit":"UND","aliases":["AUTOMATICO 185","AUTOMATICO 185 MM2"],"priority":"","source":"ALIAS","image":"/material-images/empalme_automatico_aluminio.jpg"},{"code":"8002289","description":"UNION P.EMPALME AUTOMATICO P.CONDUCTOR AAAC 70MM2","unit":"UND","aliases":["AUTOMATICO 70","AUTOMATICO 70 MM2"],"priority":"","source":"ALIAS","image":"/material-images/empalme_automatico_aluminio.jpg"},{"code":"8002033","description":"VARILLA ROSCADA AC.GALV. 16MMD. X 250MML. L.AEREAS","unit":"UND","aliases":["VARILLA 250"],"priority":"P","source":"ALIAS","image":"/material-images/varilla_roscada_galvanizada.jpg"},{"code":"8002034","description":"VARILLA ROSCADA AC.GALV. 16MMD. X 300MML. L.AEREAS","unit":"UND","aliases":["VARILLA 300"],"priority":"P","source":"ALIAS","image":"/material-images/varilla_roscada_galvanizada.jpg"},{"code":"8002035","description":"VARILLA ROSCADA AC.GALV. 16MMD. X 350MML. L.AEREAS","unit":"UND","aliases":["VARILLA 350"],"priority":"P","source":"ALIAS","image":"/material-images/varilla_roscada_galvanizada.jpg"},{"code":"8002038","description":"VARILLA ROSCADA AC.GALV. 16MMD. X 450MML. L.AEREAS","unit":"UND","aliases":["VARILLA 450"],"priority":"P","source":"ALIAS","image":"/material-images/varilla_roscada_galvanizada.jpg"},{"code":"8002041","description":"VARILLA ROSCADA AC.GALV. 16MMD. X 550MML. L.AEREAS","unit":"UND","aliases":["VARILLA 550"],"priority":"P","source":"ALIAS","image":"/material-images/varilla_roscada_galvanizada.jpg"},{"code":"8002043","description":"VARILLA ROSCADA AC.GALV. 16MMD. X 650MML. L.AEREAS","unit":"UND","aliases":["VARILLA 650"],"priority":"P","source":"ALIAS","image":"/material-images/varilla_roscada_galvanizada.jpg"}],"supervisors":["EBLAS","HTORRES","BHIDALGO","ELIENDO","RDIAZ","OSOTELO","SLINARES","IDAMIAN","PLAZARO","DFERRE","GCANDIA","JQUISPE","WCENTENO"],"units":["F5X-815","BTJ-860","BTD-712","BHL-875","ARE-823","BHM-832","F5W-883"],"observations":["FALTA CORREO DE RECHAZO","FALTA DEVOLVER MATERIAL","FALTA INFORME","FALTA LIBERAR ORDEN","FALTA LIQUIDAR POR INSPECTOR","FALTA NOTIFICAR","FALTA NORMA DE LIQUIDACION","FALTA PEDIDO DE MATERIAL","FALTA RECOGER Y DEVOLVER MATERIAL","FALTA RECOJO DE MATERIAL","FALTA REVISIÓN GCA"],"movements":["DEV","PED","REC"],"defaults":{"destinatario":"SLINARES","puestoDescarga":"RECUPERO","ubicacionFinal":"","c1":"","tp":"L","c2":"","c3":"","alim":"GG01","ce":"1003","operacion":"0010","lote":"LDA-000000","tipoAprovisionamiento":"Reserva para orden","pos":"0"},"supervisorInitials":{"EBLAS":"EB","HTORRES":"UT","BHIDALGO":"BH","ELIENDO":"EL","RDIAZ":"RD","OSOTELO":"OS","SLINARES":"SL","IDAMIAN":"ID","PLAZARO":"PL","DFERRE":"DF","GCANDIA":"GC","JQUISPE":"JQ","WCENTENO":"WC"}};
+const EMBEDDED_IMAGE_BY_CODE=new Map((EMBEDDED_DATA.materials||[]).map(m=>[String(m.code),String(m.image||'').trim()]));
+const isLegacySvgImg=u=>/^\/material-images\/.*\.svg(?:\?.*)?$/i.test(String(u||'').trim());
+const isBuiltInCatalogImg=u=>!String(u||'').trim()||/^\/material-images\/[^/]+(?:\?.*)?$/i.test(String(u||'').trim());
+if(window.APP_DATA&&Array.isArray(window.APP_DATA.materials)){
+  window.APP_DATA.materials.forEach(m=>{
+    if(!m._imageDeleted&&!m._imageCustom&&isBuiltInCatalogImg(m.image)){
+      const embImg=EMBEDDED_IMAGE_BY_CODE.get(String(m.code));
+      if(embImg&&m.image!==embImg)m.image=embImg;
+    }
+  });
+}
 const BASE_DATA=window.APP_DATA||EMBEDDED_DATA;
 const KEY='buscador_materiales_sap_v9_1';
 const DEFAULT_SUPERVISOR_INITIALS={EBLAS:'EB',HTORRES:'UT',BHIDALGO:'BH',ELIENDO:'EL',RDIAZ:'RD',OSOTELO:'OS',SLINARES:'SL',IDAMIAN:'ID',PLAZARO:'PL',DFERRE:'DF',GCANDIA:'GC',JQUISPE:'JQ',WCENTENO:'WC'};
@@ -1160,10 +1261,19 @@ const $=s=>document.querySelector(s);const norm=s=>String(s??'').normalize('NFD'
 function clone(x){return JSON.parse(JSON.stringify(x))}
 function normalizedUnit(material){let d=String(material.description||'').trim().toUpperCase();if(/^(CONDUCTOR|CABLE)\b/.test(d))return 'M';return String(material.unit||'UND').toUpperCase()==='M'?'M':'UND'}
 function deriveInitials(name){let known=DEFAULT_SUPERVISOR_INITIALS[String(name||'').toUpperCase()];if(known)return known;let parts=String(name||'').trim().toUpperCase().split(/\s+/).filter(Boolean);return (parts.length>1?(parts[0][0]+parts.at(-1)[0]):(parts[0]||'').slice(0,2)).toUpperCase()}
-function getMaterialImgSrc(m){if(!m)return '';return String(m.image||m.driveUrl||'').trim();}
+function getMaterialImgSrc(m){if(!m||m._imageDeleted)return '';return String(m.image||m.driveUrl||'').trim();}
 window.getMaterialImgSrc=getMaterialImgSrc;
-function migrateState(x){x=x&&Array.isArray(x.materials)?x:clone(BASE_DATA);let baseByCode=new Map(BASE_DATA.materials.map(m=>[m.code,m]));x.materials.forEach(m=>{m.unit=normalizedUnit(m);let b=baseByCode.get(m.code);let own=Array.isArray(m.aliases)?m.aliases:[];if(b){let fresh=Array.isArray(b.aliases)?b.aliases:[];let sourceAliases=m._aliasesEdited?own:[...own,...fresh];m.aliases=[...new Set(sourceAliases.map(a=>String(a).trim().toUpperCase()).filter(a=>a&&!['3','UND','UN','L','0','10','GG01'].includes(a)))];if(!m.description)m.description=b.description}else{m.aliases=[...new Set(own.map(a=>String(a).trim().toUpperCase()).filter(Boolean))];}});for(let b of BASE_DATA.materials){if(!x.materials.some(m=>m.code===b.code))x.materials.push(clone(b))}x.supervisors=Array.isArray(x.supervisors)?x.supervisors:[];x.supervisorInitials={...DEFAULT_SUPERVISOR_INITIALS,...(x.supervisorInitials||{})};x.supervisors.forEach(n=>{if(!x.supervisorInitials[n])x.supervisorInitials[n]=deriveInitials(n)});x.templates=Array.isArray(x.templates)?x.templates:[];x.userAccounts=Array.isArray(x.userAccounts)?x.userAccounts:[];x.authSettings=x.authSettings&&typeof x.authSettings==='object'?x.authSettings:{requireLogin:false};return x}
-function load(){try{return migrateState(JSON.parse(localStorage.getItem(KEY)))}catch{return migrateState(clone(BASE_DATA))}}
+function handleMatImgError(imgEl,code){
+  if(!imgEl||imgEl.dataset.fallbackDone==='1')return;
+  imgEl.dataset.fallbackDone='1';
+  const def=(typeof getDefaultBaseImage==='function'?getDefaultBaseImage(code):'')||EMBEDDED_IMAGE_BY_CODE.get(String(code))||'';
+  if(def&&imgEl.getAttribute('src')!==def){
+    imgEl.src=def;
+  }
+}
+window.handleMatImgError=handleMatImgError;
+function migrateState(x){x=x&&Array.isArray(x.materials)?x:clone(BASE_DATA);let baseByCode=new Map(BASE_DATA.materials.map(m=>[String(m.code),m]));x.materials.forEach(m=>{m.unit=normalizedUnit(m);let b=baseByCode.get(String(m.code));let own=Array.isArray(m.aliases)?m.aliases:[];let fallbackImg=(b&&String(b.image||'').trim())||EMBEDDED_IMAGE_BY_CODE.get(String(m.code))||'';if(b){let fresh=Array.isArray(b.aliases)?b.aliases:[];let sourceAliases=m._aliasesEdited?own:[...own,...fresh];m.aliases=[...new Set(sourceAliases.map(a=>String(a).trim().toUpperCase()).filter(a=>a&&!['3','UND','UN','L','0','10','GG01'].includes(a)))];if(!m.description)m.description=b.description;}else{m.aliases=[...new Set(own.map(a=>String(a).trim().toUpperCase()).filter(Boolean))];}if(m._imageDeleted){m.image='';m.driveUrl='';m.driveFileId='';}else if(!m._imageCustom&&fallbackImg&&isBuiltInCatalogImg(m.image)&&(!String(m.driveUrl||'').trim()||/^\/material-images\//i.test(String(m.image||'')))){if(m.image!==fallbackImg){m.image=fallbackImg;m._imagePendingDrive=true;}}});for(let b of BASE_DATA.materials){if(!x.materials.some(m=>String(m.code)===String(b.code))){let nb=clone(b);if(!nb._imageDeleted&&!nb._imageCustom&&isBuiltInCatalogImg(nb.image)){const embImg=EMBEDDED_IMAGE_BY_CODE.get(String(nb.code));if(embImg&&nb.image!==embImg)nb.image=embImg;}x.materials.push(nb);}}x.supervisors=Array.isArray(x.supervisors)?x.supervisors:[];x.supervisorInitials={...DEFAULT_SUPERVISOR_INITIALS,...(x.supervisorInitials||{})};x.supervisors.forEach(n=>{if(!x.supervisorInitials[n])x.supervisorInitials[n]=deriveInitials(n)});x.templates=Array.isArray(x.templates)?x.templates:[];x.userAccounts=Array.isArray(x.userAccounts)?x.userAccounts:[];x.authSettings=x.authSettings&&typeof x.authSettings==='object'?x.authSettings:{requireLogin:false};return x}
+function load(){try{const raw=localStorage.getItem(KEY);const parsed=raw?JSON.parse(raw):null;const migrated=migrateState(parsed);if(raw){try{localStorage.setItem(KEY,JSON.stringify(migrated))}catch(_){}}return migrated}catch{return migrateState(clone(BASE_DATA))}}
 function save(){state=migrateState(state);localStorage.setItem(KEY,JSON.stringify(state));if(typeof queueSync==='function')queueSync('app');if(typeof scheduleDriveSync==='function')scheduleDriveSync(800,'app');}function fill(el,a){let cur=el.value;el.innerHTML=a.map(x=>`<option>${esc(x)}</option>`).join('');if(a.includes(cur))el.value=cur}function localISODate(){let d=new Date(),off=d.getTimezoneOffset();return new Date(d.getTime()-off*60000).toISOString().slice(0,10)}
 function showView(id){
   const adminProtected=['newMatView','supView','unitsView','usersView'];
@@ -1182,6 +1292,7 @@ function showView(id){
   if(id==='historyView'&&typeof renderHistory37==='function')setTimeout(renderHistory37,0);
   if(id==='templatesView'&&typeof window.renderTemplatesView==='function')setTimeout(window.renderTemplatesView,0);
   if(id==='usersView'&&typeof window.renderUsersAdminView==='function')setTimeout(window.renderUsersAdminView,0);
+  if(id==='suppliersView'&&typeof window.renderSuppliersDirectory==='function')setTimeout(window.renderSuppliersDirectory,0);
   window.scrollTo({top:0,behavior:'smooth'})
 }
 function openConfigPage(page){const pageMap={'new-mat':'newMatView','mat':'newMatView','sup':'supView','units':'unitsView'};showView(pageMap[page]||'newMatView')}
@@ -1270,7 +1381,7 @@ function filtered(){
     return {m,index,score};
   }).filter(x=>x.score<999).sort((a,b)=>a.score-b.score||a.index-b.index).slice(0,300).map(x=>x.m);
 }
-function renderResults(){let a=filtered();$('#count').textContent=`${a.length} de ${state.materials.length}`;$('#results').innerHTML=a.length?a.map(m=>`<div class="card ${m.priority==='P'?'card-prio-p':''}"><div class="material-main">${m.image?`<img class="material-thumb" src="${m.image}" alt="Imagen de ${esc(m.description)}">`:`<div class="material-placeholder">Sin imagen</div>`}<div><div class="code">${esc(m.code)} · ${esc(m.unit)}${m.priority==='P'?'<span class="prio-p-badge">⚡ PRIORIDAD P</span>':''}</div><div class="desc">${esc(m.description)}</div>${(m.aliases||[]).map(x=>`<span class="tag">${esc(x)}</span>`).join('')}</div></div><div class="card-actions"><button class="btn edit-inline" data-quick-edit="${m.code}">✎ Alias / editar</button><button class="btn primary add" data-add="${m.code}">＋ Agregar</button></div></div>`).join(''):'<div class="empty">No se encontraron materiales.</div>'}
+function renderResults(){let a=filtered();$('#count').textContent=`${a.length} de ${state.materials.length}`;$('#results').innerHTML=a.length?a.map(m=>{const imgSrc=getMaterialImgSrc(m);return `<div class="card ${m.priority==='P'?'card-prio-p':''}"><div class="material-main">${imgSrc?`<img class="material-thumb" src="${esc(imgSrc)}" alt="Imagen de ${esc(m.description)}" referrerpolicy="no-referrer">`:`<div class="material-placeholder">Sin imagen</div>`}<div><div class="code">${esc(m.code)} · ${esc(m.unit)}${m.priority==='P'?'<span class="prio-p-badge">⚡ PRIORIDAD P</span>':''}</div><div class="desc">${esc(m.description)}</div>${(m.aliases||[]).map(x=>`<span class="tag">${esc(x)}</span>`).join('')}</div></div><div class="card-actions"><button class="btn edit-inline" data-quick-edit="${m.code}">✎ Alias / editar</button><button class="btn primary add" data-add="${m.code}">＋ Agregar</button></div></div>`}).join(''):'<div class="empty">No se encontraron materiales.</div>'}
 function isDevolucion(){let v=String($('#puesto')?.value||'').trim().toUpperCase();return v==='DEVOLUCION'||v==='DEVOLUCIÓN'||v==='DEV'}
 window.isDevolucion=isDevolucion;
 function add(c){
@@ -2070,10 +2181,100 @@ function isDriveImageUrl(u){
 }
 window.isDriveImageUrl = isDriveImageUrl;
 
-async function uploadMaterialImageToDrive(code, dataUrl, options = {}){
+function getDefaultBaseImage(code){
+  const key = String(code);
+  const list = (typeof BASE_DATA !== 'undefined' && Array.isArray(BASE_DATA.materials)) ? BASE_DATA.materials : [];
+  const base = list.find(x => String(x.code) === key);
+  const baseImg = base ? String(base.image || '').trim() : '';
+  if(baseImg) return baseImg;
+  if(typeof EMBEDDED_IMAGE_BY_CODE !== 'undefined' && EMBEDDED_IMAGE_BY_CODE.has(key)){
+    return EMBEDDED_IMAGE_BY_CODE.get(key) || '';
+  }
+  return '';
+}
+
+function countPendingDrivePhotos(){
+  return (state.materials || []).filter(m => {
+    if(!m || m._imageDeleted) return false;
+    const src = getMaterialImgSrc(m);
+    if(!src) return false;
+    return !isDriveImageUrl(m.driveUrl) || !m.driveFileId || !!m._imagePendingDrive;
+  }).length;
+}
+
+function updateSearchPhotoSyncButton(){
+  const btn = document.getElementById('searchSyncDrivePhotosBtn');
+  if(!btn) return;
+  const cfg = typeof syncConfig === 'function' ? syncConfig() : {};
+  const pending = countPendingDrivePhotos();
+  if(cfg.url && pending > 0){
+    btn.classList.remove('hidden');
+    btn.textContent = `☁️ Guardar fotos en Drive (${pending})`;
+  }else{
+    btn.classList.add('hidden');
+  }
+}
+window.updateSearchPhotoSyncButton = updateSearchPhotoSyncButton;
+
+async function imageSrcToWebpDataUrl(src, maxDim = 600){
+  const raw = String(src || '').trim();
+  if(!raw) return '';
+  if(/^data:image\/(webp|png|jpeg|jpg)/i.test(raw)) return raw;
+  let loadUrl = raw;
+  let revokeUrl = '';
+  try{
+    if(!raw.startsWith('data:') && !raw.startsWith('blob:')){
+      const resp = await fetch(raw, { mode: 'cors' }).catch(() => null);
+      if(resp && resp.ok){
+        const blob = await resp.blob();
+        loadUrl = URL.createObjectURL(blob);
+        revokeUrl = loadUrl;
+      }
+    }
+    return await new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        try{
+          const nw = img.naturalWidth || img.width || maxDim;
+          const nh = img.naturalHeight || img.height || maxDim;
+          const scale = Math.min(1, maxDim / Math.max(nw, nh));
+          const w = Math.max(1, Math.round(nw * scale));
+          const h = Math.max(1, Math.round(nh * scale));
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, w, h);
+          ctx.drawImage(img, 0, 0, w, h);
+          if(revokeUrl) URL.revokeObjectURL(revokeUrl);
+          let out = canvas.toDataURL('image/webp', 0.84);
+          if(!out.startsWith('data:image/webp')) out = canvas.toDataURL('image/png');
+          resolve(out);
+        }catch(err){
+          if(revokeUrl) URL.revokeObjectURL(revokeUrl);
+          reject(err);
+        }
+      };
+      img.onerror = () => {
+        if(revokeUrl) URL.revokeObjectURL(revokeUrl);
+        reject(new Error('No se pudo convertir la imagen'));
+      };
+      img.src = loadUrl;
+    });
+  }catch(_){
+    if(revokeUrl) URL.revokeObjectURL(revokeUrl);
+    return raw.startsWith('data:image/') ? raw : '';
+  }
+}
+window.imageSrcToWebpDataUrl = imageSrcToWebpDataUrl;
+
+async function uploadMaterialImageToDrive(code, dataUrlOrSrc, options = {}){
   const silent = !!options.silent;
   const mat = (state.materials || []).find(x => String(x.code) === String(code));
-  if(!mat || !dataUrl || !String(dataUrl).startsWith('data:image/')) return false;
+  const source = dataUrlOrSrc || getMaterialImgSrc(mat);
+  if(!mat || !source || mat._imageDeleted) return false;
   try{
     if(typeof ensureConfigReady === 'function') await ensureConfigReady();
     const cfg = typeof syncConfig === 'function' ? syncConfig() : {};
@@ -2081,36 +2282,46 @@ async function uploadMaterialImageToDrive(code, dataUrl, options = {}){
       mat._imagePendingDrive = true;
       if(typeof _save === 'function') _save();
       else localStorage.setItem(KEY, JSON.stringify(state));
+      updateSearchPhotoSyncButton();
       if(!silent && typeof msg === 'function') msg(`📷 Foto de ${code} guardada localmente. Se subirá a Google Drive cuando haya conexión.`);
       return false;
     }
+    const uploadDataUrl = await imageSrcToWebpDataUrl(source, 600);
+    if(!uploadDataUrl || !uploadDataUrl.startsWith('data:image/')){
+      if(isDriveImageUrl(source) && !mat._imagePendingDrive) return true;
+      throw new Error('La URL externa no permite lectura directa; descarga y súbela como archivo.');
+    }
     try{
-      const j = await callGoogleScript('saveImage', 'POST', { action: 'saveImage', token: cfg.token, code: String(code), image: dataUrl });
+      const j = await callGoogleScript('saveImage', 'POST', { action: 'saveImage', token: cfg.token, code: String(code), image: uploadDataUrl });
       mat.driveFileId = j.fileId || mat.driveFileId || '';
       mat.driveUrl = j.directUrl || j.url || mat.driveUrl || '';
       mat._imagePendingDrive = false;
       if(typeof _save === 'function') _save();
       else localStorage.setItem(KEY, JSON.stringify(state));
+      updateSearchPhotoSyncButton();
       if(typeof renderMaterialsExcelTable === 'function') renderMaterialsExcelTable();
       if(typeof renderResults === 'function') renderResults();
+      if(typeof window.refreshOpenViewerPhoto === 'function') window.refreshOpenViewerPhoto(code);
       if(!silent && typeof msg === 'function') msg(`☁️ Foto del material ${code} guardada en Google Drive.`);
       return true;
     }catch(saveImgErr){
       const errText = String(saveImgErr?.message || saveImgErr || '');
       if(/no reconocida|not recognized|unrecognized/i.test(errText)){
-        const synced = await syncToDrive({ isManual: false, forceIncludeImageCode: String(code) });
+        const prevImg = mat.image;
+        mat.image = uploadDataUrl;
+        const synced = await syncToDrive({ isManual: true, forceIncludeImageCode: String(code) });
         if(synced){
           mat._imagePendingDrive = false;
           if(typeof _save === 'function') _save();
           else localStorage.setItem(KEY, JSON.stringify(state));
-          if(typeof restoreFromDrive === 'function'){
-            await restoreFromDrive({ silent: true, force: true }).catch(() => {});
-          }
+          updateSearchPhotoSyncButton();
           if(typeof renderMaterialsExcelTable === 'function') renderMaterialsExcelTable();
           if(typeof renderResults === 'function') renderResults();
+          if(typeof window.refreshOpenViewerPhoto === 'function') window.refreshOpenViewerPhoto(code);
           if(!silent && typeof msg === 'function') msg(`☁️ Foto del material ${code} guardada en tu Google Drive.`);
           return true;
         }
+        mat.image = prevImg;
       }
       throw saveImgErr;
     }
@@ -2118,8 +2329,10 @@ async function uploadMaterialImageToDrive(code, dataUrl, options = {}){
     mat._imagePendingDrive = true;
     if(typeof _save === 'function') _save();
     else localStorage.setItem(KEY, JSON.stringify(state));
+    updateSearchPhotoSyncButton();
     if(typeof renderMaterialsExcelTable === 'function') renderMaterialsExcelTable();
-    if(!silent && typeof msg === 'function') msg(`⚠️ No se pudo subir a Drive aún (${err.message || err}). Usa "☁️ Subir fotos a Drive" para reintentar.`, true);
+    if(typeof window.refreshOpenViewerPhoto === 'function') window.refreshOpenViewerPhoto(code);
+    if(!silent && typeof msg === 'function') msg(`⚠️ Foto guardada localmente. No se pudo subir a Drive aún (${err.message || err}).`, true);
     return false;
   }
 }
@@ -2135,7 +2348,7 @@ async function deleteMaterialImageFromDrive(code){
       return true;
     }catch(err){
       if(/no reconocida|not recognized/i.test(String(err?.message || err || ''))){
-        return await syncToDrive({ isManual: false });
+        return await syncToDrive({ isManual: true });
       }
       return false;
     }
@@ -2145,40 +2358,121 @@ async function deleteMaterialImageFromDrive(code){
 }
 window.deleteMaterialImageFromDrive = deleteMaterialImageFromDrive;
 
-async function syncAllPhotosToDrive(){
-  const btn = document.getElementById('matExcelSyncPhotosBtn');
+async function setMaterialCustomImage(code, newSrc, options = {}){
+  const mat = (state.materials || []).find(x => String(x.code) === String(code));
+  if(!mat) return false;
+  const cleanSrc = String(newSrc || '').trim();
+  if(!cleanSrc) return false;
+  mat.image = cleanSrc;
+  mat._imageCustom = true;
+  mat._imageDeleted = false;
+  mat._imagePendingDrive = true;
+  mat.driveFileId = '';
+  mat.driveUrl = '';
+  save();
+  if(typeof queueSync === 'function') queueSync('materials');
+  updateSearchPhotoSyncButton();
+  if(typeof renderResults === 'function') renderResults();
+  if(typeof renderMaterialsExcelTable === 'function') renderMaterialsExcelTable();
+  if(typeof window.refreshOpenViewerPhoto === 'function') window.refreshOpenViewerPhoto(code);
+  if(!options.skipDrive){
+    await uploadMaterialImageToDrive(code, cleanSrc, { silent: !!options.silent });
+  }
+  return true;
+}
+window.setMaterialCustomImage = setMaterialCustomImage;
+
+async function restoreDefaultMaterialImage(code, options = {}){
+  const mat = (state.materials || []).find(x => String(x.code) === String(code));
+  const defImg = getDefaultBaseImage(code);
+  if(!mat || !defImg) return false;
+  mat.image = defImg;
+  mat._imageCustom = false;
+  mat._imageDeleted = false;
+  mat._imagePendingDrive = true;
+  mat.driveFileId = '';
+  mat.driveUrl = '';
+  save();
+  if(typeof queueSync === 'function') queueSync('materials');
+  updateSearchPhotoSyncButton();
+  if(typeof renderResults === 'function') renderResults();
+  if(typeof renderMaterialsExcelTable === 'function') renderMaterialsExcelTable();
+  if(typeof window.refreshOpenViewerPhoto === 'function') window.refreshOpenViewerPhoto(code);
+  if(!options.skipDrive){
+    await uploadMaterialImageToDrive(code, defImg, { silent: !!options.silent });
+  }
+  return true;
+}
+window.restoreDefaultMaterialImage = restoreDefaultMaterialImage;
+
+function removeMaterialImage(code){
+  const mat = (state.materials || []).find(x => String(x.code) === String(code));
+  if(!mat) return false;
+  mat.image = '';
+  mat.driveFileId = '';
+  mat.driveUrl = '';
+  mat._imageCustom = false;
+  mat._imageDeleted = true;
+  mat._imagePendingDrive = false;
+  save();
+  if(typeof deleteMaterialImageFromDrive === 'function') deleteMaterialImageFromDrive(code);
+  if(typeof queueSync === 'function') queueSync('materials');
+  if(typeof scheduleDriveSync === 'function') scheduleDriveSync(700, 'materials');
+  updateSearchPhotoSyncButton();
+  if(typeof renderResults === 'function') renderResults();
+  if(typeof renderMaterialsExcelTable === 'function') renderMaterialsExcelTable();
+  if(typeof window.refreshOpenViewerPhoto === 'function') window.refreshOpenViewerPhoto(code);
+  return true;
+}
+window.removeMaterialImage = removeMaterialImage;
+
+async function syncAllPhotosToDrive(triggerBtn = null){
+  const excelBtn = document.getElementById('matExcelSyncPhotosBtn');
+  const viewerBtn = document.getElementById('viewerSyncDriveBtn');
+  const searchBtn = document.getElementById('searchSyncDrivePhotosBtn');
+  const btns = [excelBtn, viewerBtn, searchBtn, triggerBtn].filter((b, i, arr) => b && arr.indexOf(b) === i);
   if(typeof ensureConfigReady === 'function') await ensureConfigReady();
   const cfg = typeof syncConfig === 'function' ? syncConfig() : {};
   if(!cfg.url){
-    return msg('Google Apps Script no está configurado en el servidor.', true);
+    return msg('Google Apps Script no está configurado todavía en Administración > Google Drive.', true);
   }
   if(!navigator.onLine){
     return msg('No hay conexión a internet para subir fotos a Drive.', true);
   }
   const toUpload = (state.materials || []).filter(m => {
-    const img = String(m.image || '').trim();
-    if(!img.startsWith('data:image/')) return false;
+    if(!m || m._imageDeleted) return false;
+    const src = getMaterialImgSrc(m);
+    if(!src) return false;
     return !isDriveImageUrl(m.driveUrl) || !m.driveFileId || !!m._imagePendingDrive;
   });
   if(!toUpload.length){
-    return msg('☁️ Todas las fotos cargadas ya están guardadas en tu Google Drive.');
+    await syncToDrive({ isManual: true });
+    updateSearchPhotoSyncButton();
+    if(typeof window.refreshOpenViewerPhoto === 'function') window.refreshOpenViewerPhoto();
+    return msg('☁️ Todas las fotos ya están sincronizadas con tu Google Drive.');
   }
-  const orig = btn ? btn.textContent : '';
-  if(btn){ btn.disabled = true; btn.textContent = `Subiendo (0/${toUpload.length})...`; }
+  const origTexts = btns.map(b => b.textContent);
+  btns.forEach(b => { b.disabled = true; b.textContent = `Subiendo (0/${toUpload.length})...`; });
   let okCount = 0;
   try{
     for(let i = 0; i < toUpload.length; i++){
       const m = toUpload[i];
-      if(btn) btn.textContent = `Subiendo (${i+1}/${toUpload.length})...`;
-      const ok = await uploadMaterialImageToDrive(m.code, m.image, { silent: true });
+      btns.forEach(b => { b.textContent = `Subiendo (${i+1}/${toUpload.length})...`; });
+      const ok = await uploadMaterialImageToDrive(m.code, getMaterialImgSrc(m), { silent: true });
       if(ok) okCount++;
-      const stillPending = (state.materials || []).filter(x => String(x.image || '').startsWith('data:image/') && x._imagePendingDrive).length;
-      if(stillPending === 0) { okCount = toUpload.length; break; }
     }
+    if(okCount > 0){
+      btns.forEach(b => { b.textContent = 'Actualizando respaldo en Drive...'; });
+      await syncToDrive({ isManual: true });
+    }
+    updateSearchPhotoSyncButton();
     if(typeof renderMaterialsExcelTable === 'function') renderMaterialsExcelTable();
-    msg(`☁️ ${okCount} de ${toUpload.length} foto(s) guardadas en tu Google Drive.`, okCount === 0);
+    if(typeof renderResults === 'function') renderResults();
+    if(typeof window.refreshOpenViewerPhoto === 'function') window.refreshOpenViewerPhoto();
+    msg(`☁️ ${okCount} de ${toUpload.length} foto(s) sincronizadas con Google Drive.`, okCount === 0);
   }finally{
-    if(btn){ btn.disabled = false; btn.textContent = orig || '☁️ Subir fotos a Drive'; }
+    btns.forEach((b, idx) => { b.disabled = false; b.textContent = origTexts[idx] || '☁️ Subir fotos a Drive'; });
+    updateSearchPhotoSyncButton();
   }
 }
 window.syncAllPhotosToDrive = syncAllPhotosToDrive;
@@ -2207,7 +2501,10 @@ function renderMaterialsExcelTable(){
   if(!tbody) return;
 
   const allMaterials = state.materials || [];
-  const hasPhotoFn = m => Boolean((m.image && m.image.length > 20) || m.driveUrl);
+  const hasPhotoFn = m => {
+    const s = getMaterialImgSrc(m);
+    return Boolean(s && s.length > 5);
+  };
 
   const totalCount = allMaterials.length;
   const withPhotoCount = allMaterials.filter(hasPhotoFn).length;
@@ -2280,17 +2577,19 @@ function renderMaterialsExcelTable(){
   tbody.innerHTML = pageItems.map((m, idx) => {
     const globalIdx = startIdx + idx + 1;
     const imgSrc = getMaterialImgSrc(m);
-    const hasImg = !!(imgSrc && imgSrc.length > 10);
+    const hasImg = !!(imgSrc && imgSrc.length > 5);
     const isDriveSynced = hasImg && !m._imagePendingDrive && (Boolean(m.driveFileId || m.driveUrl) || isDriveImageUrl(imgSrc));
+    const canRestoreDefault = Boolean((m._imageCustom || m._imageDeleted) && getDefaultBaseImage(m.code));
     const aliases = m.aliases || [];
     const isNew = !!m._isNew;
 
     const imgCell = hasImg
       ? `<div class="mat-photo-cell">
-           <img class="mat-thumb-img" src="${esc(imgSrc)}" alt="${esc(m.code)}" data-open-image="${esc(m.code)}" title="Tocar para ver en grande"/>
+           <img class="mat-thumb-img" src="${esc(imgSrc)}" alt="${esc(m.code)}" referrerpolicy="no-referrer" onerror="handleMatImgError(this,'${esc(m.code)}')" data-open-image="${esc(m.code)}" title="Tocar para ver en grande"/>
            <span class="mat-drive-badge ${isDriveSynced ? 'synced' : 'pending'}">${isDriveSynced ? '☁️ Drive' : '📱 Local'}</span>
            <div style="display:flex;gap:3px">
              <button type="button" class="btn secondary" style="padding:2px 5px;font-size:10px;line-height:1" data-mat-upload="${esc(m.code)}" title="Cambiar foto">📷</button>
+             ${canRestoreDefault ? `<button type="button" class="btn secondary" style="padding:2px 5px;font-size:10px;line-height:1" data-mat-restore-photo="${esc(m.code)}" title="Restaurar foto original">🔄</button>` : ''}
              <button type="button" class="btn danger" style="padding:2px 5px;font-size:10px;line-height:1" data-mat-remove-photo="${esc(m.code)}" title="Eliminar foto">✕</button>
            </div>
          </div>`
@@ -2298,6 +2597,7 @@ function renderMaterialsExcelTable(){
            <button type="button" class="btn secondary" style="padding:4px 7px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:3px;white-space:nowrap" data-mat-upload="${esc(m.code)}" title="Subir foto y guardar en Drive">
              📷 +Foto
            </button>
+           ${canRestoreDefault ? `<button type="button" class="btn secondary" style="padding:2px 6px;font-size:10px" data-mat-restore-photo="${esc(m.code)}" title="Restaurar foto original">🔄 Original</button>` : ''}
          </div>`;
 
     const aliasChips = aliases.map((a, aIdx) => {
@@ -2422,18 +2722,8 @@ function initMaterialsExcel(){
       if(!file || !targetCode) return;
       try{
         const compressed = await compressImage(file);
-        const m = state.materials.find(x => x.code === targetCode);
-        if(m){
-          m.image = compressed;
-          m._imagePendingDrive = true;
-          save();
-          if(typeof renderResults === 'function') renderResults();
-          renderMaterialsExcelTable();
-          if(typeof msg === 'function') msg(`⏳ Subiendo foto del material ${targetCode} a Google Drive...`, false);
-          if(typeof uploadMaterialImageToDrive === 'function'){
-            await uploadMaterialImageToDrive(targetCode, compressed);
-          }
-        }
+        if(typeof msg === 'function') msg(`⏳ Guardando foto del material ${targetCode}...`, false);
+        await setMaterialCustomImage(targetCode, compressed);
       }catch(err){
         if(typeof msg === 'function') msg('No se pudo procesar la imagen seleccionada.', true);
       }finally{
@@ -2477,21 +2767,27 @@ function initMaterialsExcel(){
         return;
       }
 
+      const restorePhotoBtn = e.target.closest('[data-mat-restore-photo]');
+      if(restorePhotoBtn){
+        const code = restorePhotoBtn.dataset.matRestorePhoto;
+        restoreDefaultMaterialImage(code).then(ok => {
+          if(ok && typeof msg === 'function') msg(`🔄 Imagen original restaurada para ${code}.`);
+        });
+        return;
+      }
+
       const removePhotoBtn = e.target.closest('[data-mat-remove-photo]');
       if(removePhotoBtn){
         const code = removePhotoBtn.dataset.matRemovePhoto;
-        const m = state.materials.find(x => x.code === code);
-        if(m && confirm(`¿Eliminar la foto del material ${code}?`)){
-          m.image = '';
-          m.driveFileId = '';
-          m.driveUrl = '';
-          m._imagePendingDrive = false;
-          save();
-          if(typeof deleteMaterialImageFromDrive === 'function') deleteMaterialImageFromDrive(code);
-          if(typeof queueSync === 'function') queueSync('materials');
-          if(typeof renderResults === 'function') renderResults();
-          renderMaterialsExcelTable();
-          if(typeof msg === 'function') msg(`Foto eliminada del material ${code} y de Google Drive.`, false);
+        const doRemove = () => {
+          if(removeMaterialImage(code) && typeof msg === 'function'){
+            msg(`Foto eliminada del material ${code}.`, false);
+          }
+        };
+        if(typeof window.customConfirm === 'function'){
+          window.customConfirm(`¿Quitar la foto del material ${code}?`, doRemove, null, { title: 'Quitar foto', okText: 'Sí, quitar', okClass: 'btn danger' });
+        }else if(confirm(`¿Eliminar la foto del material ${code}?`)){
+          doRemove();
         }
         return;
       }
@@ -2669,6 +2965,34 @@ function initMaterialsExcel(){
 
 let qaCode = null;
 let qaDraftAliases = [];
+function renderQuickAliasPhoto(){
+  const m = (state.materials || []).find(x => String(x.code) === String(qaCode));
+  const imgEl = document.getElementById('qaImgPreview');
+  const emptyEl = document.getElementById('qaImgEmpty');
+  const restoreBtn = document.getElementById('qaRestoreImgBtn');
+  const removeBtn = document.getElementById('qaRemoveImgBtn');
+  const urlInp = document.getElementById('qaImgUrlInput');
+  const stateEl = document.getElementById('qaImgDriveState');
+  if(!m) return;
+  const src = getMaterialImgSrc(m);
+  if(src){
+    if(imgEl){ imgEl.src = src; imgEl.classList.remove('hidden'); }
+    if(emptyEl) emptyEl.classList.add('hidden');
+    if(removeBtn) removeBtn.classList.remove('hidden');
+  }else{
+    if(imgEl) imgEl.classList.add('hidden');
+    if(emptyEl) emptyEl.classList.remove('hidden');
+    if(removeBtn) removeBtn.classList.add('hidden');
+  }
+  const hasDefault = !!getDefaultBaseImage(m.code);
+  if(restoreBtn) restoreBtn.classList.toggle('hidden', !hasDefault || (!m._imageCustom && !m._imageDeleted));
+  if(urlInp) urlInp.value = /^https?:\/\//i.test(src) ? src : '';
+  if(stateEl){
+    const synced = src && !m._imagePendingDrive && (Boolean(m.driveFileId || m.driveUrl) || isDriveImageUrl(src));
+    stateEl.textContent = !src ? '' : (synced ? '· ☁️ En Drive' : '· 📱 Local (pendiente de Drive)');
+  }
+}
+
 function renderQuickAliasList(){
   const list = document.getElementById('qaList');
   if(!list) return;
@@ -2698,6 +3022,7 @@ function openMaterialEditor(c){
     if(descEl) descEl.textContent = m.description || '';
     if(newInp) newInp.value = '';
     if(openExcelBtn) openExcelBtn.style.display = (typeof isAdmin === 'function' && isAdmin()) ? 'inline-flex' : 'none';
+    renderQuickAliasPhoto();
     renderQuickAliasList();
     if(typeof dlg.showModal === 'function'){ if(!dlg.open) dlg.showModal(); }
     else dlg.setAttribute('open', 'true');
@@ -2725,6 +3050,46 @@ function openMaterialEditor(c){
   document.getElementById('qaAddBtn')?.addEventListener('click', addFromInput);
   document.getElementById('qaNewInput')?.addEventListener('keydown', e => {
     if(e.key === 'Enter'){ e.preventDefault(); addFromInput(); }
+  });
+  const qaFileInp = document.getElementById('qaPhotoFileInput');
+  document.getElementById('qaUploadImgBtn')?.addEventListener('click', () => qaFileInp?.click());
+  document.getElementById('qaImgPreview')?.addEventListener('click', () => {
+    if(qaCode && typeof window.openImageViewerAt === 'function'){
+      const target = qaCode;
+      closeQa();
+      window.openImageViewerAt(target, false);
+    }
+  });
+  qaFileInp?.addEventListener('change', async e => {
+    const file = e.target.files?.[0];
+    if(!file || !qaCode) return;
+    try{
+      const compressed = await compressImage(file);
+      await setMaterialCustomImage(qaCode, compressed);
+      renderQuickAliasPhoto();
+    }catch(_){
+      msg('No se pudo cargar la imagen seleccionada.', true);
+    }finally{
+      qaFileInp.value = '';
+    }
+  });
+  document.getElementById('qaApplyUrlBtn')?.addEventListener('click', async () => {
+    const url = String(document.getElementById('qaImgUrlInput')?.value || '').trim();
+    if(!qaCode || !url) return msg('Pega una URL de imagen válida primero.', true);
+    await setMaterialCustomImage(qaCode, url);
+    renderQuickAliasPhoto();
+  });
+  document.getElementById('qaRestoreImgBtn')?.addEventListener('click', async () => {
+    if(!qaCode) return;
+    await restoreDefaultMaterialImage(qaCode);
+    renderQuickAliasPhoto();
+    msg(`🔄 Imagen original restaurada para ${qaCode}.`);
+  });
+  document.getElementById('qaRemoveImgBtn')?.addEventListener('click', () => {
+    if(!qaCode) return;
+    removeMaterialImage(qaCode);
+    renderQuickAliasPhoto();
+    msg(`Foto removida de ${qaCode}.`);
   });
   document.getElementById('qaList')?.addEventListener('input', e => {
     if(e.target.matches('[data-qa-idx]')){
@@ -2770,7 +3135,7 @@ function openMaterialEditor(c){
     if(typeof renderResults === 'function') renderResults();
     if(typeof renderMaterialsExcelTable === 'function') renderMaterialsExcelTable();
     closeQa();
-    msg(`✓ Alias actualizados para ${m.code} (${m.aliases.length} alias).`);
+    msg(`✓ Cambios guardados para ${m.code} (${m.aliases.length} alias).`);
   });
 })();function addCurrentAlias(){let v=$('#newAlias').value.trim().toUpperCase();if(!v)return;if(!currentAliases.includes(v))currentAliases.push(v);$('#newAlias').value='';renderAliasEditor()}function saveMaterial(){let c=(editingCode||$('#mcode').value.trim()),d=$('#mdesc').value.trim().toUpperCase(),u=$('#munit').value.trim().toUpperCase()||'UND',aliases=[...new Set(currentAliases.map(x=>x.trim().toUpperCase()).filter(Boolean))],p=$('#mprio').value;if(!/^\d{5,}$/.test(c)||!d)return msg('Ingresa matrícula numérica y descripción.',true,'#adminStatus');let m=state.materials.find(x=>x.code===c);if(m){m.description=d;m.unit=u;m.priority=p;m.aliases=aliases;m._aliasesEdited=true;if(m.image!==currentImage){m.image=currentImage;m._imagePendingDrive=Boolean(currentImage)}}else state.materials.push({code:c,description:d,unit:u,aliases,_aliasesEdited:true,priority:p,image:currentImage,_imagePendingDrive:Boolean(currentImage),source:'MANUAL'});state.materials.sort((x,y)=>x.description.localeCompare(y.description,'es'));save();if(currentImage&&currentImage.startsWith('data:image/')&&typeof uploadMaterialImageToDrive==='function'){uploadMaterialImageToDrive(c,currentImage).catch(()=>{})}renderResults();renderAdmin();clearMaterialForm();if(typeof queueSync==='function')queueSync('materials');if(typeof scheduleDriveSync==='function')scheduleDriveSync(700,'order');msg(m?'Material e imagen guardados y sincronizados con Google Drive.':'Nuevo material e imagen guardados y sincronizados con Google Drive.',false,'#adminStatus')}function buildAliasSuggestions(){let d=$('#mdesc').value.trim().toUpperCase();if(!d)return msg('Primero ingresa o conserva la descripción oficial.',true,'#adminStatus');let volts=(d.match(/\b\d+(?:[.,]\d+)?\s*KV\b/g)||[]).map(x=>x.replace(/\s+/g,''));let amps=(d.match(/\b\d+\s*A\b/g)||[]).map(x=>x.replace(/\s+/g,''));let mm=(d.match(/\b\d+(?:[.,]\d+)?\s*MM(?:2|²)?\b/g)||[]).map(x=>x.replace(/\s+/g,''));let ranges=(d.match(/\b\d+\s*[-–]\s*\d+\s*MM\b/g)||[]);let out=[];const add=x=>{x=(x||'').replace(/\s+/g,' ').replace(/\s+([,.;])/g,'$1').trim();if(x.length>=3&&!currentAliases.includes(x)&&!out.includes(x))out.push(x)};const v=volts[0]||'',a=amps[0]||'',m=mm[0]||'',r=ranges[0]||'';if(/CUT[ -]?OUT|CUTOUT/.test(d)){add(['CUT OUT',v,a].filter(Boolean).join(' '));add(['CUTOUT',v,a].filter(Boolean).join(' '));add(['FUSIBLE CUT OUT',v,a].filter(Boolean).join(' '));add(['SECCIONADOR FUSIBLE',v].filter(Boolean).join(' '))}if(/AISLADOR/.test(d)){let tipo=/SUSPENSION|ANCLAJE/.test(d)?'AISLADOR SUSPENSION':/LINE POST|PIN/.test(d)?'AISLADOR PIN':/EXTENSOR/.test(d)?'AISLADOR EXTENSOR':'AISLADOR';add([tipo,v].filter(Boolean).join(' '));if(/POLIMER/.test(d))add(['AISLADOR POLIMERICO',v].filter(Boolean).join(' '))}if(/ABRAZADERA/.test(d)){add(['ABRAZADERA',r||m].filter(Boolean).join(' '));add('ABRAZADERA PARA CABLE');if(/VIENTO/.test(d))add('ABRAZADERA PARA VIENTO')}if(/FUSIBLE/.test(d)){add(['FUSIBLE',v,a].filter(Boolean).join(' '));if(/EXPULSION/.test(d))add(['FUSIBLE DE EXPULSION',v,a].filter(Boolean).join(' '));if(/UNIPOLAR|SEC/.test(d))add(['FUSIBLE UNIPOLAR',v,a].filter(Boolean).join(' '))}if(/CONECTOR/.test(d)){let tipo=/BIMETAL/.test(d)?'CONECTOR BIMETALICO':/PERFOR/.test(d)?'CONECTOR PERFORANTE':'CONECTOR';add([tipo,m].filter(Boolean).join(' '));if(/TIPO H|\bH\s*\d+/.test(d))add(['CONECTOR TIPO H',m].filter(Boolean).join(' '))}if(/CABLE/.test(d)){add(['CABLE',m,v].filter(Boolean).join(' '));if(/PREENSAMBL/.test(d))add(['CABLE PREENSAMBLADO',m].filter(Boolean).join(' '))}if(/PERNO/.test(d)){add(['PERNO',m].filter(Boolean).join(' '));if(/GALV/.test(d))add('PERNO GALVANIZADO')}if(/ARANDELA/.test(d)){add(['ARANDELA',m].filter(Boolean).join(' '));if(/PLANA/.test(d))add('ARANDELA PLANA');if(/PRESION/.test(d))add('ARANDELA DE PRESION')}if(/AMARRE/.test(d)){add(['AMARRE',m].filter(Boolean).join(' '));if(/PREFORM/.test(d))add(['AMARRE PREFORMADO',m].filter(Boolean).join(' '))}if(/GRAPA/.test(d)){add(['GRAPA',m].filter(Boolean).join(' '));if(/SUSPENSION/.test(d))add('GRAPA DE SUSPENSION');if(/ANCLAJE/.test(d))add('GRAPA DE ANCLAJE')}if(/SECCIONADOR/.test(d)){add(['SECCIONADOR',v,a].filter(Boolean).join(' '));if(/UNIPOLAR/.test(d))add(['SECCIONADOR UNIPOLAR',v,a].filter(Boolean).join(' '))}let clean=d.replace(/[.,;:()\/]/g,' ').replace(/\b(PARA|CON|DEL|DE|LA|EL|EN|POR|TIPO|TP|P|RED|AEREA|AEREAS)\b/g,' ').replace(/\s+/g,' ').trim();add(clean.split(' ').filter(w=>w.length>2).slice(0,7).join(' '));out.slice(0,6).forEach(x=>currentAliases.push(x));renderAliasEditor();msg(out.length?out.length+' alias sugeridos agregados temporalmente. Revísalos y pulsa Actualizar matrícula y alias.':'No se encontraron alias nuevos; puedes escribirlos manualmente.',!out.length,'#adminStatus')}async function compressImage(file){return new Promise((resolve,reject)=>{let img=new Image(),url=URL.createObjectURL(file);img.onload=()=>{let max=700,scale=Math.min(1,max/Math.max(img.width,img.height)),w=Math.max(1,Math.round(img.width*scale)),h=Math.max(1,Math.round(img.height*scale)),c=document.createElement('canvas');c.width=w;c.height=h;let ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);ctx.drawImage(img,0,0,w,h);URL.revokeObjectURL(url);resolve(c.toDataURL('image/webp',0.7))};img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('Imagen inválida'))};img.src=url})}function exportData(){dl('window.APP_DATA = '+JSON.stringify(state,null,2)+';','data.js','text/javascript;charset=utf-8')}
 function speechSupported(){return !!(window.SpeechRecognition||window.webkitSpeechRecognition)}function numberWordsToDigits(t){const map={cero:0,uno:1,una:1,dos:2,tres:3,cuatro:4,cinco:5,seis:6,siete:7,ocho:8,nueve:9};let parts=norm(t).split(' '),digits=parts.map(x=>map[x]??(x.match(/^\d+$/)?x:'')).join('');return digits||t.match(/[\d.,]+/)?.[0]||''}function cleanDictation(text,target){let t=text.trim().replace(/punto y coma/gi,';').replace(/coma/gi,',');if(target.id==='mcode'||target.type==='number')return numberWordsToDigits(t).replace(',','.');if(target.id==='munit'||target.id==='newUnit')return t.toUpperCase().replace(/\s+/g,'');return t}function startVoice(target,button,append=false){if(!speechSupported()){msg('El reconocimiento de voz no está disponible en este navegador. Usa Chrome o Edge.',true,target.closest('dialog')?'#adminStatus':'#status');return}if(activeRecognition)try{activeRecognition.abort()}catch{}const SR=window.SpeechRecognition||window.webkitSpeechRecognition,r=new SR();activeRecognition=r;r.lang='es-PE';r.interimResults=false;r.maxAlternatives=1;button.classList.add('listening');button.textContent='⏹';r.onresult=e=>{let value=cleanDictation(e.results[0][0].transcript,target);target.value=append&&target.value?target.value.replace(/\s*;?\s*$/,'')+'; '+value:value;target.dispatchEvent(new Event('input',{bubbles:true}));target.dispatchEvent(new Event('change',{bubbles:true}));target.focus()};r.onerror=e=>msg(e.error==='not-allowed'?'Permite el acceso al micrófono para usar la voz.':'No se pudo reconocer la voz. Inténtalo nuevamente.',true,target.closest('dialog')?'#adminStatus':'#status');r.onend=()=>{button.classList.remove('listening');button.textContent='🎤';activeRecognition=null};r.start()}
@@ -2967,27 +3332,35 @@ function valid(){
 function queueSync(type='app'){let cfg=JSON.parse(localStorage.getItem(SYNC_KEY)||'{}');cfg.pending=true;cfg.pendingType=type;localStorage.setItem(SYNC_KEY,JSON.stringify(cfg));renderSyncState()}
 
 // Cargar configuración de servidor (Vercel / Node) de inmediato para cualquier dispositivo
+function cleanScriptPlaceholder(v){
+  const s = String(v || '').trim();
+  if(!s || /TU_SCRIPT_ID/i.test(s) || /^TU_CLAVE_SECRETA_AQUI$/i.test(s)) return '';
+  return s;
+}
 window.SERVER_CONFIG = window.SERVER_CONFIG || {};
 window.fetchServerConfigPromise = fetch('/api/config')
   .then(r => r.ok ? r.json() : null)
   .then(cfgServer => {
     if(cfgServer && typeof cfgServer === 'object'){
-      window.SERVER_CONFIG = cfgServer;
+      const sUrl = cleanScriptPlaceholder(cfgServer.scriptUrl);
+      const sTok = cleanScriptPlaceholder(cfgServer.scriptToken);
+      window.SERVER_CONFIG = { scriptUrl: sUrl, scriptToken: sTok };
       let c = syncConfig();
-      if(cfgServer.scriptUrl){
-        c.url = cfgServer.scriptUrl;
+      if(sUrl){
+        c.url = sUrl;
         localStorage.setItem('bm_saved_script_url', c.url);
         if(window.state) state.syncUrl = c.url;
       }
-      if(cfgServer.scriptToken){
-        c.token = cfgServer.scriptToken;
+      if(sTok){
+        c.token = sTok;
         localStorage.setItem('bm_saved_script_token', c.token);
         if(window.state) state.syncToken = c.token;
       }
-      if(cfgServer.scriptUrl || cfgServer.scriptToken){
+      if(sUrl || sTok){
         localStorage.setItem(SYNC_KEY, JSON.stringify(c));
         renderSyncState();
       }
+      if(typeof updateSearchPhotoSyncButton === 'function') updateSearchPhotoSyncButton();
     }
     return cfgServer;
   })
@@ -2999,11 +3372,11 @@ window.fetchServerConfigPromise = fetch('/api/config')
 function syncConfig(){
   let cfg={};
   try{cfg=JSON.parse(localStorage.getItem(SYNC_KEY)||'{}')}catch(_){}
-  const serverUrl = (window.SERVER_CONFIG?.scriptUrl || '').trim();
-  const serverToken = (window.SERVER_CONFIG?.scriptToken || '').trim();
+  const serverUrl = cleanScriptPlaceholder(window.SERVER_CONFIG?.scriptUrl);
+  const serverToken = cleanScriptPlaceholder(window.SERVER_CONFIG?.scriptToken);
 
-  cfg.url = (serverUrl || cfg.url || localStorage.getItem('bm_saved_script_url') || (window.state?.syncUrl) || '').trim();
-  cfg.token = (serverToken || cfg.token || localStorage.getItem('bm_saved_script_token') || (window.state?.syncToken) || '').trim();
+  cfg.url = (serverUrl || cleanScriptPlaceholder(cfg.url) || cleanScriptPlaceholder(localStorage.getItem('bm_saved_script_url')) || cleanScriptPlaceholder(window.state?.syncUrl) || '').trim();
+  cfg.token = (serverToken || cleanScriptPlaceholder(cfg.token) || cleanScriptPlaceholder(localStorage.getItem('bm_saved_script_token')) || cleanScriptPlaceholder(window.state?.syncToken) || '').trim();
   return cfg;
 }
 
@@ -3114,6 +3487,7 @@ function renderSyncState(){
   if($('#scriptToken')&&cfg.token&&!$('#scriptToken').value) $('#scriptToken').value=cfg.token;
   if($('#syncState'))$('#syncState').value=text;
   if($('#lastSync'))$('#lastSync').value=cfg.lastSync?new Date(cfg.lastSync).toLocaleString('es-PE'):'Nunca';
+  if(typeof updateSearchPhotoSyncButton==='function') updateSearchPhotoSyncButton();
 }
 
 async function replaceStockInDrive(){
@@ -3268,15 +3642,24 @@ async function restoreFromDrive(options={}){
       const localImgByCode = new Map((state?.materials||[]).map(m => [String(m.code), m]));
       data.app.materials.forEach(m => {
         const localM = localImgByCode.get(String(m.code));
-        if(localM && localM._imagePendingDrive && localM.image && String(localM.image).startsWith('data:image/')){
+        if(localM && localM._imageDeleted && !m._imageCustom){
+          m.image = '';
+          m.driveUrl = '';
+          m.driveFileId = '';
+          m._imageDeleted = true;
+          return;
+        }
+        if(localM && localM._imagePendingDrive && (localM.image || '').trim()){
           m.image = localM.image;
+          m._imageCustom = !!localM._imageCustom;
           m._imagePendingDrive = true;
           return;
         }
-        if(isDriveImageUrl(m.image)){
+        if(isDriveImageUrl(m.driveUrl) || isDriveImageUrl(m.image)){
           m.driveUrl = m.driveUrl || m.image;
+          if(!m.image) m.image = m.driveUrl;
           if(!m.driveFileId){
-            const idMatch = String(m.image).match(/[?&]id=([^&]+)/);
+            const idMatch = String(m.driveUrl).match(/[?&]id=([^&]+)/);
             if(idMatch) m.driveFileId = idMatch[1];
           }
           m._imagePendingDrive = false;
@@ -3643,7 +4026,8 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
     results.innerHTML=`<div class="v34-table-wrap"><table class="v34-stock-table v42-material-image-table"><thead><tr><th>Foto</th><th>Matrícula SAP</th><th>Descripción oficial</th><th>Disponible 1003 San Juan</th><th>Disponible 1004 Vitarte</th><th>Unidad</th><th>Agregar</th></tr></thead><tbody>${a.map(m=>{
       const s3=stockAt(m.code,'1003'),s4=stockAt(m.code,'1004'),cur=primary==='1003'?s3:s4,alt=primary==='1003'?s4:s3,aliasCount=(m.aliases||[]).length;
       const cls=n=>n>0?'good':'none';
-      const imgContent=m.image?`<img src="${esc29(m.image)}" alt="${esc29(m.code)}" class="cursor-pointer" data-open-image="${esc29(m.code)}" title="Tocar para ver foto en tamaño grande">`:`<span class="cursor-pointer" data-open-image="${esc29(m.code)}" title="Sin foto">Sin foto</span>`;
+      const imgSrc = getMaterialImgSrc(m);
+      const imgContent=imgSrc?`<img src="${esc29(imgSrc)}" alt="${esc29(m.code)}" referrerpolicy="no-referrer" class="cursor-pointer" data-open-image="${esc29(m.code)}" title="Tocar para ver foto en tamaño grande">`:`<span class="cursor-pointer" data-open-image="${esc29(m.code)}" title="Agregar o ver foto">Sin foto</span>`;
       return `<tr><td class="v42-material-image cursor-pointer" data-open-image="${esc29(m.code)}">${imgContent}</td><td class="v34-code cursor-pointer" data-copy-code="${esc29(m.code)}" title="Tocar para copiar matrícula">${esc29(m.code)}</td><td><b>${esc29(m.description)}</b><br><button class="v34-alias-link" data-quick-edit="${esc29(m.code)}">Alias: ${aliasCount} · Ver/editar</button>${cur<=0&&alt>0?`<div class="v34-warning">En ${centerLabel(other)} hay ${alt} ${esc29(normalizedUnit(m))} disponibles.</div>`:''}</td><td><span class="v34-stock-pill ${cls(s3)}">${s3} ${esc29(normalizedUnit(m))}</span></td><td><span class="v34-stock-pill ${cls(s4)}">${s4} ${esc29(normalizedUnit(m))}</span></td><td>${esc29(normalizedUnit(m))}</td><td><div class="v34-add-box"><input type="number" min="0" step="1" placeholder="0" data-v34-qty="${esc29(m.code)}"><button class="btn primary" data-add="${esc29(m.code)}">＋</button></div></td></tr>`}).join('')}</tbody></table></div>`;
     renderSearchOrder();
   };
@@ -4555,7 +4939,7 @@ html[data-theme="dark"] .v36-center-summary{color:#9fb8d4}
       const unit = normalizedUnit(m);
       const aliases = (m.aliases || []).length;
       const imgUrl = (typeof getMaterialImgSrc === 'function' ? getMaterialImgSrc(m) : (m.image || m.driveUrl || ''));
-      const img = imgUrl ? `<img src="${escv(imgUrl)}" alt="Imagen de ${escv(m.code)}" loading="lazy" class="cursor-pointer" data-open-image="${escv(m.code)}" title="Tocar para ver foto, stock y pedir">` : `<span class="cursor-pointer" data-open-image="${escv(m.code)}" title="Abrir visor de stock/imagen">Sin foto</span>`;
+      const img = imgUrl ? `<img src="${escv(imgUrl)}" alt="Imagen de ${escv(m.code)}" loading="lazy" referrerpolicy="no-referrer" onerror="handleMatImgError(this,'${escv(m.code)}')" class="cursor-pointer" data-open-image="${escv(m.code)}" title="Tocar para ver imagen en grande, cambiar foto, ver stock y pedir">` : `<span class="cursor-pointer" data-open-image="${escv(m.code)}" title="Abrir visor para agregar foto o ver stock">Sin foto</span>`;
       const showQtyBox = sel || isMultiSearch;
       const rowCen = isDev ? (getRowCenter(m.code) === '1004' ? '1004' : '1003') : getRowCenter(m.code);
       const inCart = isDev ? (pendingDevCodes.has(String(m.code)) || (cart || []).some(x => String(x.code) === String(m.code))) : (cart || []).some(x => String(x.code) === String(m.code));
@@ -6646,9 +7030,9 @@ html[data-theme="dark"] .v36-center-summary{color:#9fb8d4}
 </script>
 <style id="v42-4-unified-dark-and-images">
 /* V44.9: Modo nocturno profesional y contraste de alta legibilidad */
-.v42-material-image{width:86px;min-width:86px;text-align:center}
-.v42-material-image img{display:block;width:72px;height:58px;object-fit:contain;margin:auto;border:1px solid var(--line);border-radius:9px;background:#fff}
-.v42-material-image span{display:flex;width:72px;height:58px;margin:auto;align-items:center;justify-content:center;border:1px dashed #aabbd0;border-radius:9px;color:var(--muted);font-size:11px;background:#f8fafc}
+.v42-material-image{width:136px;min-width:136px;text-align:center}
+.v42-material-image img{display:block;width:124px;height:98px;object-fit:contain;margin:auto;border:1.5px solid #b8ceea;border-radius:10px;background:#fff;padding:4px;box-shadow:0 2px 6px rgba(15,41,66,0.08)}
+.v42-material-image span{display:flex;width:124px;height:98px;margin:auto;align-items:center;justify-content:center;border:1px dashed #aabbd0;border-radius:10px;color:var(--muted);font-size:12px;background:#f8fafc}
 .order-finalize-top{justify-content:flex-start!important;margin:10px 0!important}
 #orderPanel .sap-preview-wrap{margin-top:0!important}
 
@@ -7034,8 +7418,8 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover{
 }
 
 @media(max-width:760px){
- .v42-material-image{width:76px!important;min-width:76px!important}
- .v42-material-image img,.v42-material-image span{width:64px;height:54px}
+ .v42-material-image{width:108px!important;min-width:108px!important}
+ .v42-material-image img,.v42-material-image span{width:96px;height:80px}
  .v42-material-image-table{min-width:980px!important}
  .order-finalize-top{margin:8px 0!important}
 }
@@ -7102,8 +7486,153 @@ html[data-theme="dark"] .admin-change-pass-box{background:#13263e;border-color:#
   let attempts=0;const timer=setInterval(()=>{attempts++;if(reorderOrderFields()||attempts>40)clearInterval(timer)},120);
   window.addEventListener('load',()=>setTimeout(reorderOrderFields,250));
 
-  const viewer=qs('#materialImageViewer'),viewerImg=qs('#imageViewerImg'),viewerNoImg=qs('#imageViewerNoImg'),viewerCode=qs('#imageViewerCode'),viewerDesc=qs('#imageViewerDesc'),viewerCodeFoot=qs('#imageViewerCodeFoot'),viewerDescFoot=qs('#imageViewerDescFoot'),viewerUnitFoot=qs('#imageViewerUnitFoot'),viewerCounter=qs('#imageViewerCounter'),viewerStockGrid=qs('#imageViewerStockGrid'),viewerInCartBadge=qs('#imageViewerInCartBadge'),viewerActiveCenterTag=qs('#imageViewerActiveCenterTag'),viewerWarehouseLabel=qs('#imageViewerWarehouseLabel'),viewerQty=qs('#imageViewerQty'),viewerQtyUnit=qs('#imageViewerQtyUnit'),viewerSaveBtn=qs('#imageViewerSaveBtn'),viewerGoOrderBtn=qs('#imageViewerGoOrderBtn'),viewerStatus=qs('#imageViewerStatus'),viewerSearch=qs('#imageViewerSearch'),viewerSearchClear=qs('#imageViewerSearchClear'),viewerOnlyImg=qs('#imageViewerOnlyWithImg');
+  const viewer=qs('#materialImageViewer'),viewerImg=qs('#imageViewerImg'),viewerNoImg=qs('#imageViewerNoImg'),viewerZoomBtn=qs('#imageViewerZoomBtn'),viewerCode=qs('#imageViewerCode'),viewerDesc=qs('#imageViewerDesc'),viewerCodeFoot=qs('#imageViewerCodeFoot'),viewerDescFoot=qs('#imageViewerDescFoot'),viewerUnitFoot=qs('#imageViewerUnitFoot'),viewerCounter=qs('#imageViewerCounter'),viewerStockGrid=qs('#imageViewerStockGrid'),viewerInCartBadge=qs('#imageViewerInCartBadge'),viewerActiveCenterTag=qs('#imageViewerActiveCenterTag'),viewerWarehouseLabel=qs('#imageViewerWarehouseLabel'),viewerSuppliers=qs('#imageViewerSuppliers'),viewerQty=qs('#imageViewerQty'),viewerQtyUnit=qs('#imageViewerQtyUnit'),viewerSaveBtn=qs('#imageViewerSaveBtn'),viewerGoOrderBtn=qs('#imageViewerGoOrderBtn'),viewerStatus=qs('#imageViewerStatus'),viewerSearch=qs('#imageViewerSearch'),viewerSearchClear=qs('#imageViewerSearchClear'),viewerOnlyImg=qs('#imageViewerOnlyWithImg');
+  const viewerPhotoFileInput=qs('#viewerPhotoFileInput'),viewerUploadImgBtn=qs('#viewerUploadImgBtn'),viewerUrlImgBtn=qs('#viewerUrlImgBtn'),viewerRestoreImgBtn=qs('#viewerRestoreImgBtn'),viewerRemoveImgBtn=qs('#viewerRemoveImgBtn'),viewerSyncDriveBtn=qs('#viewerSyncDriveBtn'),viewerUrlBox=qs('#viewerUrlBox'),viewerUrlInput=qs('#viewerUrlInput'),viewerUrlApplyBtn=qs('#viewerUrlApplyBtn'),viewerUrlCancelBtn=qs('#viewerUrlCancelBtn');
   let gallery=[],galleryIndex=0,activeViewerCenter='1003';
+
+  const SUPPLIERS_MT=[
+    {id:'promelsa',name:'Promelsa',country:'Perú',origin:'Perú',domain:'promelsa.com.pe',url:'https://www.promelsa.com.pe',featured:true,categories:['Seccionamiento','Aisladores','Conectores','Conductores','Ferretería','Protección'],keywords:'cut out seccionador fusible isolador aislador polimérico pin suspension terminal empalme 3m raychem conector grapa cable conductor media tension perú peru ferreteria cinta',description:'Distribuidor y fabricante eléctrico en Perú con stock de seccionadores Cut Out 12/24/36 kV, aisladores poliméricos, terminaciones y empalmes MT (3M / TE Raychem), conectores, ferretería galvanizada y consumibles.'},
+    {id:'hubbell',name:'Hubbell Power Systems (Chance / Anderson)',country:'EE.UU.',origin:'EE.UU.',domain:'hubbell.com',url:'https://www.hubbell.com',categories:['Aisladores','Seccionamiento','Ferretería','Conectores'],keywords:'cut out fusible seccionador aislador pin line post suspension extensor grapa perno arandela abrazadera varilla retenida cruceta conector borne derivacion compresion',description:'Fabricante líder estadounidense (marcas Chance y Anderson) de aisladores poliméricos, seccionadores Cut Out, varillas de retenida, pernería y conectores para líneas aéreas de Media Tensión.'},
+    {id:'plp',name:'Preformed Line Products (PLP)',country:'EE.UU.',origin:'EE.UU.',domain:'preformed.com',url:'https://www.preformed.com',categories:['Ferretería','Aisladores','Conectores'],keywords:'amarre preformado retencion retenida varilla proteccion helicoidal suspension grapa aislador pin cable acero viento',description:'Especialista global de EE.UU. en amarres preformados, retenciones helicoidales para cable de retenida, varillas de armar y herrajes de suspensión para conductores de aluminio.'},
+    {id:'te-raychem',name:'TE Connectivity (Raychem / Simel)',country:'EE.UU. / Suiza',origin:'EE.UU.',domain:'te.com',url:'https://www.te.com',categories:['Conectores','Aisladores','Protección'],keywords:'empalme terminal termocontraible contraccion frio conector bimetálico tipo h tipo c manguito aluminio cobre cinta antitracking cubierta protector pds',description:'Fabricante líder de kits de empalme y terminaciones Raychem MT, cubiertas protectoras de vida silvestre (antifauna), cintas antitracking y conectores mecánicos/compresión Simel.'},
+    {id:'3m',name:'3M Electrical Markets',country:'EE.UU.',origin:'EE.UU.',domain:'3m.com',url:'https://www.3m.com',categories:['Protección','Conectores'],keywords:'cinta aislante pvc scotch silicona autofundente antitracking empalme terminal cold shrink media tension señalizacion',description:'Fabricante estadounidense de cintas aislantes profesionales PVC Scotch, cintas autofundentes de silicona antitracking y sistemas de terminación/empalme en frío para MT/BT.'},
+    {id:'maclean',name:'MacLean Power Systems',country:'EE.UU.',origin:'EE.UU.',domain:'macleanpower.com',url:'https://www.macleanpower.com',categories:['Ferretería','Aisladores'],keywords:'abrazadera perno arandela tuerca grapa anclaje suspension cruceta violin canaleta ferreteria galvanizada poste',description:'Proveedor norteamericano de ferretería de acero galvanizado en caliente para redes aéreas de MT: abrazaderas, pernería estructural, grampas de anclaje/suspensión y aisladores.'},
+    {id:'sicame',name:'Sicame Group',country:'Francia',origin:'Europa',domain:'sicame.com',url:'https://www.sicame.com',categories:['Ferretería','Conectores','Herramientas'],keywords:'grapa anclaje suspension autosoportado conector dentado perforacion bimetálico tipo h compresion pértiga herramienta seguridad',description:'Grupo industrial francés especializado en accesorios de redes aéreas MT/BT: grampas de anclaje en cuña para cable autosoportado, conectores a compresión/perforación y herramientas.'},
+    {id:'pfisterer',name:'PFISTERER',country:'Alemania',origin:'Europa',domain:'pfisterer.com',url:'https://www.pfisterer.com',categories:['Conectores','Seccionamiento','Aisladores'],keywords:'terminal conector enchufable connix empalme bimetálico barra seccionamiento media tension aluminio',description:'Fabricante alemán de ingeniería eléctrica especializado en sistemas de conexión de Media y Alta Tensión, manguitos, terminales enchufables y herrajes de precisión.'},
+    {id:'ensto',name:'Ensto',country:'Finlandia',origin:'Europa',domain:'ensto.com',url:'https://www.ensto.com',categories:['Ferretería','Aisladores','Conectores'],keywords:'autosoportado grapa suspension pinza anclaje aislador polimérico conector estanco red aerea cubierto',description:'Fabricante finlandés referente en accesorios para redes aéreas cubiertas y cables autosoportados de Media y Baja Tensión, grapas y aisladores.'},
+    {id:'sandc',name:'S&C Electric Company',country:'EE.UU.',origin:'EE.UU.',domain:'sandc.com',url:'https://www.sandc.com',categories:['Seccionamiento'],keywords:'cut out fusible eslabon chicote seccionador apertura bajo carga pararrayo reconectador media tension',description:'Fabricante estadounidense de alta gama en protección y maniobra de Media Tensión: fusibles limitadores, seccionadores Cut Out SMD/XS y equipos de apertura bajo carga.'},
+    {id:'eaton',name:'Eaton / Cooper Power Systems',country:'EE.UU.',origin:'EE.UU.',domain:'eaton.com',url:'https://www.eaton.com',categories:['Seccionamiento','Conectores'],keywords:'cut out fusible pararrayo codo portafusible seccionador conector subterraneo media tension',description:'División Cooper Power Systems de Eaton: pararrayos de óxido metálico, seccionadores portafusibles Cut Out, codos y conectores separables de Media Tensión.'},
+    {id:'hitachi',name:'Hitachi Energy (antes ABB Power Grids)',country:'Suiza',origin:'Europa',domain:'hitachienergy.com',url:'https://www.hitachienergy.com',categories:['Seccionamiento','Aisladores'],keywords:'seccionador cut out pararrayo aislador interruptor transformador media tension proteccion',description:'Fabricante global europeo de equipamiento de Media Tensión, seccionadores bajo carga, pararrayos de distribución y componentes de subestaciones.'},
+    {id:'burndy',name:'Burndy (Hubbell)',country:'EE.UU.',origin:'EE.UU.',domain:'burndy.com',url:'https://www.burndy.com',categories:['Conectores','Protección'],keywords:'conector tipo h tipo c tipo g doble perno borne bimetálico cobre aluminio penetrox grasa antioxidante puesta a tierra varilla',description:'Marca referente de conectores eléctricos a compresión (tipos H, C, G), bornes de doble perno y compuesto antioxidante Penetrox para uniones aluminio-cobre.'},
+    {id:'bandit',name:'BAND-IT (IDEX)',country:'EE.UU.',origin:'EE.UU.',domain:'band-it-idex.com',url:'https://www.band-it-idex.com',categories:['Herramientas','Ferretería'],keywords:'fleje cinta acero inoxidable hebilla grapa sujecion poste herramienta enzunchadora',description:'Fabricante líder de EE.UU. en flejes y hebillas de acero inoxidable 201/304/316 y herramientas tensadoras para fijación en postes.'},
+    {id:'feman',name:'Feman',country:'España',origin:'Europa',domain:'feman.es',url:'https://www.feman.es',categories:['Ferretería','Conectores'],keywords:'grapa suspension anclaje perno arandela cruceta abrazadera manguito conector herraje red aerea',description:'Fabricante español de herrajes galvanizados, grampas, conectores y accesorios mecánicos normalizados para líneas aéreas de Media y Baja Tensión.'},
+    {id:'cahors',name:'Groupe Cahors',country:'Francia',origin:'Europa',domain:'groupe-cahors.com',url:'https://www.groupe-cahors.com',categories:['Seccionamiento','Protección'],keywords:'seccionador envolvente caja tablero prfv fibra vidrio media tension baja tension derivacion',description:'Grupo francés especializado en envolventes de poliéster reforzado con fibra de vidrio (PRFV), seccionadores y equipamiento de distribución MT.'},
+    {id:'nexans',name:'Nexans',country:'Francia',origin:'Europa',domain:'nexans.com',url:'https://www.nexans.com',categories:['Conductores','Conectores'],keywords:'conductor aluminio cable desnudo tw cableado autosoportado energia terminal euromold media tension',description:'Fabricante europeo de conductores desnudos de aleación de aluminio, cables aislados y accesorios enchufables Euromold de Media Tensión.'},
+    {id:'prysmian',name:'Prysmian Group',country:'Italia',origin:'Europa',domain:'prysmian.com',url:'https://www.prysmian.com',categories:['Conductores'],keywords:'conductor cable aluminio desnudo tw cobre media tension distribucion aerea',description:'Mayor fabricante europeo y mundial de conductores eléctricos de potencia para transmisión y distribución en Media y Baja Tensión.'},
+    {id:'bahco',name:'Bahco (SNA Europe)',country:'Suecia',origin:'Europa',domain:'bahco.com',url:'https://www.bahco.com',categories:['Herramientas'],keywords:'hoja sierra arco aceite lubricante herramienta corte alicate mantenimiento',description:'Fabricante sueco de hojas de sierra bimetálicas Sandflex y herramientas manuales profesionales para trabajos en redes eléctricas.'},
+    {id:'wesco',name:'WESCO / Anixter',country:'EE.UU.',origin:'EE.UU.',domain:'wesco.com',url:'https://www.wesco.com',categories:['Aisladores','Seccionamiento','Ferretería','Conectores','Conductores','Protección','Herramientas'],keywords:'abrazadera perno cinta cintillo aislador cut out conector cable guante herramienta',description:'Mayorista internacional estadounidense especializado en suministro integral de materiales utility de Media Tensión para exportación.'}
+  ];
+  window.SUPPLIERS_MT = SUPPLIERS_MT;
+
+  function getRecommendedSuppliersForMaterial(m){
+    const txt = (typeof norm==='function'
+      ? norm([m?.description||'', ...(Array.isArray(m?.aliases)?m.aliases:[])].join(' '))
+      : String(m?.description||'').toLowerCase());
+    const scored = SUPPLIERS_MT.map(sup=>{
+      let score = sup.featured ? 50 : 0;
+      const kws = String(sup.keywords||'').split(/\s+/).filter(Boolean);
+      for(const kw of kws){
+        if(kw.length>=3 && txt.includes(kw)) score += 10;
+      }
+      if(/aislador/.test(txt) && ['hubbell','plp','ensto','hitachi'].includes(sup.id)) score += 18;
+      if(/cut|out|fusible|chicote|seccionador/.test(txt) && ['sandc','eaton','hubbell','hitachi'].includes(sup.id)) score += 22;
+      if(/amarre|preformad|retenid/.test(txt) && ['plp','hubbell','maclean'].includes(sup.id)) score += 24;
+      if(/conector|manguito|penetrox|borne|tipo\s+[hcg]/.test(txt) && ['burndy','te-raychem','sicame','pfisterer'].includes(sup.id)) score += 22;
+      if(/grapa|anclaje|suspension|autosoportad/.test(txt) && ['sicame','ensto','plp','feman'].includes(sup.id)) score += 22;
+      if(/abrazadera|perno|arandela|tuerca|violin|soporte|cruceta|canaleta|varilla|taco/.test(txt) && ['maclean','hubbell','feman'].includes(sup.id)) score += 20;
+      if(/cinta|cintillo|cartel|protector|pds|fibra/.test(txt) && ['3m','te-raychem','cahors'].includes(sup.id)) score += 20;
+      if(/fleje|hebilla|sierra|aceite/.test(txt) && ['bandit','bahco'].includes(sup.id)) score += 25;
+      if(/conductor|cable/.test(txt) && ['nexans','prysmian'].includes(sup.id)) score += 22;
+      return { sup, score };
+    });
+    const promelsa = SUPPLIERS_MT[0];
+    const foreign = scored
+      .filter(x => x.sup.id !== 'promelsa' && x.score > 0)
+      .sort((a,b) => b.score - a.score)
+      .slice(0, 3)
+      .map(x => x.sup);
+    if(!foreign.length) foreign.push(SUPPLIERS_MT[1], SUPPLIERS_MT[3], SUPPLIERS_MT[6]);
+    return [promelsa, ...foreign];
+  }
+
+  function renderViewerSuppliers(m){
+    if(!viewerSuppliers) return;
+    if(!m){ viewerSuppliers.innerHTML = ''; viewerSuppliers.classList.add('hidden'); return; }
+    viewerSuppliers.classList.remove('hidden');
+    const list = getRecommendedSuppliersForMaterial(m);
+    viewerSuppliers.innerHTML = `
+      <div class="cat-suppliers-title">
+        <span>🏭 Proveedores sugeridos MT (Perú y Extranjeros)</span>
+        <button type="button" class="cat-photo-btn" id="viewerOpenSuppliersDirBtn" style="padding:3px 8px;font-size:11px">Ver directorio completo</button>
+      </div>
+      <div class="cat-suppliers-list">
+        ${list.map(s=>`<a class="cat-supplier-chip ${s.origin==='Perú'?'is-peru':''}" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" title="${esc(s.description)}"><span>${esc(s.name)}</span><span class="cat-supplier-origin">(${esc(s.country)}) ↗</span></a>`).join('')}
+      </div>`;
+  }
+
+  let supOriginFilter = 'all', supLineFilter = 'all';
+  window.renderSuppliersDirectory = function(){
+    const grid = document.getElementById('supDirGrid');
+    if(!grid) return;
+    const qRaw = String(document.getElementById('supDirSearch')?.value || '').trim();
+    const qNorm = typeof norm==='function' ? norm(qRaw) : qRaw.toLowerCase();
+    const tokens = qNorm ? qNorm.split(/\s+/).filter(Boolean) : [];
+    const list = SUPPLIERS_MT.filter(s=>{
+      if(supOriginFilter !== 'all' && s.origin !== supOriginFilter) return false;
+      if(supLineFilter !== 'all' && !(s.categories||[]).includes(supLineFilter)) return false;
+      if(tokens.length){
+        const hay = typeof norm==='function'
+          ? norm([s.name, s.country, s.description, s.keywords, ...(s.categories||[])].join(' '))
+          : [s.name, s.country, s.description, s.keywords].join(' ').toLowerCase();
+        if(!tokens.every(t=>hay.includes(t))) return false;
+      }
+      return true;
+    });
+    const badge = document.getElementById('supDirCountBadge');
+    if(badge) badge.textContent = `${list.length} proveedor${list.length===1?'':'es'}`;
+    if(!list.length){
+      grid.innerHTML = '<div class="empty" style="grid-column:1/-1">No se encontraron proveedores que coincidan con el filtro aplicado.</div>';
+      return;
+    }
+    grid.innerHTML = list.map(s=>{
+      const badgeCls = s.origin==='Perú' ? 'peru' : (s.origin==='EE.UU.' ? 'eeuu' : 'europa');
+      const flag = s.origin==='Perú' ? '🇵🇪' : (s.origin==='EE.UU.' ? '🇺🇸' : '🇪🇺');
+      return `<article class="supplier-card ${s.featured?'is-featured':''}">
+        <div class="supplier-card-head">
+          <h3 class="supplier-card-title">${esc(s.name)}</h3>
+          <span class="supplier-badge ${badgeCls}">${flag} ${esc(s.country)}</span>
+        </div>
+        <p class="supplier-card-desc">${esc(s.description)}</p>
+        <div class="supplier-lines">${(s.categories||[]).map(c=>`<span class="supplier-line-tag">${esc(c)}</span>`).join('')}</div>
+        <div class="supplier-card-foot">
+          <span class="supplier-domain">${esc(s.domain)}</span>
+          <a class="supplier-link-btn" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">Visitar catálogo ↗</a>
+        </div>
+      </article>`;
+    }).join('');
+  };
+
+  document.getElementById('supDirSearch')?.addEventListener('input', window.renderSuppliersDirectory);
+  document.getElementById('supDirClear')?.addEventListener('click', ()=>{
+    const inp = document.getElementById('supDirSearch');
+    if(inp){ inp.value=''; inp.focus(); }
+    window.renderSuppliersDirectory();
+  });
+  document.getElementById('supOriginFilters')?.addEventListener('click', e=>{
+    const btn = e.target.closest('[data-sup-origin]');
+    if(!btn) return;
+    supOriginFilter = btn.dataset.supOrigin || 'all';
+    document.querySelectorAll('#supOriginFilters [data-sup-origin]').forEach(b=>b.classList.toggle('active', b===btn));
+    window.renderSuppliersDirectory();
+  });
+  document.getElementById('supLineFilters')?.addEventListener('click', e=>{
+    const btn = e.target.closest('[data-sup-line]');
+    if(!btn) return;
+    supLineFilter = btn.dataset.supLine || 'all';
+    document.querySelectorAll('#supLineFilters [data-sup-line]').forEach(b=>b.classList.toggle('active', b===btn));
+    window.renderSuppliersDirectory();
+  });
+  viewerSuppliers?.addEventListener('click', e=>{
+    if(e.target.closest('#viewerOpenSuppliersDirBtn')){
+      viewer?.close();
+      if(typeof showView === 'function') showView('suppliersView');
+    }
+  });
+  setTimeout(()=>{ if(typeof window.renderSuppliersDirectory==='function') window.renderSuppliersDirectory(); }, 0);
+  function setViewerZoom(zoomed){
+    if(viewerImg) viewerImg.classList.toggle('is-zoomed', !!zoomed);
+    if(viewerZoomBtn) viewerZoomBtn.textContent = zoomed ? '🔍 Reducir (1x)' : '🔍 Ampliar';
+  }
 
   function centerLabel(c){
     if(String(c)==='both') return 'Ambos (1003 + 1004)';
@@ -7166,11 +7695,11 @@ html[data-theme="dark"] .admin-change-pass-box{background:#13263e;border-color:#
       description:String(m.description||''),
       unit:viewerUnitLabel(m),
       aliases:Array.isArray(m.aliases)?m.aliases:[],
-      image:String(m.image||m.driveUrl||'')
+      image:typeof getMaterialImgSrc === 'function' ? getMaterialImgSrc(m) : String(m.image||m.driveUrl||'')
     }));
 
     if(onlyWithImg){
-      list = list.filter(m => m.image && m.image.length > 10);
+      list = list.filter(m => m.image && m.image.length > 5);
     }
     if(qNorm){
       const tokens = qNorm.split(/\s+/).filter(Boolean);
@@ -7275,12 +7804,48 @@ html[data-theme="dark"] .admin-change-pass-box{background:#13263e;border-color:#
       if(isDev) viewerQty.removeAttribute('max');
       else viewerQty.setAttribute('max', String(viewerStockFor(m.code, cen)));
     }
+    updateViewerPhotoControls(m);
   }
 
+  function updateViewerPhotoControls(m){
+    const mat = (state?.materials || []).find(x => String(x.code) === String(m?.code));
+    const curImg = mat ? (typeof getMaterialImgSrc === 'function' ? getMaterialImgSrc(mat) : (mat.image || '')) : (m?.image || '');
+    const hasImg = Boolean(curImg && curImg.length > 5);
+    const hasDef = Boolean(mat && typeof getDefaultBaseImage === 'function' && getDefaultBaseImage(mat.code));
+    const isModified = Boolean(mat && (mat._imageCustom || mat._imageDeleted));
+    if(viewerRestoreImgBtn) viewerRestoreImgBtn.classList.toggle('hidden', !(hasDef && isModified));
+    if(viewerRemoveImgBtn) viewerRemoveImgBtn.classList.toggle('hidden', !hasImg);
+    if(viewerSyncDriveBtn){
+      const cfg = typeof syncConfig === 'function' ? syncConfig() : {};
+      const pendingAll = typeof countPendingDrivePhotos === 'function' ? countPendingDrivePhotos() : 0;
+      const curSynced = hasImg && mat && !mat._imagePendingDrive && (Boolean(mat.driveFileId || mat.driveUrl) || (typeof isDriveImageUrl === 'function' && isDriveImageUrl(curImg)));
+      viewerSyncDriveBtn.classList.toggle('is-synced', Boolean(curSynced && pendingAll === 0));
+      if(!cfg.url){
+        viewerSyncDriveBtn.textContent = '☁️ Drive sin configurar';
+      }else if(pendingAll > 0){
+        viewerSyncDriveBtn.textContent = `☁️ Guardar fotos en Drive (${pendingAll})`;
+      }else{
+        viewerSyncDriveBtn.textContent = '☁️ Sincronizado en Drive';
+      }
+    }
+  }
+
+  window.refreshOpenViewerPhoto = function(code){
+    if(!viewer?.open || !gallery.length) return;
+    const cur = gallery[galleryIndex];
+    if(code && cur && String(cur.code) !== String(code)) return;
+    const targetCode = cur?.code;
+    buildGallery();
+    const idx = targetCode ? gallery.findIndex(x => x.code === targetCode) : galleryIndex;
+    showAt(idx >= 0 ? idx : 0, true);
+  };
+
   function showAt(i, keepStatus=false){
+    setViewerZoom(false);
     if(!gallery.length){
       if(viewerImg){viewerImg.classList.add('hidden');viewerImg.style.display='none';}
       if(viewerNoImg){viewerNoImg.classList.remove('hidden');viewerNoImg.style.display='flex';}
+      if(viewerZoomBtn) viewerZoomBtn.classList.add('hidden');
       if(viewerCode) viewerCode.textContent = '🖼️ Buscar por imagen · Sin coincidencias';
       if(viewerDesc) viewerDesc.textContent = 'Ajusta el filtro para ver materiales';
       if(viewerCodeFoot) viewerCodeFoot.textContent = '---';
@@ -7288,17 +7853,30 @@ html[data-theme="dark"] .admin-change-pass-box{background:#13263e;border-color:#
       if(viewerStockGrid) viewerStockGrid.innerHTML = '';
       if(viewerCounter) viewerCounter.textContent = '0 / 0';
       if(viewerInCartBadge) viewerInCartBadge.classList.add('hidden');
+      if(viewerUrlBox) viewerUrlBox.classList.add('hidden');
+      renderViewerSuppliers(null);
       if(!keepStatus) setViewerStatus('');
       return;
     }
     galleryIndex=(i+gallery.length)%gallery.length;
     const m=gallery[galleryIndex];
+    if(viewerUrlBox) viewerUrlBox.classList.add('hidden');
     if(m.image){
       if(viewerImg){
         viewerImg.src=m.image;
         viewerImg.classList.remove('hidden');
         viewerImg.style.display='block';
+        viewerImg.onerror = () => {
+          const matObj = (state?.materials || []).find(x => String(x.code) === String(m.code));
+          const def = typeof getDefaultBaseImage === 'function' ? getDefaultBaseImage(m.code) : '';
+          if(matObj && matObj.image && viewerImg.src !== matObj.image && !matObj.image.startsWith('http')){
+            viewerImg.src = matObj.image;
+          } else if(def && viewerImg.src.indexOf(def) < 0 && !matObj?._imageCustom){
+            viewerImg.src = def;
+          }
+        };
       }
+      if(viewerZoomBtn) viewerZoomBtn.classList.remove('hidden');
       if(viewerNoImg){
         viewerNoImg.classList.add('hidden');
         viewerNoImg.style.display='none';
@@ -7308,6 +7886,7 @@ html[data-theme="dark"] .admin-change-pass-box{background:#13263e;border-color:#
         viewerImg.classList.add('hidden');
         viewerImg.style.display='none';
       }
+      if(viewerZoomBtn) viewerZoomBtn.classList.add('hidden');
       if(viewerNoImg){
         viewerNoImg.classList.remove('hidden');
         viewerNoImg.style.display='flex';
@@ -7323,6 +7902,7 @@ html[data-theme="dark"] .admin-change-pass-box{background:#13263e;border-color:#
     if(viewerCounter)viewerCounter.textContent=`${galleryIndex+1} / ${gallery.length}`;
     if(viewerQty) viewerQty.value = '';
     if(!keepStatus) setViewerStatus('');
+    renderViewerSuppliers(m);
     refreshViewerDynamicInfo(m);
   }
 
@@ -7504,6 +8084,94 @@ html[data-theme="dark"] .admin-change-pass-box{background:#13263e;border-color:#
   });
   viewerQty?.addEventListener('keydown', e => {
     if(e.key === 'Enter'){ e.preventDefault(); saveFromImageViewer(); }
+  });
+
+  viewerImg?.addEventListener('click', () => {
+    setViewerZoom(!viewerImg.classList.contains('is-zoomed'));
+  });
+  viewerZoomBtn?.addEventListener('click', () => {
+    if(viewerImg) setViewerZoom(!viewerImg.classList.contains('is-zoomed'));
+  });
+  viewerUploadImgBtn?.addEventListener('click', () => {
+    if(!gallery.length) return;
+    viewerPhotoFileInput?.click();
+  });
+  viewerPhotoFileInput?.addEventListener('change', async e => {
+    const file = e.target.files?.[0];
+    const m = gallery[galleryIndex];
+    if(!file || !m) return;
+    try{
+      setViewerStatus(`⏳ Procesando y guardando foto de ${m.code}...`, false);
+      const compressed = await compressImage(file);
+      await setMaterialCustomImage(m.code, compressed, { silent: true });
+      const cfg = typeof syncConfig === 'function' ? syncConfig() : {};
+      setViewerStatus(cfg.url ? `✅ Foto actualizada para ${m.code} y guardada en Drive.` : `✅ Foto actualizada para ${m.code} (guardada localmente).`, false);
+    }catch(_){
+      setViewerStatus('⚠️ No se pudo procesar la imagen seleccionada.', true);
+    }finally{
+      viewerPhotoFileInput.value = '';
+    }
+  });
+  viewerUrlImgBtn?.addEventListener('click', () => {
+    if(!gallery.length || !viewerUrlBox) return;
+    const isHidden = viewerUrlBox.classList.toggle('hidden');
+    if(!isHidden && viewerUrlInput){
+      const cur = gallery[galleryIndex]?.image || '';
+      viewerUrlInput.value = /^https?:\/\//i.test(cur) ? cur : '';
+      viewerUrlInput.focus();
+    }
+  });
+  viewerUrlCancelBtn?.addEventListener('click', () => viewerUrlBox?.classList.add('hidden'));
+  viewerUrlApplyBtn?.addEventListener('click', async () => {
+    const m = gallery[galleryIndex];
+    const url = String(viewerUrlInput?.value || '').trim();
+    if(!m || !url){
+      setViewerStatus('⚠️ Ingresa una URL de imagen válida.', true);
+      return;
+    }
+    viewerUrlBox?.classList.add('hidden');
+    setViewerStatus(`⏳ Guardando imagen desde URL para ${m.code}...`, false);
+    await setMaterialCustomImage(m.code, url, { silent: true });
+    setViewerStatus(`✅ Imagen actualizada para ${m.code}.`, false);
+  });
+  viewerUrlInput?.addEventListener('keydown', e => {
+    if(e.key === 'Enter'){ e.preventDefault(); viewerUrlApplyBtn?.click(); }
+  });
+  viewerRestoreImgBtn?.addEventListener('click', async () => {
+    const m = gallery[galleryIndex];
+    if(!m) return;
+    setViewerStatus(`⏳ Restaurando imagen original de ${m.code}...`, false);
+    await restoreDefaultMaterialImage(m.code, { silent: true });
+    setViewerStatus(`🔄 Imagen original restaurada para ${m.code}.`, false);
+  });
+  viewerRemoveImgBtn?.addEventListener('click', () => {
+    const m = gallery[galleryIndex];
+    if(!m) return;
+    removeMaterialImage(m.code);
+    setViewerStatus(`✕ Foto quitada para ${m.code}. Puedes subir otra cuando quieras.`, false);
+  });
+  viewerSyncDriveBtn?.addEventListener('click', async () => {
+    await syncAllPhotosToDrive(viewerSyncDriveBtn);
+    if(gallery.length) updateViewerPhotoControls(gallery[galleryIndex]);
+  });
+  viewer?.addEventListener('paste', async e => {
+    if(!viewer?.open || !gallery.length) return;
+    const items = Array.from(e.clipboardData?.items || []);
+    const imgItem = items.find(it => it.type && it.type.startsWith('image/'));
+    if(!imgItem) return;
+    const file = imgItem.getAsFile();
+    const m = gallery[galleryIndex];
+    if(!file || !m) return;
+    e.preventDefault();
+    try{
+      setViewerStatus(`⏳ Pegando imagen para ${m.code}...`, false);
+      const compressed = await compressImage(file);
+      await setMaterialCustomImage(m.code, compressed, { silent: true });
+      const cfg = typeof syncConfig === 'function' ? syncConfig() : {};
+      setViewerStatus(cfg.url ? `✅ Imagen pegada y guardada en Drive para ${m.code}.` : `✅ Imagen pegada y guardada localmente para ${m.code}.`, false);
+    }catch(_){
+      setViewerStatus('⚠️ No se pudo procesar la imagen pegada.', true);
+    }
   });
 
   document.addEventListener('click',e=>{

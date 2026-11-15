@@ -16,7 +16,12 @@
     'driveBackup',
     'driveBackup2',
     'v27RefreshDrive',
-    'syncNow'
+    'syncNow',
+    'matExcelSyncPhotosBtn',
+    'viewerSyncDriveBtn',
+    'viewerUploadImgBtn',
+    'searchSyncDrivePhotosBtn',
+    'qaSaveBtn'
   ]);
 
   const isManual = (options, sync) => {

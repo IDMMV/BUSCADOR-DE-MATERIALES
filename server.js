@@ -49,6 +49,18 @@ function writeSavedUsers(payload){
   return data;
 }
 
+function cleanConfigUrl(u){
+  const s = String(u || '').trim();
+  if(!s || /TU_SCRIPT_ID/i.test(s)) return '';
+  return s;
+}
+
+function cleanConfigToken(t){
+  const s = String(t || '').trim();
+  if(!s || /^TU_CLAVE_SECRETA_AQUI$/i.test(s)) return '';
+  return s;
+}
+
 function readSavedConfig(){
   ensureDataDir();
   let fileCfg = {};
@@ -56,16 +68,16 @@ function readSavedConfig(){
     try{ fileCfg = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8')) || {}; }catch(_){}
   }
   return {
-    scriptUrl: (process.env.GOOGLE_APPS_SCRIPT_URL || fileCfg.scriptUrl || '').trim(),
-    scriptToken: (process.env.GOOGLE_APPS_SCRIPT_TOKEN || fileCfg.scriptToken || '').trim()
+    scriptUrl: cleanConfigUrl(process.env.GOOGLE_APPS_SCRIPT_URL) || cleanConfigUrl(fileCfg.scriptUrl),
+    scriptToken: cleanConfigToken(process.env.GOOGLE_APPS_SCRIPT_TOKEN) || cleanConfigToken(fileCfg.scriptToken)
   };
 }
 
 function writeSavedConfig(url, token){
   ensureDataDir();
   const cur = readSavedConfig();
-  const nextUrl = (url || cur.scriptUrl || '').trim();
-  const nextToken = (token || cur.scriptToken || '').trim();
+  const nextUrl = cleanConfigUrl(url) || cur.scriptUrl || '';
+  const nextToken = cleanConfigToken(token) || cur.scriptToken || '';
   if(!nextUrl && !nextToken) return cur;
   const data = {
     scriptUrl: nextUrl,

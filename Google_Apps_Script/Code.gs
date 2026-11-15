@@ -421,12 +421,13 @@ function saveSingleImageToDrive_(code, dataUrl) {
   const parts = String(dataUrl).split(',');
   const mimeMatch = parts[0].match(/data:(.*?);/);
   const mime = mimeMatch ? mimeMatch[1] : 'image/webp';
-  const bytes = Utilities.base64Decode(parts[1]);
-  const ext = mime.indexOf('webp') >= 0 ? 'webp' : (mime.indexOf('png') >= 0 ? 'png' : 'jpg');
+  const isBase64 = parts[0].indexOf(';base64') >= 0;
+  const bytes = isBase64 ? Utilities.base64Decode(parts[1]) : Utilities.newBlob(decodeURIComponent(parts[1] || '')).getBytes();
+  const ext = mime.indexOf('webp') >= 0 ? 'webp' : (mime.indexOf('png') >= 0 ? 'png' : (mime.indexOf('svg') >= 0 ? 'svg' : 'jpg'));
   const name = code + '.' + ext;
 
   // Eliminar copias anteriores del mismo código para evitar duplicados u obsoletas
-  ['webp', 'jpg', 'jpeg', 'png'].forEach(oldExt => {
+  ['webp', 'jpg', 'jpeg', 'png', 'svg'].forEach(oldExt => {
     const olds = imgs.getFilesByName(code + '.' + oldExt);
     while (olds.hasNext()) {
       try { olds.next().setTrashed(true); } catch(_) {}
@@ -446,7 +447,7 @@ function saveSingleImageToDrive_(code, dataUrl) {
 
 function deleteMaterialImageFromDrive_(code) {
   const imgs = getImagesFolder_();
-  ['webp', 'jpg', 'jpeg', 'png'].forEach(ext => {
+  ['webp', 'jpg', 'jpeg', 'png', 'svg'].forEach(ext => {
     const olds = imgs.getFilesByName(code + '.' + ext);
     while (olds.hasNext()) {
       try { olds.next().setTrashed(true); } catch(_) {}
@@ -460,10 +461,11 @@ function updateMaterialImageInBackupAndSheet_(code, dataUrl, savedImg) {
     if (backup && backup.app && Array.isArray(backup.app.materials)) {
       const m = backup.app.materials.find(x => String(x.code || '').trim() === code);
       if (m) {
-        m.image = dataUrl || '';
+        m.image = savedImg ? savedImg.directUrl : (dataUrl || '');
         m.driveFileId = savedImg ? savedImg.fileId : '';
         m.driveUrl = savedImg ? savedImg.directUrl : '';
         m._imagePendingDrive = false;
+        m._imageDeleted = !savedImg && !dataUrl;
         backup.updatedAt = new Date().toISOString();
         saveBackup_(backup);
       }
