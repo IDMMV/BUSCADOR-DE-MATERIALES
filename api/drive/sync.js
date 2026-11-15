@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-const DRIVE_TIMEOUT_MS = 12000;
+const DRIVE_TIMEOUT_MS = 25000;
 const TMP_CONFIG_FILE = '/tmp/server-config.json';
 
 function fetchWithTimeout(url, options = {}, timeoutMs = DRIVE_TIMEOUT_MS) {

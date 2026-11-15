@@ -10,12 +10,43 @@ const app = express();
 const PORT = 3000;
 
 const CONFIG_FILE = path.join(__dirname, 'data', 'server-config.json');
+const USERS_FILE = path.join(__dirname, 'data', 'users.json');
 
 function ensureDataDir(){
   const dir = path.join(__dirname, 'data');
   if(!fs.existsSync(dir)){
     fs.mkdirSync(dir, { recursive: true });
   }
+}
+
+function readSavedUsers(){
+  ensureDataDir();
+  if(fs.existsSync(USERS_FILE)){
+    try{
+      const parsed = JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
+      return {
+        userAccounts: Array.isArray(parsed?.userAccounts) ? parsed.userAccounts : [],
+        authSettings: parsed?.authSettings && typeof parsed.authSettings === 'object' ? parsed.authSettings : { requireLogin: false },
+        updatedAt: parsed?.updatedAt || ''
+      };
+    }catch(_){}
+  }
+  return { userAccounts: [], authSettings: { requireLogin: false }, updatedAt: '' };
+}
+
+function writeSavedUsers(payload){
+  ensureDataDir();
+  const data = {
+    userAccounts: Array.isArray(payload?.userAccounts) ? payload.userAccounts : [],
+    authSettings: payload?.authSettings && typeof payload.authSettings === 'object' ? payload.authSettings : { requireLogin: false },
+    updatedAt: new Date().toISOString()
+  };
+  try{
+    fs.writeFileSync(USERS_FILE, JSON.stringify(data, null, 2), 'utf8');
+  }catch(e){
+    console.warn('Could not save users file:', e.message);
+  }
+  return data;
 }
 
 function readSavedConfig(){
@@ -49,7 +80,7 @@ function writeSavedConfig(url, token){
   return data;
 }
 
-const DRIVE_TIMEOUT_MS = 12000;
+const DRIVE_TIMEOUT_MS = 25000;
 function fetchWithTimeout(url, options={}, timeoutMs=DRIVE_TIMEOUT_MS){
   const controller=new AbortController();
   const timer=setTimeout(()=>controller.abort(),timeoutMs);
@@ -82,6 +113,15 @@ app.post('/api/config', (req, res) => {
   const token = (req.body?.scriptToken || req.body?.token || '').trim();
   const saved = writeSavedConfig(url, token);
   res.json({ ok: true, config: saved });
+});
+
+app.get('/api/users', (req, res) => {
+  res.json({ ok: true, ...readSavedUsers() });
+});
+
+app.post('/api/users', (req, res) => {
+  const saved = writeSavedUsers(req.body || {});
+  res.json({ ok: true, ...saved });
 });
 
 app.post('/api/drive/sync', async (req, res) => {

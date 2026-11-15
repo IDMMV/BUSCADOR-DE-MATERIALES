@@ -69,6 +69,37 @@ function doPost(e) {
         });
       }
 
+      if (req.action === 'saveImage') {
+        const code = String(req.code || '').trim();
+        const dataUrl = String(req.image || '').trim();
+        if (!code || !dataUrl.startsWith('data:image/')) {
+          throw new Error('Código de material o imagen inválida.');
+        }
+        const savedImg = saveSingleImageToDrive_(code, dataUrl);
+        updateMaterialImageInBackupAndSheet_(code, dataUrl, savedImg);
+        return json_({
+          ok: true,
+          savedAt: new Date().toISOString(),
+          code: code,
+          fileId: savedImg.fileId,
+          name: savedImg.name,
+          url: savedImg.url,
+          directUrl: savedImg.directUrl
+        });
+      }
+
+      if (req.action === 'deleteImage') {
+        const code = String(req.code || '').trim();
+        if (!code) throw new Error('Código de material requerido.');
+        deleteMaterialImageFromDrive_(code);
+        updateMaterialImageInBackupAndSheet_(code, '', null);
+        return json_({
+          ok: true,
+          savedAt: new Date().toISOString(),
+          code: code
+        });
+      }
+
       if (req.action === 'syncAll') {
         const data = req.data || {};
         // Si no vienen stockRows o vienen vacíos, conservar el stock existente en Sheets
@@ -81,8 +112,20 @@ function doPost(e) {
             data.stockRows = [];
           }
         }
+        const imgMap = saveImages_(data.app && data.app.materials || []);
+        if (data.app && Array.isArray(data.app.materials)) {
+          data.app.materials.forEach(m => {
+            if (!m) return;
+            const info = imgMap[String(m.code || '').trim()];
+            if (info) {
+              m.driveFileId = info.fileId || m.driveFileId || '';
+              m.driveUrl = info.directUrl || m.driveUrl || '';
+              m._imagePendingDrive = false;
+            }
+          });
+        }
         saveBackup_(data);
-        writeSheets_(data);
+        writeSheets_(data, imgMap);
         SpreadsheetApp.flush();
         const verified = readStockFromSheets_();
         return json_({
@@ -91,7 +134,8 @@ function doPost(e) {
           stockRows: verified.stockRows.length,
           stockDate: verified.stockMeta.date || '',
           stockFile: verified.stockMeta.file || '',
-          stockRevision: verified.stockMeta.revision || ''
+          stockRevision: verified.stockMeta.revision || '',
+          imagesSynced: Object.keys(imgMap).length
         });
       }
 
@@ -269,17 +313,20 @@ function normalizeDateTime_(value) {
   return String(value);
 }
 
-function writeSheets_(data) {
+function writeSheets_(data, precomputedImgMap) {
   const ss=getSpreadsheet_();
-  let imgMap = {};
-  try {
-    imgMap = saveImages_(data.app && data.app.materials || []);
-  } catch(_) {}
+  let imgMap = precomputedImgMap || {};
+  if (!precomputedImgMap) {
+    try {
+      imgMap = saveImages_(data.app && data.app.materials || []);
+    } catch(_) {}
+  }
 
   writeTable_(ss,'Materiales',['MATRICULA','DESCRIPCION','UNIDAD','PRIORIDAD','ALIAS','IMAGEN_ESTADO','LINK_IMAGEN_DRIVE','ACTUALIZADO'],(data.app&&data.app.materials||[]).map(m=>{
     const imgInfo = imgMap[m.code] || {};
-    const link = imgInfo.url ? imgInfo.url : (m.image ? 'En respaldo JSON' : 'SIN IMAGEN');
-    return [m.code,m.description,m.unit,m.priority||'',(m.aliases||[]).join(' | '),m.image?'SI':'NO',link,new Date()];
+    const hasImg = Boolean((m.image && String(m.image).length > 20) || m.driveUrl || imgInfo.url);
+    const link = imgInfo.url ? imgInfo.url : (m.driveUrl ? m.driveUrl : (m.image ? 'En respaldo JSON' : 'SIN IMAGEN'));
+    return [m.code,m.description,m.unit,m.priority||'',(m.aliases||[]).join(' | '),hasImg?'SI':'NO',link,new Date()];
   }));
   const initials=(data.app&&data.app.supervisorInitials)||{};
   writeTable_(ss,'Supervisores',['NOMBRE','INICIALES'],(data.app&&data.app.supervisors||[]).map(x=>[x,initials[x]||'']));
@@ -287,59 +334,69 @@ function writeSheets_(data) {
   writeTable_(ss,'StockMeta',['FECHA_STOCK','ARCHIVO','CARGADO_EN','REGISTROS','REVISION'],[[data.stockMeta&&data.stockMeta.date||'',data.stockMeta&&data.stockMeta.file||'',data.stockMeta&&data.stockMeta.loadedAt||'',(data.stockRows||[]).length,data.stockMeta&&data.stockMeta.revision||'']]);
   writeTable_(ss,'Stock',['MATERIAL','CENTRO','ALMACEN','LOTE','LIBRE','UNIDAD','TEXTO'],(data.stockRows||[]).map(x=>[x.material,x.centro,x.almacen,x.lote,x.libre,x.unidad,x.texto]));
   const history=(data.app&&data.app.orderHistory||[]);
+  const controlEdits = (data.app && data.app.controlEdits) || {};
+  const isFinalized_ = (x) => Boolean(x && (x.guardadoEnHistorial || x.reservaGuardada));
+
   const detailRows=[];
   history.forEach(x=>{
-    if (x.movimiento === 'DEVOLUCION' && !x.guardadoEnHistorial) return;
-    if (x.movimiento === 'RESERVA' && !x.guardadoEnHistorial && !x.reservaGuardada) return;
+    if (!isFinalized_(x)) return;
     const resVal = String(x.reserva || '').trim();
     const condVal = String(x.conductor || '').trim();
     (x.items||[]).forEach(i=>detailRows.push([
       x.id, (i.reserva || resVal || ''), x.om||'', x.fecha, x.supervisor, condVal, i.code||'', i.description||'', i.qty||0, i.unit||'',
       x.centro, i.warehouse||'', i.lot||'', x.unidadRecojo||'', x.alimentador||'', x.distrito||'',
-      x.movimiento||'', x.createdAt||''
+      x.movimiento||'', x.unidadRecupero||'', x.status||'', x.createdAt||''
     ]));
   });
-  writeTable_(ss,'HistorialMateriales',['PEDIDO','RESERVA','OM','FECHA','RETIRADO_POR','CONDUCTOR','MATRICULA','DESCRIPCION','CANTIDAD','UNIDAD','CENTRO','ALMACEN','LOTE','UNIDAD_RECOJO','ALIMENTADOR','DISTRITO_DESTINO','MOVIMIENTO','CREADO_EN'],detailRows);
-  writeTable_(ss,'ControlSolicitudes',['PEDIDO','RESERVA','OM','FECHA','SUPERVISOR','CONDUCTOR','CENTRO','UNIDAD_RECOJO','ALIMENTADOR','DISTRITO','MOVIMIENTO','CANTIDAD_TOTAL','ESTADO','CREADO_EN'],history.filter(x=>{
-    if (x.movimiento === 'DEVOLUCION' && !x.guardadoEnHistorial) return false;
-    if (x.movimiento === 'RESERVA' && !x.guardadoEnHistorial && !x.reservaGuardada) return false;
-    return true;
-  }).map(x=>[x.id, x.reserva||'', x.om||'', x.fecha, x.supervisor, x.conductor||'', x.centro, x.unidadRecojo||'', x.alimentador||'', x.distrito||'', x.movimiento||'', x.total||0, 'FINALIZADO', x.createdAt||'']));
+  writeTable_(ss,'HistorialMateriales',['PEDIDO','RESERVA','OM','FECHA','RETIRADO_POR','CONDUCTOR','MATRICULA','DESCRIPCION','CANTIDAD','UNIDAD','CENTRO','ALMACEN','LOTE','UNIDAD_RECOJO','ALIMENTADOR','DISTRITO_DESTINO','MOVIMIENTO','UNIDAD_RECUPERO','STATUS','CREADO_EN'],detailRows);
+
+  writeTable_(ss,'ControlSolicitudes',['PEDIDO','RESERVA','OM','FECHA','SUPERVISOR','CONDUCTOR','CENTRO','UNIDAD_RECOJO','ALIMENTADOR','DISTRITO','MOVIMIENTO','UNIDAD_RECUPERO','STATUS','CANTIDAD_TOTAL','ESTADO','CREADO_EN'],history.filter(isFinalized_).map(x=>[
+    x.id, x.reserva||'', x.om||'', x.fecha, x.supervisor, x.conductor||'', x.centro, x.unidadRecojo||'', x.alimentador||'', x.distrito||'', x.movimiento||'', x.unidadRecupero||'', x.status||'', x.total||0, 'FINALIZADO', x.createdAt||''
+  ]));
 
   const reservasEdits = (data.app && data.app.reservasEdits) || {};
-  const controlEdits = (data.app && data.app.controlEdits) || {};
   const reservasRows = [];
   history.forEach((order, orderIdx) => {
     const mov = String(order.movimiento || '').toUpperCase();
-    const isRes = mov === 'RESERVA' || Boolean(order.reserva);
-    if (!isRes || order.guardadoEnHistorial || order.reservaGuardada) return;
+    if (mov === 'DEVOLUCION' || isFinalized_(order)) return;
     const orderKey = String(order.id || (order.om ? (order.om + '_' + String(order.centro || '') + '_' + String(order.createdAt || '')) : ('order_' + orderIdx)));
     const orderEdit = controlEdits[orderKey] || {};
     const orderReserva = orderEdit.reserva !== undefined ? orderEdit.reserva : (order.reserva || '');
+    const orderRecojo = orderEdit.unidadRecojo !== undefined ? orderEdit.unidadRecojo : (order.unidadRecojo || '');
+    const orderConductor = orderEdit.conductor !== undefined ? orderEdit.conductor : (order.conductor || '');
+    const orderStatus = orderEdit.status !== undefined ? orderEdit.status : (order.status || (mov === 'RECUPERO' ? 'RECUPERO' : 'PROGRAMADO'));
+    const orderRecupero = orderEdit.unidadRecupero !== undefined ? orderEdit.unidadRecupero : (order.unidadRecupero || (mov === 'RECUPERO' ? (order.unidadRecojo || '') : ''));
     const items = Array.isArray(order.items) && order.items.length ? order.items : [{
-      code: '', description: 'Reserva general', qty: order.total || 0, unit: 'UND', reserva: orderReserva
+      code: '', description: mov === 'RECUPERO' ? 'Recupero' : (mov === 'PEDIDO' ? 'Pedido' : 'Reserva general'), qty: order.total || 0, unit: 'UND', reserva: orderReserva
     }];
 
     items.forEach((item, itemIdx) => {
       const itemKey = `${orderKey}_item_${itemIdx}_${item.code || item.MATRICULA || 'mat'}`;
       const itemEdit = reservasEdits[itemKey] || {};
-      const reservaVal = itemEdit.reserva !== undefined ? itemEdit.reserva : (item.reserva || orderReserva || '');
+      const reservaVal = itemEdit.reserva !== undefined ? itemEdit.reserva : (orderReserva || item.reserva || '');
       const qtyVal = itemEdit.qty !== undefined ? Number(itemEdit.qty) : Number(item.qty || item.CANT || 0);
       reservasRows.push([
         reservaVal,
+        String(order.centro || '').replace(/[^0-9]/g, '') || String(order.centro || ''),
+        order.supervisor || '',
         order.om || '',
+        order.fecha || '',
+        orderRecojo,
+        orderConductor,
+        String(order.alimentador || '').toUpperCase(),
+        String(order.distrito || '').toUpperCase(),
+        orderStatus,
+        orderRecupero,
         item.code || item.MATRICULA || '',
         item.description || item.DESCRIPCION || '',
         qtyVal,
         item.unit || item.UNIDAD || 'UND',
-        order.supervisor || '',
-        String(order.centro || '') === '1003' ? '1003 - San Juan' : String(order.centro || '') === '1004' ? '1004 - Vitarte' : String(order.centro || ''),
-        order.fecha || '',
+        mov,
         order.createdAt || ''
       ]);
     });
   });
-  writeTable_(ss, 'ControlReservas', ['RESERVA', 'OM', 'MATRÍCULA', 'DESCRIPCIÓN', 'CANTIDAD', 'UNIDAD', 'RETIRADO_POR', 'CENTRO', 'FECHA', 'CREADO_EN'], reservasRows);
+  writeTable_(ss, 'ControlReservas', ['RESERVA', 'ALMACEN', 'ENCARGADO', 'OM', 'FECHA PEDIDO', 'UNIDAD (RECOJO)', 'CONDUCTOR', 'ALIM.', 'DISTRITO', 'STATUS', 'UNIDAD (RECUPERO)', 'MATRÍCULA', 'DESCRIPCIÓN', 'CANTIDAD', 'UNIDAD', 'MOVIMIENTO', 'CREADO_EN'], reservasRows);
 }
 
 function writeTable_(ss,name,headers,rows) {
@@ -353,27 +410,128 @@ function writeTable_(ss,name,headers,rows) {
   sh.setFrozenRows(1);
 }
 
+function getImagesFolder_() {
+  const folder = getFolder_();
+  const it = folder.getFoldersByName('imagenes_materiales');
+  return it.hasNext() ? it.next() : folder.createFolder('imagenes_materiales');
+}
+
+function saveSingleImageToDrive_(code, dataUrl) {
+  const imgs = getImagesFolder_();
+  const parts = String(dataUrl).split(',');
+  const mimeMatch = parts[0].match(/data:(.*?);/);
+  const mime = mimeMatch ? mimeMatch[1] : 'image/webp';
+  const bytes = Utilities.base64Decode(parts[1]);
+  const ext = mime.indexOf('webp') >= 0 ? 'webp' : (mime.indexOf('png') >= 0 ? 'png' : 'jpg');
+  const name = code + '.' + ext;
+
+  // Eliminar copias anteriores del mismo código para evitar duplicados u obsoletas
+  ['webp', 'jpg', 'jpeg', 'png'].forEach(oldExt => {
+    const olds = imgs.getFilesByName(code + '.' + oldExt);
+    while (olds.hasNext()) {
+      try { olds.next().setTrashed(true); } catch(_) {}
+    }
+  });
+
+  const file = imgs.createFile(Utilities.newBlob(bytes, mime, name));
+  try { file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch(_) {}
+  const fileId = file.getId();
+  return {
+    name: name,
+    fileId: fileId,
+    url: file.getUrl(),
+    directUrl: 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w1000'
+  };
+}
+
+function deleteMaterialImageFromDrive_(code) {
+  const imgs = getImagesFolder_();
+  ['webp', 'jpg', 'jpeg', 'png'].forEach(ext => {
+    const olds = imgs.getFilesByName(code + '.' + ext);
+    while (olds.hasNext()) {
+      try { olds.next().setTrashed(true); } catch(_) {}
+    }
+  });
+}
+
+function updateMaterialImageInBackupAndSheet_(code, dataUrl, savedImg) {
+  try {
+    const backup = readLatestBackup_();
+    if (backup && backup.app && Array.isArray(backup.app.materials)) {
+      const m = backup.app.materials.find(x => String(x.code || '').trim() === code);
+      if (m) {
+        m.image = dataUrl || '';
+        m.driveFileId = savedImg ? savedImg.fileId : '';
+        m.driveUrl = savedImg ? savedImg.directUrl : '';
+        m._imagePendingDrive = false;
+        backup.updatedAt = new Date().toISOString();
+        saveBackup_(backup);
+      }
+    }
+  } catch (e) {
+    Logger.log('Error actualizando backup con imagen: ' + e);
+  }
+}
+
 function saveImages_(materials) {
-  const folder=getFolder_();
-  const it=folder.getFoldersByName('imagenes_materiales');
-  const imgs=it.hasNext()?it.next():folder.createFolder('imagenes_materiales');
+  const imgs = getImagesFolder_();
   const imgMap = {};
-  const matsWithImage = materials.filter(m=>m&&m.image&&String(m.image).startsWith('data:image/'));
-  // Guardar hasta 20 imágenes por lote para no exceder cuota de tiempo
-  matsWithImage.slice(0, 20).forEach(m=>{
-    try {
-      const parts=m.image.split(','), mime=parts[0].match(/data:(.*?);/)[1], bytes=Utilities.base64Decode(parts[1]), ext=mime.indexOf('webp')>=0?'webp':'jpg', name=m.code+'.'+ext;
-      const olds=imgs.getFilesByName(name);
-      if (olds.hasNext()) {
-        const existing = olds.next();
-        imgMap[m.code] = { name: name, url: existing.getUrl() };
+
+  // Indexar archivos existentes en imagenes_materiales en una sola lectura
+  const existingByCode = {};
+  try {
+    const allFiles = imgs.getFiles();
+    while (allFiles.hasNext()) {
+      const f = allFiles.next();
+      const fname = f.getName();
+      const baseCode = fname.replace(/\.(webp|jpg|jpeg|png)$/i, '');
+      existingByCode[baseCode] = f;
+    }
+  } catch(_) {}
+
+  const list = Array.isArray(materials) ? materials : [];
+  let uploadedCount = 0;
+
+  list.forEach(m => {
+    if (!m || !m.code) return;
+    const code = String(m.code).trim();
+    const existing = existingByCode[code];
+
+    if (m.image && String(m.image).startsWith('data:image/')) {
+      const needsUpload = Boolean(m._imagePendingDrive) || !existing;
+      if (!needsUpload && existing) {
+        const fid = existing.getId();
+        imgMap[code] = {
+          name: existing.getName(),
+          fileId: fid,
+          url: existing.getUrl(),
+          directUrl: 'https://drive.google.com/thumbnail?id=' + fid + '&sz=w1000'
+        };
         return;
       }
-      const file = imgs.createFile(Utilities.newBlob(bytes,mime,name));
-      file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-      imgMap[m.code] = { name: name, url: file.getUrl() };
-    } catch(err) {
-      Logger.log('Error guardando imagen de ' + m.code + ': ' + err);
+      if (uploadedCount < 25) {
+        try {
+          imgMap[code] = saveSingleImageToDrive_(code, m.image);
+          uploadedCount++;
+        } catch (err) {
+          Logger.log('Error guardando imagen de ' + code + ': ' + err);
+        }
+      }
+    } else if (existing) {
+      const fid = existing.getId();
+      imgMap[code] = {
+        name: existing.getName(),
+        fileId: fid,
+        url: existing.getUrl(),
+        directUrl: 'https://drive.google.com/thumbnail?id=' + fid + '&sz=w1000'
+      };
+    } else if (m.driveUrl) {
+      imgMap[code] = {
+        name: code + '.webp',
+        fileId: m.driveFileId || '',
+        url: m.driveUrl,
+        directUrl: m.driveUrl
+      };
     }
   });
   return imgMap;
