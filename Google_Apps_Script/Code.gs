@@ -27,6 +27,20 @@ function doGet(e) {
       return json_({ ok: true, data: readStockFromSheets_(), serverTime: new Date().toISOString() });
     }
 
+    if (action === 'getUsersAndAuth') {
+      const backup = readLatestBackup_() || {};
+      const appObj = backup.app || {};
+      return json_({
+        ok: true,
+        userAccounts: Array.isArray(appObj.userAccounts) ? appObj.userAccounts : [],
+        deletedUserIds: Array.isArray(appObj.deletedUserIds) ? appObj.deletedUserIds : [],
+        authSettings: Object.assign({ requireLogin: true, allowGuest: false }, appObj.authSettings || {}),
+        authLogs: Array.isArray(appObj.authLogs) ? appObj.authLogs : [],
+        updatedAt: backup.updatedAt || '',
+        serverTime: new Date().toISOString()
+      });
+    }
+
     return json_({ ok: true, message: 'Google Apps Script activo y conectado', now: new Date().toISOString() });
   } catch (err) {
     return json_({ ok: false, error: String(err.message || err) });
@@ -100,8 +114,46 @@ function doPost(e) {
         });
       }
 
+      if (req.action === 'syncUsersAndAuth') {
+        const backup = readLatestBackup_() || {};
+        if (!backup.app || typeof backup.app !== 'object') backup.app = {};
+        const merged = mergeAuthData_(backup.app, {
+          userAccounts: req.userAccounts,
+          deletedUserIds: req.deletedUserIds,
+          authSettings: req.authSettings,
+          authLogs: req.authLogs
+        });
+        backup.app.userAccounts = merged.userAccounts;
+        backup.app.deletedUserIds = merged.deletedUserIds;
+        backup.app.authSettings = merged.authSettings;
+        backup.app.authLogs = merged.authLogs;
+        backup.updatedAt = new Date().toISOString();
+        saveBackup_(backup);
+        writeAuthSheets_(getSpreadsheet_(), backup);
+        SpreadsheetApp.flush();
+        return json_({
+          ok: true,
+          savedAt: backup.updatedAt,
+          usersCount: merged.userAccounts.length,
+          logsCount: merged.authLogs.length,
+          userAccounts: merged.userAccounts,
+          deletedUserIds: merged.deletedUserIds,
+          authSettings: merged.authSettings,
+          authLogs: merged.authLogs
+        });
+      }
+
       if (req.action === 'syncAll') {
         const data = req.data || {};
+        const existingBackup = readLatestBackup_() || {};
+        if (!data.app || typeof data.app !== 'object') data.app = {};
+        if (existingBackup && existingBackup.app) {
+          const merged = mergeAuthData_(existingBackup.app, data.app);
+          data.app.userAccounts = merged.userAccounts;
+          data.app.deletedUserIds = merged.deletedUserIds;
+          data.app.authSettings = merged.authSettings;
+          data.app.authLogs = merged.authLogs;
+        }
         // Si no vienen stockRows o vienen vacíos, conservar el stock existente en Sheets
         if (!Array.isArray(data.stockRows) || data.stockRows.length === 0) {
           const existingStock = readStockFromSheets_();
@@ -135,7 +187,9 @@ function doPost(e) {
           stockDate: verified.stockMeta.date || '',
           stockFile: verified.stockMeta.file || '',
           stockRevision: verified.stockMeta.revision || '',
-          imagesSynced: Object.keys(imgMap).length
+          imagesSynced: Object.keys(imgMap).length,
+          usersCount: (data.app.userAccounts || []).length,
+          logsCount: (data.app.authLogs || []).length
         });
       }
 
@@ -397,6 +451,103 @@ function writeSheets_(data, precomputedImgMap) {
     });
   });
   writeTable_(ss, 'ControlReservas', ['RESERVA', 'ALMACEN', 'ENCARGADO', 'OM', 'FECHA PEDIDO', 'UNIDAD (RECOJO)', 'CONDUCTOR', 'ALIM.', 'DISTRITO', 'STATUS', 'UNIDAD (RECUPERO)', 'MATRÍCULA', 'DESCRIPCIÓN', 'CANTIDAD', 'UNIDAD', 'MOVIMIENTO', 'CREADO_EN'], reservasRows);
+  writeAuthSheets_(ss, data);
+}
+
+function mergeAuthData_(existingApp, incomingApp) {
+  const existing = existingApp || {};
+  const incoming = incomingApp || {};
+  const delSet = {};
+  const deletedList = []
+    .concat(Array.isArray(existing.deletedUserIds) ? existing.deletedUserIds : [])
+    .concat(Array.isArray(incoming.deletedUserIds) ? incoming.deletedUserIds : []);
+  deletedList.forEach(function(id) { if (id) delSet[String(id)] = true; });
+
+  const byId = {};
+  const idByUsername = {};
+  const applyUser = function(u) {
+    if (!u || !u.username) return;
+    const uname = String(u.username).trim().toUpperCase();
+    const id = String(u.id || ('usr-' + uname));
+    if (delSet[id]) return;
+    const prevId = idByUsername[uname];
+    const prev = byId[id] || (prevId ? byId[prevId] : null);
+    if (!prev || String(u.updatedAt || '') >= String(prev.updatedAt || '')) {
+      if (prevId && prevId !== id) delete byId[prevId];
+      const copy = Object.assign({}, u, { id: id, username: uname });
+      byId[id] = copy;
+      idByUsername[uname] = id;
+    }
+  };
+  (Array.isArray(existing.userAccounts) ? existing.userAccounts : []).forEach(applyUser);
+  (Array.isArray(incoming.userAccounts) ? incoming.userAccounts : []).forEach(applyUser);
+  const userAccounts = Object.keys(byId).map(function(k) { return byId[k]; });
+
+  const logById = {};
+  []
+    .concat(Array.isArray(existing.authLogs) ? existing.authLogs : [])
+    .concat(Array.isArray(incoming.authLogs) ? incoming.authLogs : [])
+    .forEach(function(l) {
+      if (!l) return;
+      const lid = String(l.id || ((l.timestamp || '') + '_' + (l.event || '') + '_' + (l.username || '')));
+      if (!logById[lid]) logById[lid] = Object.assign({}, l, { id: lid });
+    });
+  const authLogs = Object.keys(logById)
+    .map(function(k) { return logById[k]; })
+    .sort(function(a, b) { return String(b.timestamp || '').localeCompare(String(a.timestamp || '')); })
+    .slice(0, 500);
+
+  const authSettings = Object.assign(
+    {},
+    existing.authSettings || {},
+    incoming.authSettings || {},
+    { requireLogin: true, allowGuest: false }
+  );
+
+  return {
+    userAccounts: userAccounts,
+    deletedUserIds: Object.keys(delSet).slice(-200),
+    authSettings: authSettings,
+    authLogs: authLogs
+  };
+}
+
+function writeAuthSheets_(ss, data) {
+  const appObj = (data && data.app) || {};
+  const users = Array.isArray(appObj.userAccounts) ? appObj.userAccounts : [];
+  const logs = Array.isArray(appObj.authLogs) ? appObj.authLogs : [];
+
+  writeTable_(ss, 'Usuarios', [
+    'ID', 'USUARIO', 'CORREO', 'NOMBRE_COMPLETO', 'ROL', 'ACTIVO', 'CREADO_POR', 'CREADO_EN', 'ACTUALIZADO_EN', 'ULTIMO_INGRESO'
+  ], users.map(function(u) {
+    return [
+      u.id || '',
+      u.username || '',
+      u.email || '',
+      u.fullName || '',
+      u.role === 'admin' ? 'ADMINISTRADOR' : 'USUARIO',
+      u.active === false ? 'INACTIVO' : 'ACTIVO',
+      u.createdBy || '',
+      u.createdAt || '',
+      u.updatedAt || '',
+      u.lastLoginAt || ''
+    ];
+  }));
+
+  writeTable_(ss, 'HistorialAccesos', [
+    'FECHA_HORA', 'EVENTO', 'USUARIO', 'NOMBRE', 'ROL', 'DETALLE', 'ACTOR', 'DISPOSITIVO'
+  ], logs.map(function(l) {
+    return [
+      l.timestamp || '',
+      l.event || '',
+      l.username || '',
+      l.fullName || '',
+      l.role || '',
+      l.detail || '',
+      l.actor || '',
+      l.device || ''
+    ];
+  }));
 }
 
 function writeTable_(ss,name,headers,rows) {

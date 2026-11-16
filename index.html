@@ -649,10 +649,27 @@ html[data-theme="dark"] .iow-question{background:rgba(180,83,9,0.22);color:#fef3
 body:not(.v439-admin-mode) .side-btn[data-view="newMatView"],
 body:not(.v439-admin-mode) .side-btn[data-view="supView"],
 body:not(.v439-admin-mode) .side-btn[data-view="unitsView"],
+body:not(.v439-admin-mode) .side-btn[data-view="historyView"],
+body:not(.v439-admin-mode) .side-btn[data-view="usersView"],
 body:not(.v439-admin-mode) [data-config-page="mat"],
 body:not(.v439-admin-mode) [data-config-page="new-mat"],
 body:not(.v439-admin-mode) [data-config-page="sup"],
 body:not(.v439-admin-mode) [data-config-page="units"] {
+  display: none !important;
+}
+/* Bloqueo total sin modo invitado hasta iniciar sesión */
+body:not(.bm-authenticated) {
+  overflow: hidden !important;
+  height: 100vh !important;
+}
+body:not(.bm-authenticated) .top,
+body:not(.bm-authenticated) .app-shell,
+body:not(.bm-authenticated) .sidebar-backdrop {
+  filter: blur(8px) brightness(0.45);
+  pointer-events: none !important;
+  user-select: none !important;
+}
+body.bm-authenticated #enterpriseLoginOverlay {
   display: none !important;
 }
 /* La pestaña y vista de Google Drive ya no aparecen en la web porque todo está configurado en Vercel */
@@ -1089,8 +1106,62 @@ body:not(.v439-admin-mode) [data-config-page="units"] {
 }
 </style>
 </head>
-<body><script id="v442EarlyAdminShell">try{if(sessionStorage.getItem('bm_admin_session_v1')==='1')document.body.classList.add('v439-admin-mode')}catch(e){}</script>
-<header class="top"><div class="brand"><img alt="Buscador de Materiales SAP" class="app-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230f2942'/%3E%3Crect x='6' y='6' width='88' height='88' rx='18' fill='none' stroke='%231d70b8' stroke-width='4'/%3E%3Cpath d='M30 38 L50 26 L70 38 L50 50 Z' fill='%23fef08a'/%3E%3Cpath d='M30 38 L50 50 L50 74 L30 62 Z' fill='%23f59e0b'/%3E%3Cpath d='M70 38 L50 50 L50 74 L70 62 Z' fill='%23d97706'/%3E%3C/svg%3E"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:var(--blue);vertical-align:middle;font-weight:700">V44.8</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn secondary v46-user-session-btn" id="userSessionBtn" type="button" title="Iniciar sesión con doble candado">👤 Iniciar sesión</button><button class="btn admin-access-btn" id="adminAccessBtn" type="button">🔐 Administrador</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
+<body><script id="v442EarlyAdminShell">try{var _uRaw=sessionStorage.getItem('bm_user_session_v1')||localStorage.getItem('bm_user_session_v1');if(_uRaw){var _uObj=JSON.parse(_uRaw);if(_uObj&&_uObj.username){document.body.classList.add('bm-authenticated');if(_uObj.role==='admin'){sessionStorage.setItem('bm_admin_session_v1','1');document.body.classList.add('v439-admin-mode');}}}if(sessionStorage.getItem('bm_admin_session_v1')==='1'&&document.body.classList.contains('bm-authenticated'))document.body.classList.add('v439-admin-mode')}catch(e){}</script>
+<div id="enterpriseLoginOverlay" class="ent-login-overlay" role="dialog" aria-modal="true" aria-labelledby="entLoginTitle">
+  <div class="ent-login-stack">
+    <form class="ent-login-card" id="entLoginForm" autocomplete="on" novalidate>
+      <div class="ent-login-emblem" aria-hidden="true">
+        <svg viewBox="0 0 48 48" width="38" height="38" fill="none">
+          <defs>
+            <linearGradient id="entBoltGrad" x1="10" y1="4" x2="38" y2="44" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#fde047"/>
+              <stop offset="55%" stop-color="#f59e0b"/>
+              <stop offset="100%" stop-color="#ef4444"/>
+            </linearGradient>
+          </defs>
+          <path d="M27 5L11 26h12l-3 17 17-22H25L27 5z" fill="url(#entBoltGrad)"/>
+        </svg>
+      </div>
+      <h1 class="ent-login-title" id="entLoginTitle">Buscador de Materiales SAP</h1>
+      <p class="ent-login-subtitle">Gestión de Materiales y Programación Operativa</p>
+
+      <div class="ent-login-fields">
+        <label class="ent-field">
+          <span>Usuario o Correo</span>
+          <input id="entLoginUser" name="username" type="text" autocomplete="username" placeholder="Ej.: ADMIN o correo corporativo" required/>
+        </label>
+        <label class="ent-field">
+          <span>Contraseña</span>
+          <div class="ent-pass-wrap">
+            <input id="entLoginPass" name="password" type="password" autocomplete="current-password" placeholder="Ingresa tu contraseña" required/>
+            <button type="button" class="ent-eye-btn" id="entTogglePassBtn" aria-label="Mostrar u ocultar contraseña" title="Mostrar u ocultar contraseña">👁️</button>
+          </div>
+        </label>
+      </div>
+
+      <div id="entLoginStatus" class="ent-login-status" aria-live="polite"></div>
+
+      <button type="submit" class="ent-login-submit" id="entLoginSubmitBtn">Ingresar</button>
+
+      <div id="entFirstAccessNote" class="ent-first-access hidden"></div>
+
+      <div class="ent-login-foot">
+        <span class="ent-drive-pill" id="entDriveStateText">☁️ Sincronizado con Google Drive · Acceso autorizado</span>
+      </div>
+    </form>
+
+    <div class="ent-install-card hidden" id="entInstallBanner">
+      <div class="ent-install-info">
+        <span class="ent-install-icon" aria-hidden="true">⬇</span>
+        <div>
+          <strong>Instala Buscador de Materiales SAP</strong> en tu pantalla de inicio para acceso instantáneo.
+        </div>
+      </div>
+      <button type="button" class="ent-install-btn" id="entInstallAppBtn">Instalar App</button>
+    </div>
+  </div>
+</div>
+<header class="top"><div class="brand"><img alt="Buscador de Materiales SAP" class="app-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230f2942'/%3E%3Crect x='6' y='6' width='88' height='88' rx='18' fill='none' stroke='%231d70b8' stroke-width='4'/%3E%3Cpath d='M30 38 L50 26 L70 38 L50 50 Z' fill='%23fef08a'/%3E%3Cpath d='M30 38 L50 50 L50 74 L30 62 Z' fill='%23f59e0b'/%3E%3Cpath d='M70 38 L50 50 L50 74 L70 62 Z' fill='%23d97706'/%3E%3C/svg%3E"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:var(--blue);vertical-align:middle;font-weight:700">V44.8</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn secondary v46-user-session-btn" id="userSessionBtn" type="button" title="Cuenta activa y cierre de sesión">👤 Cuenta</button><button class="btn admin-access-btn" id="adminAccessBtn" type="button">🔐 Administrador</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
 <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 <div class="app-shell">
 <aside class="sidebar" id="sidebar">
@@ -1175,7 +1246,7 @@ body:not(.v439-admin-mode) [data-config-page="units"] {
     </div>
   </div>
 </dialog>
-<dialog id="userAuthDialog" aria-label="Inicio de sesión de usuario con doble candado">
+<dialog id="userAuthDialog" aria-label="Gestión de cuenta y contraseña">
   <div class="v46-auth-card" id="v46AuthCard"></div>
 </dialog>
 <dialog id="materialImageViewer" aria-label="Catálogo de imágenes de materiales"><div class="image-viewer-shell"><div class="image-viewer-head"><div class="image-viewer-title"><span class="cat-counter" id="imageViewerCounter">1 / 1</span><div class="image-viewer-title-text"><b id="imageViewerCode">🖼️ Buscar por imagen</b><span id="imageViewerDesc">Selecciona un almacén y registra tu pedido</span></div></div><div class="image-viewer-search-wrap"><div class="image-viewer-search-box"><input type="search" id="imageViewerSearch" placeholder="🔍 Buscar por matrícula, descripción o alias..."/><button type="button" id="imageViewerSearchClear" class="image-viewer-search-clear hidden" title="Limpiar búsqueda" aria-label="Limpiar búsqueda">✕</button></div><label class="image-viewer-only-img"><input type="checkbox" id="imageViewerOnlyWithImg"/> Solo con foto</label><button type="button" class="btn image-viewer-close" id="imageViewerClose">✕ Cerrar</button></div></div><div class="image-viewer-body"><div class="image-viewer-stage"><button type="button" class="image-viewer-nav image-viewer-prev" id="imageViewerPrev" aria-label="Imagen anterior">‹</button><div class="image-viewer-img-wrap"><img id="imageViewerImg" alt="Imagen ampliada del material" referrerpolicy="no-referrer" title="Clic para ampliar o reducir"><div id="imageViewerNoImg" class="image-viewer-no-img hidden"><span style="font-size:46px">📦</span><p>Sin imagen registrada para este material</p></div></div><button type="button" class="image-viewer-zoom-btn" id="imageViewerZoomBtn" title="Ampliar o reducir imagen">🔍 Ampliar</button><button type="button" class="image-viewer-nav image-viewer-next" id="imageViewerNext" aria-label="Imagen siguiente">›</button></div><div class="image-viewer-foot" id="imageViewerFoot"><div class="cat-bottom-card"><div class="cat-bottom-top"><div class="cat-bottom-meta"><div class="cat-bottom-badges"><span class="cat-mat-badge">MATRÍCULA SAP: <strong id="imageViewerCodeFoot">---</strong></span><span class="cat-unit-badge" id="imageViewerUnitFoot">UND</span></div><div class="cat-bottom-desc" id="imageViewerDescFoot">---</div><div class="cat-photo-tools"><input type="file" id="viewerPhotoFileInput" accept="image/*" style="display:none"/><button type="button" class="cat-photo-btn" id="viewerUploadImgBtn" title="Subir nueva foto desde este equipo o pegar con Ctrl+V">📷 Cambiar foto</button><button type="button" class="cat-photo-btn" id="viewerUrlImgBtn" title="Pegar enlace (URL) de una imagen">🔗 Pegar URL</button><button type="button" class="cat-photo-btn hidden" id="viewerRestoreImgBtn" title="Volver a la imagen original del catálogo">🔄 Restaurar original</button><button type="button" class="cat-photo-btn danger-soft" id="viewerRemoveImgBtn" title="Quitar imagen de este material">✕ Quitar foto</button><button type="button" class="cat-photo-btn drive-sync-btn" id="viewerSyncDriveBtn" title="Guardar y sincronizar fotos con Google Drive">☁️ Sincronizar con Drive</button></div><div class="cat-url-box hidden" id="viewerUrlBox"><input type="url" id="viewerUrlInput" placeholder="https://... (pega enlace de imagen o usa Ctrl+V en el visor)"/><button type="button" class="btn primary" id="viewerUrlApplyBtn" style="padding:6px 11px;font-size:12px">Aplicar</button><button type="button" class="btn secondary" id="viewerUrlCancelBtn" style="padding:6px 10px;font-size:12px">Cancelar</button></div></div><span class="cat-in-cart-badge hidden" id="imageViewerInCartBadge">✓ En pedido</span></div><div class="cat-suppliers-box" id="imageViewerSuppliers"></div><div class="cat-warehouse-section"><div class="cat-section-label" id="imageViewerWarehouseLabel">1. Selecciona el almacén (haz clic en una tarjeta)</div><div class="cat-stock-grid" id="imageViewerStockGrid"></div></div><div class="cat-bottom-actions"><div class="cat-active-center-tag" id="imageViewerActiveCenterTag">📍 Almacén: 1003 San Juan</div><div class="cat-order-controls"><div class="cat-qty-group"><input type="number" id="imageViewerQty" class="cat-qty-input" min="0" step="any" placeholder="Cantidad"/><span class="cat-qty-unit-txt" id="imageViewerQtyUnit">UND</span></div><button type="button" class="btn success cat-save-btn" id="imageViewerSaveBtn">💾 Guardar en pedido</button><button type="button" class="btn cat-go-btn hidden" id="imageViewerGoOrderBtn">📋 Ver pedido</button></div></div><div class="cat-viewer-status" id="imageViewerStatus"></div></div></div></div></div></dialog>
@@ -1237,18 +1308,18 @@ body:not(.v439-admin-mode) [data-config-page="units"] {
   </div>
 </dialog>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="data.js?v=460"></script>
+<script src="data.js?v=461"></script>
 <script src="preloaded-stock.js?v=460"></script>
 <script>
-const EMBEDDED_DATA={"materials":[{"code":"3004042","description":"ABRAZADERA DE ACERO GALV. 160 - 190MM DIAM. C.4 PERNOS DE AJUSTE P.SOPORTE DEL BRAZO DE APOYO","unit":"UND","aliases":["ABRAZADERA CHICA"],"priority":"P","source":"ALIAS","image":"/material-images/abrazadera_cuatro_pernos.jpg?v=460"},{"code":"3004045","description":"ABRAZADERA DE ACERO GALV. 190 - 225MM DIAM. C.4 PERNOS DE AJUSTE P.SOPORTE DEL BRAZO DE APOYO","unit":"UND","aliases":["ABRAZADERA MEDIANA"],"priority":"P","source":"ALIAS","image":"/material-images/abrazadera_cuatro_pernos.jpg?v=460"},{"code":"3004005","description":"ABRAZADERA DE ACERO GALV. 230 - 267MM DIAM. C.4 PERNOS DE AJUSTE P.SOPORTE DEL BRAZO DE APOYO","unit":"UND","aliases":["ABRAZADERA GRANDE"],"priority":"P","source":"ALIAS","image":"/material-images/abrazadera_cuatro_pernos.jpg?v=460"},{"code":"3004041","description":"ABRAZADERA DE ACERO GALV. P.CABLE 120MM2 C.ARCO CENTRAL 80MM DIAM. EN PLATINA DE ACERO 40X140X3MM","unit":"UND","aliases":["ABRAZADERA"],"priority":"","source":"ALIAS","image":"/material-images/abrazadera_cable_platina.jpg?v=460"},{"code":"3004040","description":"ABRAZADERA DE ACERO GALV. P.CABLE 25MM2 C.ARCO CENTRAL 36MM DIAM. EN PLATINA DE ACERO 90X130X6,35MM","unit":"UND","aliases":["ABRAZADERA"],"priority":"","source":"ALIAS","image":"/material-images/abrazadera_cable_platina.jpg?v=460"},{"code":"3004039","description":"ABRAZADERA METALICA P.CABLE UNIPOLAR 40.5-43.5MM C.ARCO CENTRAL 32MM RADIO EN PLATINA DE 90X148X4MM","unit":"UND","aliases":["ABRAZADERA PARA CABLE"],"priority":"","source":"ALIAS","image":"/material-images/abrazadera_cable_platina.jpg?v=460"},{"code":"3004038","description":"ABRAZADERA METALICA PARA CABLE UNIPOLAR 31.2-38MM C.ARCO CENTRAL 25MM RADIO EN PLATINA DE 90X130X4MM","unit":"UND","aliases":["ABRAZADERA PARA CABLE"],"priority":"","source":"ALIAS","image":"/material-images/abrazadera_cable_platina.jpg?v=460"},{"code":"3004044","description":"ABRAZADERA METALICA PARA CABLE UNIPOLAR 47.1-49MM C.ARCO CENTRAL 38MM RADIO EN PLATINA DE 90X150X4MM","unit":"UND","aliases":["ABRAZADERA"],"priority":"","source":"ALIAS","image":"/material-images/abrazadera_cable_platina.jpg?v=460"},{"code":"3004020","description":"ABRAZADERA PARA VIENTO AC.GALV. 120-160MMD.M.T.","unit":"UND","aliases":["ABRAZADERA PARA VIENTO PEQUEÑA","ABRAZADERA PARA VIENTO CHICA"],"priority":"","source":"ALIAS","image":"/material-images/abrazadera_viento_galvanizada.jpg?v=460"},{"code":"3004023","description":"ABRAZADERA PARA VIENTO AC.GALV. 170-245MMD. M.T.","unit":"UND","aliases":["ABRAZADERA PARA VIENTO GRANDE"],"priority":"","source":"ALIAS","image":"/material-images/abrazadera_viento_galvanizada.jpg?v=460"},{"code":"8002821","description":"ACEITE 3 EN 1","unit":"UND","aliases":["ACEITE"],"priority":"","source":"ALIAS","image":"/material-images/aceite_multiuso_lata.jpg?v=460"},{"code":"3000907","description":"AISLADOR POLIMERICO EXTENSOR 24KV P/CUT-OUT","unit":"UND","aliases":["AISLADOR EXTENSOR"],"priority":"","source":"ALIAS","image":"/material-images/aislador_extensor_polimerico.jpg?v=460"},{"code":"3000942","description":"AISLADOR POLIMERICO TP. LINE POST (CON LINEA FUGA PROTEGIDA) PARA LINEAS DE 10 KV.","unit":"UND","aliases":["AISLADOR PIN 10KV"],"priority":"P","source":"ALIAS","image":"/material-images/aislador_post_polimerico.jpg?v=460"},{"code":"3000944","description":"AISLADOR POLIMERICO TP.LINE POST P/LINEAS AEREAS 22,9KV.","unit":"UND","aliases":["AISLADOR PIN 22,9KV"],"priority":"P","source":"ALIAS","image":"/material-images/aislador_pin_22kv.jpg?v=460"},{"code":"3000935","description":"AISLADOR POLIMERICO TP.SUSPENSION / ANCLAJE 10KV 400MM LONG. L.F. 600MM 45KN C.ACCESORIOS","unit":"UND","aliases":["AISLADOR SUSPENSION 10KV"],"priority":"P","source":"ALIAS","image":"/material-images/aislador_suspension_polimerico.jpg?v=460"},{"code":"3000971","description":"AISLADOR SUSP.POLIMERICO P.REDES DISTRIB. DE 22,9KV.","unit":"UND","aliases":["AISLADOR SUSPENSION  22,9KV"],"priority":"P","source":"ALIAS","image":"/material-images/aislador_suspension_22kv.jpg?v=460"},{"code":"8002192","description":"AMARRE DOBLE DE ALUMINIO 4 AWG 1800MM LONG. P.AISLADOR PIN C.CONDUCTOR ALUMINIO MAYOR A 70MM2 EN M.T","unit":"UND","aliases":["AMARRES"],"priority":"","source":"ALIAS","image":"/material-images/amarre_doble_aluminio.jpg?v=460"},{"code":"8002193","description":"AMARRE PREFORMADO P.SUJECION CABLE DE VIENTO DE ACERO GALV. 5/16\" DIAM. CLASE C","unit":"UND","aliases":["PREFORMADO PARA VIENTO","PREFORMADO VIENTO"],"priority":"","source":"ALIAS","image":"/material-images/retencion_preformada_viento.jpg?v=460"},{"code":"8002189","description":"AMARRE SIMPLE DE ALUMINIO 4 AWG 1000MM LONG. P.AISLADOR PIN C.CONDUCTOR ALUMINIO HASTA 70MM2 EN M.T.","unit":"UND","aliases":["AMARRE SIMPLE PARA AISLADOR","AMARRE SIMPLE","AMARRE AL-BLANDO","AMARRE BLANDO"],"priority":"P","source":"ALIAS","image":"/material-images/amarre_aluminio_preformado.jpg?v=460"},{"code":"8000505","description":"ARANDELA CUADRADA CURVA DE ACERO GALV. 55 X 5MM C.AGUJERO 17,5MM DIAM","unit":"UND","aliases":["ARANDELA CURVA","ARANDELAS"],"priority":"","source":"ALIAS","image":"/material-images/arandela_cuadrada_curva.jpg?v=460"},{"code":"8000564","description":"ARANDELA CUADRADA PLANA DE ACERO GALV. 55 X 4,5MM C.AGUJERO 17,5MM DIAM","unit":"UND","aliases":["ARANDELA PLANA","ARANDELAS"],"priority":"P","source":"ALIAS","image":"/material-images/arandela_cuadrada_galvanizada.jpg?v=460"},{"code":"8000568","description":"ARANDELA PLANA AC.GALV. PERNO 1/2\"","unit":"UND","aliases":["ARANDELA 1/2","ARANDELAS"],"priority":"P","source":"ALIAS","image":"/material-images/arandela_plana_redonda.jpg?v=460"},{"code":"8000566","description":"ARANDELA PLANA AC.GALV. PERNO 3/8\"","unit":"UND","aliases":["ARANDELA 3/8","ARANDELAS"],"priority":"P","source":"ALIAS","image":"/material-images/arandela_plana_redonda.jpg?v=460"},{"code":"8000392","description":"ARANDELA PRESION AC.GALV. P.PERNO DE 1/2\"","unit":"UND","aliases":["ARANDELA","ARANDELAS"],"priority":"","source":"ALIAS","image":"/material-images/arandela_presion_helicoidal.jpg?v=460"},{"code":"8000388","description":"ARANDELA PRESION AC.GALV. P.PERNO DE 3/8\"","unit":"UND","aliases":["ARANDELA","ARANDELAS"],"priority":"","source":"ALIAS","image":"/material-images/arandela_presion_helicoidal.jpg?v=460"},{"code":"8002027","description":"BRAZO DE APOYO TP.VIOLIN DE ACERO GALV. 2\" X 875MM C.ACCESORIOS","unit":"UND","aliases":["VIOLIN PARA RETENIDA"],"priority":"","source":"ALIAS","image":"/material-images/brazo_violin_retenida.jpg?v=460"},{"code":"3001692","description":"CABLE AO.GO.TIPO \"B\" DE 5/16\".5080KG.MANO IZQ.7 HILOS.P.RETENIDA","unit":"M","aliases":["CABLE PARA RETENIDA","CABLE VIENTO"],"priority":"","source":"ALIAS","image":"/material-images/cable_acero_retenida.jpg?v=460"},{"code":"8002023","description":"CANALETA PROTECTORA ACERO GALV. 2200MM P.PROTEGER CABLE P.VIENTO","unit":"UND","aliases":["CANALETA PARA RETENIDA","CANALETA"],"priority":"","source":"ALIAS","image":"/material-images/canaleta_protectora_viento.jpg?v=460"},{"code":"8001058","description":"CARTEL DE SENALIZACION LIMITACION / INTERDICCION - PELIGRO DE MUERTE 230 X 265 X 2MM","unit":"UND","aliases":["CARTEL PARA DMS"],"priority":"P","source":"ALIAS","image":"/material-images/cartel_peligro_electrico.jpg?v=460"},{"code":"3001107","description":"CINTA AISLANTE ANTITRACKING AUTOFUNDENTE DE SILICONA COLOR GRIS 15KV DE 50MM X 11M","unit":"UND","aliases":["CINTA GRIS"],"priority":"P","source":"ALIAS","image":"/material-images/cinta_silicona_gris.jpg?v=460"},{"code":"3001339","description":"CINTA AISLANTE TERMOPLASTICA DE PVC ALTA PERFORMANCE 38MM X 33M X 0,18MM 600V COLOR NEGRO","unit":"UND","aliases":["CINTA ANCHA","CINTA NEGRA ANCHA"],"priority":"P","source":"ALIAS","image":"/material-images/cinta_aislante_negra.jpg?v=460"},{"code":"3001330","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 18,3M X 0,18MM 600V COLOR BLANCO USO EN INTERIORES","unit":"UND","aliases":["CINTA BLANCA"],"priority":"P","source":"ALIAS","image":"/material-images/cinta_aislante_blanca.jpg?v=460"},{"code":"3001332","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 18,3M X 0,18MM 600V COLOR ROJO USO EN INTERIORES","unit":"UND","aliases":["CINTA ROJA"],"priority":"P","source":"ALIAS","image":"/material-images/cinta_aislante_roja.jpg?v=460"},{"code":"3001333","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 18,3M X 0,18MM 600V COLOR VERDE USO EN INTERIORES","unit":"UND","aliases":["CINTA VERDE"],"priority":"P","source":"ALIAS","image":"/material-images/cinta_aislante_verde.jpg?v=460"},{"code":"3001316","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,15MM 600V COLOR BLANCO USO EN INTERIORES","unit":"UND","aliases":["CINTA BLANCA"],"priority":"","source":"ALIAS","image":"/material-images/cinta_aislante_blanca.jpg?v=460"},{"code":"3001318","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,15MM 600V COLOR ROJO USO EN INTERIORES","unit":"UND","aliases":["CINTA ROJA"],"priority":"","source":"ALIAS","image":"/material-images/cinta_aislante_roja.jpg?v=460"},{"code":"3001319","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,15MM 600V COLOR VERDE USO EN INTERIORES","unit":"UND","aliases":["CINTA VERDE"],"priority":"","source":"ALIAS","image":"/material-images/cinta_aislante_verde.jpg?v=460"},{"code":"3001323","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,18MM 600V COLOR BLANCO USO EN INTERIORES","unit":"UND","aliases":["CINTA BLANCA"],"priority":"","source":"DRE","image":"/material-images/cinta_aislante_blanca.jpg?v=460"},{"code":"3001327","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,18MM 600V COLOR ROJO USO EN INTERIORES","unit":"UND","aliases":["CINTA ROJA"],"priority":"","source":"DRE","image":"/material-images/cinta_aislante_roja.jpg?v=460"},{"code":"3001329","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,18MM 600V COLOR VERDE USO EN INTERIORES","unit":"UND","aliases":["CINTA VERDE"],"priority":"","source":"DRE","image":"/material-images/cinta_aislante_verde.jpg?v=460"},{"code":"8002548","description":"CINTILLO DE NYLON COLOR NEGRO 14 1/2\" (368MM) LONG., 7,6MM (0,30\") ANCHO, 54.4KG (120LB) DE TENSION","unit":"UND","aliases":["10","UND","L"],"priority":"GG01","source":"ALIAS","image":"/material-images/cintillo_nylon_negro.jpg?v=460"},{"code":"3001719","description":"CONDUCTOR CABLEADO DESNUDO ALEACION ALUMINIO 120MM2 19 HILOS C.GRASA","unit":"M","aliases":["AL 120"],"priority":"","source":"ALIAS","image":"/material-images/conductor_aluminio_120mm2.jpg?v=460"},{"code":"3001723","description":"CONDUCTOR CABLEADO DESNUDO ALEACION ALUMINIO 185MM2 37 HILOS C.GRASA","unit":"M","aliases":["AL 185"],"priority":"P","source":"ALIAS","image":"/material-images/conductor_aluminio_185mm2.jpg?v=460"},{"code":"3001715","description":"CONDUCTOR CABLEADO DESNUDO ALEACION ALUMINIO 70MM2 7 HILOS C.GRASA","unit":"M","aliases":["AL 70"],"priority":"P","source":"ALIAS","image":"/material-images/conductor_aluminio_70mm2.jpg?v=460"},{"code":"3001671","description":"CONDUCTOR CABLEADO TW 750V.UNIP.AMARI. 1X 35 MM2","unit":"M","aliases":["TW 35","CONDUCTOR TW 35MM2"],"priority":"GG01","source":"ALIAS","image":"/material-images/conductor_tw_35mm2.jpg?v=460"},{"code":"3001673","description":"CONDUCTOR CABLEADO TW 750V.UNIP.AMARI. 1X 70 MM2","unit":"M","aliases":["TW 70","CONDUCTOR TW 70MM2"],"priority":"P","source":"ALIAS","image":"/material-images/conductor_tw_70mm2.jpg?v=460"},{"code":"3001675","description":"CONDUCTOR CABLEADO TW 750V.UNIP.AMARI. 1X120 MM2","unit":"M","aliases":["TW 120","CONDUCTOR TW 120MM2"],"priority":"P","source":"ALIAS","image":"/material-images/conductor_tw_120mm2.jpg?v=460"},{"code":"3001624","description":"CONDUCTOR CABLEADO TW 750V.UNIP.AMARI. 1X185 MM2","unit":"M","aliases":["TW 185","CONDUCTOR TW 185MM2"],"priority":"P","source":"ALIAS","image":"/material-images/conductor_tw_185mm2.jpg?v=460"},{"code":"8002506","description":"CONECTOR BIMETALICO DE DERIVACION A COMPRESION TIPO H P.CONDUCTOR 120-185 / 120-185MM2 P.RED AEREA","unit":"UND","aliases":["H 450","CONECTOR H 450"],"priority":"","source":"ALIAS","image":"/material-images/conector_tipo_h.jpg?v=460"},{"code":"8002503","description":"CONECTOR BIMETALICO DE DERIVACION A COMPRESION TIPO H P.CONDUCTOR 120-185/16-70MM2 P.RED AEREA","unit":"UND","aliases":["H 500","CONECTOR H 500"],"priority":"","source":"ALIAS","image":"/material-images/conector_tipo_h.jpg?v=460"},{"code":"8002504","description":"CONECTOR BIMETALICO DE DERIVACION A COMPRESION TIPO H P.CONDUCTOR 120-240 / 120-240MM2 P.RED AEREA","unit":"UND","aliases":["H 525","CONECTOR H 525"],"priority":"GG01","source":"ALIAS","image":"/material-images/conector_tipo_h.jpg?v=460"},{"code":"8002500","description":"CONECTOR BIMETALICO DE DERIVACION A COMPRESION TIPO H P.CONDUCTOR 70 / 16-35MM2 P.RED AEREA","unit":"UND","aliases":["H 200","CONECTOR H 200"],"priority":"","source":"ALIAS","image":"/material-images/conector_tipo_h.jpg?v=460"},{"code":"8002502","description":"CONECTOR BIMETALICO DE DERIVACION A COMPRESION TIPO H P.CONDUCTOR 70 / 50-70MM2 P.RED AEREA","unit":"UND","aliases":["H 300","CONECTOR H 300"],"priority":"","source":"ALIAS","image":"/material-images/conector_tipo_h.jpg?v=460"},{"code":"3001371","description":"CONECTOR DE DERIVACION A COMPRESION TIPO C P.CONDUCTOR 35-70 / 35-70MM2 P.REDES M.T.Y B.T.","unit":"UND","aliases":["G PARA TIERRA","C PARA TIERRA","CONECTOR C PARA TIERRA"],"priority":"","source":"ALIAS","image":"/material-images/conector_cobre_tipo_c.jpg?v=460"},{"code":"8002494","description":"CONECTOR DE DERIVACION A COMPRESION TIPO G P.CONDUCTOR DE COBRE 16-35 / 16-35MM2 P.RED AEREA","unit":"UND","aliases":["G 35/35","CONECTOR G 35/35"],"priority":"GG01","source":"ALIAS","image":"/material-images/conector_cobre_g.jpg?v=460"},{"code":"8002496","description":"CONECTOR DE DERIVACION A COMPRESION TIPO G P.CONDUCTOR DE COBRE 70 / 35MM2 P.RED AEREA","unit":"UND","aliases":["G 70/35","CONECTORES G 70/35MM","CONECTOR G 70/35"],"priority":"","source":"ALIAS","image":"/material-images/conector_cobre_g.jpg?v=460"},{"code":"8002495","description":"CONECTOR DE DERIVACION A COMPRESION TIPO G P.CONDUCTOR DE COBRE 70 / 70MM2 P.RED AEREA","unit":"UND","aliases":["G 70","CONECTORES G 70MM","G 70/70","CONECTOR G 70/70"],"priority":"","source":"ALIAS","image":"/material-images/conector_cobre_g.jpg?v=460"},{"code":"8002350","description":"CONECTOR DE DOBLE PERNO DE AJUSTE RANGO 120-185 MM2, DISTANCIA ENTRE EJES DE PERNOS 44,45MM (1 3/4\")","unit":"UND","aliases":["BORNE"],"priority":"","source":"ALIAS","image":"/material-images/conector_doble_perno.jpg?v=460"},{"code":"8002349","description":"CONECTOR DE DOBLE PERNO DE AJUSTE RANGO 35-70 MM2, DISTANCIA ENTRE EJES DE PERNOS 44,45MM (1 3/4\")","unit":"UND","aliases":["BORNE"],"priority":"","source":"ALIAS","image":"/material-images/conector_doble_perno.jpg?v=460"},{"code":"3001406","description":"CONECTOR TERMINAL A COMPRESION DE COBRE P.CABLE 120MM2, SIMPLE FIJACION","unit":"UND","aliases":["TERMINAL 120","CONECTORES TERMINALES DE 120MM2","TERMINAL 120 MM2"],"priority":"","source":"ALIAS","image":"/material-images/terminal_compresion_cobre.jpg?v=460"},{"code":"3001393","description":"CONECTOR TERMINAL A COMPRESION DE COBRE P.CABLE 35MM2, SIMPLE FIJACION","unit":"UND","aliases":["TERMINAL 35","CONECTORES TERMINALES DE 35MM2 (PARA SECCIONADORES Y RIGIDOS)","TERMINAL 35 MM2"],"priority":"","source":"ALIAS","image":"/material-images/terminal_compresion_cobre.jpg?v=460"},{"code":"3001402","description":"CONECTOR TERMINAL A COMPRESION DE COBRE P.CABLE 35MM2, SIMPLE FIJACION P.PERNO 1/2\" DIAM.","unit":"UND","aliases":["TERMINAL 35 AGUJERO GRANDE","CONECTORES TERMINALES DE 35MM2 (PARA ANCLAJE, PINES, VARILLAS)","TERMINAL 35 GRANDE"],"priority":"","source":"ALIAS","image":"/material-images/terminal_compresion_cobre.jpg?v=460"},{"code":"3001404","description":"CONECTOR TERMINAL A COMPRESION DE COBRE P.CABLE 70MM2, SIMPLE FIJACION","unit":"UND","aliases":["TERMINAL 70","CONECTORES TERMINALES DE 70MM2","TERMINAL 70 MM2"],"priority":"","source":"ALIAS","image":"/material-images/terminal_compresion_cobre.jpg?v=460"},{"code":"3000674","description":"CRUCETA ASIMETRICA DE MADERA DE 4\" X 5\" X 5,58 PIES CON TRATAMIENTO CCB","unit":"UND","aliases":["CRUCETA 5 PIES"],"priority":"","source":"ALIAS","image":"/material-images/cruceta_madera_tratada.jpg?v=460"},{"code":"3000677","description":"CRUCETA ASIMETRICA DE MADERA DE 4\" X 5\" X 6,6 PIES CON TRATAMIENTO CCB","unit":"UND","aliases":["CRUCETA 7 PIES"],"priority":"P","source":"ALIAS","image":"/material-images/cruceta_madera_tratada.jpg?v=460"},{"code":"3000727","description":"CRUCETA DE MADERA 4\" X 5\" X 9 PIES CON TRATAMIENTO CCB","unit":"UND","aliases":["CRUCETA 9 PIES"],"priority":"P","source":"ALIAS","image":"/material-images/cruceta_madera_tratada.jpg?v=460"},{"code":"3000719","description":"CRUCETA SIMETRICA DE MADERA DE 4\" X 4\" X 1,3 PIES CON TRATAMIENTO CCB","unit":"UND","aliases":["CRUCETA PARA TACO"],"priority":"P","source":"ALIAS","image":"/material-images/cruceta_taco_madera.jpg?v=460"},{"code":"8002172","description":"CUBIERTA AISLANTE DE PROTECCION P.CONDUCTOR AEREO DESNUDO 4 - 25MM DIAM. CL.15KV","unit":"UND","aliases":["MVLC-CHINO 15KV"],"priority":"","source":"ALIAS","image":"/material-images/cubierta_conductor_mvlc.jpg?v=460"},{"code":"8002169","description":"CUBIERTA AISLANTE PROTECCION P.CONDUCTOR AEREO DESNUDO 35 - 185MM2 CL.25KV","unit":"M","aliases":["MVLC 18 CON MASTIL"],"priority":"P","source":"ALIAS","image":"/material-images/cubierta_conductor_mvlc.jpg?v=460"},{"code":"3001305","description":"CUBIERTA.AISLA.PROTEC.P/COND.AEREO DESN.MT.16-70MM2.15KV.","unit":"M","aliases":["MVLC 14"],"priority":"P","source":"ALIAS","image":"/material-images/cubierta_conductor_mvlc.jpg?v=460"},{"code":"3001306","description":"CUBIERTA.AISLA.PROTEC.P/COND.AEREO DESN.MT.70-185MM2.15KV.","unit":"M","aliases":["MVLC 18 SIN MASTIL"],"priority":"P","source":"ALIAS","image":"/material-images/cubierta_conductor_mvlc.jpg?v=460"},{"code":"3000689","description":"DIAGONAL ACERO GALV. 45MM X 45MM X 1,07M X 4MM","unit":"UND","aliases":["DIAGONAL PEQUEÑA"],"priority":"P","source":"ALIAS","image":"/material-images/diagonal_acero_galvanizado.jpg?v=460"},{"code":"3000690","description":"DIAGONAL ACERO GALV. 45MM X 45MM X 1,48M X 4MM","unit":"UND","aliases":["DIAGONAL GRANDE"],"priority":"P","source":"ALIAS","image":"/material-images/diagonal_acero_galvanizado.jpg?v=460"},{"code":"8002200","description":"EMPALME PREFORM. DE ALUMOWELD P.COND.AA. 70MM2.","unit":"UND","aliases":["PREFORMADO 70","PREFORMADO 70 MM2","PREFORMADO 70 MM2 MARRON"],"priority":"","source":"ALIAS","image":"/material-images/empalme_preformado_aluminio.jpg?v=460"},{"code":"8002202","description":"EMPALME PREFORMADO DE ALEACION DE ALUMINIO P.CONDUCTOR AAAC 120MM2 / 13,84 - 14,41MM DIAM.","unit":"UND","aliases":["PREFORMADO120","PREFORMADO 120","PREFORMADO 120 MM2","PREFORMADO 120 MM2 ROJO"],"priority":"","source":"ALIAS","image":"/material-images/empalme_preformado_aluminio.jpg?v=460"},{"code":"8002206","description":"EMPALME PREFORMADO DE ALEACION DE ALUMINIO P.CONDUCTOR AAAC 185MM2 / 17,06 - 17,79MM DIAM.","unit":"UND","aliases":["PREFORMADO 185","PREFORMADO 185 MM2","PREFORMADO 185 MM2 NARANJA"],"priority":"","source":"ALIAS","image":"/material-images/empalme_preformado_aluminio.jpg?v=460"},{"code":"8002076","description":"ESLABON DOBLE TP.8 GIRATORIO DE ACERO GALV. P.FIJAR CONDUCTORES A AISLADORES EN LINEAS AREAS M.T.","unit":"UND","aliases":["ESLABON"],"priority":"","source":"ALIAS","image":"/material-images/eslabon_doble_galvanizado.jpg?v=460"},{"code":"8000519","description":"FLEJE DE ACERO INOXIDABLE TIPO AISI 316 DE 19MM (3/4\") ANCHO P.ALTA CORROSION","unit":"M","aliases":["FLEJE"],"priority":"P","source":"ALIAS","image":"/material-images/fleje_acero_inoxidable.jpg?v=460"},{"code":"8001828","description":"FUSI.SEC.UNIP.AE.22.9KV.100A.12KA.600MM.L.FUG.MIN","unit":"UND","aliases":["CUT OUT 22.9KV","CUT-OUT DE 22.9KV","CUTOUTS DE 22.9 KV"],"priority":"","source":"ALIAS","image":"/material-images/cutout_fusible_22kv.jpg?v=460"},{"code":"8001850","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 100A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 100A","FUSIBLE DE 100A","FUSIBLE 100K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg?v=460"},{"code":"8001887","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 10A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 10A","FUSIBLE DE 10A","FUSIBLE 10K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg?v=460"},{"code":"8001888","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 12A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 12A","FUSIBLE DE 12A","FUSIBLE 12K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg?v=460"},{"code":"8001889","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 15A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 15A","FUSIBLE DE 15A","FUSIBLE 15K"],"priority":"GG01","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg?v=460"},{"code":"8001891","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 20A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 20A","FUSIBLE DE 20A","FUSIBLE 20K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg?v=460"},{"code":"8001895","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 30A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 30A","FUSIBLE DE 30A","FUSIBLE 30K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg?v=460"},{"code":"8001882","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 3A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 3A","FUSIBLE DE 3A","FUSIBLE 3K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg?v=460"},{"code":"8001847","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 65A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 65A","FUSIBLE DE 65A","FUSIBLE 65K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg?v=460"},{"code":"8001883","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 6A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 6A","FUSIBLE DE 6A","FUSIBLE 6K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg?v=460"},{"code":"8001886","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 8A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 8A","FUSIBLE DE 8A","FUSIBLE 8K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg?v=460"},{"code":"8001845","description":"FUSIBLE EXPULSION 10KV. 50A.P.FUS.SECC.UNIP.INTEMP","unit":"UND","aliases":["FUSIBLE","FUSIBLE 50A","FUSIBLE 50K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg?v=460"},{"code":"8001817","description":"FUSIBLE SECC.UNIP. AEREO 10KV, 100A, MINIMO 95KV BIL, 12KA","unit":"UND","aliases":["CUT OUT 10KV","CUTOUT 10KV","SECCIONADOR FUSIBLE 10KV"],"priority":"GG01","source":"ALIAS","image":"/material-images/cutout_fusible_aereo.jpg?v=460"},{"code":"8002097","description":"GRAPA DE ANCLAJE TP.PISTOLA DE ACERO GALV. P.CONDUCTOR CU 16 - 70MM2","unit":"UND","aliases":["GRAPA"],"priority":"","source":"ALIAS","image":"/material-images/grapa_anclaje_pistola.jpg?v=460"},{"code":"8002140","description":"GRAPA DE ANCLAJE TP.PISTOLA DE ALEACION DE ALUMINIO P.CONDUCTOR AAAC 120MM2","unit":"UND","aliases":["GRAPA 120"],"priority":"P","source":"ALIAS","image":"/material-images/grapa_anclaje_pistola.jpg?v=460"},{"code":"8002083","description":"GRAPA DE ANCLAJE TP.PISTOLA DE ALEACION DE ALUMINIO P.CONDUCTOR AAAC 185MM2","unit":"UND","aliases":["GRAPA 185"],"priority":"P","source":"ALIAS","image":"/material-images/grapa_anclaje_pistola.jpg?v=460"},{"code":"8002136","description":"GRAPA DE ANCLAJE TP.PISTOLA DE ALEACION DE ALUMINIO P.CONDUCTOR AAAC 70MM2","unit":"UND","aliases":["GRAPA 70"],"priority":"P","source":"ALIAS","image":"/material-images/grapa_anclaje_pistola.jpg?v=460"},{"code":"8002118","description":"GRAPA FIN DE LINEA 360MML 12,6MMD P.CAB.AUTOP.MT","unit":"UND","aliases":["GRAPA PARA AUTOSOPORTADO"],"priority":"","source":"ALIAS","image":"/material-images/grapa_fin_autosoportado.jpg?v=460"},{"code":"8002149","description":"GRAPA SUSPENS. DE ALEAC.AL.P.COND. 70 MM2.","unit":"UND","aliases":["GRAPA SUSPENCION 70"],"priority":"","source":"ALIAS","image":"/material-images/grapa_suspension_aluminio.jpg?v=460"},{"code":"8002153","description":"GRAPA SUSPENS. DE ALEAC.AL.P.COND.185MM2. C/VAR. ARMADO","unit":"UND","aliases":["GRAPA SUSPENCION 185"],"priority":"","source":"ALIAS","image":"/material-images/grapa_suspension_varillas.jpg?v=460"},{"code":"8002151","description":"GRAPA SUSPENS.DE ALEAC.AL.P.COND.120MM2.C/VAR.ARMADO","unit":"UND","aliases":["GRAPA SUSPENCION 120"],"priority":"","source":"ALIAS","image":"/material-images/grapa_suspension_varillas.jpg?v=460"},{"code":"2000073","description":"GUANTE DE NITRILO DESECHABLE TALLA L DE 23CM X 0,13MM C.PUÑO REFORZADO, PUNTAS TEXTURIZADAS","unit":"UND","aliases":["GUANTE NITRILO PEQUEÑO"],"priority":"","source":"ALIAS","image":"/material-images/guante_nitrilo_industrial.jpg?v=460"},{"code":"2000388","description":"GUANTE DE NITRILO DESECHABLE TALLA XL DE 23CM X 0,13MM C.PUÑO REFORZADO, PUNTAS TEXTURIZADAS","unit":"UND","aliases":["GUANTE NITRILO GRANDE"],"priority":"","source":"ALIAS","image":"/material-images/guante_nitrilo_industrial.jpg?v=460"},{"code":"8000687","description":"GUARDACABO DE ACERO GALV. P.CABLE 13MM DIAM. 1,5MM ESPESOR P.PROTEGER CABLE PORTANTE","unit":"UND","aliases":["GUARDACABO PARA VIENTO","GUARDACABO"],"priority":"","source":"ALIAS","image":"/material-images/guardacabo_acero_galvanizado.jpg?v=460"},{"code":"8000535","description":"HEBILLA (HEBILLA) DE ACERO INOXIDABLE TIPO AISI 316 P.FLEJES DE 19MM (3/4\") ANCHO P.ALTA CORROSION","unit":"UND","aliases":["HEBILLAS"],"priority":"P","source":"ALIAS","image":"/material-images/hebilla_acero_inoxidable.jpg?v=460"},{"code":"8003160","description":"HOJA DE SIERRA SANFLEX 12\", 18 DIENTES POR PULG. 3806-300-18-100P","unit":"UND","aliases":["HOJA DE SIERRA","HOJA SIERRA"],"priority":"P","source":"ALIAS","image":"/material-images/hoja_sierra_bimetal.jpg?v=460"},{"code":"3001051","description":"MANTA AISLANTE ANTITRACKING AUTOFUNDENTE C.CAPA EPR DE 102MM X 3M COLOR NEGRO 15KV","unit":"UND","aliases":["PAD"],"priority":"P","source":"ALIAS","image":"/material-images/manta_aislante_epr.jpg?v=460"},{"code":"3001048","description":"MANTA AISLANTE ANTITRACKING AUTOFUNDENTE C.CAPA EPR DE 200MM X 3M COLOR NEGRO CL.2A 15KV","unit":"UND","aliases":["PAD"],"priority":"","source":"ALIAS","image":"/material-images/manta_aislante_epr.jpg?v=460"},{"code":"3000685","description":"MENSULA DE MADERA DE 4\" X 5\" X 6 PIES CON TRATAMIENTO CCB","unit":"UND","aliases":["CRUCETA 6PIES"],"priority":"","source":"ALIAS","image":"/material-images/mensula_madera_tratada.jpg?v=460"},{"code":"3000687","description":"MENSULA DE MADERA DE 4\" X 5\" X 7 PIES CON TRATAMIENTO CCB","unit":"UND","aliases":["CRUCETA 7PIES"],"priority":"P","source":"ALIAS","image":"/material-images/mensula_madera_tratada.jpg?v=460"},{"code":"8001981","description":"OJAL ROSCADO AC.GALV.,DE 3/4PULG.D. X86MML. P.L.A.","unit":"UND","aliases":["OJAL 3/4"],"priority":"","source":"ALIAS","image":"/material-images/ojal_roscado_galvanizado.jpg?v=460"},{"code":"8001977","description":"OJAL ROSCADO AC.GALV.,DE 5/8PULG.D. X80MML. P.L.A.","unit":"UND","aliases":["OJAL 5/8"],"priority":"P","source":"ALIAS","image":"/material-images/ojal_roscado_galvanizado.jpg?v=460"},{"code":"8002663","description":"PASTA ANTICORROSIVA CONDUCTORA DE USO ELECTRICO PENETROX E.EN ENVASE DE 8 ONZAS","unit":"UND","aliases":["PENETROX"],"priority":"","source":"ALIAS","image":"/material-images/pasta_inhibidora_electrica.jpg?v=460"},{"code":"8000647","description":"PERNO HO.GALV.CAB.EXAG. 1/2\" X 1.1/2 P.C/TUERCA SID-127","unit":"UND","aliases":["PERNO 1/2"],"priority":"P","source":"ALIAS","image":"/material-images/perno_hexagonal_galvanizado.jpg?v=460"},{"code":"8001122","description":"PERNO HO.GALV.CAB.EXAG. 3/8\" X 1\" C/TUERCA","unit":"UND","aliases":["PERNO"],"priority":"","source":"ALIAS","image":"/material-images/perno_hexagonal_galvanizado.jpg?v=460"},{"code":"8001124","description":"PERNO HO.GALV.CAB.EXAG. 3/8\" X 1.1/2\" C/TUERCA","unit":"UND","aliases":["PERNO 3/8"],"priority":"P","source":"ALIAS","image":"/material-images/perno_hexagonal_galvanizado.jpg?v=460"},{"code":"8001126","description":"PERNO HO.GALV.CAB.EXAG. 3/8\" X 2\" C/TUERCA","unit":"UND","aliases":["PERNO"],"priority":"","source":"ALIAS","image":"/material-images/perno_hexagonal_galvanizado.jpg?v=460"},{"code":"8002003","description":"PLANCHA DE COBRE P.LINEA A TIERRA C.AGUJERO 20MM DIAM.","unit":"UND","aliases":["PLANCHA J GRANDE","CHAPAS DE TIERRA"],"priority":"P","source":"ALIAS","image":"/material-images/plancha_cobre_tierra.jpg?v=460"},{"code":"8002007","description":"PLANCHA DE COBRE PARA LINEA A TIERRA CON AGUJERO DE 13MM DE DIAMETRO","unit":"UND","aliases":["PLANCHA J PEQUEÑO","CHAPAS DE TIERRA"],"priority":"P","source":"ALIAS","image":"/material-images/plancha_cobre_tierra.jpg?v=460"},{"code":"2000424","description":"PROTECTOR DE FIBRA DE VIDRIO ANTI AVES PARA MENSULA, AUTOAJUSTABLE","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS","image":"/material-images/protector_aves_fibra.jpg?v=460"},{"code":"3000809","description":"PROTECTOR DE FIBRA DE VIDRIO P.SECCIONADOR AEREO EN PDS ASIMETRICO 1100 X 800 X 600MM","unit":"UND","aliases":["PROTECTOR PDS (TRIANGULO)"],"priority":"","source":"ALIAS","image":"/material-images/protector_pds_triangulo.jpg?v=460"},{"code":"3000807","description":"PROTECTOR DE FIBRA DE VIDRIO P.SECCIONADOR AEREO EN PDS PARALELO AL PREDIO 2100 X 1110MM","unit":"UND","aliases":["PROTECTOR PDS PARALELO PREDIO"],"priority":"","source":"ALIAS","image":"/material-images/protector_pds_triangulo.jpg?v=460"},{"code":"3000808","description":"PROTECTOR DE FIBRA DE VIDRIO P.SECCIONADOR AEREO EN PDS PERPENDICULAR AL PREDIO 1700 X 1110MM","unit":"UND","aliases":["PROTECTOR PDS PERPEND PREDIO"],"priority":"","source":"ALIAS","image":"/material-images/protector_pds_triangulo.jpg?v=460"},{"code":"3000806","description":"PROTECTOR DE FIBRA DE VIDRIO P.SECCIONADOR AEREO EN SAB 2200 X 1110MM","unit":"UND","aliases":["PROTECTOR DE SAB"],"priority":"","source":"ALIAS","image":"/material-images/protector_pds_triangulo.jpg?v=460"},{"code":"3000802","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P. SECCIONADOR RIGIDO PARA REDES AEREAS MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS","image":"/material-images/protector_pds_triangulo.jpg?v=460"},{"code":"3000797","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P.MENSULA DE MADERA CON AISLADOR TIPO PIN PARA REDES AEREAS MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS","image":"/material-images/protector_aves_fibra.jpg?v=460"},{"code":"3000795","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P.MENSULAS DE CONCRETO DE 1 Y 0.60 METROS PARA REDES AEREAS MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS","image":"/material-images/protector_punta_poste.jpg?v=460"},{"code":"3000801","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P.MENSULAS DE MADERA CON DIAGONAL EN PDS PARA REDES AEREAS MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS","image":"/material-images/protector_aves_fibra.jpg?v=460"},{"code":"3000800","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P.MENSULAS DE MADERA SIN DIAGONAL EN PDS PARA REDES AEREAS MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS","image":"/material-images/protector_aves_fibra.jpg?v=460"},{"code":"3000803","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P.PUNTA DE POSTE DE CONCRETO PARA REDES AEREAS MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS","image":"/material-images/protector_punta_poste.jpg?v=460"},{"code":"3000798","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR PARA MENSULA DE MADERA SIN AISLADORES PARA REDES AEREAS DE MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS","image":"/material-images/protector_aves_fibra.jpg?v=460"},{"code":"3000793","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR PARA PALOMILLAS DE CONCRETO PARA REDES AEREAS DE MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS","image":"/material-images/protector_punta_poste.jpg?v=460"},{"code":"4000576","description":"SECCIONADOR UNIP. AEREO 22,9KV 600A 25KA 150KVBIL LF 700MM ARCO 253MM EXT.CORROS.SEVERA SIN CONECTOR","unit":"UND","aliases":["RIGIDO 10KV","SECCIONADOR RIGIDO 10KV","RIGIDO 22.9KV","SECCIONADOR RIGIDO 22.9KV"],"priority":"","source":"ALIAS","image":"/material-images/seccionador_unipolar_aereo.jpg?v=460"},{"code":"4000578","description":"SECCIONADOR UNIPOLAR AEREO 10KV 600A 25KA 95KV BIL LF 430MM EXTERIOR P.CORROSION SEVERA SIN CONECTOR","unit":"UND","aliases":["RIGIDO 22.9KV","SECCIONADOR RIGIDO 22.9KV","RIGIDO 10KV","SECCIONADOR RIGIDO 10KV"],"priority":"","source":"ALIAS","image":"/material-images/seccionador_unipolar_aereo.jpg?v=460"},{"code":"8002689","description":"SOLVENTE DIELECTRICO ECOLOGICO NO CLORADO M.T.","unit":"UND","aliases":["SOLVENTE","SOLVENTE DIELECTRICO"],"priority":"P","source":"ALIAS","image":"/material-images/solvente_dielectrico_envase.jpg?v=460"},{"code":"8002030","description":"SOPORTE LATERAL DE ACERO GALV. P.AISLADOR TP.PIN HIBRIDO O POLIMERICO 22,9KV","unit":"UND","aliases":["LATERAL PARA 22,9KV"],"priority":"","source":"ALIAS","image":"/material-images/soporte_lateral_l.jpg?v=460"},{"code":"8002028","description":"SOPORTE LATERAL PARA AISLADOR HIBRIDO PIN 10KV.","unit":"UND","aliases":["LATERAL PARA 10KV"],"priority":"P","source":"ALIAS","image":"/material-images/soporte_lateral_l.jpg?v=460"},{"code":"8002020","description":"SOPORTE PASANTE ACERO GALV. 201MM LONG. 22MM / 3/4\" DIAM. P.AISLADORES TP.PIN C.ACCESORIOS","unit":"UND","aliases":["LATERAL"],"priority":"","source":"ALIAS","image":"/material-images/soporte_pasante_recto.jpg?v=460"},{"code":"8000856","description":"TIRAFONDO HO.GALV. 3/8\" X 1.1/2\"","unit":"UND","aliases":["TIRAFON PEQUEÑO"],"priority":"","source":"ALIAS","image":"/material-images/tirafondo_acero_galvanizado.jpg?v=460"},{"code":"8000858","description":"TIRAFONDO HO.GALV. 3/8\" X 2\"","unit":"UND","aliases":["TIRAFON MEDIANO"],"priority":"","source":"ALIAS","image":"/material-images/tirafondo_acero_galvanizado.jpg?v=460"},{"code":"8000860","description":"TIRAFONDO HO.GALV. 3/8\" X 2.1/2\"","unit":"UND","aliases":["TIRAFON GRANDE"],"priority":"P","source":"ALIAS","image":"/material-images/tirafondo_acero_galvanizado.jpg?v=460"},{"code":"8000862","description":"TIRAFONDO HO.GALV. 3/8\" X 3\"","unit":"UND","aliases":["TIRAFON EXTRAGRANDE"],"priority":"P","source":"ALIAS","image":"/material-images/tirafondo_acero_galvanizado.jpg?v=460"},{"code":"8002570","description":"TOCUYO DE ALGODON 100% 0.60/0.80 X 1 M.","unit":"UND","aliases":["TOCUYO","TOCUYO DE ALGODON"],"priority":"P","source":"ALIAS","image":"/material-images/tocuyo_tela_algodon.jpg?v=460"},{"code":"8002568","description":"TRAPO INDUSTRIAL","unit":"UND","aliases":["TRAPO","TRAPO INDUSTRIAL"],"priority":"P","source":"ALIAS","image":"/material-images/trapo_industrial_algodon.jpg?v=460"},{"code":"8001781","description":"TUBO PORTAFUSIBLE PARA SECC. UNIP. AEREO 100A, 10KV, CORR.SEVERA","unit":"UND","aliases":["PORTAFUSIBLE 10KV","CAÑA 10KV","TUBO PORTAFUSIBLE 10KV"],"priority":"","source":"ALIAS","image":"/material-images/tubo_portafusible_aereo.jpg?v=460"},{"code":"8001785","description":"TUBO PORTAFUSIBLE PARA SECC. UNIP. AEREO 100A, 22,9KV, CORR.MODERADA","unit":"UND","aliases":["PORTAFUSIBLE 22.9KV","CAÑA 22.9KV","TUBO PORTAFUSIBLE 22.9KV"],"priority":"","source":"ALIAS","image":"/material-images/tubo_portafusible_22kv.jpg?v=460"},{"code":"8002291","description":"UNION P.EMPALME AUTOMATICO P.CONDUCTOR AAAC 120MM2","unit":"UND","aliases":["AUTOMATICO 120","AUTOMATICO 120 MM2"],"priority":"","source":"ALIAS","image":"/material-images/empalme_automatico_aluminio.jpg?v=460"},{"code":"8002235","description":"UNION P.EMPALME AUTOMATICO P.CONDUCTOR AAAC 185MM2","unit":"UND","aliases":["AUTOMATICO 185","AUTOMATICO 185 MM2"],"priority":"","source":"ALIAS","image":"/material-images/empalme_automatico_aluminio.jpg?v=460"},{"code":"8002289","description":"UNION P.EMPALME AUTOMATICO P.CONDUCTOR AAAC 70MM2","unit":"UND","aliases":["AUTOMATICO 70","AUTOMATICO 70 MM2"],"priority":"","source":"ALIAS","image":"/material-images/empalme_automatico_aluminio.jpg?v=460"},{"code":"8002033","description":"VARILLA ROSCADA AC.GALV. 16MMD. X 250MML. L.AEREAS","unit":"UND","aliases":["VARILLA 250"],"priority":"P","source":"ALIAS","image":"/material-images/varilla_roscada_galvanizada.jpg?v=460"},{"code":"8002034","description":"VARILLA ROSCADA AC.GALV. 16MMD. X 300MML. L.AEREAS","unit":"UND","aliases":["VARILLA 300"],"priority":"P","source":"ALIAS","image":"/material-images/varilla_roscada_galvanizada.jpg?v=460"},{"code":"8002035","description":"VARILLA ROSCADA AC.GALV. 16MMD. X 350MML. L.AEREAS","unit":"UND","aliases":["VARILLA 350"],"priority":"P","source":"ALIAS","image":"/material-images/varilla_roscada_galvanizada.jpg?v=460"},{"code":"8002038","description":"VARILLA ROSCADA AC.GALV. 16MMD. X 450MML. L.AEREAS","unit":"UND","aliases":["VARILLA 450"],"priority":"P","source":"ALIAS","image":"/material-images/varilla_roscada_galvanizada.jpg?v=460"},{"code":"8002041","description":"VARILLA ROSCADA AC.GALV. 16MMD. X 550MML. L.AEREAS","unit":"UND","aliases":["VARILLA 550"],"priority":"P","source":"ALIAS","image":"/material-images/varilla_roscada_galvanizada.jpg?v=460"},{"code":"8002043","description":"VARILLA ROSCADA AC.GALV. 16MMD. X 650MML. L.AEREAS","unit":"UND","aliases":["VARILLA 650"],"priority":"P","source":"ALIAS","image":"/material-images/varilla_roscada_galvanizada.jpg?v=460"}],"supervisors":["EBLAS","HTORRES","BHIDALGO","ELIENDO","RDIAZ","OSOTELO","SLINARES","IDAMIAN","PLAZARO","DFERRE","GCANDIA","JQUISPE","WCENTENO"],"units":["F5X-815","BTJ-860","BTD-712","BHL-875","ARE-823","BHM-832","F5W-883"],"observations":["FALTA CORREO DE RECHAZO","FALTA DEVOLVER MATERIAL","FALTA INFORME","FALTA LIBERAR ORDEN","FALTA LIQUIDAR POR INSPECTOR","FALTA NOTIFICAR","FALTA NORMA DE LIQUIDACION","FALTA PEDIDO DE MATERIAL","FALTA RECOGER Y DEVOLVER MATERIAL","FALTA RECOJO DE MATERIAL","FALTA REVISIÓN GCA"],"movements":["DEV","PED","REC"],"defaults":{"destinatario":"SLINARES","puestoDescarga":"RECUPERO","ubicacionFinal":"","c1":"","tp":"L","c2":"","c3":"","alim":"GG01","ce":"1003","operacion":"0010","lote":"LDA-000000","tipoAprovisionamiento":"Reserva para orden","pos":"0"},"supervisorInitials":{"EBLAS":"EB","HTORRES":"UT","BHIDALGO":"BH","ELIENDO":"EL","RDIAZ":"RD","OSOTELO":"OS","SLINARES":"SL","IDAMIAN":"ID","PLAZARO":"PL","DFERRE":"DF","GCANDIA":"GC","JQUISPE":"JQ","WCENTENO":"WC"}};
+const EMBEDDED_DATA={"materials":[{"code":"3004042","description":"ABRAZADERA DE ACERO GALV. 160 - 190MM DIAM. C.4 PERNOS DE AJUSTE P.SOPORTE DEL BRAZO DE APOYO","unit":"UND","aliases":["ABRAZADERA CHICA"],"priority":"P","source":"ALIAS","image":"/material-images/abrazadera_cuatro_pernos.jpg?v=460"},{"code":"3004045","description":"ABRAZADERA DE ACERO GALV. 190 - 225MM DIAM. C.4 PERNOS DE AJUSTE P.SOPORTE DEL BRAZO DE APOYO","unit":"UND","aliases":["ABRAZADERA MEDIANA"],"priority":"P","source":"ALIAS","image":"/material-images/abrazadera_cuatro_pernos.jpg?v=460"},{"code":"3004005","description":"ABRAZADERA DE ACERO GALV. 230 - 267MM DIAM. C.4 PERNOS DE AJUSTE P.SOPORTE DEL BRAZO DE APOYO","unit":"UND","aliases":["ABRAZADERA GRANDE"],"priority":"P","source":"ALIAS","image":"/material-images/abrazadera_cuatro_pernos.jpg?v=460"},{"code":"3004041","description":"ABRAZADERA DE ACERO GALV. P.CABLE 120MM2 C.ARCO CENTRAL 80MM DIAM. EN PLATINA DE ACERO 40X140X3MM","unit":"UND","aliases":["ABRAZADERA"],"priority":"","source":"ALIAS","image":"/material-images/abrazadera_cable_platina.jpg?v=460"},{"code":"3004040","description":"ABRAZADERA DE ACERO GALV. P.CABLE 25MM2 C.ARCO CENTRAL 36MM DIAM. EN PLATINA DE ACERO 90X130X6,35MM","unit":"UND","aliases":["ABRAZADERA"],"priority":"","source":"ALIAS","image":"/material-images/abrazadera_cable_platina.jpg?v=460"},{"code":"3004039","description":"ABRAZADERA METALICA P.CABLE UNIPOLAR 40.5-43.5MM C.ARCO CENTRAL 32MM RADIO EN PLATINA DE 90X148X4MM","unit":"UND","aliases":["ABRAZADERA PARA CABLE"],"priority":"","source":"ALIAS","image":"/material-images/abrazadera_cable_platina.jpg?v=460"},{"code":"3004038","description":"ABRAZADERA METALICA PARA CABLE UNIPOLAR 31.2-38MM C.ARCO CENTRAL 25MM RADIO EN PLATINA DE 90X130X4MM","unit":"UND","aliases":["ABRAZADERA PARA CABLE"],"priority":"","source":"ALIAS","image":"/material-images/abrazadera_cable_platina.jpg?v=460"},{"code":"3004044","description":"ABRAZADERA METALICA PARA CABLE UNIPOLAR 47.1-49MM C.ARCO CENTRAL 38MM RADIO EN PLATINA DE 90X150X4MM","unit":"UND","aliases":["ABRAZADERA"],"priority":"","source":"ALIAS","image":"/material-images/abrazadera_cable_platina.jpg?v=460"},{"code":"3004020","description":"ABRAZADERA PARA VIENTO AC.GALV. 120-160MMD.M.T.","unit":"UND","aliases":["ABRAZADERA PARA VIENTO PEQUEÑA","ABRAZADERA PARA VIENTO CHICA"],"priority":"","source":"ALIAS","image":"/material-images/abrazadera_viento_galvanizada.jpg?v=460"},{"code":"3004023","description":"ABRAZADERA PARA VIENTO AC.GALV. 170-245MMD. M.T.","unit":"UND","aliases":["ABRAZADERA PARA VIENTO GRANDE"],"priority":"","source":"ALIAS","image":"/material-images/abrazadera_viento_galvanizada.jpg?v=460"},{"code":"8002821","description":"ACEITE 3 EN 1","unit":"UND","aliases":["ACEITE"],"priority":"","source":"ALIAS","image":"/material-images/aceite_multiuso_lata.jpg?v=460"},{"code":"3000907","description":"AISLADOR POLIMERICO EXTENSOR 24KV P/CUT-OUT","unit":"UND","aliases":["AISLADOR EXTENSOR"],"priority":"","source":"ALIAS","image":"/material-images/aislador_extensor_polimerico.jpg?v=460"},{"code":"3000942","description":"AISLADOR POLIMERICO TP. LINE POST (CON LINEA FUGA PROTEGIDA) PARA LINEAS DE 10 KV.","unit":"UND","aliases":["AISLADOR PIN 10KV"],"priority":"P","source":"ALIAS","image":"/material-images/aislador_post_polimerico.jpg?v=460"},{"code":"3000944","description":"AISLADOR POLIMERICO TP.LINE POST P/LINEAS AEREAS 22,9KV.","unit":"UND","aliases":["AISLADOR PIN 22,9KV"],"priority":"P","source":"ALIAS","image":"/material-images/aislador_pin_22kv.jpg?v=460"},{"code":"3000935","description":"AISLADOR POLIMERICO TP.SUSPENSION / ANCLAJE 10KV 400MM LONG. L.F. 600MM 45KN C.ACCESORIOS","unit":"UND","aliases":["AISLADOR SUSPENSION 10KV"],"priority":"P","source":"ALIAS","image":"/material-images/aislador_suspension_polimerico.jpg?v=460"},{"code":"3000971","description":"AISLADOR SUSP.POLIMERICO P.REDES DISTRIB. DE 22,9KV.","unit":"UND","aliases":["AISLADOR SUSPENSION  22,9KV"],"priority":"P","source":"ALIAS","image":"/material-images/aislador_suspension_22kv.jpg?v=460"},{"code":"8002192","description":"AMARRE DOBLE DE ALUMINIO 4 AWG 1800MM LONG. P.AISLADOR PIN C.CONDUCTOR ALUMINIO MAYOR A 70MM2 EN M.T","unit":"UND","aliases":["AMARRES"],"priority":"","source":"ALIAS","image":"/material-images/amarre_doble_aluminio.jpg?v=461"},{"code":"8002193","description":"AMARRE PREFORMADO P.SUJECION CABLE DE VIENTO DE ACERO GALV. 5/16\" DIAM. CLASE C","unit":"UND","aliases":["PREFORMADO PARA VIENTO","PREFORMADO VIENTO"],"priority":"","source":"ALIAS","image":"/material-images/retencion_preformada_viento.jpg?v=461"},{"code":"8002189","description":"AMARRE SIMPLE DE ALUMINIO 4 AWG 1000MM LONG. P.AISLADOR PIN C.CONDUCTOR ALUMINIO HASTA 70MM2 EN M.T.","unit":"UND","aliases":["AMARRE SIMPLE PARA AISLADOR","AMARRE SIMPLE","AMARRE AL-BLANDO","AMARRE BLANDO"],"priority":"P","source":"ALIAS","image":"/material-images/amarre_aluminio_preformado.jpg?v=461"},{"code":"8000505","description":"ARANDELA CUADRADA CURVA DE ACERO GALV. 55 X 5MM C.AGUJERO 17,5MM DIAM","unit":"UND","aliases":["ARANDELA CURVA","ARANDELAS"],"priority":"","source":"ALIAS","image":"/material-images/arandela_cuadrada_curva.jpg?v=460"},{"code":"8000564","description":"ARANDELA CUADRADA PLANA DE ACERO GALV. 55 X 4,5MM C.AGUJERO 17,5MM DIAM","unit":"UND","aliases":["ARANDELA PLANA","ARANDELAS"],"priority":"P","source":"ALIAS","image":"/material-images/arandela_cuadrada_galvanizada.jpg?v=460"},{"code":"8000568","description":"ARANDELA PLANA AC.GALV. PERNO 1/2\"","unit":"UND","aliases":["ARANDELA 1/2","ARANDELAS"],"priority":"P","source":"ALIAS","image":"/material-images/arandela_plana_redonda.jpg?v=460"},{"code":"8000566","description":"ARANDELA PLANA AC.GALV. PERNO 3/8\"","unit":"UND","aliases":["ARANDELA 3/8","ARANDELAS"],"priority":"P","source":"ALIAS","image":"/material-images/arandela_plana_redonda.jpg?v=460"},{"code":"8000392","description":"ARANDELA PRESION AC.GALV. P.PERNO DE 1/2\"","unit":"UND","aliases":["ARANDELA","ARANDELAS"],"priority":"","source":"ALIAS","image":"/material-images/arandela_presion_helicoidal.jpg?v=460"},{"code":"8000388","description":"ARANDELA PRESION AC.GALV. P.PERNO DE 3/8\"","unit":"UND","aliases":["ARANDELA","ARANDELAS"],"priority":"","source":"ALIAS","image":"/material-images/arandela_presion_helicoidal.jpg?v=460"},{"code":"8002027","description":"BRAZO DE APOYO TP.VIOLIN DE ACERO GALV. 2\" X 875MM C.ACCESORIOS","unit":"UND","aliases":["VIOLIN PARA RETENIDA"],"priority":"","source":"ALIAS","image":"/material-images/brazo_violin_retenida.jpg?v=460"},{"code":"3001692","description":"CABLE AO.GO.TIPO \"B\" DE 5/16\".5080KG.MANO IZQ.7 HILOS.P.RETENIDA","unit":"M","aliases":["CABLE PARA RETENIDA","CABLE VIENTO"],"priority":"","source":"ALIAS","image":"/material-images/cable_acero_retenida.jpg?v=460"},{"code":"8002023","description":"CANALETA PROTECTORA ACERO GALV. 2200MM P.PROTEGER CABLE P.VIENTO","unit":"UND","aliases":["CANALETA PARA RETENIDA","CANALETA"],"priority":"","source":"ALIAS","image":"/material-images/canaleta_protectora_viento.jpg?v=460"},{"code":"8001058","description":"CARTEL DE SENALIZACION LIMITACION / INTERDICCION - PELIGRO DE MUERTE 230 X 265 X 2MM","unit":"UND","aliases":["CARTEL PARA DMS"],"priority":"P","source":"ALIAS","image":"/material-images/cartel_peligro_electrico.jpg?v=460"},{"code":"3001107","description":"CINTA AISLANTE ANTITRACKING AUTOFUNDENTE DE SILICONA COLOR GRIS 15KV DE 50MM X 11M","unit":"UND","aliases":["CINTA GRIS"],"priority":"P","source":"ALIAS","image":"/material-images/cinta_silicona_gris.jpg?v=460"},{"code":"3001339","description":"CINTA AISLANTE TERMOPLASTICA DE PVC ALTA PERFORMANCE 38MM X 33M X 0,18MM 600V COLOR NEGRO","unit":"UND","aliases":["CINTA ANCHA","CINTA NEGRA ANCHA"],"priority":"P","source":"ALIAS","image":"/material-images/cinta_aislante_negra.jpg?v=460"},{"code":"3001330","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 18,3M X 0,18MM 600V COLOR BLANCO USO EN INTERIORES","unit":"UND","aliases":["CINTA BLANCA"],"priority":"P","source":"ALIAS","image":"/material-images/cinta_aislante_blanca.jpg?v=460"},{"code":"3001332","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 18,3M X 0,18MM 600V COLOR ROJO USO EN INTERIORES","unit":"UND","aliases":["CINTA ROJA"],"priority":"P","source":"ALIAS","image":"/material-images/cinta_aislante_roja.jpg?v=460"},{"code":"3001333","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 18,3M X 0,18MM 600V COLOR VERDE USO EN INTERIORES","unit":"UND","aliases":["CINTA VERDE"],"priority":"P","source":"ALIAS","image":"/material-images/cinta_aislante_verde.jpg?v=460"},{"code":"3001316","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,15MM 600V COLOR BLANCO USO EN INTERIORES","unit":"UND","aliases":["CINTA BLANCA"],"priority":"","source":"ALIAS","image":"/material-images/cinta_aislante_blanca.jpg?v=460"},{"code":"3001318","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,15MM 600V COLOR ROJO USO EN INTERIORES","unit":"UND","aliases":["CINTA ROJA"],"priority":"","source":"ALIAS","image":"/material-images/cinta_aislante_roja.jpg?v=460"},{"code":"3001319","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,15MM 600V COLOR VERDE USO EN INTERIORES","unit":"UND","aliases":["CINTA VERDE"],"priority":"","source":"ALIAS","image":"/material-images/cinta_aislante_verde.jpg?v=460"},{"code":"3001323","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,18MM 600V COLOR BLANCO USO EN INTERIORES","unit":"UND","aliases":["CINTA BLANCA"],"priority":"","source":"DRE","image":"/material-images/cinta_aislante_blanca.jpg?v=460"},{"code":"3001327","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,18MM 600V COLOR ROJO USO EN INTERIORES","unit":"UND","aliases":["CINTA ROJA"],"priority":"","source":"DRE","image":"/material-images/cinta_aislante_roja.jpg?v=460"},{"code":"3001329","description":"CINTA AISLANTE TERMOPLASTICA DE PVC DE 19MM X 20M X 0,18MM 600V COLOR VERDE USO EN INTERIORES","unit":"UND","aliases":["CINTA VERDE"],"priority":"","source":"DRE","image":"/material-images/cinta_aislante_verde.jpg?v=460"},{"code":"8002548","description":"CINTILLO DE NYLON COLOR NEGRO 14 1/2\" (368MM) LONG., 7,6MM (0,30\") ANCHO, 54.4KG (120LB) DE TENSION","unit":"UND","aliases":["10","UND","L"],"priority":"GG01","source":"ALIAS","image":"/material-images/cintillo_nylon_negro.jpg?v=460"},{"code":"3001719","description":"CONDUCTOR CABLEADO DESNUDO ALEACION ALUMINIO 120MM2 19 HILOS C.GRASA","unit":"M","aliases":["AL 120"],"priority":"","source":"ALIAS","image":"/material-images/conductor_aluminio_120mm2.jpg?v=460"},{"code":"3001723","description":"CONDUCTOR CABLEADO DESNUDO ALEACION ALUMINIO 185MM2 37 HILOS C.GRASA","unit":"M","aliases":["AL 185"],"priority":"P","source":"ALIAS","image":"/material-images/conductor_aluminio_185mm2.jpg?v=460"},{"code":"3001715","description":"CONDUCTOR CABLEADO DESNUDO ALEACION ALUMINIO 70MM2 7 HILOS C.GRASA","unit":"M","aliases":["AL 70"],"priority":"P","source":"ALIAS","image":"/material-images/conductor_aluminio_70mm2.jpg?v=460"},{"code":"3001671","description":"CONDUCTOR CABLEADO TW 750V.UNIP.AMARI. 1X 35 MM2","unit":"M","aliases":["TW 35","CONDUCTOR TW 35MM2"],"priority":"GG01","source":"ALIAS","image":"/material-images/conductor_tw_35mm2.jpg?v=460"},{"code":"3001673","description":"CONDUCTOR CABLEADO TW 750V.UNIP.AMARI. 1X 70 MM2","unit":"M","aliases":["TW 70","CONDUCTOR TW 70MM2"],"priority":"P","source":"ALIAS","image":"/material-images/conductor_tw_70mm2.jpg?v=460"},{"code":"3001675","description":"CONDUCTOR CABLEADO TW 750V.UNIP.AMARI. 1X120 MM2","unit":"M","aliases":["TW 120","CONDUCTOR TW 120MM2"],"priority":"P","source":"ALIAS","image":"/material-images/conductor_tw_120mm2.jpg?v=460"},{"code":"3001624","description":"CONDUCTOR CABLEADO TW 750V.UNIP.AMARI. 1X185 MM2","unit":"M","aliases":["TW 185","CONDUCTOR TW 185MM2"],"priority":"P","source":"ALIAS","image":"/material-images/conductor_tw_185mm2.jpg?v=460"},{"code":"8002506","description":"CONECTOR BIMETALICO DE DERIVACION A COMPRESION TIPO H P.CONDUCTOR 120-185 / 120-185MM2 P.RED AEREA","unit":"UND","aliases":["H 450","CONECTOR H 450"],"priority":"","source":"ALIAS","image":"/material-images/conector_tipo_h.jpg?v=460"},{"code":"8002503","description":"CONECTOR BIMETALICO DE DERIVACION A COMPRESION TIPO H P.CONDUCTOR 120-185/16-70MM2 P.RED AEREA","unit":"UND","aliases":["H 500","CONECTOR H 500"],"priority":"","source":"ALIAS","image":"/material-images/conector_tipo_h.jpg?v=460"},{"code":"8002504","description":"CONECTOR BIMETALICO DE DERIVACION A COMPRESION TIPO H P.CONDUCTOR 120-240 / 120-240MM2 P.RED AEREA","unit":"UND","aliases":["H 525","CONECTOR H 525"],"priority":"GG01","source":"ALIAS","image":"/material-images/conector_tipo_h.jpg?v=460"},{"code":"8002500","description":"CONECTOR BIMETALICO DE DERIVACION A COMPRESION TIPO H P.CONDUCTOR 70 / 16-35MM2 P.RED AEREA","unit":"UND","aliases":["H 200","CONECTOR H 200"],"priority":"","source":"ALIAS","image":"/material-images/conector_tipo_h.jpg?v=460"},{"code":"8002502","description":"CONECTOR BIMETALICO DE DERIVACION A COMPRESION TIPO H P.CONDUCTOR 70 / 50-70MM2 P.RED AEREA","unit":"UND","aliases":["H 300","CONECTOR H 300"],"priority":"","source":"ALIAS","image":"/material-images/conector_tipo_h.jpg?v=460"},{"code":"3001371","description":"CONECTOR DE DERIVACION A COMPRESION TIPO C P.CONDUCTOR 35-70 / 35-70MM2 P.REDES M.T.Y B.T.","unit":"UND","aliases":["G PARA TIERRA","C PARA TIERRA","CONECTOR C PARA TIERRA"],"priority":"","source":"ALIAS","image":"/material-images/conector_cobre_tipo_c.jpg?v=460"},{"code":"8002494","description":"CONECTOR DE DERIVACION A COMPRESION TIPO G P.CONDUCTOR DE COBRE 16-35 / 16-35MM2 P.RED AEREA","unit":"UND","aliases":["G 35/35","CONECTOR G 35/35"],"priority":"GG01","source":"ALIAS","image":"/material-images/conector_cobre_g.jpg?v=460"},{"code":"8002496","description":"CONECTOR DE DERIVACION A COMPRESION TIPO G P.CONDUCTOR DE COBRE 70 / 35MM2 P.RED AEREA","unit":"UND","aliases":["G 70/35","CONECTORES G 70/35MM","CONECTOR G 70/35"],"priority":"","source":"ALIAS","image":"/material-images/conector_cobre_g.jpg?v=460"},{"code":"8002495","description":"CONECTOR DE DERIVACION A COMPRESION TIPO G P.CONDUCTOR DE COBRE 70 / 70MM2 P.RED AEREA","unit":"UND","aliases":["G 70","CONECTORES G 70MM","G 70/70","CONECTOR G 70/70"],"priority":"","source":"ALIAS","image":"/material-images/conector_cobre_g.jpg?v=460"},{"code":"8002350","description":"CONECTOR DE DOBLE PERNO DE AJUSTE RANGO 120-185 MM2, DISTANCIA ENTRE EJES DE PERNOS 44,45MM (1 3/4\")","unit":"UND","aliases":["BORNE"],"priority":"","source":"ALIAS","image":"/material-images/conector_doble_perno.jpg?v=460"},{"code":"8002349","description":"CONECTOR DE DOBLE PERNO DE AJUSTE RANGO 35-70 MM2, DISTANCIA ENTRE EJES DE PERNOS 44,45MM (1 3/4\")","unit":"UND","aliases":["BORNE"],"priority":"","source":"ALIAS","image":"/material-images/conector_doble_perno.jpg?v=460"},{"code":"3001406","description":"CONECTOR TERMINAL A COMPRESION DE COBRE P.CABLE 120MM2, SIMPLE FIJACION","unit":"UND","aliases":["TERMINAL 120","CONECTORES TERMINALES DE 120MM2","TERMINAL 120 MM2"],"priority":"","source":"ALIAS","image":"/material-images/terminal_compresion_cobre.jpg?v=460"},{"code":"3001393","description":"CONECTOR TERMINAL A COMPRESION DE COBRE P.CABLE 35MM2, SIMPLE FIJACION","unit":"UND","aliases":["TERMINAL 35","CONECTORES TERMINALES DE 35MM2 (PARA SECCIONADORES Y RIGIDOS)","TERMINAL 35 MM2"],"priority":"","source":"ALIAS","image":"/material-images/terminal_compresion_cobre.jpg?v=460"},{"code":"3001402","description":"CONECTOR TERMINAL A COMPRESION DE COBRE P.CABLE 35MM2, SIMPLE FIJACION P.PERNO 1/2\" DIAM.","unit":"UND","aliases":["TERMINAL 35 AGUJERO GRANDE","CONECTORES TERMINALES DE 35MM2 (PARA ANCLAJE, PINES, VARILLAS)","TERMINAL 35 GRANDE"],"priority":"","source":"ALIAS","image":"/material-images/terminal_compresion_cobre.jpg?v=460"},{"code":"3001404","description":"CONECTOR TERMINAL A COMPRESION DE COBRE P.CABLE 70MM2, SIMPLE FIJACION","unit":"UND","aliases":["TERMINAL 70","CONECTORES TERMINALES DE 70MM2","TERMINAL 70 MM2"],"priority":"","source":"ALIAS","image":"/material-images/terminal_compresion_cobre.jpg?v=460"},{"code":"3000674","description":"CRUCETA ASIMETRICA DE MADERA DE 4\" X 5\" X 5,58 PIES CON TRATAMIENTO CCB","unit":"UND","aliases":["CRUCETA 5 PIES"],"priority":"","source":"ALIAS","image":"/material-images/cruceta_madera_tratada.jpg?v=461"},{"code":"3000677","description":"CRUCETA ASIMETRICA DE MADERA DE 4\" X 5\" X 6,6 PIES CON TRATAMIENTO CCB","unit":"UND","aliases":["CRUCETA 7 PIES"],"priority":"P","source":"ALIAS","image":"/material-images/cruceta_madera_7pies.jpg?v=461"},{"code":"3000727","description":"CRUCETA DE MADERA 4\" X 5\" X 9 PIES CON TRATAMIENTO CCB","unit":"UND","aliases":["CRUCETA 9 PIES"],"priority":"P","source":"ALIAS","image":"/material-images/cruceta_madera_9pies.jpg?v=461"},{"code":"3000719","description":"CRUCETA SIMETRICA DE MADERA DE 4\" X 4\" X 1,3 PIES CON TRATAMIENTO CCB","unit":"UND","aliases":["CRUCETA PARA TACO"],"priority":"P","source":"ALIAS","image":"/material-images/cruceta_taco_madera.jpg?v=460"},{"code":"8002172","description":"CUBIERTA AISLANTE DE PROTECCION P.CONDUCTOR AEREO DESNUDO 4 - 25MM DIAM. CL.15KV","unit":"UND","aliases":["MVLC-CHINO 15KV"],"priority":"","source":"ALIAS","image":"/material-images/cubierta_conductor_mvlc.jpg?v=460"},{"code":"8002169","description":"CUBIERTA AISLANTE PROTECCION P.CONDUCTOR AEREO DESNUDO 35 - 185MM2 CL.25KV","unit":"M","aliases":["MVLC 18 CON MASTIL"],"priority":"P","source":"ALIAS","image":"/material-images/cubierta_conductor_mvlc.jpg?v=460"},{"code":"3001305","description":"CUBIERTA.AISLA.PROTEC.P/COND.AEREO DESN.MT.16-70MM2.15KV.","unit":"M","aliases":["MVLC 14"],"priority":"P","source":"ALIAS","image":"/material-images/cubierta_conductor_mvlc.jpg?v=460"},{"code":"3001306","description":"CUBIERTA.AISLA.PROTEC.P/COND.AEREO DESN.MT.70-185MM2.15KV.","unit":"M","aliases":["MVLC 18 SIN MASTIL"],"priority":"P","source":"ALIAS","image":"/material-images/cubierta_conductor_mvlc.jpg?v=460"},{"code":"3000689","description":"DIAGONAL ACERO GALV. 45MM X 45MM X 1,07M X 4MM","unit":"UND","aliases":["DIAGONAL PEQUEÑA"],"priority":"P","source":"ALIAS","image":"/material-images/diagonal_acero_galvanizado.jpg?v=460"},{"code":"3000690","description":"DIAGONAL ACERO GALV. 45MM X 45MM X 1,48M X 4MM","unit":"UND","aliases":["DIAGONAL GRANDE"],"priority":"P","source":"ALIAS","image":"/material-images/diagonal_acero_galvanizado.jpg?v=460"},{"code":"8002200","description":"EMPALME PREFORM. DE ALUMOWELD P.COND.AA. 70MM2.","unit":"UND","aliases":["PREFORMADO 70","PREFORMADO 70 MM2","PREFORMADO 70 MM2 MARRON"],"priority":"","source":"ALIAS","image":"/material-images/empalme_preformado_aluminio.jpg?v=461"},{"code":"8002202","description":"EMPALME PREFORMADO DE ALEACION DE ALUMINIO P.CONDUCTOR AAAC 120MM2 / 13,84 - 14,41MM DIAM.","unit":"UND","aliases":["PREFORMADO120","PREFORMADO 120","PREFORMADO 120 MM2","PREFORMADO 120 MM2 ROJO"],"priority":"","source":"ALIAS","image":"/material-images/empalme_preformado_120mm2.jpg?v=461"},{"code":"8002206","description":"EMPALME PREFORMADO DE ALEACION DE ALUMINIO P.CONDUCTOR AAAC 185MM2 / 17,06 - 17,79MM DIAM.","unit":"UND","aliases":["PREFORMADO 185","PREFORMADO 185 MM2","PREFORMADO 185 MM2 NARANJA"],"priority":"","source":"ALIAS","image":"/material-images/empalme_preformado_185mm2.jpg?v=461"},{"code":"8002076","description":"ESLABON DOBLE TP.8 GIRATORIO DE ACERO GALV. P.FIJAR CONDUCTORES A AISLADORES EN LINEAS AREAS M.T.","unit":"UND","aliases":["ESLABON"],"priority":"","source":"ALIAS","image":"/material-images/eslabon_doble_galvanizado.jpg?v=460"},{"code":"8000519","description":"FLEJE DE ACERO INOXIDABLE TIPO AISI 316 DE 19MM (3/4\") ANCHO P.ALTA CORROSION","unit":"M","aliases":["FLEJE"],"priority":"P","source":"ALIAS","image":"/material-images/fleje_acero_inoxidable.jpg?v=460"},{"code":"8001828","description":"FUSI.SEC.UNIP.AE.22.9KV.100A.12KA.600MM.L.FUG.MIN","unit":"UND","aliases":["CUT OUT 22.9KV","CUT-OUT DE 22.9KV","CUTOUTS DE 22.9 KV"],"priority":"","source":"ALIAS","image":"/material-images/cutout_fusible_22kv.jpg?v=460"},{"code":"8001850","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 100A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 100A","FUSIBLE DE 100A","FUSIBLE 100K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg?v=460"},{"code":"8001887","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 10A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 10A","FUSIBLE DE 10A","FUSIBLE 10K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg?v=460"},{"code":"8001888","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 12A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 12A","FUSIBLE DE 12A","FUSIBLE 12K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg?v=460"},{"code":"8001889","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 15A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 15A","FUSIBLE DE 15A","FUSIBLE 15K"],"priority":"GG01","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg?v=460"},{"code":"8001891","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 20A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 20A","FUSIBLE DE 20A","FUSIBLE 20K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg?v=460"},{"code":"8001895","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 30A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 30A","FUSIBLE DE 30A","FUSIBLE 30K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg?v=460"},{"code":"8001882","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 3A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 3A","FUSIBLE DE 3A","FUSIBLE 3K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg?v=460"},{"code":"8001847","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 65A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 65A","FUSIBLE DE 65A","FUSIBLE 65K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg?v=460"},{"code":"8001883","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 6A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 6A","FUSIBLE DE 6A","FUSIBLE 6K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg?v=460"},{"code":"8001886","description":"FUSIBLE DE EXPULSION TIPO K - ANSI CABEZA REMOVIBLE 8A 36KV P.SECCIONADOR FUSIBLE UNIPOLAR","unit":"UND","aliases":["FUSIBLE 8A","FUSIBLE DE 8A","FUSIBLE 8K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg?v=460"},{"code":"8001845","description":"FUSIBLE EXPULSION 10KV. 50A.P.FUS.SECC.UNIP.INTEMP","unit":"UND","aliases":["FUSIBLE","FUSIBLE 50A","FUSIBLE 50K"],"priority":"","source":"ALIAS","image":"/material-images/fusible_expulsion_k.jpg?v=460"},{"code":"8001817","description":"FUSIBLE SECC.UNIP. AEREO 10KV, 100A, MINIMO 95KV BIL, 12KA","unit":"UND","aliases":["CUT OUT 10KV","CUTOUT 10KV","SECCIONADOR FUSIBLE 10KV"],"priority":"GG01","source":"ALIAS","image":"/material-images/cutout_fusible_aereo.jpg?v=460"},{"code":"8002097","description":"GRAPA DE ANCLAJE TP.PISTOLA DE ACERO GALV. P.CONDUCTOR CU 16 - 70MM2","unit":"UND","aliases":["GRAPA"],"priority":"","source":"ALIAS","image":"/material-images/grapa_anclaje_pistola.jpg?v=460"},{"code":"8002140","description":"GRAPA DE ANCLAJE TP.PISTOLA DE ALEACION DE ALUMINIO P.CONDUCTOR AAAC 120MM2","unit":"UND","aliases":["GRAPA 120"],"priority":"P","source":"ALIAS","image":"/material-images/grapa_anclaje_pistola.jpg?v=460"},{"code":"8002083","description":"GRAPA DE ANCLAJE TP.PISTOLA DE ALEACION DE ALUMINIO P.CONDUCTOR AAAC 185MM2","unit":"UND","aliases":["GRAPA 185"],"priority":"P","source":"ALIAS","image":"/material-images/grapa_anclaje_pistola.jpg?v=460"},{"code":"8002136","description":"GRAPA DE ANCLAJE TP.PISTOLA DE ALEACION DE ALUMINIO P.CONDUCTOR AAAC 70MM2","unit":"UND","aliases":["GRAPA 70"],"priority":"P","source":"ALIAS","image":"/material-images/grapa_anclaje_pistola.jpg?v=460"},{"code":"8002118","description":"GRAPA FIN DE LINEA 360MML 12,6MMD P.CAB.AUTOP.MT","unit":"UND","aliases":["GRAPA PARA AUTOSOPORTADO"],"priority":"","source":"ALIAS","image":"/material-images/grapa_fin_autosoportado.jpg?v=460"},{"code":"8002149","description":"GRAPA SUSPENS. DE ALEAC.AL.P.COND. 70 MM2.","unit":"UND","aliases":["GRAPA SUSPENCION 70"],"priority":"","source":"ALIAS","image":"/material-images/grapa_suspension_aluminio.jpg?v=460"},{"code":"8002153","description":"GRAPA SUSPENS. DE ALEAC.AL.P.COND.185MM2. C/VAR. ARMADO","unit":"UND","aliases":["GRAPA SUSPENCION 185"],"priority":"","source":"ALIAS","image":"/material-images/grapa_suspension_varillas.jpg?v=460"},{"code":"8002151","description":"GRAPA SUSPENS.DE ALEAC.AL.P.COND.120MM2.C/VAR.ARMADO","unit":"UND","aliases":["GRAPA SUSPENCION 120"],"priority":"","source":"ALIAS","image":"/material-images/grapa_suspension_varillas.jpg?v=460"},{"code":"2000073","description":"GUANTE DE NITRILO DESECHABLE TALLA L DE 23CM X 0,13MM C.PUÑO REFORZADO, PUNTAS TEXTURIZADAS","unit":"UND","aliases":["GUANTE NITRILO PEQUEÑO"],"priority":"","source":"ALIAS","image":"/material-images/guante_nitrilo_industrial.jpg?v=460"},{"code":"2000388","description":"GUANTE DE NITRILO DESECHABLE TALLA XL DE 23CM X 0,13MM C.PUÑO REFORZADO, PUNTAS TEXTURIZADAS","unit":"UND","aliases":["GUANTE NITRILO GRANDE"],"priority":"","source":"ALIAS","image":"/material-images/guante_nitrilo_industrial.jpg?v=460"},{"code":"8000687","description":"GUARDACABO DE ACERO GALV. P.CABLE 13MM DIAM. 1,5MM ESPESOR P.PROTEGER CABLE PORTANTE","unit":"UND","aliases":["GUARDACABO PARA VIENTO","GUARDACABO"],"priority":"","source":"ALIAS","image":"/material-images/guardacabo_acero_galvanizado.jpg?v=460"},{"code":"8000535","description":"HEBILLA (HEBILLA) DE ACERO INOXIDABLE TIPO AISI 316 P.FLEJES DE 19MM (3/4\") ANCHO P.ALTA CORROSION","unit":"UND","aliases":["HEBILLAS"],"priority":"P","source":"ALIAS","image":"/material-images/hebilla_acero_inoxidable.jpg?v=460"},{"code":"8003160","description":"HOJA DE SIERRA SANFLEX 12\", 18 DIENTES POR PULG. 3806-300-18-100P","unit":"UND","aliases":["HOJA DE SIERRA","HOJA SIERRA"],"priority":"P","source":"ALIAS","image":"/material-images/hoja_sierra_bimetal.jpg?v=460"},{"code":"3001051","description":"MANTA AISLANTE ANTITRACKING AUTOFUNDENTE C.CAPA EPR DE 102MM X 3M COLOR NEGRO 15KV","unit":"UND","aliases":["PAD"],"priority":"P","source":"ALIAS","image":"/material-images/manta_aislante_epr.jpg?v=460"},{"code":"3001048","description":"MANTA AISLANTE ANTITRACKING AUTOFUNDENTE C.CAPA EPR DE 200MM X 3M COLOR NEGRO CL.2A 15KV","unit":"UND","aliases":["PAD"],"priority":"","source":"ALIAS","image":"/material-images/manta_aislante_epr.jpg?v=460"},{"code":"3000685","description":"MENSULA DE MADERA DE 4\" X 5\" X 6 PIES CON TRATAMIENTO CCB","unit":"UND","aliases":["CRUCETA 6PIES"],"priority":"","source":"ALIAS","image":"/material-images/mensula_madera_tratada.jpg?v=461"},{"code":"3000687","description":"MENSULA DE MADERA DE 4\" X 5\" X 7 PIES CON TRATAMIENTO CCB","unit":"UND","aliases":["CRUCETA 7PIES"],"priority":"P","source":"ALIAS","image":"/material-images/cruceta_madera_7pies.jpg?v=461"},{"code":"8001981","description":"OJAL ROSCADO AC.GALV.,DE 3/4PULG.D. X86MML. P.L.A.","unit":"UND","aliases":["OJAL 3/4"],"priority":"","source":"ALIAS","image":"/material-images/ojal_roscado_galvanizado.jpg?v=460"},{"code":"8001977","description":"OJAL ROSCADO AC.GALV.,DE 5/8PULG.D. X80MML. P.L.A.","unit":"UND","aliases":["OJAL 5/8"],"priority":"P","source":"ALIAS","image":"/material-images/ojal_roscado_galvanizado.jpg?v=460"},{"code":"8002663","description":"PASTA ANTICORROSIVA CONDUCTORA DE USO ELECTRICO PENETROX E.EN ENVASE DE 8 ONZAS","unit":"UND","aliases":["PENETROX"],"priority":"","source":"ALIAS","image":"/material-images/pasta_inhibidora_electrica.jpg?v=460"},{"code":"8000647","description":"PERNO HO.GALV.CAB.EXAG. 1/2\" X 1.1/2 P.C/TUERCA SID-127","unit":"UND","aliases":["PERNO 1/2"],"priority":"P","source":"ALIAS","image":"/material-images/perno_hexagonal_galvanizado.jpg?v=460"},{"code":"8001122","description":"PERNO HO.GALV.CAB.EXAG. 3/8\" X 1\" C/TUERCA","unit":"UND","aliases":["PERNO"],"priority":"","source":"ALIAS","image":"/material-images/perno_hexagonal_galvanizado.jpg?v=460"},{"code":"8001124","description":"PERNO HO.GALV.CAB.EXAG. 3/8\" X 1.1/2\" C/TUERCA","unit":"UND","aliases":["PERNO 3/8"],"priority":"P","source":"ALIAS","image":"/material-images/perno_hexagonal_galvanizado.jpg?v=460"},{"code":"8001126","description":"PERNO HO.GALV.CAB.EXAG. 3/8\" X 2\" C/TUERCA","unit":"UND","aliases":["PERNO"],"priority":"","source":"ALIAS","image":"/material-images/perno_hexagonal_galvanizado.jpg?v=460"},{"code":"8002003","description":"PLANCHA DE COBRE P.LINEA A TIERRA C.AGUJERO 20MM DIAM.","unit":"UND","aliases":["PLANCHA J GRANDE","CHAPAS DE TIERRA"],"priority":"P","source":"ALIAS","image":"/material-images/plancha_cobre_tierra.jpg?v=460"},{"code":"8002007","description":"PLANCHA DE COBRE PARA LINEA A TIERRA CON AGUJERO DE 13MM DE DIAMETRO","unit":"UND","aliases":["PLANCHA J PEQUEÑO","CHAPAS DE TIERRA"],"priority":"P","source":"ALIAS","image":"/material-images/plancha_cobre_tierra.jpg?v=460"},{"code":"2000424","description":"PROTECTOR DE FIBRA DE VIDRIO ANTI AVES PARA MENSULA, AUTOAJUSTABLE","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS","image":"/material-images/protector_aves_fibra.jpg?v=460"},{"code":"3000809","description":"PROTECTOR DE FIBRA DE VIDRIO P.SECCIONADOR AEREO EN PDS ASIMETRICO 1100 X 800 X 600MM","unit":"UND","aliases":["PROTECTOR PDS (TRIANGULO)"],"priority":"","source":"ALIAS","image":"/material-images/protector_pds_triangulo.jpg?v=460"},{"code":"3000807","description":"PROTECTOR DE FIBRA DE VIDRIO P.SECCIONADOR AEREO EN PDS PARALELO AL PREDIO 2100 X 1110MM","unit":"UND","aliases":["PROTECTOR PDS PARALELO PREDIO"],"priority":"","source":"ALIAS","image":"/material-images/protector_pds_triangulo.jpg?v=460"},{"code":"3000808","description":"PROTECTOR DE FIBRA DE VIDRIO P.SECCIONADOR AEREO EN PDS PERPENDICULAR AL PREDIO 1700 X 1110MM","unit":"UND","aliases":["PROTECTOR PDS PERPEND PREDIO"],"priority":"","source":"ALIAS","image":"/material-images/protector_pds_triangulo.jpg?v=460"},{"code":"3000806","description":"PROTECTOR DE FIBRA DE VIDRIO P.SECCIONADOR AEREO EN SAB 2200 X 1110MM","unit":"UND","aliases":["PROTECTOR DE SAB"],"priority":"","source":"ALIAS","image":"/material-images/protector_pds_triangulo.jpg?v=460"},{"code":"3000802","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P. SECCIONADOR RIGIDO PARA REDES AEREAS MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS","image":"/material-images/protector_pds_triangulo.jpg?v=460"},{"code":"3000797","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P.MENSULA DE MADERA CON AISLADOR TIPO PIN PARA REDES AEREAS MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS","image":"/material-images/protector_aves_fibra.jpg?v=460"},{"code":"3000795","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P.MENSULAS DE CONCRETO DE 1 Y 0.60 METROS PARA REDES AEREAS MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS","image":"/material-images/protector_punta_poste.jpg?v=460"},{"code":"3000801","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P.MENSULAS DE MADERA CON DIAGONAL EN PDS PARA REDES AEREAS MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS","image":"/material-images/protector_aves_fibra.jpg?v=460"},{"code":"3000800","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P.MENSULAS DE MADERA SIN DIAGONAL EN PDS PARA REDES AEREAS MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS","image":"/material-images/protector_aves_fibra.jpg?v=460"},{"code":"3000803","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR P.PUNTA DE POSTE DE CONCRETO PARA REDES AEREAS MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS","image":"/material-images/protector_punta_poste.jpg?v=460"},{"code":"3000798","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR PARA MENSULA DE MADERA SIN AISLADORES PARA REDES AEREAS DE MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS","image":"/material-images/protector_aves_fibra.jpg?v=460"},{"code":"3000793","description":"PROTECTOR DE PRFV DE 1.5MM DE ESPESOR PARA PALOMILLAS DE CONCRETO PARA REDES AEREAS DE MT","unit":"UND","aliases":["AVES"],"priority":"","source":"ALIAS","image":"/material-images/protector_punta_poste.jpg?v=460"},{"code":"4000576","description":"SECCIONADOR UNIP. AEREO 22,9KV 600A 25KA 150KVBIL LF 700MM ARCO 253MM EXT.CORROS.SEVERA SIN CONECTOR","unit":"UND","aliases":["RIGIDO 10KV","SECCIONADOR RIGIDO 10KV","RIGIDO 22.9KV","SECCIONADOR RIGIDO 22.9KV"],"priority":"","source":"ALIAS","image":"/material-images/seccionador_unipolar_aereo.jpg?v=460"},{"code":"4000578","description":"SECCIONADOR UNIPOLAR AEREO 10KV 600A 25KA 95KV BIL LF 430MM EXTERIOR P.CORROSION SEVERA SIN CONECTOR","unit":"UND","aliases":["RIGIDO 22.9KV","SECCIONADOR RIGIDO 22.9KV","RIGIDO 10KV","SECCIONADOR RIGIDO 10KV"],"priority":"","source":"ALIAS","image":"/material-images/seccionador_unipolar_aereo.jpg?v=460"},{"code":"8002689","description":"SOLVENTE DIELECTRICO ECOLOGICO NO CLORADO M.T.","unit":"UND","aliases":["SOLVENTE","SOLVENTE DIELECTRICO"],"priority":"P","source":"ALIAS","image":"/material-images/solvente_dielectrico_envase.jpg?v=460"},{"code":"8002030","description":"SOPORTE LATERAL DE ACERO GALV. P.AISLADOR TP.PIN HIBRIDO O POLIMERICO 22,9KV","unit":"UND","aliases":["LATERAL PARA 22,9KV"],"priority":"","source":"ALIAS","image":"/material-images/soporte_lateral_l.jpg?v=460"},{"code":"8002028","description":"SOPORTE LATERAL PARA AISLADOR HIBRIDO PIN 10KV.","unit":"UND","aliases":["LATERAL PARA 10KV"],"priority":"P","source":"ALIAS","image":"/material-images/soporte_lateral_l.jpg?v=460"},{"code":"8002020","description":"SOPORTE PASANTE ACERO GALV. 201MM LONG. 22MM / 3/4\" DIAM. P.AISLADORES TP.PIN C.ACCESORIOS","unit":"UND","aliases":["LATERAL"],"priority":"","source":"ALIAS","image":"/material-images/soporte_pasante_recto.jpg?v=460"},{"code":"8000856","description":"TIRAFONDO HO.GALV. 3/8\" X 1.1/2\"","unit":"UND","aliases":["TIRAFON PEQUEÑO"],"priority":"","source":"ALIAS","image":"/material-images/tirafondo_acero_galvanizado.jpg?v=460"},{"code":"8000858","description":"TIRAFONDO HO.GALV. 3/8\" X 2\"","unit":"UND","aliases":["TIRAFON MEDIANO"],"priority":"","source":"ALIAS","image":"/material-images/tirafondo_acero_galvanizado.jpg?v=460"},{"code":"8000860","description":"TIRAFONDO HO.GALV. 3/8\" X 2.1/2\"","unit":"UND","aliases":["TIRAFON GRANDE"],"priority":"P","source":"ALIAS","image":"/material-images/tirafondo_acero_galvanizado.jpg?v=460"},{"code":"8000862","description":"TIRAFONDO HO.GALV. 3/8\" X 3\"","unit":"UND","aliases":["TIRAFON EXTRAGRANDE"],"priority":"P","source":"ALIAS","image":"/material-images/tirafondo_acero_galvanizado.jpg?v=460"},{"code":"8002570","description":"TOCUYO DE ALGODON 100% 0.60/0.80 X 1 M.","unit":"UND","aliases":["TOCUYO","TOCUYO DE ALGODON"],"priority":"P","source":"ALIAS","image":"/material-images/tocuyo_tela_algodon.jpg?v=460"},{"code":"8002568","description":"TRAPO INDUSTRIAL","unit":"UND","aliases":["TRAPO","TRAPO INDUSTRIAL"],"priority":"P","source":"ALIAS","image":"/material-images/trapo_industrial_algodon.jpg?v=460"},{"code":"8001781","description":"TUBO PORTAFUSIBLE PARA SECC. UNIP. AEREO 100A, 10KV, CORR.SEVERA","unit":"UND","aliases":["PORTAFUSIBLE 10KV","CAÑA 10KV","TUBO PORTAFUSIBLE 10KV"],"priority":"","source":"ALIAS","image":"/material-images/tubo_portafusible_aereo.jpg?v=460"},{"code":"8001785","description":"TUBO PORTAFUSIBLE PARA SECC. UNIP. AEREO 100A, 22,9KV, CORR.MODERADA","unit":"UND","aliases":["PORTAFUSIBLE 22.9KV","CAÑA 22.9KV","TUBO PORTAFUSIBLE 22.9KV"],"priority":"","source":"ALIAS","image":"/material-images/tubo_portafusible_22kv.jpg?v=460"},{"code":"8002291","description":"UNION P.EMPALME AUTOMATICO P.CONDUCTOR AAAC 120MM2","unit":"UND","aliases":["AUTOMATICO 120","AUTOMATICO 120 MM2"],"priority":"","source":"ALIAS","image":"/material-images/empalme_automatico_aluminio.jpg?v=460"},{"code":"8002235","description":"UNION P.EMPALME AUTOMATICO P.CONDUCTOR AAAC 185MM2","unit":"UND","aliases":["AUTOMATICO 185","AUTOMATICO 185 MM2"],"priority":"","source":"ALIAS","image":"/material-images/empalme_automatico_aluminio.jpg?v=460"},{"code":"8002289","description":"UNION P.EMPALME AUTOMATICO P.CONDUCTOR AAAC 70MM2","unit":"UND","aliases":["AUTOMATICO 70","AUTOMATICO 70 MM2"],"priority":"","source":"ALIAS","image":"/material-images/empalme_automatico_aluminio.jpg?v=460"},{"code":"8002033","description":"VARILLA ROSCADA AC.GALV. 16MMD. X 250MML. L.AEREAS","unit":"UND","aliases":["VARILLA 250"],"priority":"P","source":"ALIAS","image":"/material-images/varilla_roscada_galvanizada.jpg?v=460"},{"code":"8002034","description":"VARILLA ROSCADA AC.GALV. 16MMD. X 300MML. L.AEREAS","unit":"UND","aliases":["VARILLA 300"],"priority":"P","source":"ALIAS","image":"/material-images/varilla_roscada_galvanizada.jpg?v=460"},{"code":"8002035","description":"VARILLA ROSCADA AC.GALV. 16MMD. X 350MML. L.AEREAS","unit":"UND","aliases":["VARILLA 350"],"priority":"P","source":"ALIAS","image":"/material-images/varilla_roscada_galvanizada.jpg?v=460"},{"code":"8002038","description":"VARILLA ROSCADA AC.GALV. 16MMD. X 450MML. L.AEREAS","unit":"UND","aliases":["VARILLA 450"],"priority":"P","source":"ALIAS","image":"/material-images/varilla_roscada_galvanizada.jpg?v=460"},{"code":"8002041","description":"VARILLA ROSCADA AC.GALV. 16MMD. X 550MML. L.AEREAS","unit":"UND","aliases":["VARILLA 550"],"priority":"P","source":"ALIAS","image":"/material-images/varilla_roscada_galvanizada.jpg?v=460"},{"code":"8002043","description":"VARILLA ROSCADA AC.GALV. 16MMD. X 650MML. L.AEREAS","unit":"UND","aliases":["VARILLA 650"],"priority":"P","source":"ALIAS","image":"/material-images/varilla_roscada_galvanizada.jpg?v=460"}],"supervisors":["EBLAS","HTORRES","BHIDALGO","ELIENDO","RDIAZ","OSOTELO","SLINARES","IDAMIAN","PLAZARO","DFERRE","GCANDIA","JQUISPE","WCENTENO"],"units":["F5X-815","BTJ-860","BTD-712","BHL-875","ARE-823","BHM-832","F5W-883"],"observations":["FALTA CORREO DE RECHAZO","FALTA DEVOLVER MATERIAL","FALTA INFORME","FALTA LIBERAR ORDEN","FALTA LIQUIDAR POR INSPECTOR","FALTA NOTIFICAR","FALTA NORMA DE LIQUIDACION","FALTA PEDIDO DE MATERIAL","FALTA RECOGER Y DEVOLVER MATERIAL","FALTA RECOJO DE MATERIAL","FALTA REVISIÓN GCA"],"movements":["DEV","PED","REC"],"defaults":{"destinatario":"SLINARES","puestoDescarga":"RECUPERO","ubicacionFinal":"","c1":"","tp":"L","c2":"","c3":"","alim":"GG01","ce":"1003","operacion":"0010","lote":"LDA-000000","tipoAprovisionamiento":"Reserva para orden","pos":"0"},"supervisorInitials":{"EBLAS":"EB","HTORRES":"UT","BHIDALGO":"BH","ELIENDO":"EL","RDIAZ":"RD","OSOTELO":"OS","SLINARES":"SL","IDAMIAN":"ID","PLAZARO":"PL","DFERRE":"DF","GCANDIA":"GC","JQUISPE":"JQ","WCENTENO":"WC"}};
 const EMBEDDED_IMAGE_BY_CODE=new Map((EMBEDDED_DATA.materials||[]).map(m=>[String(m.code),String(m.image||'').trim()]));
 const isLegacySvgImg=u=>/^\/material-images\/.*\.svg(?:\?.*)?$/i.test(String(u||'').trim());
 const isBuiltInCatalogImg=u=>!String(u||'').trim()||/^\/material-images\/[^/]+(?:\?.*)?$/i.test(String(u||'').trim());
 if(window.APP_DATA&&Array.isArray(window.APP_DATA.materials)){
   window.APP_DATA.materials.forEach(m=>{
-    if(!m._imageDeleted&&!m._imageCustom&&isBuiltInCatalogImg(m.image)){
+    if(!m._imageDeleted&&!m._imageCustom&&(isBuiltInCatalogImg(m.image)||/\?v=461$/i.test(String(EMBEDDED_IMAGE_BY_CODE.get(String(m.code))||'')))){
       const embImg=EMBEDDED_IMAGE_BY_CODE.get(String(m.code));
-      if(embImg&&m.image!==embImg)m.image=embImg;
+      if(embImg&&m.image!==embImg){m.image=embImg;if(/\?v=461$/i.test(embImg)){m.imageDriveUrl=embImg;m.driveUrl='';}}
     }
   });
 }
@@ -1272,7 +1343,7 @@ function handleMatImgError(imgEl,code){
   }
 }
 window.handleMatImgError=handleMatImgError;
-function migrateState(x){x=x&&Array.isArray(x.materials)?x:clone(BASE_DATA);let baseByCode=new Map(BASE_DATA.materials.map(m=>[String(m.code),m]));x.materials.forEach(m=>{m.unit=normalizedUnit(m);let b=baseByCode.get(String(m.code));let own=Array.isArray(m.aliases)?m.aliases:[];let fallbackImg=(b&&String(b.image||'').trim())||EMBEDDED_IMAGE_BY_CODE.get(String(m.code))||'';if(b){let fresh=Array.isArray(b.aliases)?b.aliases:[];let sourceAliases=m._aliasesEdited?own:[...own,...fresh];m.aliases=[...new Set(sourceAliases.map(a=>String(a).trim().toUpperCase()).filter(a=>a&&!['3','UND','UN','L','0','10','GG01'].includes(a)))];if(!m.description)m.description=b.description;}else{m.aliases=[...new Set(own.map(a=>String(a).trim().toUpperCase()).filter(Boolean))];}if(m._imageDeleted){m.image='';m.driveUrl='';m.driveFileId='';}else if(!m._imageCustom&&fallbackImg&&isBuiltInCatalogImg(m.image)&&(!String(m.driveUrl||'').trim()||/^\/material-images\//i.test(String(m.image||'')))){if(m.image!==fallbackImg){m.image=fallbackImg;m._imagePendingDrive=true;}}});for(let b of BASE_DATA.materials){if(!x.materials.some(m=>String(m.code)===String(b.code))){let nb=clone(b);if(!nb._imageDeleted&&!nb._imageCustom&&isBuiltInCatalogImg(nb.image)){const embImg=EMBEDDED_IMAGE_BY_CODE.get(String(nb.code));if(embImg&&nb.image!==embImg)nb.image=embImg;}x.materials.push(nb);}}x.supervisors=Array.isArray(x.supervisors)?x.supervisors:[];x.supervisorInitials={...DEFAULT_SUPERVISOR_INITIALS,...(x.supervisorInitials||{})};x.supervisors.forEach(n=>{if(!x.supervisorInitials[n])x.supervisorInitials[n]=deriveInitials(n)});x.templates=Array.isArray(x.templates)?x.templates:[];x.userAccounts=Array.isArray(x.userAccounts)?x.userAccounts:[];x.authSettings=x.authSettings&&typeof x.authSettings==='object'?x.authSettings:{requireLogin:false};return x}
+function migrateState(x){x=x&&Array.isArray(x.materials)?x:clone(BASE_DATA);let baseByCode=new Map(BASE_DATA.materials.map(m=>[String(m.code),m]));x.materials.forEach(m=>{m.unit=normalizedUnit(m);let b=baseByCode.get(String(m.code));let own=Array.isArray(m.aliases)?m.aliases:[];let fallbackImg=(b&&String(b.image||'').trim())||EMBEDDED_IMAGE_BY_CODE.get(String(m.code))||'';if(b){let fresh=Array.isArray(b.aliases)?b.aliases:[];let sourceAliases=m._aliasesEdited?own:[...own,...fresh];m.aliases=[...new Set(sourceAliases.map(a=>String(a).trim().toUpperCase()).filter(a=>a&&!['3','UND','UN','L','0','10','GG01'].includes(a)))];if(!m.description)m.description=b.description;}else{m.aliases=[...new Set(own.map(a=>String(a).trim().toUpperCase()).filter(Boolean))];}if(m._imageDeleted){m.image='';m.driveUrl='';m.driveFileId='';}else if(!m._imageCustom&&fallbackImg&&(/\?v=461$/i.test(fallbackImg)||(isBuiltInCatalogImg(m.image)&&(!String(m.driveUrl||'').trim()||/^\/material-images\//i.test(String(m.image||'')))))){if(m.image!==fallbackImg){m.image=fallbackImg;if(/\?v=461$/i.test(fallbackImg)){m.imageDriveUrl=fallbackImg;m.driveUrl='';}else{m._imagePendingDrive=true;}}}});for(let b of BASE_DATA.materials){if(!x.materials.some(m=>String(m.code)===String(b.code))){let nb=clone(b);if(!nb._imageDeleted&&!nb._imageCustom&&isBuiltInCatalogImg(nb.image)){const embImg=EMBEDDED_IMAGE_BY_CODE.get(String(nb.code));if(embImg&&nb.image!==embImg)nb.image=embImg;}x.materials.push(nb);}}x.supervisors=Array.isArray(x.supervisors)?x.supervisors:[];x.supervisorInitials={...DEFAULT_SUPERVISOR_INITIALS,...(x.supervisorInitials||{})};x.supervisors.forEach(n=>{if(!x.supervisorInitials[n])x.supervisorInitials[n]=deriveInitials(n)});x.templates=Array.isArray(x.templates)?x.templates:[];x.userAccounts=Array.isArray(x.userAccounts)?x.userAccounts:[];x.deletedUserIds=Array.isArray(x.deletedUserIds)?x.deletedUserIds:[];x.authLogs=Array.isArray(x.authLogs)?x.authLogs:[];x.authSettings={...(x.authSettings&&typeof x.authSettings==='object'?x.authSettings:{}),requireLogin:true,allowGuest:false};return x}
 function load(){try{const raw=localStorage.getItem(KEY);const parsed=raw?JSON.parse(raw):null;const migrated=migrateState(parsed);if(raw){try{localStorage.setItem(KEY,JSON.stringify(migrated))}catch(_){}}return migrated}catch{return migrateState(clone(BASE_DATA))}}
 function save(){state=migrateState(state);localStorage.setItem(KEY,JSON.stringify(state));if(typeof queueSync==='function')queueSync('app');if(typeof scheduleDriveSync==='function')scheduleDriveSync(800,'app');}function fill(el,a){let cur=el.value;el.innerHTML=a.map(x=>`<option>${esc(x)}</option>`).join('');if(a.includes(cur))el.value=cur}function localISODate(){let d=new Date(),off=d.getTimezoneOffset();return new Date(d.getTime()-off*60000).toISOString().slice(0,10)}
 function showView(id){
@@ -3516,6 +3587,7 @@ async function replaceStockInDrive(){
 
 async function syncToDrive(options={}){
  const isManual = (typeof options==='object'&&options!==null&&'isManual'in options)?!!options.isManual:(options===true);
+ const silentUi = !!(typeof options==='object'&&options!==null&&options.silentUi);
  let btn=document.getElementById('syncNow');
  try{
   await ensureConfigReady();
@@ -3528,12 +3600,12 @@ async function syncToDrive(options={}){
   if(token){cfg.token=token;localStorage.setItem('bm_saved_script_token',token)}
   localStorage.setItem(SYNC_KEY,JSON.stringify(cfg));
   if(!url){
-    if(isManual) msg('Configura la URL de Google Apps Script en Administración > Google Drive o en Vercel (GOOGLE_APPS_SCRIPT_URL).',true,'#adminStatus');
+    if(isManual && !silentUi) msg('Configura la URL de Google Apps Script en Administración > Google Drive o en Vercel (GOOGLE_APPS_SCRIPT_URL).',true,'#adminStatus');
     return false;
   }
   if(!navigator.onLine){
     queueSync();
-    if(isManual) msg('Sin conexión a internet. Los cambios quedan guardados localmente y se sincronizarán al conectarse.',true,'#adminStatus');
+    if(isManual && !silentUi) msg('Sin conexión a internet. Los cambios quedan guardados localmente y se sincronizarán al conectarse.',true,'#adminStatus');
     return false;
   }
   if(btn){btn.disabled=true;btn.textContent='Sincronizando...'}
@@ -3578,11 +3650,11 @@ async function syncToDrive(options={}){
   cfg.lastSync=j.savedAt||new Date().toISOString();
   localStorage.setItem(SYNC_KEY,JSON.stringify(cfg));
   renderSyncState();
-  if(isManual) msg(`✅ Sincronización exitosa con Google Drive (${j.stockRows||stockRows.length} registros de stock guardados).`,false,'#adminStatus');
+  if(isManual && !silentUi) msg(`✅ Sincronización exitosa con Google Drive (${j.stockRows||stockRows.length} registros de stock guardados).`,false,'#adminStatus');
   return true;
  }catch(e){
   queueSync();renderSyncState();
-  if(isManual) msg('No se pudo sincronizar: '+(e?.message||e),true,'#adminStatus');
+  if(isManual && !silentUi) msg('No se pudo sincronizar: '+(e?.message||e),true,'#adminStatus');
   return false;
  }
  finally{if(btn){btn.disabled=false;btn.textContent='Sincronizar ahora'}}
@@ -3639,6 +3711,9 @@ async function restoreFromDrive(options={}){
     let recoveredSomething = false;
 
     if(!stockOnly&&data.app&&Array.isArray(data.app.materials)&&data.app.materials.length){
+      const prevUsers = Array.isArray(state?.userAccounts) ? state.userAccounts : [];
+      const prevDeleted = Array.isArray(state?.deletedUserIds) ? state.deletedUserIds : [];
+      const prevLogs = Array.isArray(state?.authLogs) ? state.authLogs : [];
       const localImgByCode = new Map((state?.materials||[]).map(m => [String(m.code), m]));
       data.app.materials.forEach(m => {
         const localM = localImgByCode.get(String(m.code));
@@ -3668,8 +3743,18 @@ async function restoreFromDrive(options={}){
         }
       });
       state=migrateState(data.app);
+      if(typeof window.bmMergeUsersAndLogsIntoState==='function'){
+        window.bmMergeUsersAndLogsIntoState({
+          userAccounts: prevUsers,
+          deletedUserIds: prevDeleted,
+          authLogs: prevLogs
+        });
+      }
       localStorage.setItem(KEY,JSON.stringify(state));
       recoveredSomething = true;
+    }else if(!stockOnly && typeof window.bmMergeUsersAndLogsIntoState==='function' && (data.app?.userAccounts || data.app?.authLogs)){
+      window.bmMergeUsersAndLogsIntoState(data.app);
+      localStorage.setItem(KEY,JSON.stringify(state));
     }
     if(!stockOnly&&Array.isArray(data.pending)){
       pendingItems=data.pending;
@@ -8258,23 +8343,42 @@ html[data-theme="dark"] .admin-change-pass-box{background:#13263e;border-color:#
     return localStorage.getItem(ADMIN_PASS_KEY)||'1234';
   }
 
-  function validateAdminPassword(inputPass){
+  async function validateAdminPassword(inputPass){
     const p=String(inputPass||'').trim();
     if(!p)return false;
+    if(typeof window.bmVerifyAnyAdminPassword==='function'){
+      const matched = await window.bmVerifyAnyAdminPassword(p);
+      if(matched) return true;
+    }
     const custom=localStorage.getItem(ADMIN_PASS_KEY);
     if(custom&&p===custom.trim())return true;
-    if(ACCEPTED_DEFAULTS.includes(p.toLowerCase()))return true;
     const token=(typeof syncConfig==='function'?syncConfig()?.token:'')||localStorage.getItem('bm_saved_script_token')||'';
     if(token&&p===token.trim())return true;
+    if(ACCEPTED_DEFAULTS.includes(p.toLowerCase()))return true;
     return false;
   }
 
   function isAdmin(){
     try{
+      if(!document.body.classList.contains('bm-authenticated'))return false;
+      const uRaw=sessionStorage.getItem('bm_user_session_v1')||localStorage.getItem('bm_user_session_v1');
+      if(uRaw){
+        const u=JSON.parse(uRaw);
+        if(u&&u.role==='admin')return true;
+      }
       return sessionStorage.getItem(ADMIN_SESSION)==='1'||localStorage.getItem(ADMIN_SESSION)==='1';
     }catch(_){
       return false;
     }
+  }
+
+  function hasPrimaryAdminSession(){
+    try{
+      const uRaw=sessionStorage.getItem('bm_user_session_v1')||localStorage.getItem('bm_user_session_v1');
+      if(!uRaw)return false;
+      const u=JSON.parse(uRaw);
+      return Boolean(u&&u.role==='admin');
+    }catch(_){return false}
   }
 
   function protectedElements(){
@@ -8290,12 +8394,20 @@ html[data-theme="dark"] .admin-change-pass-box{background:#13263e;border-color:#
     const btn=qs('#adminAccessBtn');
     if(btn){
       btn.classList.toggle('active',admin);
-      btn.textContent=admin?'🔓 Administrador activo (Cerrar sesión)':'🔐 Administrador';
-      btn.title=admin?'Sesión de administrador activa. Haz clic para cerrar sesión y ocultar pestañas.':'Ingresar contraseña para ver pestañas de administración';
+      btn.textContent=admin?'🔓 Administrador activo':'🔐 Administrador';
+      btn.title=hasPrimaryAdminSession()?'Cuenta con privilegios de Administrador activos. Haz clic para abrir Gestión de Usuarios.':'Modo Administrador activo. Haz clic para bloquear pestañas de administración.';
+      if(!admin)btn.title='Ingresar contraseña de administrador para desbloquear pestañas';
     }
   }
 
   function handleAdminButtonClick(){
+    if(hasPrimaryAdminSession()){
+      if(typeof showView==='function'){
+        const activeView=document.querySelector('.view.active')?.id;
+        showView(activeView==='usersView'?'searchView':'usersView');
+      }
+      return;
+    }
     if(isAdmin()){
       performLogout();
     }else{
@@ -8319,10 +8431,10 @@ html[data-theme="dark"] .admin-change-pass-box{background:#13263e;border-color:#
     if(targetView){
       const names={'newMatView':'Base de materiales','supView':'Supervisores','unitsView':'Unidades móviles','historyView':'Historial','usersView':'Usuarios'};
       if(title)title.textContent='🔐 Acceso Restringido';
-      if(subtitle)subtitle.textContent=`Ingresa tu contraseña de supervisor/administrador para ver "${names[targetView]||targetView}" y desbloquear las pestañas ocultas.`;
+      if(subtitle)subtitle.textContent=`Ingresa la contraseña de un Administrador para abrir "${names[targetView]||targetView}".`;
     }else{
       if(title)title.textContent='🔐 Acceso de Administrador';
-      if(subtitle)subtitle.textContent='Ingresa tu contraseña para ver las pestañas ocultas en la barra lateral (Base de materiales, Supervisores, Unidades móviles e Historial).';
+      if(subtitle)subtitle.textContent='Ingresa la contraseña de un Administrador para desbloquear Base de materiales, Supervisores, Unidades, Historial y Usuarios.';
     }
 
     try{
@@ -8333,12 +8445,12 @@ html[data-theme="dark"] .admin-change-pass-box{background:#13263e;border-color:#
     if(input)setTimeout(()=>input?.focus(),80);
   }
 
-  function performLogin(){
+  async function performLogin(){
     const input=qs('#adminPasswordInput'),status=qs('#adminLoginStatus');
     const pass=input?.value||'';
-    if(!validateAdminPassword(pass)){
+    if(!(await validateAdminPassword(pass))){
       if(status){
-        status.textContent='❌ Contraseña incorrecta. Prueba con 1234 o admin.';
+        status.textContent='❌ Contraseña de administrador incorrecta.';
         status.style.color='#c62828';
       }
       return;
@@ -8495,7 +8607,7 @@ html[data-theme="dark"] #v439SearchOrderCount{background:#173a60;color:#d9ecff}
   'use strict';
   const ADMIN_SESSION_KEY='bm_admin_session_v1';
   const byId=id=>document.getElementById(id);
-  function adminActive(){return sessionStorage.getItem(ADMIN_SESSION_KEY)==='1'}
+  function adminActive(){return document.body.classList.contains('bm-authenticated')&&sessionStorage.getItem(ADMIN_SESSION_KEY)==='1'}
   function syncAdminShell(){
     const active=adminActive();
     document.body.classList.toggle('v439-admin-mode',active);
@@ -8634,7 +8746,7 @@ html[data-theme="dark"] #v439SearchOrderCount{background:#173a60;color:#d9ecff}
   clearUrlAutofill(document.getElementById('q'));
  }
  function arrange(){const panel=document.querySelector('#searchView>.panel');const order=document.querySelector('#v30OrderData');const head=panel?.querySelector(':scope>.head');if(panel&&order&&head){order.classList.add('order-data-search');if(order.parentElement!==panel||order.nextElementSibling!==head)panel.insertBefore(order,head)}protectOrderFields()}
- function stabilizeAdminShell(){document.body.classList.toggle('v439-admin-mode',sessionStorage.getItem('bm_admin_session_v1')==='1')}
+ function stabilizeAdminShell(){document.body.classList.toggle('v439-admin-mode',document.body.classList.contains('bm-authenticated')&&sessionStorage.getItem('bm_admin_session_v1')==='1')}
  const start=()=>{stabilizeAdminShell();arrange();requestAnimationFrame(arrange);setTimeout(arrange,250)};
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
  window.addEventListener('pageshow',()=>{stabilizeAdminShell();arrange()});
@@ -8678,7 +8790,7 @@ html[data-theme="dark"] #v439SearchOrderCount{background:#173a60;color:#d9ecff}
    if(current&&current.parentElement===panel&&results&&current.previousElementSibling!==results)results.insertAdjacentElement('afterend',current);
    clean(document.getElementById('q'));clean(document.getElementById('omPedido'));clean(document.getElementById('alimentadorPedido'));
  }
- function start(){try{document.body.classList.toggle('v439-admin-mode',sessionStorage.getItem('bm_admin_session_v1')==='1')}catch(e){}arrange();requestAnimationFrame(arrange);[80,250,700,1400,2600].forEach(t=>setTimeout(arrange,t))}
+ function start(){try{document.body.classList.toggle('v439-admin-mode',document.body.classList.contains('bm-authenticated')&&sessionStorage.getItem('bm_admin_session_v1')==='1')}catch(e){}arrange();requestAnimationFrame(arrange);[80,250,700,1400,2600].forEach(t=>setTimeout(arrange,t))}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
  window.addEventListener('pageshow',start);
  document.addEventListener('focusin',e=>{if(['q','omPedido','alimentadorPedido'].includes(e.target?.id))clean(e.target)},true);
@@ -9358,7 +9470,209 @@ html[data-theme="dark"] .v46-active-tpl-banner{
   font-weight:700;
 }
 
-/* 4. Auth Modal & Users Table */
+/* 4. Enterprise Login Screen, Account Dialog & Users Table */
+.ent-login-overlay{
+  position:fixed;
+  inset:0;
+  z-index:999999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  overflow-y:auto;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(29, 112, 184, 0.22), transparent 60%),
+    linear-gradient(160deg, rgba(4, 11, 24, 0.86) 0%, rgba(6, 17, 36, 0.78) 52%, rgba(3, 9, 20, 0.92) 100%),
+    url('/login-hero-bg.jpg') center/cover no-repeat;
+  background-color:#050d1a;
+}
+.ent-login-stack{
+  width:100%;
+  max-width:440px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  margin:auto;
+}
+.ent-login-card{
+  background:rgba(11, 24, 44, 0.92);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border:1px solid rgba(148, 163, 184, 0.22);
+  border-radius:16px;
+  padding:30px 28px 24px;
+  box-shadow:0 28px 70px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(56, 189, 248, 0.08) inset;
+  color:#f8fafc;
+}
+.ent-login-emblem{
+  width:52px;
+  height:52px;
+  margin:0 auto 12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:14px;
+  background:rgba(245, 158, 11, 0.12);
+  border:1px solid rgba(251, 191, 36, 0.28);
+}
+.ent-login-title{
+  margin:0;
+  text-align:center;
+  font-size:23px;
+  font-weight:800;
+  letter-spacing:-0.02em;
+  color:#ffffff;
+}
+.ent-login-subtitle{
+  margin:6px 0 22px;
+  text-align:center;
+  font-size:13px;
+  color:#94a3b8;
+  font-weight:500;
+}
+.ent-login-fields{
+  display:grid;
+  gap:14px;
+}
+.ent-field{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  font-size:13px;
+  font-weight:600;
+  color:#cbd5e1;
+}
+.ent-field input{
+  width:100%;
+  padding:12px 14px;
+  border-radius:10px;
+  border:1px solid rgba(148, 163, 184, 0.28);
+  background:#e9eff7;
+  color:#0f172a;
+  font-size:14.5px;
+  font-weight:600;
+  outline:none;
+  transition:border-color .16s ease, box-shadow .16s ease, background .16s ease;
+}
+.ent-field input::placeholder{
+  color:#64748b;
+  font-weight:500;
+}
+.ent-field input:focus{
+  background:#ffffff;
+  border-color:#38bdf8;
+  box-shadow:0 0 0 3px rgba(56, 189, 248, 0.28);
+}
+.ent-pass-wrap{
+  position:relative;
+  display:flex;
+  align-items:center;
+}
+.ent-pass-wrap input{
+  padding-right:46px;
+}
+.ent-eye-btn{
+  position:absolute;
+  right:8px;
+  top:50%;
+  transform:translateY(-50%);
+  border:none;
+  background:transparent;
+  cursor:pointer;
+  font-size:16px;
+  padding:6px 8px;
+  border-radius:6px;
+  color:#334155;
+  line-height:1;
+}
+.ent-eye-btn:hover{
+  background:rgba(15, 23, 42, 0.08);
+}
+.ent-login-status{
+  min-height:20px;
+  margin:12px 0 6px;
+  font-size:12.5px;
+  font-weight:700;
+  text-align:center;
+  color:#93c5fd;
+}
+.ent-login-status.err{color:#fca5a5}
+.ent-login-status.ok{color:#86efac}
+.ent-login-submit{
+  width:100%;
+  margin-top:4px;
+  padding:13px 18px;
+  border:none;
+  border-radius:10px;
+  background:linear-gradient(135deg, #1d70b8 0%, #0284c7 100%);
+  color:#ffffff;
+  font-size:15px;
+  font-weight:800;
+  letter-spacing:0.01em;
+  cursor:pointer;
+  box-shadow:0 10px 24px rgba(2, 132, 199, 0.35);
+  transition:transform .14s ease, box-shadow .14s ease, filter .14s ease;
+}
+.ent-login-submit:hover{
+  filter:brightness(1.08);
+  box-shadow:0 14px 28px rgba(2, 132, 199, 0.48);
+}
+.ent-login-submit:active{transform:translateY(1px)}
+.ent-login-submit:disabled{opacity:.65;cursor:wait}
+.ent-first-access{
+  margin-top:12px;
+  padding:9px 12px;
+  border-radius:8px;
+  border:1px solid rgba(251, 191, 36, 0.35);
+  background:rgba(245, 158, 11, 0.12);
+  color:#fde68a;
+  font-size:12px;
+  line-height:1.4;
+  text-align:center;
+}
+.ent-login-foot{
+  margin-top:16px;
+  padding-top:12px;
+  border-top:1px solid rgba(148, 163, 184, 0.16);
+  text-align:center;
+}
+.ent-drive-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:11.5px;
+  color:#94a3b8;
+  font-weight:600;
+}
+.ent-install-card{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 16px;
+  border-radius:12px;
+  background:rgba(11, 24, 44, 0.92);
+  border:1px solid rgba(245, 158, 11, 0.45);
+  color:#e2e8f0;
+  font-size:12.5px;
+  box-shadow:0 14px 30px rgba(0, 0, 0, 0.4);
+}
+.ent-install-card strong{color:#fbbf24}
+.ent-install-info{display:flex;align-items:center;gap:10px;line-height:1.35}
+.ent-install-icon{font-size:18px;color:#fbbf24;flex-shrink:0}
+.ent-install-btn{
+  border:none;
+  border-radius:8px;
+  padding:9px 14px;
+  background:#f59e0b;
+  color:#0f172a;
+  font-weight:800;
+  font-size:12.5px;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.ent-install-btn:hover{background:#fbbf24}
+
 #userAuthDialog{
   border:none;
   border-radius:16px;
@@ -9373,9 +9687,7 @@ html[data-theme="dark"] .v46-active-tpl-banner{
   background:rgba(15,23,42,.62);
   backdrop-filter:blur(4px);
 }
-.v46-auth-card{
-  padding:20px 22px;
-}
+.v46-auth-card{padding:20px 22px}
 .v46-auth-head{
   display:flex;
   justify-content:space-between;
@@ -9386,17 +9698,17 @@ html[data-theme="dark"] .v46-active-tpl-banner{
   border-bottom:1px solid var(--line);
 }
 .v46-auth-lock-box{
-  padding:10px 12px;
+  padding:12px 14px;
   border-radius:10px;
   border:1px solid var(--line);
   background:var(--bg);
-  margin-bottom:10px;
+  margin-bottom:12px;
 }
 .v46-auth-lock-title{
   font-size:11.5px;
   font-weight:800;
   color:var(--blue-strong);
-  margin-bottom:6px;
+  margin-bottom:8px;
   display:flex;
   align-items:center;
   gap:6px;
@@ -9406,21 +9718,25 @@ html[data-theme="dark"] .v46-active-tpl-banner{
   gap:6px;
   align-items:center;
 }
-.v46-pass-row input{
-  flex:1;
-}
-.v46-provisional-banner{
-  padding:12px 14px;
+.v46-pass-row input{flex:1}
+.v46-drive-sync-banner{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  padding:10px 14px;
   border-radius:10px;
-  border:1px solid #f59e0b;
-  background:#fffbeb;
-  color:#78350f;
+  border:1px solid #93c5fd;
+  background:#eff6ff;
+  color:#1e3a8a;
   margin-bottom:14px;
+  font-size:12.5px;
 }
-html[data-theme="dark"] .v46-provisional-banner{
-  background:#3b2606;
-  color:#fde68a;
-  border-color:#d97706;
+html[data-theme="dark"] .v46-drive-sync-banner{
+  background:#0f2942;
+  color:#bfdbfe;
+  border-color:#2563eb;
 }
 .v46-status-pill{
   display:inline-flex;
@@ -10097,8 +10413,10 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
   });
 
   /* =========================================================
-     3. CUENTAS DE USUARIO CON DOBLE CANDADO DE SEGURIDAD
+     3. LOGIN EMPRESARIAL, USUARIOS Y PERSISTENCIA EN DRIVE
      ========================================================= */
+  let editingUserTargetId = null;
+
   function sha256Fallback(ascii){
     function rightRotate(value, amount){ return (value >>> amount) | (value << (32 - amount)); }
     const mathPow = Math.pow, maxWord = mathPow(2, 32);
@@ -10180,63 +10498,298 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
     }
   }
 
-  function generateProvisionalCode(){
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    let out = 'TMP-';
-    for(let i = 0; i < 6; i++) out += chars[Math.floor(Math.random() * chars.length)];
+  function generateSuggestedPassword(){
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+    let out = 'Sap@';
+    for(let i = 0; i < 5; i++) out += chars[Math.floor(Math.random() * chars.length)];
     return out;
+  }
+
+  function getDeviceLabel(){
+    const ua = String(navigator.userAgent || '');
+    const plat = /Android/i.test(ua) ? 'Android' : (/iPhone|iPad/i.test(ua) ? 'iOS' : (/Windows/i.test(ua) ? 'Windows' : (/Mac/i.test(ua) ? 'Mac' : 'Web')));
+    const br = /Edg\//i.test(ua) ? 'Edge' : (/Chrome\//i.test(ua) ? 'Chrome' : (/Firefox\//i.test(ua) ? 'Firefox' : (/Safari\//i.test(ua) ? 'Safari' : 'Browser')));
+    return `${br} / ${plat}`;
   }
 
   function ensureUsersState(){
     if(!state || typeof state !== 'object') return [];
     if(!Array.isArray(state.userAccounts)) state.userAccounts = [];
-    if(!state.authSettings || typeof state.authSettings !== 'object') state.authSettings = { requireLogin: false };
+    if(!Array.isArray(state.deletedUserIds)) state.deletedUserIds = [];
+    if(!Array.isArray(state.authLogs)) state.authLogs = [];
+    state.authSettings = {
+      ...(state.authSettings && typeof state.authSettings === 'object' ? state.authSettings : {}),
+      requireLogin: true,
+      allowGuest: false
+    };
     return state.userAccounts;
   }
 
-  async function persistUsersEverywhere(){
-    save();
+  function mergeUsersAndLogsIntoState(incoming){
+    if(!incoming || typeof incoming !== 'object') return;
+    ensureUsersState();
+
+    const deletedSet = new Set([
+      ...(state.deletedUserIds || []).map(String),
+      ...(Array.isArray(incoming.deletedUserIds) ? incoming.deletedUserIds.map(String) : [])
+    ]);
+    state.deletedUserIds = Array.from(deletedSet).slice(-200);
+
+    const byId = new Map();
+    const byUsername = new Map();
+    const applyUser = (u) => {
+      if(!u || !u.username) return;
+      const uname = String(u.username).trim().toUpperCase();
+      const id = String(u.id || ('usr-' + uname));
+      if(deletedSet.has(id)) return;
+      const prev = byId.get(id) || byUsername.get(uname);
+      if(!prev || String(u.updatedAt || '') >= String(prev.updatedAt || '')){
+        if(prev && prev.id !== id) byId.delete(prev.id);
+        const clean = {
+          ...u,
+          id,
+          username: uname,
+          email: String(u.email || '').trim().toLowerCase()
+        };
+        byId.set(id, clean);
+        byUsername.set(uname, clean);
+      }
+    };
+    (state.userAccounts || []).forEach(applyUser);
+    (Array.isArray(incoming.userAccounts) ? incoming.userAccounts : []).forEach(applyUser);
+    state.userAccounts = Array.from(byId.values()).filter(u => !deletedSet.has(String(u.id)));
+
+    const logById = new Map();
+    [...(state.authLogs || []), ...(Array.isArray(incoming.authLogs) ? incoming.authLogs : [])].forEach(l => {
+      if(!l) return;
+      const lid = String(l.id || `${l.timestamp || ''}_${l.event || ''}_${l.username || ''}`);
+      if(!logById.has(lid)) logById.set(lid, { ...l, id: lid });
+    });
+    state.authLogs = Array.from(logById.values())
+      .sort((a, b) => String(b.timestamp || '').localeCompare(String(a.timestamp || '')))
+      .slice(0, 500);
+
+    if(incoming.authSettings && typeof incoming.authSettings === 'object'){
+      state.authSettings = {
+        ...state.authSettings,
+        ...incoming.authSettings,
+        requireLogin: true,
+        allowGuest: false
+      };
+    }
+  }
+  window.bmMergeUsersAndLogsIntoState = mergeUsersAndLogsIntoState;
+
+  function addAuthLog(event, userOrName, detail = '', actor = ''){
+    ensureUsersState();
+    const isObj = userOrName && typeof userOrName === 'object';
+    const username = String(isObj ? userOrName.username : (userOrName || '')).trim().toUpperCase();
+    const fullName = String(isObj ? (userOrName.fullName || username) : '').trim();
+    const role = String(isObj ? (userOrName.role || 'user') : '').trim();
+    const entry = {
+      id: 'log-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7),
+      timestamp: new Date().toISOString(),
+      event: String(event || 'EVENTO'),
+      username,
+      fullName,
+      role,
+      detail: String(detail || ''),
+      actor: String(actor || getActiveUserSession()?.username || username || 'SISTEMA').toUpperCase(),
+      device: getDeviceLabel()
+    };
+    state.authLogs.unshift(entry);
+    if(state.authLogs.length > 500) state.authLogs = state.authLogs.slice(0, 500);
+    return entry;
+  }
+
+  async function verifyUserPassword(user, plainPass){
+    if(!user || !plainPass) return false;
+    if(user.passwordHash){
+      const pHash = await hashSecret(plainPass, user.passwordSalt || '');
+      if(pHash === user.passwordHash) return true;
+    }
+    if(user.provisionalHash){
+      const provHash = await hashSecret(plainPass, user.provisionalSalt || '');
+      if(provHash === user.provisionalHash) return true;
+    }
+    return false;
+  }
+
+  window.bmVerifyAnyAdminPassword = async function(plainPass){
+    const users = ensureUsersState().filter(u => u && u.active !== false && u.role === 'admin');
+    for(const adminUser of users){
+      if(await verifyUserPassword(adminUser, plainPass)) return true;
+    }
+    return false;
+  };
+
+  async function ensureDefaultAdminSeed(){
+    const users = ensureUsersState();
+    const hasActiveAdmin = users.some(u => u && u.active !== false && u.role === 'admin');
+    if(hasActiveAdmin) return false;
+    const salt = makeSalt();
+    const hash = await hashSecret('1234', salt);
+    const now = new Date().toISOString();
+    users.unshift({
+      id: 'usr-admin-root',
+      username: 'ADMIN',
+      email: '',
+      fullName: 'Administrador Principal',
+      role: 'admin',
+      active: true,
+      mustChangePassword: false,
+      isDefaultSeed: true,
+      passwordSalt: salt,
+      passwordHash: hash,
+      createdBy: 'SISTEMA',
+      createdAt: now,
+      updatedAt: now,
+      lastLoginAt: ''
+    });
+    addAuthLog('CREAR_USUARIO', users[0], 'Cuenta maestra inicial de administrador generada automáticamente', 'SISTEMA');
+    return true;
+  }
+
+  function updateLoginFirstAccessHint(){
+    const noteEl = document.getElementById('entFirstAccessNote');
+    if(!noteEl) return;
+    const users = ensureUsersState();
+    const rootAdmin = users.find(u => u.username === 'ADMIN' && u.isDefaultSeed);
+    if(rootAdmin && users.length === 1){
+      noteEl.innerHTML = 'Primer acceso de configuración: Usuario <b>ADMIN</b> · Contraseña inicial <b>1234</b>.<br>Luego cambia la clave y crea tus usuarios en <b>👥 Usuarios</b>.';
+      noteEl.classList.remove('hidden');
+    } else {
+      noteEl.classList.add('hidden');
+      noteEl.innerHTML = '';
+    }
+  }
+
+  function updateDriveLoginPill(text){
+    const el = document.getElementById('entDriveStateText');
+    if(el && text) el.textContent = text;
+  }
+
+  async function syncAuthToDriveNow({ quiet = true } = {}){
+    ensureUsersState();
     try{
-      await fetch('/api/users', {
+      if(typeof ensureConfigReady === 'function') await ensureConfigReady();
+      const cfg = typeof syncConfig === 'function' ? syncConfig() : { url: '', token: '' };
+      if(!cfg.url || !navigator.onLine) return false;
+
+      try{
+        const res = await callGoogleScript('syncUsersAndAuth', 'POST', {
+          action: 'syncUsersAndAuth',
+          token: cfg.token || '',
+          userAccounts: state.userAccounts,
+          deletedUserIds: state.deletedUserIds,
+          authSettings: state.authSettings,
+          authLogs: state.authLogs
+        });
+        if(res && res.ok){
+          mergeUsersAndLogsIntoState(res);
+          state.authSettings.lastDriveSyncAt = res.savedAt || new Date().toISOString();
+          localStorage.setItem(KEY, JSON.stringify(migrateState(state)));
+          updateDriveLoginPill('☁️ Sincronizado con Google Drive · Acceso autorizado');
+          return true;
+        }
+      }catch(err){
+        // Si Apps Script desplegado aún no tiene syncUsersAndAuth, usar respaldo completo syncAll
+        if(/Acci[oó]n no reconocida/i.test(String(err?.message || ''))){
+          const ok = await syncToDrive({ isManual: true, silentUi: true });
+          if(ok){
+            state.authSettings.lastDriveSyncAt = new Date().toISOString();
+            localStorage.setItem(KEY, JSON.stringify(migrateState(state)));
+            updateDriveLoginPill('☁️ Respaldado en Google Drive · Acceso autorizado');
+          }
+          return ok;
+        }
+        if(!quiet) console.warn('syncUsersAndAuth Drive:', err);
+      }
+      const okFallback = await syncToDrive({ isManual: true, silentUi: true });
+      if(okFallback){
+        state.authSettings.lastDriveSyncAt = new Date().toISOString();
+        localStorage.setItem(KEY, JSON.stringify(migrateState(state)));
+        updateDriveLoginPill('☁️ Respaldado en Google Drive · Acceso autorizado');
+      }
+      return okFallback;
+    }catch(e){
+      if(!quiet) console.warn('syncAuthToDriveNow error:', e);
+      return false;
+    }
+  }
+
+  async function persistUsersEverywhere({ syncDrive = true } = {}){
+    ensureUsersState();
+    localStorage.setItem(KEY, JSON.stringify(migrateState(state)));
+    try{
+      const r = await fetch('/api/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userAccounts: ensureUsersState(),
-          authSettings: state.authSettings || { requireLogin: false }
+          userAccounts: state.userAccounts,
+          deletedUserIds: state.deletedUserIds,
+          authSettings: state.authSettings,
+          authLogs: state.authLogs
         })
       });
+      if(r.ok){
+        const saved = await r.json();
+        if(saved?.ok) mergeUsersAndLogsIntoState(saved);
+      }
     }catch(_){}
+    localStorage.setItem(KEY, JSON.stringify(migrateState(state)));
+    if(syncDrive){
+      await syncAuthToDriveNow({ quiet: true });
+    }
+    if(document.getElementById('usersView')?.classList.contains('active')) renderUsersAdminView();
   }
 
   async function loadUsersFromServer(){
     try{
       const r = await fetch('/api/users', { cache: 'no-store' });
-      if(!r.ok) return;
+      if(!r.ok) return false;
       const data = await r.json();
-      const serverUsers = Array.isArray(data?.userAccounts) ? data.userAccounts : (Array.isArray(data?.users) ? data.users : null);
-      if(data && data.ok && serverUsers){
-        const localUsers = ensureUsersState();
-        const byId = new Map();
-        localUsers.forEach(u => { if(u?.id) byId.set(u.id, u); });
-        serverUsers.forEach(u => {
-          if(!u?.id) return;
-          const prev = byId.get(u.id);
-          if(!prev || String(u.updatedAt || '') > String(prev.updatedAt || '')){
-            byId.set(u.id, u);
-          }
-        });
-        state.userAccounts = Array.from(byId.values());
-        if(data.authSettings && typeof data.authSettings === 'object'){
-          if(!localUsers.length || data.authSettings.requireLogin !== undefined){
-            state.authSettings = { ...state.authSettings, ...data.authSettings };
-          }
-        }
+      if(data && data.ok){
+        mergeUsersAndLogsIntoState(data);
         localStorage.setItem(KEY, JSON.stringify(migrateState(state)));
-        updateUserSessionUI();
-        if(document.getElementById('usersView')?.classList.contains('active')) renderUsersAdminView();
-        enforceMandatoryLoginIfNeeded();
+        return true;
       }
     }catch(_){}
+    return false;
+  }
+
+  async function loadAuthFromDriveOnBoot(){
+    try{
+      if(typeof ensureConfigReady === 'function') await ensureConfigReady();
+      const cfg = typeof syncConfig === 'function' ? syncConfig() : { url: '', token: '' };
+      if(!cfg.url || !navigator.onLine) return false;
+      updateDriveLoginPill('☁️ Verificando usuarios en Google Drive...');
+      try{
+        const res = await callGoogleScript('getUsersAndAuth', 'GET');
+        if(res && res.ok){
+          mergeUsersAndLogsIntoState(res);
+          state.authSettings.lastDriveSyncAt = res.updatedAt || res.serverTime || new Date().toISOString();
+          localStorage.setItem(KEY, JSON.stringify(migrateState(state)));
+          updateDriveLoginPill('☁️ Sincronizado con Google Drive · Acceso autorizado');
+          return true;
+        }
+      }catch(err){
+        // Fallback para Code.gs anterior con getAll
+        if(/Acci[oó]n no reconocida/i.test(String(err?.message || '')) || true){
+          const resAll = await callGoogleScript('getAll', 'GET');
+          if(resAll && resAll.ok && resAll.data?.app){
+            mergeUsersAndLogsIntoState(resAll.data.app);
+            state.authSettings.lastDriveSyncAt = resAll.data.updatedAt || resAll.serverTime || new Date().toISOString();
+            localStorage.setItem(KEY, JSON.stringify(migrateState(state)));
+            updateDriveLoginPill('☁️ Sincronizado con Google Drive · Acceso autorizado');
+            return true;
+          }
+        }
+      }
+    }catch(_){
+      updateDriveLoginPill('☁️ Conexión Drive lista · Guardado local y servidor activo');
+    }
+    return false;
   }
 
   function getActiveUserSession(){
@@ -10250,37 +10803,64 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
     }
   }
 
+  function applyAuthBodyState(session){
+    const authed = Boolean(session && session.username);
+    document.body.classList.toggle('bm-authenticated', authed);
+    if(!authed){
+      document.body.classList.remove('v439-admin-mode');
+      try{
+        sessionStorage.removeItem(ADMIN_SESSION_KEY);
+        localStorage.removeItem(ADMIN_SESSION_KEY);
+      }catch(_){}
+    }else if(session.role === 'admin'){
+      try{
+        sessionStorage.setItem(ADMIN_SESSION_KEY, '1');
+        localStorage.setItem(ADMIN_SESSION_KEY, '1');
+      }catch(_){}
+      document.body.classList.add('v439-admin-mode');
+      qsa('.side-btn[data-view="newMatView"], .side-btn[data-view="supView"], .side-btn[data-view="unitsView"], .side-btn[data-view="historyView"], .side-btn[data-view="usersView"]').forEach(el => el.classList.remove('admin-only-hidden'));
+      const admBtn = document.getElementById('adminAccessBtn');
+      if(admBtn){
+        admBtn.classList.add('active');
+        admBtn.textContent = '🔓 Administrador activo';
+      }
+    }else{
+      const elevated = sessionStorage.getItem(ADMIN_SESSION_KEY) === '1';
+      document.body.classList.toggle('v439-admin-mode', elevated);
+      qsa('.side-btn[data-view="newMatView"], .side-btn[data-view="supView"], .side-btn[data-view="unitsView"], .side-btn[data-view="historyView"], .side-btn[data-view="usersView"]').forEach(el => el.classList.toggle('admin-only-hidden', !elevated));
+      const admBtn = document.getElementById('adminAccessBtn');
+      if(admBtn){
+        admBtn.classList.toggle('active', elevated);
+        admBtn.textContent = elevated ? '🔓 Administrador activo' : '🔐 Administrador';
+      }
+    }
+  }
+
   function setActiveUserSession(user){
     if(!user){
       try{
         sessionStorage.removeItem(USER_SESSION_KEY);
         localStorage.removeItem(USER_SESSION_KEY);
+        sessionStorage.removeItem(ADMIN_SESSION_KEY);
+        localStorage.removeItem(ADMIN_SESSION_KEY);
       }catch(_){}
+      applyAuthBodyState(null);
       updateUserSessionUI();
       return;
     }
     const payload = {
       id: user.id,
       username: user.username,
+      email: user.email || '',
       fullName: user.fullName || user.username,
-      role: user.role || 'user',
+      role: user.role === 'admin' ? 'admin' : 'user',
       loggedInAt: new Date().toISOString()
     };
     try{
       sessionStorage.setItem(USER_SESSION_KEY, JSON.stringify(payload));
       localStorage.setItem(USER_SESSION_KEY, JSON.stringify(payload));
-      if(user.role === 'admin'){
-        sessionStorage.setItem(ADMIN_SESSION_KEY, '1');
-        localStorage.setItem(ADMIN_SESSION_KEY, '1');
-        document.body.classList.add('v439-admin-mode');
-        qsa('.side-btn[data-view="newMatView"], .side-btn[data-view="supView"], .side-btn[data-view="unitsView"], .side-btn[data-view="historyView"], .side-btn[data-view="usersView"]').forEach(el => el.classList.remove('admin-only-hidden'));
-        const admBtn = document.getElementById('adminAccessBtn');
-        if(admBtn){
-          admBtn.classList.add('active');
-          admBtn.textContent = '🔓 Administrador activo (Cerrar sesión)';
-        }
-      }
     }catch(_){}
+    applyAuthBodyState(payload);
     updateUserSessionUI();
   }
 
@@ -10291,199 +10871,136 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
     if(s){
       btn.classList.add('logged-in');
       btn.textContent = `${s.role === 'admin' ? '🛡️' : '👤'} ${s.username}`;
-      btn.title = `Sesión iniciada como ${s.fullName || s.username}. Clic para ver cuenta o cerrar sesión.`;
+      btn.title = `Sesión iniciada como ${s.fullName || s.username}. Clic para ver cuenta, cambiar contraseña o cerrar sesión.`;
     }else{
       btn.classList.remove('logged-in');
-      btn.textContent = '👤 Iniciar sesión';
-      btn.title = 'Iniciar sesión con doble candado';
+      btn.textContent = '🔒 Acceso requerido';
+      btn.title = 'Inicia sesión para continuar';
     }
   }
 
-  function logoutUserSession(){
+  function focusEnterpriseLogin(){
+    const uInp = document.getElementById('entLoginUser');
+    const pInp = document.getElementById('entLoginPass');
+    const st = document.getElementById('entLoginStatus');
+    if(st){ st.textContent = ''; st.className = 'ent-login-status'; }
+    if(pInp){ pInp.value = ''; pInp.type = 'password'; }
+    const eye = document.getElementById('entTogglePassBtn');
+    if(eye) eye.textContent = '👁️';
+    updateLoginFirstAccessHint();
+    setTimeout(() => {
+      if(uInp && !uInp.value) uInp.focus();
+      else pInp?.focus();
+    }, 60);
+  }
+
+  async function logoutUserSession(){
     const prev = getActiveUserSession();
-    setActiveUserSession(null);
-    if(prev?.role === 'admin'){
-      try{
-        sessionStorage.removeItem(ADMIN_SESSION_KEY);
-        localStorage.removeItem(ADMIN_SESSION_KEY);
-      }catch(_){}
-      document.body.classList.remove('v439-admin-mode');
-      qsa('.side-btn[data-view="newMatView"], .side-btn[data-view="supView"], .side-btn[data-view="unitsView"], .side-btn[data-view="historyView"], .side-btn[data-view="usersView"]').forEach(el => el.classList.add('admin-only-hidden'));
-      const admBtn = document.getElementById('adminAccessBtn');
-      if(admBtn){
-        admBtn.classList.remove('active');
-        admBtn.textContent = '🔐 Administrador';
-      }
-      const activeView = document.querySelector('.view.active')?.id;
-      if(['newMatView','supView','unitsView','historyView','usersView'].includes(activeView) && typeof showView === 'function'){
-        showView('searchView');
-      }
+    if(prev){
+      addAuthLog('CIERRE_SESION', prev, 'Cierre de sesión manual', prev.username);
+      persistUsersEverywhere({ syncDrive: true }).catch(() => {});
     }
-    if(typeof msg === 'function') msg('Sesión de usuario cerrada.');
-    enforceMandatoryLoginIfNeeded();
+    setActiveUserSession(null);
+    const activeView = document.querySelector('.view.active')?.id;
+    if(['newMatView','supView','unitsView','historyView','usersView'].includes(activeView) && typeof showView === 'function'){
+      showView('searchView');
+    }
+    focusEnterpriseLogin();
+    if(typeof msg === 'function') msg('Sesión cerrada correctamente.');
   }
 
-  function renderAuthDialog(){
+  function renderAccountOrEditDialog(mode = 'account', targetUser = null){
     const dlg = document.getElementById('userAuthDialog');
     const card = document.getElementById('v46AuthCard');
     if(!dlg || !card) return;
-    const requireLogin = Boolean(state?.authSettings?.requireLogin && ensureUsersState().some(u => u.active !== false));
     const session = getActiveUserSession();
 
-    if(authDialogMode === 'account' && session){
+    if(mode === 'editUser' && targetUser){
+      editingUserTargetId = targetUser.id;
       card.innerHTML = `
         <div class="v46-auth-head">
           <div>
-            <div class="ey">SESIÓN CON DOBLE CANDADO</div>
-            <h2 style="margin:4px 0 0">👤 ${escH(session.fullName || session.username)}</h2>
+            <div class="ey">ADMINISTRAR CREDENCIALES</div>
+            <h2 style="margin:4px 0 0">🔑 Editar usuario: ${escH(targetUser.username)}</h2>
           </div>
           <button type="button" class="btn secondary" id="v46AuthCloseBtn">✕</button>
         </div>
-        <div class="v46-auth-lock-box">
-          <div><b>Usuario:</b> ${escH(session.username)}</div>
-          <div><b>Rol:</b> ${session.role === 'admin' ? '🛡️ Administrador' : '👷 Usuario estándar'}</div>
-          <div class="small" style="color:var(--muted);margin-top:4px">Seguridad: Doble candado activo (Contraseña + Clave de seguridad).</div>
+        <div style="display:grid;gap:10px;margin-bottom:12px">
+          <label class="v46-field">Nombre completo *
+            <input id="v46EditUserName" type="text" value="${escH(targetUser.fullName || '')}" placeholder="Nombre completo"/>
+          </label>
+          <label class="v46-field">Correo electrónico (opcional)
+            <input id="v46EditUserEmail" type="email" value="${escH(targetUser.email || '')}" placeholder="correo@empresa.com"/>
+          </label>
+          <label class="v46-field">Rol de acceso
+            <select id="v46EditUserRole">
+              <option value="user" ${targetUser.role !== 'admin' ? 'selected' : ''}>👷 Usuario estándar (Pedidos / Plantillas)</option>
+              <option value="admin" ${targetUser.role === 'admin' ? 'selected' : ''}>🛡️ Administrador (Acceso total)</option>
+            </select>
+          </label>
+          <label class="v46-field">Nueva contraseña (dejar vacío para conservar la actual)
+            <div class="v46-pass-row">
+              <input id="v46EditUserPass" type="password" autocomplete="new-password" placeholder="Mínimo 4 caracteres"/>
+              <button type="button" class="btn secondary" data-v46-eye="v46EditUserPass">👁️</button>
+              <button type="button" class="btn secondary" id="v46GenEditPassBtn" title="Sugerir contraseña">🎲</button>
+            </div>
+          </label>
         </div>
+        <div id="v46AuthStatus" class="small" style="min-height:18px;margin-bottom:10px;font-weight:700"></div>
         <div style="display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap">
-          <button type="button" class="btn secondary" id="v46AuthCloseBtn2">Cerrar ventana</button>
-          <button type="button" class="btn danger" id="v46LogoutUserBtn" style="font-weight:700">🚪 Cerrar sesión</button>
+          <button type="button" class="btn secondary" id="v46AuthCloseBtn2">Cancelar</button>
+          <button type="button" class="btn success" id="v46SaveEditUserBtn" style="font-weight:800">💾 Guardar y sincronizar con Drive</button>
         </div>
       `;
       return;
     }
 
-    if(authDialogMode === 'setup' && pendingSetupUser){
-      card.innerHTML = `
-        <div class="v46-auth-head">
-          <div>
-            <div class="ey">ACTIVACIÓN OBLIGATORIA · DOBLE CANDADO</div>
-            <h2 style="margin:4px 0 0">🔐 Configura tus 2 Candados</h2>
-          </div>
-          ${!requireLogin ? '<button type="button" class="btn secondary" id="v46AuthCloseBtn">✕</button>' : ''}
-        </div>
-        <p class="small" style="color:var(--muted);margin-top:0">Bienvenido <b>${escH(pendingSetupUser.username)}</b>. Tu contraseña provisional fue validada. Crea ahora tu <b>Contraseña personal (Candado 1)</b> y tu <b>Clave de seguridad de recuperación (Candado 2)</b>.</p>
-        <div class="v46-auth-lock-box">
-          <div class="v46-auth-lock-title">🔒 CANDADO 1 · CONTRASEÑA DE INGRESO</div>
-          <div style="display:grid;gap:8px">
-            <label class="v46-field">Nueva contraseña (mín. 4 caracteres)
-              <div class="v46-pass-row">
-                <input id="v46SetupPass1" type="password" autocomplete="new-password" placeholder="Ingresa tu contraseña"/>
-                <button type="button" class="btn secondary" data-v46-eye="v46SetupPass1">👁️</button>
-              </div>
-            </label>
-            <label class="v46-field">Confirmar contraseña
-              <input id="v46SetupPass2" type="password" autocomplete="new-password" placeholder="Repite tu contraseña"/>
-            </label>
-          </div>
-        </div>
-        <div class="v46-auth-lock-box">
-          <div class="v46-auth-lock-title">🛡️ CANDADO 2 · CLAVE DE SEGURIDAD (RECUPERACIÓN)</div>
-          <div style="display:grid;gap:8px">
-            <label class="v46-field">Clave de seguridad personal (mín. 4 caracteres)
-              <div class="v46-pass-row">
-                <input id="v46SetupSec1" type="password" autocomplete="new-password" placeholder="Ej.: palabra secreta o PIN de recuperación"/>
-                <button type="button" class="btn secondary" data-v46-eye="v46SetupSec1">👁️</button>
-              </div>
-            </label>
-            <label class="v46-field">Confirmar clave de seguridad
-              <input id="v46SetupSec2" type="password" autocomplete="new-password" placeholder="Repite tu clave de seguridad"/>
-            </label>
-          </div>
-        </div>
-        <div id="v46AuthStatus" class="small" style="min-height:18px;margin-bottom:8px;font-weight:700"></div>
-        <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
-          <button type="button" class="btn secondary" id="v46BackToLoginBtn">← Volver</button>
-          <button type="button" class="btn success" id="v46SaveSetupBtn" style="font-weight:800">🔐 Guardar doble candado e ingresar</button>
-        </div>
-      `;
-      return;
-    }
-
-    if(authDialogMode === 'recover'){
-      card.innerHTML = `
-        <div class="v46-auth-head">
-          <div>
-            <div class="ey">RECUPERACIÓN DE CONTRASEÑA</div>
-            <h2 style="margin:4px 0 0">🛡️ Recuperar con Clave de Seguridad</h2>
-          </div>
-          ${!requireLogin ? '<button type="button" class="btn secondary" id="v46AuthCloseBtn">✕</button>' : ''}
-        </div>
-        <p class="small" style="color:var(--muted);margin-top:0">Ingresa tu usuario y tu <b>Clave de seguridad (Candado 2)</b> para restablecer tu contraseña. Si olvidaste ambas, solicita al Administrador un reseteo provisional en el módulo <b>👥 Usuarios</b>.</p>
-        <div style="display:grid;gap:10px;margin-bottom:10px">
-          <label class="v46-field">Usuario
-            <input id="v46RecUser" type="text" autocomplete="username" placeholder="Ej.: JPEREZ" style="text-transform:uppercase"/>
-          </label>
-          <label class="v46-field">🛡️ Clave de seguridad (Candado 2)
-            <div class="v46-pass-row">
-              <input id="v46RecSecKey" type="password" autocomplete="off" placeholder="Tu clave de seguridad"/>
-              <button type="button" class="btn secondary" data-v46-eye="v46RecSecKey">👁️</button>
-            </div>
-          </label>
-          <label class="v46-field">🔒 Nueva contraseña (Candado 1)
-            <div class="v46-pass-row">
-              <input id="v46RecNewPass" type="password" autocomplete="new-password" placeholder="Mínimo 4 caracteres"/>
-              <button type="button" class="btn secondary" data-v46-eye="v46RecNewPass">👁️</button>
-            </div>
-          </label>
-          <label class="v46-field">Confirmar nueva contraseña
-            <input id="v46RecNewPass2" type="password" autocomplete="new-password" placeholder="Repite la nueva contraseña"/>
-          </label>
-        </div>
-        <div id="v46AuthStatus" class="small" style="min-height:18px;margin-bottom:8px;font-weight:700"></div>
-        <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
-          <button type="button" class="btn secondary" id="v46BackToLoginBtn">← Volver al inicio</button>
-          <button type="button" class="btn primary" id="v46RecoverSubmitBtn" style="font-weight:800">🔄 Restablecer contraseña</button>
-        </div>
-      `;
-      return;
-    }
-
-    // Default: 'login'
+    if(!session) return;
     card.innerHTML = `
       <div class="v46-auth-head">
         <div>
-          <div class="ey">DOBLE CANDADO DE SEGURIDAD</div>
-          <h2 style="margin:4px 0 0">🔐 Iniciar Sesión</h2>
+          <div class="ey">CUENTA CORPORATIVA ACTIVA</div>
+          <h2 style="margin:4px 0 0">${session.role === 'admin' ? '🛡️' : '👤'} ${escH(session.fullName || session.username)}</h2>
         </div>
-        ${!requireLogin ? '<button type="button" class="btn secondary" id="v46AuthCloseBtn">✕</button>' : ''}
+        <button type="button" class="btn secondary" id="v46AuthCloseBtn">✕</button>
       </div>
-      <p class="small" style="color:var(--muted);margin-top:0">Si es tu primer ingreso o el administrador reseteó tu cuenta, escribe tu <b>Contraseña provisional</b> en el Candado 1 (deja el Candado 2 vacío) para configurar tus claves.</p>
-      <div style="display:grid;gap:10px;margin-bottom:10px">
-        <label class="v46-field">Usuario
-          <input id="v46LoginUser" type="text" autocomplete="username" placeholder="Ej.: JPEREZ" style="text-transform:uppercase"/>
-        </label>
-        <div class="v46-auth-lock-box" style="margin-bottom:0">
-          <div class="v46-auth-lock-title">🔒 CANDADO 1 · CONTRASEÑA (O PROVISIONAL)</div>
-          <div class="v46-pass-row">
-            <input id="v46LoginPass" type="password" autocomplete="current-password" placeholder="Contraseña personal o provisional" style="flex:1;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--text)"/>
-            <button type="button" class="btn secondary" data-v46-eye="v46LoginPass">👁️</button>
-          </div>
-        </div>
-        <div class="v46-auth-lock-box" style="margin-bottom:0">
-          <div class="v46-auth-lock-title">🛡️ CANDADO 2 · CLAVE DE SEGURIDAD</div>
-          <div class="v46-pass-row">
-            <input id="v46LoginSecKey" type="password" autocomplete="off" placeholder="Obligatoria si tu cuenta ya está activada" style="flex:1;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--text)"/>
-            <button type="button" class="btn secondary" data-v46-eye="v46LoginSecKey">👁️</button>
-          </div>
+      <div class="v46-auth-lock-box">
+        <div><b>Usuario:</b> ${escH(session.username)}</div>
+        ${session.email ? `<div><b>Correo:</b> ${escH(session.email)}</div>` : ''}
+        <div><b>Rol:</b> ${session.role === 'admin' ? '🛡️ Administrador' : '👷 Usuario estándar'}</div>
+        <div class="small" style="color:var(--muted);margin-top:4px">Inicio de sesión respaldado en Google Drive.</div>
+      </div>
+      <div class="v46-auth-lock-box">
+        <div class="v46-auth-lock-title">🔑 CAMBIAR MI CONTRASEÑA</div>
+        <div style="display:grid;gap:8px">
+          <label class="v46-field">Contraseña actual
+            <div class="v46-pass-row">
+              <input id="v46SelfCurPass" type="password" autocomplete="current-password" placeholder="Tu contraseña actual"/>
+              <button type="button" class="btn secondary" data-v46-eye="v46SelfCurPass">👁️</button>
+            </div>
+          </label>
+          <label class="v46-field">Nueva contraseña (mín. 4 caracteres)
+            <div class="v46-pass-row">
+              <input id="v46SelfNewPass" type="password" autocomplete="new-password" placeholder="Nueva contraseña"/>
+              <button type="button" class="btn secondary" data-v46-eye="v46SelfNewPass">👁️</button>
+            </div>
+          </label>
+          <button type="button" class="btn primary" id="v46SelfChangePassBtn" style="font-weight:700">💾 Actualizar mi contraseña</button>
         </div>
       </div>
       <div id="v46AuthStatus" class="small" style="min-height:18px;margin-bottom:8px;font-weight:700"></div>
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">
-        <button type="button" class="btn secondary" id="v46GoRecoverBtn" style="font-size:12px">🛡️ ¿Olvidaste tu contraseña? Recuperar</button>
-        <button type="button" class="btn primary" id="v46LoginSubmitBtn" style="font-weight:800">🚀 Ingresar</button>
-      </div>
-      <div class="small" style="color:var(--muted);border-top:1px solid var(--line);padding-top:8px">
-        Si olvidaste tanto tu contraseña como tu clave de seguridad, solicita al Administrador un reseteo provisional.
+      <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
+        <button type="button" class="btn danger" id="v46LogoutUserBtn" style="font-weight:700">🚪 Cerrar sesión</button>
+        <button type="button" class="btn secondary" id="v46AuthCloseBtn2">Cerrar ventana</button>
       </div>
     `;
   }
 
-  function openUserAuthDialog(mode = 'login'){
+  function openAccountDialog(mode = 'account', targetUser = null){
+    if(!getActiveUserSession()) return;
     const dlg = document.getElementById('userAuthDialog');
     if(!dlg) return;
-    const session = getActiveUserSession();
-    authDialogMode = session && mode === 'login' ? 'account' : mode;
-    renderAuthDialog();
+    renderAccountOrEditDialog(mode, targetUser);
     try{
       if(!dlg.open){
         if(typeof dlg.showModal === 'function') dlg.showModal();
@@ -10492,19 +11009,13 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
     }catch(_){
       dlg.setAttribute('open', 'true');
     }
-    setTimeout(() => {
-      const firstInp = dlg.querySelector('input');
-      firstInp?.focus();
-    }, 60);
   }
-  window.openUserAuthDialog = openUserAuthDialog;
+  window.openUserAuthDialog = () => openAccountDialog('account');
 
   function closeUserAuthDialog(){
+    editingUserTargetId = null;
     const dlg = document.getElementById('userAuthDialog');
     if(!dlg) return;
-    if(state?.authSettings?.requireLogin && ensureUsersState().some(u => u.active !== false) && !getActiveUserSession()){
-      return;
-    }
     try{
       if(typeof dlg.close === 'function') dlg.close();
       else dlg.removeAttribute('open');
@@ -10513,217 +11024,151 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
     }
   }
 
-  function enforceMandatoryLoginIfNeeded(){
-    const users = ensureUsersState().filter(u => u.active !== false);
-    if(state?.authSettings?.requireLogin && users.length > 0 && !getActiveUserSession()){
-      openUserAuthDialog('login');
-    }
-  }
+  async function handleEnterpriseLoginSubmit(e){
+    if(e) e.preventDefault();
+    const uInp = document.getElementById('entLoginUser');
+    const pInp = document.getElementById('entLoginPass');
+    const st = document.getElementById('entLoginStatus');
+    const btn = document.getElementById('entLoginSubmitBtn');
+    const setStatus = (txt, cls='') => {
+      if(st){ st.textContent = txt; st.className = 'ent-login-status ' + cls; }
+    };
 
-  async function handleUserLoginSubmit(){
-    const st = document.getElementById('v46AuthStatus');
-    const setErr = txt => { if(st){ st.textContent = txt; st.style.color = '#dc2626'; } };
-    const username = (document.getElementById('v46LoginUser')?.value || '').trim().toUpperCase();
-    const pass = String(document.getElementById('v46LoginPass')?.value || '');
-    const secKey = String(document.getElementById('v46LoginSecKey')?.value || '');
-    if(!username || !pass){
-      setErr('❌ Ingresa tu usuario y contraseña.');
-      return;
-    }
-    const users = ensureUsersState();
-    const user = users.find(u => String(u.username || '').toUpperCase() === username);
-    if(!user){
-      setErr('❌ Usuario no encontrado.');
-      return;
-    }
-    if(user.active === false){
-      setErr('🚫 Esta cuenta está deshabilitada. Contacta al Administrador.');
+    const identifier = (uInp?.value || '').trim();
+    const pass = String(pInp?.value || '');
+    if(!identifier || !pass){
+      setStatus('Ingresa tu usuario o correo y tu contraseña.', 'err');
       return;
     }
 
-    if(user.mustChangePassword){
-      const provHash = await hashSecret(pass, user.provisionalSalt || '');
-      if(!user.provisionalHash || provHash !== user.provisionalHash){
-        setErr('❌ Contraseña provisional incorrecta.');
+    if(btn){ btn.disabled = true; btn.textContent = 'Validando...'; }
+    setStatus('Verificando credenciales...', '');
+
+    try{
+      const idUpper = identifier.toUpperCase();
+      const idLower = identifier.toLowerCase();
+
+      let users = ensureUsersState();
+      let user = users.find(u =>
+        String(u.username || '').toUpperCase() === idUpper ||
+        (u.email && String(u.email).trim().toLowerCase() === idLower)
+      );
+
+      // Si no se encuentra localmente, consultar Drive y servidor por si fue creado desde otra PC
+      if(!user && navigator.onLine){
+        await Promise.allSettled([loadUsersFromServer(), loadAuthFromDriveOnBoot()]);
+        users = ensureUsersState();
+        user = users.find(u =>
+          String(u.username || '').toUpperCase() === idUpper ||
+          (u.email && String(u.email).trim().toLowerCase() === idLower)
+        );
+      }
+
+      if(!user){
+        addAuthLog('INTENTO_FALLIDO', idUpper, 'Usuario no registrado', idUpper);
+        persistUsersEverywhere({ syncDrive: false }).catch(() => {});
+        setStatus('❌ Usuario o contraseña incorrectos.', 'err');
         return;
       }
-      pendingSetupUser = { id: user.id, username: user.username };
-      authDialogMode = 'setup';
-      renderAuthDialog();
-      setTimeout(() => document.getElementById('v46SetupPass1')?.focus(), 50);
-      return;
+      if(user.active === false){
+        addAuthLog('INTENTO_FALLIDO', user, 'Cuenta deshabilitada intentó ingresar', user.username);
+        persistUsersEverywhere({ syncDrive: false }).catch(() => {});
+        setStatus('🚫 Esta cuenta está deshabilitada. Contacta al Administrador.', 'err');
+        return;
+      }
+
+      const valid = await verifyUserPassword(user, pass);
+      if(!valid){
+        addAuthLog('INTENTO_FALLIDO', user, 'Contraseña incorrecta', user.username);
+        persistUsersEverywhere({ syncDrive: false }).catch(() => {});
+        setStatus('❌ Usuario o contraseña incorrectos.', 'err');
+        return;
+      }
+
+      const now = new Date().toISOString();
+      user.lastLoginAt = now;
+      user.updatedAt = now;
+      addAuthLog('INICIO_SESION', user, 'Ingreso autorizado desde pantalla de inicio', user.username);
+
+      setStatus('✅ Acceso concedido. Guardando registro en Drive...', 'ok');
+      setActiveUserSession(user);
+      if(pInp) pInp.value = '';
+      await persistUsersEverywhere({ syncDrive: true });
+      if(typeof msg === 'function') msg(`Bienvenido, ${user.fullName || user.username}.`);
+    }finally{
+      if(btn){ btn.disabled = false; btn.textContent = 'Ingresar'; }
     }
-
-    if(!secKey){
-      setErr('❌ Debes ingresar tu Clave de seguridad (Candado 2).');
-      return;
-    }
-    const pHash = await hashSecret(pass, user.passwordSalt || '');
-    const sHash = await hashSecret(secKey, user.securityKeySalt || '');
-    if(pHash !== user.passwordHash || sHash !== user.securityKeyHash){
-      setErr('❌ Candado 1 o Candado 2 incorrectos. Verifica tus datos.');
-      return;
-    }
-
-    user.lastLoginAt = new Date().toISOString();
-    user.updatedAt = user.lastLoginAt;
-    await persistUsersEverywhere();
-    setActiveUserSession(user);
-    closeUserAuthDialog();
-    if(typeof msg === 'function') msg(`Bienvenido, ${user.fullName || user.username}.`);
-  }
-
-  async function handleDoubleLockSetupSubmit(){
-    const st = document.getElementById('v46AuthStatus');
-    const setErr = txt => { if(st){ st.textContent = txt; st.style.color = '#dc2626'; } };
-    const p1 = String(document.getElementById('v46SetupPass1')?.value || '');
-    const p2 = String(document.getElementById('v46SetupPass2')?.value || '');
-    const s1 = String(document.getElementById('v46SetupSec1')?.value || '');
-    const s2 = String(document.getElementById('v46SetupSec2')?.value || '');
-
-    if(p1.length < 4){ setErr('❌ La contraseña (Candado 1) debe tener al menos 4 caracteres.'); return; }
-    if(p1 !== p2){ setErr('❌ Las contraseñas no coinciden.'); return; }
-    if(s1.length < 4){ setErr('❌ La clave de seguridad (Candado 2) debe tener al menos 4 caracteres.'); return; }
-    if(s1 !== s2){ setErr('❌ Las claves de seguridad no coinciden.'); return; }
-    if(p1 === s1){ setErr('⚠️ Por seguridad, tu Clave de seguridad (Candado 2) debe ser distinta a tu contraseña.'); return; }
-
-    const users = ensureUsersState();
-    const user = users.find(u => u.id === pendingSetupUser?.id);
-    if(!user){ setErr('❌ Sesión de activación expirada.'); return; }
-
-    const pSalt = makeSalt();
-    const sSalt = makeSalt();
-    user.passwordSalt = pSalt;
-    user.passwordHash = await hashSecret(p1, pSalt);
-    user.securityKeySalt = sSalt;
-    user.securityKeyHash = await hashSecret(s1, sSalt);
-    user.provisionalHash = '';
-    user.provisionalSalt = '';
-    user.mustChangePassword = false;
-    user.lastLoginAt = new Date().toISOString();
-    user.updatedAt = user.lastLoginAt;
-
-    pendingSetupUser = null;
-    await persistUsersEverywhere();
-    setActiveUserSession(user);
-    closeUserAuthDialog();
-    if(document.getElementById('usersView')?.classList.contains('active')) renderUsersAdminView();
-    if(typeof msg === 'function') msg(`Doble candado configurado correctamente para ${user.username}.`);
-  }
-
-  async function handleRecoverSubmit(){
-    const st = document.getElementById('v46AuthStatus');
-    const setErr = txt => { if(st){ st.textContent = txt; st.style.color = '#dc2626'; } };
-    const username = (document.getElementById('v46RecUser')?.value || '').trim().toUpperCase();
-    const secKey = String(document.getElementById('v46RecSecKey')?.value || '');
-    const np1 = String(document.getElementById('v46RecNewPass')?.value || '');
-    const np2 = String(document.getElementById('v46RecNewPass2')?.value || '');
-
-    if(!username || !secKey){ setErr('❌ Ingresa tu usuario y tu Clave de seguridad (Candado 2).'); return; }
-    const user = ensureUsersState().find(u => String(u.username || '').toUpperCase() === username);
-    if(!user){ setErr('❌ Usuario no encontrado.'); return; }
-    if(user.active === false){ setErr('🚫 Cuenta deshabilitada. Contacta al Administrador.'); return; }
-    if(user.mustChangePassword || !user.securityKeyHash){
-      setErr('⏳ Esta cuenta tiene pendiente un ingreso con contraseña provisional del Administrador.');
-      return;
-    }
-
-    const sHash = await hashSecret(secKey, user.securityKeySalt || '');
-    if(sHash !== user.securityKeyHash){
-      setErr('❌ Clave de seguridad incorrecta. Si olvidaste ambos candados, solicita al Administrador un reseteo.');
-      return;
-    }
-    if(np1.length < 4){ setErr('❌ La nueva contraseña debe tener al menos 4 caracteres.'); return; }
-    if(np1 !== np2){ setErr('❌ Las nuevas contraseñas no coinciden.'); return; }
-    if(np1 === secKey){ setErr('⚠️ La nueva contraseña debe ser diferente a tu Clave de seguridad.'); return; }
-
-    const newSalt = makeSalt();
-    user.passwordSalt = newSalt;
-    user.passwordHash = await hashSecret(np1, newSalt);
-    user.lastLoginAt = new Date().toISOString();
-    user.updatedAt = user.lastLoginAt;
-
-    await persistUsersEverywhere();
-    setActiveUserSession(user);
-    closeUserAuthDialog();
-    if(document.getElementById('usersView')?.classList.contains('active')) renderUsersAdminView();
-    if(typeof msg === 'function') msg(`Contraseña recuperada y actualizada para ${user.username}.`);
   }
 
   window.renderUsersAdminView = function(){
     const container = document.getElementById('v46UsersContainer');
     if(!container) return;
     const users = ensureUsersState();
-    const requireLogin = Boolean(state?.authSettings?.requireLogin);
+    const logs = Array.isArray(state?.authLogs) ? state.authLogs : [];
+    const lastDrive = state?.authSettings?.lastDriveSyncAt
+      ? new Date(state.authSettings.lastDriveSyncAt).toLocaleString('es-PE')
+      : 'Pendiente / Al sincronizar';
 
     container.innerHTML = `
       <div class="v46-mod-head">
         <div>
-          <h2>👥 Gestión de Usuarios y Doble Candado <span class="badge">${users.length}</span></h2>
-          <p class="small" style="margin:4px 0 0 0;color:var(--muted)">Crea cuentas con contraseña provisional. Al ingresar por primera vez, el usuario creará su contraseña (Candado 1) y su clave de seguridad de recuperación (Candado 2). Si olvida ambos, puedes resetear su contraseña aquí.</p>
+          <h2>👥 Gestión de Usuarios y Accesos <span class="badge">${users.length}</span></h2>
+          <p class="small" style="margin:4px 0 0 0;color:var(--muted)">Crea usuarios con contraseña asignada, administra roles y consulta cada inicio de sesión respaldado en tu Google Drive. No se permite el acceso como invitado.</p>
         </div>
         <div class="v46-mod-actions">
-          <label style="display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);font-size:12.5px;font-weight:700;cursor:pointer">
-            <input type="checkbox" id="v46RequireLoginToggle" ${requireLogin ? 'checked' : ''}/>
-            🔒 Exigir inicio de sesión al abrir la app
-          </label>
+          <button type="button" class="btn primary" id="v46SyncUsersDriveBtn" style="font-weight:700">☁️ Sincronizar usuarios con Drive</button>
         </div>
       </div>
 
-      ${lastProvisionalNotice ? `
-        <div class="v46-provisional-banner" id="v46LastProvisionalBox">
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-            <div>
-              <strong>🔑 ${lastProvisionalNotice.isReset ? 'Contraseña provisional por reseteo generada' : 'Cuenta creada con contraseña provisional'}</strong>
-              <div style="margin-top:4px;font-size:13px">
-                Usuario: <b>${escH(lastProvisionalNotice.username)}</b> (${escH(lastProvisionalNotice.fullName)}) ·
-                Provisional: <code style="font-size:15px;font-weight:900;padding:2px 8px;border-radius:6px;background:rgba(0,0,0,.08)">${escH(lastProvisionalNotice.code)}</code>
-              </div>
-              <div class="small" style="margin-top:3px">Entrega esta contraseña provisional al usuario. Al iniciar sesión, la app le pedirá crear su contraseña personal y su clave de seguridad (doble candado).</div>
-            </div>
-            <div style="display:flex;gap:8px">
-              <button type="button" class="btn primary" id="v46CopyProvBtn" style="font-weight:700">📋 Copiar credencial</button>
-              <button type="button" class="btn secondary" id="v46DismissProvBtn">✕</button>
-            </div>
-          </div>
+      <div class="v46-drive-sync-banner">
+        <div>
+          <strong>☁️ Persistencia activa en Google Drive y Servidor</strong>
+          <span style="margin-left:8px;opacity:.9">Último respaldo de usuarios/accesos: <b>${escH(lastDrive)}</b></span>
         </div>
-      ` : ''}
+        <span>🔒 Acceso obligatorio (sin modo invitado)</span>
+      </div>
 
       <div class="v46-card-panel">
-        <h3 style="margin:0 0 10px 0">➕ Crear nueva cuenta de usuario</h3>
+        <h3 style="margin:0 0 10px 0">➕ Crear usuario y asignar contraseña</h3>
         <div class="v46-grid-3">
           <label class="v46-field">Usuario / Código *
-            <input id="v46NewUserCode" type="text" placeholder="Ej.: JPEREZ" style="text-transform:uppercase"/>
+            <input id="v46NewUserCode" type="text" placeholder="Ej.: JPEREZ" style="text-transform:uppercase" autocomplete="off"/>
           </label>
           <label class="v46-field">Nombre completo *
-            <input id="v46NewUserName" type="text" placeholder="Ej.: Juan Pérez"/>
+            <input id="v46NewUserName" type="text" placeholder="Ej.: Juan Pérez" autocomplete="off"/>
+          </label>
+          <label class="v46-field">Correo electrónico (opcional)
+            <input id="v46NewUserEmail" type="email" placeholder="Ej.: jperez@empresa.com" autocomplete="off"/>
+          </label>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;align-items:end;margin-top:10px">
+          <label class="v46-field">Contraseña asignada * (mín. 4 caracteres)
+            <div class="v46-pass-row">
+              <input id="v46NewUserPass" type="password" placeholder="Asigna una contraseña" autocomplete="new-password"/>
+              <button type="button" class="btn secondary" data-v46-eye="v46NewUserPass" title="Mostrar/ocultar">👁️</button>
+              <button type="button" class="btn secondary" id="v46GenPassBtn" title="Generar contraseña sugerida">🎲</button>
+            </div>
           </label>
           <label class="v46-field">Rol de acceso
             <select id="v46NewUserRole">
-              <option value="user">👷 Usuario estándar (Pedidos / Plantillas)</option>
-              <option value="admin">🛡️ Administrador (Acceso total)</option>
+              <option value="user">👷 Usuario estándar (Operación y Pedidos)</option>
+              <option value="admin">🛡️ Administrador (Gestión total y Usuarios)</option>
             </select>
           </label>
-        </div>
-        <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-top:10px">
-          <label class="v46-field" style="flex:1 1 240px">Contraseña provisional (opcional: si se deja vacía se genera automática)
-            <div class="v46-pass-row">
-              <input id="v46NewUserProv" type="text" placeholder="Ej.: TMP-A7K9M2"/>
-              <button type="button" class="btn secondary" id="v46GenProvInputBtn" title="Generar código aleatorio">🎲 Generar</button>
-            </div>
-          </label>
-          <button type="button" class="btn success" id="v46CreateUserBtn" style="font-weight:800;height:38px">👤 Crear usuario</button>
+          <div style="display:flex;justify-content:flex-end">
+            <button type="button" class="btn success" id="v46CreateUserBtn" style="font-weight:800;height:38px;width:100%">👤 Crear usuario y guardar en Drive</button>
+          </div>
         </div>
       </div>
 
-      <div class="v46-users-table-wrap">
+      <div class="v46-users-table-wrap" style="margin-bottom:18px">
         <table class="v46-users-table">
           <thead>
             <tr>
               <th>Usuario</th>
-              <th>Nombre completo</th>
+              <th>Nombre / Correo</th>
               <th>Rol</th>
-              <th>Estado de seguridad</th>
+              <th>Estado</th>
               <th>Último ingreso</th>
               <th>Acciones de administrador</th>
             </tr>
@@ -10731,66 +11176,115 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
           <tbody>
             ${users.length ? users.map(u => {
               const isOff = u.active === false;
-              const isProv = Boolean(u.mustChangePassword);
               const pill = isOff
                 ? '<span class="v46-status-pill off">🚫 Deshabilitado</span>'
-                : (isProv
-                    ? '<span class="v46-status-pill warn">⏳ Pendiente (Provisional)</span>'
-                    : '<span class="v46-status-pill ok">🔐 Activo (Doble candado)</span>');
+                : (u.isDefaultSeed
+                    ? '<span class="v46-status-pill warn">⚠️ Clave inicial (Cambiar)</span>'
+                    : '<span class="v46-status-pill ok">✅ Activo</span>');
               const lastIn = u.lastLoginAt ? new Date(u.lastLoginAt).toLocaleString('es-PE') : 'Nunca';
               return `
                 <tr>
                   <td><strong>${escH(u.username)}</strong></td>
-                  <td>${escH(u.fullName || '')}</td>
+                  <td>
+                    <div>${escH(u.fullName || '')}</div>
+                    ${u.email ? `<div class="small" style="color:var(--muted)">${escH(u.email)}</div>` : ''}
+                  </td>
                   <td>${u.role === 'admin' ? '🛡️ Administrador' : '👷 Estándar'}</td>
                   <td>${pill}</td>
                   <td class="small" style="color:var(--muted)">${escH(lastIn)}</td>
                   <td>
                     <div style="display:flex;gap:6px;flex-wrap:wrap">
-                      <button type="button" class="btn primary" style="font-size:12px;padding:5px 9px;font-weight:700" data-v46-reset-user="${escH(u.id)}" title="Borra contraseña y clave de seguridad para que vuelva a generarlas con una nueva provisional">🔑 Resetear contraseña</button>
+                      <button type="button" class="btn primary" style="font-size:12px;padding:5px 9px;font-weight:700" data-v46-edit-user="${escH(u.id)}" title="Editar datos, rol o cambiar contraseña">🔑 Clave / Editar</button>
                       <button type="button" class="btn secondary" style="font-size:12px;padding:5px 9px" data-v46-toggle-user="${escH(u.id)}">${isOff ? '▶ Activar' : '⏸ Desactivar'}</button>
                       <button type="button" class="btn danger" style="font-size:12px;padding:5px 9px" data-v46-del-user="${escH(u.id)}">🗑️</button>
                     </div>
                   </td>
                 </tr>
               `;
-            }).join('') : '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted)">No hay usuarios creados todavía.</td></tr>'}
+            }).join('') : '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted)">No hay usuarios registrados.</td></tr>'}
           </tbody>
         </table>
+      </div>
+
+      <div class="v46-card-panel" style="margin-bottom:0">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <h3 style="margin:0">📜 Historial de Inicios de Sesión y Cambios (Google Drive) <span class="badge">${logs.length}</span></h3>
+        </div>
+        <div class="v46-users-table-wrap" style="max-height:320px;overflow-y:auto">
+          <table class="v46-users-table">
+            <thead>
+              <tr>
+                <th>Fecha y hora</th>
+                <th>Evento</th>
+                <th>Usuario</th>
+                <th>Detalle</th>
+                <th>Ejecutado por</th>
+                <th>Dispositivo</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${logs.length ? logs.slice(0, 80).map(l => {
+                const when = l.timestamp ? new Date(l.timestamp).toLocaleString('es-PE') : '';
+                const ev = String(l.event || '');
+                const evBadge = ev === 'INICIO_SESION'
+                  ? '<span class="v46-status-pill ok">🔓 INICIO SESIÓN</span>'
+                  : (ev === 'INTENTO_FALLIDO'
+                      ? '<span class="v46-status-pill off">⚠️ INTENTO FALLIDO</span>'
+                      : `<span class="v46-status-pill warn">📝 ${escH(ev)}</span>`);
+                return `
+                  <tr>
+                    <td class="small" style="white-space:nowrap">${escH(when)}</td>
+                    <td>${evBadge}</td>
+                    <td><strong>${escH(l.username || '')}</strong>${l.fullName ? `<div class="small" style="color:var(--muted)">${escH(l.fullName)}</div>` : ''}</td>
+                    <td class="small">${escH(l.detail || '')}</td>
+                    <td class="small">${escH(l.actor || '')}</td>
+                    <td class="small" style="color:var(--muted)">${escH(l.device || '')}</td>
+                  </tr>
+                `;
+              }).join('') : '<tr><td colspan="6" style="text-align:center;padding:18px;color:var(--muted)">Todavía no hay eventos registrados.</td></tr>'}
+            </tbody>
+          </table>
+        </div>
       </div>
     `;
   };
 
-  document.addEventListener('change', async e => {
-    if(e.target?.id === 'v46RequireLoginToggle'){
-      ensureUsersState();
-      state.authSettings.requireLogin = Boolean(e.target.checked);
-      await persistUsersEverywhere();
-      if(typeof msg === 'function'){
-        msg(state.authSettings.requireLogin
-          ? 'Inicio de sesión obligatorio activado.'
-          : 'Inicio de sesión obligatorio desactivado.');
+  document.getElementById('entLoginForm')?.addEventListener('submit', handleEnterpriseLoginSubmit);
+
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Enter' && document.getElementById('userAuthDialog')?.open){
+      if(editingUserTargetId){
+        e.preventDefault();
+        document.getElementById('v46SaveEditUserBtn')?.click();
       }
     }
   });
 
-  document.addEventListener('keydown', e => {
-    if(e.key === 'Enter' && document.getElementById('userAuthDialog')?.open){
-      if(authDialogMode === 'login'){ e.preventDefault(); handleUserLoginSubmit(); }
-      else if(authDialogMode === 'setup'){ e.preventDefault(); handleDoubleLockSetupSubmit(); }
-      else if(authDialogMode === 'recover'){ e.preventDefault(); handleRecoverSubmit(); }
-    }
-  });
-
   document.addEventListener('click', async e => {
-    if(e.target?.closest('#userSessionBtn')){ openUserAuthDialog('login'); return; }
+    if(e.target?.closest('#entTogglePassBtn')){
+      const inp = document.getElementById('entLoginPass');
+      const btn = document.getElementById('entTogglePassBtn');
+      if(inp){
+        const show = inp.type === 'password';
+        inp.type = show ? 'text' : 'password';
+        if(btn) btn.textContent = show ? '🙈' : '👁️';
+      }
+      return;
+    }
+
+    if(e.target?.closest('#entInstallAppBtn')){
+      if(typeof deferredPrompt !== 'undefined' && deferredPrompt){
+        deferredPrompt.prompt();
+        try{ await deferredPrompt.userChoice; }catch(_){}
+        deferredPrompt = null;
+        document.getElementById('entInstallBanner')?.classList.add('hidden');
+      }
+      return;
+    }
+
+    if(e.target?.closest('#userSessionBtn')){ openAccountDialog('account'); return; }
     if(e.target?.closest('#v46AuthCloseBtn, #v46AuthCloseBtn2')){ closeUserAuthDialog(); return; }
-    if(e.target?.closest('#v46LogoutUserBtn')){ closeUserAuthDialog(); logoutUserSession(); return; }
-    if(e.target?.closest('#v46GoRecoverBtn')){ authDialogMode = 'recover'; renderAuthDialog(); return; }
-    if(e.target?.closest('#v46BackToLoginBtn')){ pendingSetupUser = null; authDialogMode = 'login'; renderAuthDialog(); return; }
-    if(e.target?.closest('#v46LoginSubmitBtn')){ handleUserLoginSubmit(); return; }
-    if(e.target?.closest('#v46SaveSetupBtn')){ handleDoubleLockSetupSubmit(); return; }
-    if(e.target?.closest('#v46RecoverSubmitBtn')){ handleRecoverSubmit(); return; }
+    if(e.target?.closest('#v46LogoutUserBtn')){ closeUserAuthDialog(); await logoutUserSession(); return; }
 
     const eyeBtn = e.target?.closest('[data-v46-eye]');
     if(eyeBtn){
@@ -10803,97 +11297,167 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
       return;
     }
 
-    if(e.target?.closest('#v46GenProvInputBtn')){
-      const inp = document.getElementById('v46NewUserProv');
-      if(inp) inp.value = generateProvisionalCode();
+    if(e.target?.closest('#v46GenPassBtn')){
+      const inp = document.getElementById('v46NewUserPass');
+      if(inp){ inp.type = 'text'; inp.value = generateSuggestedPassword(); }
+      return;
+    }
+    if(e.target?.closest('#v46GenEditPassBtn')){
+      const inp = document.getElementById('v46EditUserPass');
+      if(inp){ inp.type = 'text'; inp.value = generateSuggestedPassword(); }
       return;
     }
 
-    if(e.target?.closest('#v46DismissProvBtn')){
-      lastProvisionalNotice = null;
-      renderUsersAdminView();
+    if(e.target?.closest('#v46SyncUsersDriveBtn')){
+      const b = document.getElementById('v46SyncUsersDriveBtn');
+      if(b){ b.disabled = true; b.textContent = '☁️ Sincronizando...'; }
+      try{
+        await persistUsersEverywhere({ syncDrive: true });
+        if(typeof msg === 'function') msg('✅ Usuarios y registros sincronizados con Google Drive.');
+      }finally{
+        if(b){ b.disabled = false; b.textContent = '☁️ Sincronizar usuarios con Drive'; }
+        renderUsersAdminView();
+      }
       return;
     }
 
-    if(e.target?.closest('#v46CopyProvBtn') && lastProvisionalNotice){
-      const txt = `Usuario: ${lastProvisionalNotice.username}\nContraseña provisional: ${lastProvisionalNotice.code}\n(Al ingresar deberá crear su contraseña y clave de seguridad de doble candado)`;
-      try{ await navigator.clipboard.writeText(txt); }catch(_){}
-      if(typeof msg === 'function') msg('Credencial provisional copiada al portapapeles.');
+    if(e.target?.closest('#v46SelfChangePassBtn')){
+      const session = getActiveUserSession();
+      const st = document.getElementById('v46AuthStatus');
+      const setErr = (txt, ok=false) => { if(st){ st.textContent = txt; st.style.color = ok ? '#15803d' : '#dc2626'; } };
+      if(!session) return;
+      const curPass = String(document.getElementById('v46SelfCurPass')?.value || '');
+      const newPass = String(document.getElementById('v46SelfNewPass')?.value || '');
+      if(newPass.length < 4){ setErr('❌ La nueva contraseña debe tener al menos 4 caracteres.'); return; }
+      const user = ensureUsersState().find(u => u.id === session.id || String(u.username).toUpperCase() === String(session.username).toUpperCase());
+      if(!user){ setErr('❌ Usuario no encontrado.'); return; }
+      if(!(await verifyUserPassword(user, curPass))){
+        setErr('❌ La contraseña actual es incorrecta.');
+        return;
+      }
+      const salt = makeSalt();
+      user.passwordSalt = salt;
+      user.passwordHash = await hashSecret(newPass, salt);
+      user.mustChangePassword = false;
+      user.isDefaultSeed = false;
+      user.updatedAt = new Date().toISOString();
+      addAuthLog('CAMBIO_CLAVE', user, 'El usuario actualizó su propia contraseña', user.username);
+      setErr('Guardando en Google Drive...', true);
+      await persistUsersEverywhere({ syncDrive: true });
+      setErr('✅ Contraseña actualizada y respaldada en Drive.', true);
+      if(typeof msg === 'function') msg('Tu contraseña se actualizó y guardó en Drive.');
       return;
     }
 
     if(e.target?.closest('#v46CreateUserBtn')){
       const username = (document.getElementById('v46NewUserCode')?.value || '').trim().toUpperCase();
       const fullName = (document.getElementById('v46NewUserName')?.value || '').trim();
+      const email = (document.getElementById('v46NewUserEmail')?.value || '').trim().toLowerCase();
+      const pass = String(document.getElementById('v46NewUserPass')?.value || '').trim();
       const role = document.getElementById('v46NewUserRole')?.value === 'admin' ? 'admin' : 'user';
-      const provCode = (document.getElementById('v46NewUserProv')?.value || '').trim() || generateProvisionalCode();
       if(!username || !fullName){
         if(typeof msg === 'function') msg('Completa el Usuario y Nombre completo.', true);
         return;
       }
-      if(provCode.length < 4){
-        if(typeof msg === 'function') msg('La contraseña provisional debe tener al menos 4 caracteres.', true);
+      if(pass.length < 4){
+        if(typeof msg === 'function') msg('Asigna una contraseña de al menos 4 caracteres.', true);
         return;
       }
       const users = ensureUsersState();
-      if(users.some(u => String(u.username || '').toUpperCase() === username)){
-        if(typeof msg === 'function') msg(`Ya existe un usuario con el código "${username}".`, true);
+      if(users.some(u => String(u.username || '').toUpperCase() === username || (email && u.email && String(u.email).toLowerCase() === email))){
+        if(typeof msg === 'function') msg(`Ya existe un usuario con ese código o correo.`, true);
         return;
       }
-      const provSalt = makeSalt();
-      const provHash = await hashSecret(provCode, provSalt);
+      const salt = makeSalt();
+      const pHash = await hashSecret(pass, salt);
       const now = new Date().toISOString();
-      users.unshift({
+      const actor = getActiveUserSession()?.username || 'ADMIN';
+      const newUser = {
         id: 'usr-' + Date.now() + '-' + Math.random().toString(36).slice(2,6),
         username,
+        email,
         fullName,
         role,
         active: true,
-        mustChangePassword: true,
-        provisionalSalt: provSalt,
-        provisionalHash: provHash,
-        passwordSalt: '',
-        passwordHash: '',
-        securityKeySalt: '',
-        securityKeyHash: '',
+        mustChangePassword: false,
+        isDefaultSeed: false,
+        passwordSalt: salt,
+        passwordHash: pHash,
+        createdBy: actor,
         createdAt: now,
         updatedAt: now,
         lastLoginAt: ''
-      });
-      lastProvisionalNotice = { username, fullName, code: provCode, isReset: false };
-      await persistUsersEverywhere();
-      renderUsersAdminView();
-      if(typeof msg === 'function') msg(`Usuario ${username} creado con contraseña provisional.`);
+      };
+      users.unshift(newUser);
+      addAuthLog('CREAR_USUARIO', newUser, `Cuenta creada (${role === 'admin' ? 'Administrador' : 'Usuario estándar'})`, actor);
+      const btn = document.getElementById('v46CreateUserBtn');
+      if(btn){ btn.disabled = true; btn.textContent = 'Guardando en Drive...'; }
+      try{
+        await persistUsersEverywhere({ syncDrive: true });
+        renderUsersAdminView();
+        if(typeof msg === 'function') msg(`✅ Usuario ${username} creado y guardado en Google Drive.`);
+      }finally{
+        const btn2 = document.getElementById('v46CreateUserBtn');
+        if(btn2){ btn2.disabled = false; btn2.textContent = '👤 Crear usuario y guardar en Drive'; }
+      }
       return;
     }
 
-    const resetBtn = e.target?.closest('[data-v46-reset-user]');
-    if(resetBtn){
-      const uid = resetBtn.getAttribute('data-v46-reset-user');
+    const editBtn = e.target?.closest('[data-v46-edit-user]');
+    if(editBtn){
+      const uid = editBtn.getAttribute('data-v46-edit-user');
       const user = ensureUsersState().find(u => u.id === uid);
-      if(!user) return;
-      const doReset = async () => {
-        const newProv = generateProvisionalCode();
-        const salt = makeSalt();
-        user.provisionalSalt = salt;
-        user.provisionalHash = await hashSecret(newProv, salt);
-        user.passwordHash = '';
-        user.passwordSalt = '';
-        user.securityKeyHash = '';
-        user.securityKeySalt = '';
-        user.mustChangePassword = true;
-        user.active = true;
-        user.updatedAt = new Date().toISOString();
-        lastProvisionalNotice = { username: user.username, fullName: user.fullName || user.username, code: newProv, isReset: true };
-        await persistUsersEverywhere();
-        renderUsersAdminView();
-        if(typeof msg === 'function') msg(`Contraseña reseteada para ${user.username}. Nueva provisional generada.`);
-      };
-      if(typeof customConfirm === 'function'){
-        customConfirm(`¿Resetear contraseña y clave de seguridad de "${user.username}"? Se generará una nueva contraseña provisional.`, doReset);
-      } else {
-        await doReset();
+      if(user) openAccountDialog('editUser', user);
+      return;
+    }
+
+    if(e.target?.closest('#v46SaveEditUserBtn')){
+      const st = document.getElementById('v46AuthStatus');
+      const setErr = (txt, ok=false) => { if(st){ st.textContent = txt; st.style.color = ok ? '#15803d' : '#dc2626'; } };
+      const user = ensureUsersState().find(u => u.id === editingUserTargetId);
+      if(!user){ setErr('❌ Usuario no encontrado.'); return; }
+      const fullName = (document.getElementById('v46EditUserName')?.value || '').trim();
+      const email = (document.getElementById('v46EditUserEmail')?.value || '').trim().toLowerCase();
+      const role = document.getElementById('v46EditUserRole')?.value === 'admin' ? 'admin' : 'user';
+      const newPass = String(document.getElementById('v46EditUserPass')?.value || '').trim();
+      if(!fullName){ setErr('❌ El nombre completo es obligatorio.'); return; }
+      if(email && ensureUsersState().some(u => u.id !== user.id && u.email && String(u.email).trim().toLowerCase() === email)){
+        setErr('❌ Ese correo ya pertenece a otro usuario.');
+        return;
       }
+      if(newPass && newPass.length < 4){ setErr('❌ La nueva contraseña debe tener al menos 4 caracteres.'); return; }
+
+      if(user.role === 'admin' && role !== 'admin'){
+        const otherAdmins = ensureUsersState().filter(u => u.id !== user.id && u.active !== false && u.role === 'admin');
+        if(!otherAdmins.length){
+          setErr('⚠️ Debe existir al menos un Administrador activo en el sistema.');
+          return;
+        }
+      }
+
+      const actor = getActiveUserSession()?.username || 'ADMIN';
+      user.fullName = fullName;
+      user.email = email;
+      user.role = role;
+      if(newPass){
+        const salt = makeSalt();
+        user.passwordSalt = salt;
+        user.passwordHash = await hashSecret(newPass, salt);
+        user.isDefaultSeed = false;
+        user.mustChangePassword = false;
+      }
+      user.updatedAt = new Date().toISOString();
+      addAuthLog(newPass ? 'CAMBIO_CLAVE' : 'ACTUALIZAR_USUARIO', user, newPass ? 'Administrador asignó nueva contraseña y actualizó cuenta' : 'Administrador actualizó datos/rol', actor);
+
+      const curSess = getActiveUserSession();
+      if(curSess && curSess.id === user.id){
+        setActiveUserSession(user);
+      }
+      setErr('Guardando en Drive...', true);
+      await persistUsersEverywhere({ syncDrive: true });
+      closeUserAuthDialog();
+      renderUsersAdminView();
+      if(typeof msg === 'function') msg(`✅ Usuario ${user.username} actualizado y guardado en Drive.`);
       return;
     }
 
@@ -10902,9 +11466,18 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
       const uid = toggleBtn.getAttribute('data-v46-toggle-user');
       const user = ensureUsersState().find(u => u.id === uid);
       if(!user) return;
-      user.active = user.active === false;
+      const nextActive = user.active === false;
+      if(!nextActive && user.role === 'admin'){
+        const otherAdmins = ensureUsersState().filter(u => u.id !== uid && u.active !== false && u.role === 'admin');
+        if(!otherAdmins.length){
+          if(typeof msg === 'function') msg('No puedes desactivar al único Administrador activo.', true);
+          return;
+        }
+      }
+      user.active = nextActive;
       user.updatedAt = new Date().toISOString();
-      await persistUsersEverywhere();
+      addAuthLog('ACTUALIZAR_USUARIO', user, nextActive ? 'Cuenta activada' : 'Cuenta deshabilitada', getActiveUserSession()?.username || 'ADMIN');
+      await persistUsersEverywhere({ syncDrive: true });
       renderUsersAdminView();
       if(typeof msg === 'function') msg(`Usuario ${user.username} ${user.active ? 'activado' : 'deshabilitado'}.`);
       return;
@@ -10915,10 +11488,19 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
       const uid = delUserBtn.getAttribute('data-v46-del-user');
       const user = ensureUsersState().find(u => u.id === uid);
       if(!user) return;
+      if(user.role === 'admin'){
+        const otherAdmins = ensureUsersState().filter(u => u.id !== uid && u.active !== false && u.role === 'admin');
+        if(!otherAdmins.length){
+          if(typeof msg === 'function') msg('No puedes eliminar al único Administrador activo.', true);
+          return;
+        }
+      }
       const doDel = async () => {
+        state.deletedUserIds = Array.from(new Set([...(state.deletedUserIds || []), String(uid)])).slice(-200);
         state.userAccounts = ensureUsersState().filter(u => u.id !== uid);
+        addAuthLog('ELIMINAR_USUARIO', user, 'Usuario eliminado por administrador', getActiveUserSession()?.username || 'ADMIN');
         if(getActiveUserSession()?.id === uid) setActiveUserSession(null);
-        await persistUsersEverywhere();
+        await persistUsersEverywhere({ syncDrive: true });
         renderUsersAdminView();
         if(typeof msg === 'function') msg(`Usuario ${user.username} eliminado.`);
       };
@@ -10930,12 +11512,50 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
     }
   });
 
-  function initV46(){
+  window.addEventListener('beforeinstallprompt', () => {
+    const banner = document.getElementById('entInstallBanner');
+    if(banner) banner.classList.remove('hidden');
+  });
+  window.addEventListener('appinstalled', () => {
+    document.getElementById('entInstallBanner')?.classList.add('hidden');
+  });
+
+  async function initV46(){
     syncSearchCollapse();
     updateTemplatesCountBadge();
+    ensureUsersState();
+
+    const curSess = getActiveUserSession();
+    applyAuthBodyState(curSess);
     updateUserSessionUI();
-    loadUsersFromServer();
-    enforceMandatoryLoginIfNeeded();
+    updateLoginFirstAccessHint();
+
+    // Cargar usuarios desde Servidor y Google Drive al iniciar
+    await Promise.allSettled([loadUsersFromServer(), loadAuthFromDriveOnBoot()]);
+    const seeded = await ensureDefaultAdminSeed();
+    if(seeded){
+      await persistUsersEverywhere({ syncDrive: navigator.onLine });
+    }
+
+    // Revalidar sesión activa contra los usuarios reales sincronizados
+    const activeNow = getActiveUserSession();
+    if(activeNow){
+      const matched = ensureUsersState().find(u =>
+        u.id === activeNow.id ||
+        String(u.username || '').toUpperCase() === String(activeNow.username || '').toUpperCase()
+      );
+      if(matched && matched.active === false){
+        setActiveUserSession(null);
+        focusEnterpriseLogin();
+      } else if(matched){
+        setActiveUserSession(matched);
+      }
+    } else {
+      focusEnterpriseLogin();
+    }
+
+    updateLoginFirstAccessHint();
+    if(document.getElementById('usersView')?.classList.contains('active')) renderUsersAdminView();
   }
 
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initV46, { once: true });

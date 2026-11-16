@@ -1,7 +1,10 @@
 {
   "userAccounts": [],
+  "deletedUserIds": [],
   "authSettings": {
-    "requireLogin": false
+    "requireLogin": true,
+    "allowGuest": false
   },
+  "authLogs": [],
   "updatedAt": "2026-11-15T05:39:51.572Z"
 }

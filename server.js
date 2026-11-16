@@ -19,26 +19,76 @@ function ensureDataDir(){
   }
 }
 
+function mergeUsersLists(existingUsers = [], incomingUsers = [], deletedIds = []){
+  const deletedSet = new Set((Array.isArray(deletedIds) ? deletedIds : []).map(String));
+  const byId = new Map();
+  const byUsername = new Map();
+
+  const applyUser = (u) => {
+    if (!u || !u.username) return;
+    const id = String(u.id || ('usr-' + String(u.username).toUpperCase()));
+    if (deletedSet.has(id)) return;
+    const clean = { ...u, id, username: String(u.username).trim().toUpperCase() };
+    const prev = byId.get(id) || byUsername.get(clean.username);
+    if (!prev || String(clean.updatedAt || '') >= String(prev.updatedAt || '')) {
+      byId.delete(prev?.id || id);
+      byId.set(id, clean);
+      byUsername.set(clean.username, clean);
+    }
+  };
+
+  existingUsers.forEach(applyUser);
+  incomingUsers.forEach(applyUser);
+  return Array.from(byId.values()).filter(u => !deletedSet.has(String(u.id)));
+}
+
+function mergeAuthLogs(existingLogs = [], incomingLogs = []){
+  const byId = new Map();
+  [...(Array.isArray(existingLogs) ? existingLogs : []), ...(Array.isArray(incomingLogs) ? incomingLogs : [])]
+    .forEach(log => {
+      if (!log) return;
+      const id = String(log.id || `${log.timestamp || ''}_${log.event || ''}_${log.username || ''}`);
+      if (!byId.has(id)) byId.set(id, { ...log, id });
+    });
+  return Array.from(byId.values())
+    .sort((a, b) => String(b.timestamp || '').localeCompare(String(a.timestamp || '')))
+    .slice(0, 500);
+}
+
 function readSavedUsers(){
   ensureDataDir();
   if(fs.existsSync(USERS_FILE)){
     try{
       const parsed = JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
+      const rawAuth = parsed?.authSettings && typeof parsed.authSettings === 'object' ? parsed.authSettings : {};
       return {
         userAccounts: Array.isArray(parsed?.userAccounts) ? parsed.userAccounts : [],
-        authSettings: parsed?.authSettings && typeof parsed.authSettings === 'object' ? parsed.authSettings : { requireLogin: false },
+        deletedUserIds: Array.isArray(parsed?.deletedUserIds) ? parsed.deletedUserIds : [],
+        authSettings: { ...rawAuth, requireLogin: true, allowGuest: false },
+        authLogs: Array.isArray(parsed?.authLogs) ? parsed.authLogs : [],
         updatedAt: parsed?.updatedAt || ''
       };
     }catch(_){}
   }
-  return { userAccounts: [], authSettings: { requireLogin: false }, updatedAt: '' };
+  return { userAccounts: [], deletedUserIds: [], authSettings: { requireLogin: true, allowGuest: false }, authLogs: [], updatedAt: '' };
 }
 
 function writeSavedUsers(payload){
   ensureDataDir();
+  const current = readSavedUsers();
+  const incomingDeleted = Array.isArray(payload?.deletedUserIds) ? payload.deletedUserIds : [];
+  const deletedUserIds = Array.from(new Set([...(current.deletedUserIds || []), ...incomingDeleted].map(String))).slice(-200);
+  const incomingUsers = Array.isArray(payload?.userAccounts) ? payload.userAccounts : [];
+  const userAccounts = payload?.replaceAll
+    ? incomingUsers.filter(u => u && !deletedUserIds.includes(String(u.id)))
+    : mergeUsersLists(current.userAccounts, incomingUsers, deletedUserIds);
+  const authLogs = mergeAuthLogs(current.authLogs, payload?.authLogs);
+  const rawAuth = payload?.authSettings && typeof payload.authSettings === 'object' ? payload.authSettings : {};
   const data = {
-    userAccounts: Array.isArray(payload?.userAccounts) ? payload.userAccounts : [],
-    authSettings: payload?.authSettings && typeof payload.authSettings === 'object' ? payload.authSettings : { requireLogin: false },
+    userAccounts,
+    deletedUserIds,
+    authSettings: { ...current.authSettings, ...rawAuth, requireLogin: true, allowGuest: false },
+    authLogs,
     updatedAt: new Date().toISOString()
   };
   try{
