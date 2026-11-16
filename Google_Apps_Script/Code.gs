@@ -399,13 +399,13 @@ function writeSheets_(data, precomputedImgMap) {
     (x.items||[]).forEach(i=>detailRows.push([
       x.id, (i.reserva || resVal || ''), x.om||'', x.fecha, x.supervisor, condVal, i.code||'', i.description||'', i.qty||0, i.unit||'',
       x.centro, i.warehouse||'', i.lot||'', x.unidadRecojo||'', x.alimentador||'', x.distrito||'',
-      x.movimiento||'', x.unidadRecupero||'', x.status||'', x.createdAt||''
+      x.movimiento||'', x.unidadRecupero||'', x.status||'', x.createdAt||'', x.creadoPor||''
     ]));
   });
-  writeTable_(ss,'HistorialMateriales',['PEDIDO','RESERVA','OM','FECHA','RETIRADO_POR','CONDUCTOR','MATRICULA','DESCRIPCION','CANTIDAD','UNIDAD','CENTRO','ALMACEN','LOTE','UNIDAD_RECOJO','ALIMENTADOR','DISTRITO_DESTINO','MOVIMIENTO','UNIDAD_RECUPERO','STATUS','CREADO_EN'],detailRows);
+  writeTable_(ss,'HistorialMateriales',['PEDIDO','RESERVA','OM','FECHA','RETIRADO_POR','CONDUCTOR','MATRICULA','DESCRIPCION','CANTIDAD','UNIDAD','CENTRO','ALMACEN','LOTE','UNIDAD_RECOJO','ALIMENTADOR','DISTRITO_DESTINO','MOVIMIENTO','UNIDAD_RECUPERO','STATUS','CREADO_EN','REGISTRADO_POR'],detailRows);
 
-  writeTable_(ss,'ControlSolicitudes',['PEDIDO','RESERVA','OM','FECHA','SUPERVISOR','CONDUCTOR','CENTRO','UNIDAD_RECOJO','ALIMENTADOR','DISTRITO','MOVIMIENTO','UNIDAD_RECUPERO','STATUS','CANTIDAD_TOTAL','ESTADO','CREADO_EN'],history.filter(isFinalized_).map(x=>[
-    x.id, x.reserva||'', x.om||'', x.fecha, x.supervisor, x.conductor||'', x.centro, x.unidadRecojo||'', x.alimentador||'', x.distrito||'', x.movimiento||'', x.unidadRecupero||'', x.status||'', x.total||0, 'FINALIZADO', x.createdAt||''
+  writeTable_(ss,'ControlSolicitudes',['PEDIDO','RESERVA','OM','FECHA','SUPERVISOR','CONDUCTOR','CENTRO','UNIDAD_RECOJO','ALIMENTADOR','DISTRITO','MOVIMIENTO','UNIDAD_RECUPERO','STATUS','CANTIDAD_TOTAL','ESTADO','CREADO_EN','REGISTRADO_POR'],history.filter(isFinalized_).map(x=>[
+    x.id, x.reserva||'', x.om||'', x.fecha, x.supervisor, x.conductor||'', x.centro, x.unidadRecojo||'', x.alimentador||'', x.distrito||'', x.movimiento||'', x.unidadRecupero||'', x.status||'', x.total||0, 'FINALIZADO', x.createdAt||'', x.creadoPor||''
   ]));
 
   const reservasEdits = (data.app && data.app.reservasEdits) || {};
@@ -446,11 +446,12 @@ function writeSheets_(data, precomputedImgMap) {
         qtyVal,
         item.unit || item.UNIDAD || 'UND',
         mov,
-        order.createdAt || ''
+        order.createdAt || '',
+        order.creadoPor || ''
       ]);
     });
   });
-  writeTable_(ss, 'ControlReservas', ['RESERVA', 'ALMACEN', 'ENCARGADO', 'OM', 'FECHA PEDIDO', 'UNIDAD (RECOJO)', 'CONDUCTOR', 'ALIM.', 'DISTRITO', 'STATUS', 'UNIDAD (RECUPERO)', 'MATRÍCULA', 'DESCRIPCIÓN', 'CANTIDAD', 'UNIDAD', 'MOVIMIENTO', 'CREADO_EN'], reservasRows);
+  writeTable_(ss, 'ControlReservas', ['RESERVA', 'ALMACEN', 'ENCARGADO', 'OM', 'FECHA PEDIDO', 'UNIDAD (RECOJO)', 'CONDUCTOR', 'ALIM.', 'DISTRITO', 'STATUS', 'UNIDAD (RECUPERO)', 'MATRÍCULA', 'DESCRIPCIÓN', 'CANTIDAD', 'UNIDAD', 'MOVIMIENTO', 'CREADO_EN', 'REGISTRADO_POR'], reservasRows);
   writeAuthSheets_(ss, data);
 }
 
@@ -518,7 +519,7 @@ function writeAuthSheets_(ss, data) {
   const logs = Array.isArray(appObj.authLogs) ? appObj.authLogs : [];
 
   writeTable_(ss, 'Usuarios', [
-    'ID', 'USUARIO', 'CORREO', 'NOMBRE_COMPLETO', 'ROL', 'ACTIVO', 'CREADO_POR', 'CREADO_EN', 'ACTUALIZADO_EN', 'ULTIMO_INGRESO'
+    'ID', 'USUARIO', 'CORREO', 'NOMBRE_COMPLETO', 'ROL', 'ACTIVO', 'ALMACEN_DEF', 'SUPERVISOR_DEF', 'CAMBIO_CLAVE_REQ', 'CREADO_POR', 'CREADO_EN', 'ACTUALIZADO_EN', 'ULTIMO_INGRESO'
   ], users.map(function(u) {
     return [
       u.id || '',
@@ -527,6 +528,9 @@ function writeAuthSheets_(ss, data) {
       u.fullName || '',
       u.role === 'admin' ? 'ADMINISTRADOR' : 'USUARIO',
       u.active === false ? 'INACTIVO' : 'ACTIVO',
+      u.defaultCenter || '',
+      u.defaultSupervisor || '',
+      u.mustChangePassword ? 'SI' : 'NO',
       u.createdBy || '',
       u.createdAt || '',
       u.updatedAt || '',

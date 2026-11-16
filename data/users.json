@@ -1,10 +1,151 @@
 {
-  "userAccounts": [],
+  "userAccounts": [
+    {
+      "id": "usr-admin-root",
+      "username": "ADMIN",
+      "email": "",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "active": true,
+      "mustChangePassword": false,
+      "isDefaultSeed": true,
+      "passwordSalt": "db26b922f3678f4a26bf82a0",
+      "passwordHash": "69eb0e9012d7d42ad6064d20747b58ce168852824ac41e17fe2cac742a11d45b",
+      "createdBy": "SISTEMA",
+      "createdAt": "2026-11-16T06:16:41.010Z",
+      "updatedAt": "2026-11-16T06:16:41.010Z",
+      "lastLoginAt": ""
+    }
+  ],
   "deletedUserIds": [],
   "authSettings": {
     "requireLogin": true,
-    "allowGuest": false
+    "allowGuest": false,
+    "sessionTimeoutMinutes": 30,
+    "lastDriveSyncAt": "2026-11-16T06:09:22.631Z"
   },
-  "authLogs": [],
-  "updatedAt": "2026-11-15T05:39:51.572Z"
+  "authLogs": [
+    {
+      "id": "log-1794809801010-sevtz",
+      "timestamp": "2026-11-16T06:16:41.010Z",
+      "event": "CREAR_USUARIO",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Cuenta maestra inicial de administrador generada automáticamente",
+      "actor": "SISTEMA",
+      "device": "Chrome / Web"
+    },
+    {
+      "id": "log-1794809530970-lv68f",
+      "timestamp": "2026-11-16T06:12:10.970Z",
+      "event": "INICIO_SESION",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Ingreso autorizado desde pantalla de inicio",
+      "actor": "ADMIN",
+      "device": "Chrome / Windows"
+    },
+    {
+      "id": "log-1794809442604-kn8xz",
+      "timestamp": "2026-11-16T06:10:42.604Z",
+      "event": "CAMBIO_CLAVE",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Administrador asignó nueva contraseña y actualizó cuenta",
+      "actor": "ADMIN",
+      "device": "Chrome / Windows"
+    },
+    {
+      "id": "log-1794809372141-ect8h",
+      "timestamp": "2026-11-16T06:09:32.141Z",
+      "event": "INICIO_SESION",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Ingreso autorizado desde pantalla de inicio",
+      "actor": "ADMIN",
+      "device": "Chrome / Windows"
+    },
+    {
+      "id": "log-1794809362632-39jtk",
+      "timestamp": "2026-11-16T06:09:22.632Z",
+      "event": "INTENTO_FALLIDO",
+      "username": "TUALIADOENUSAFORMS@GMAIL.COM",
+      "fullName": "",
+      "role": "",
+      "detail": "Usuario no registrado",
+      "actor": "TUALIADOENUSAFORMS@GMAIL.COM",
+      "device": "Chrome / Windows"
+    },
+    {
+      "id": "log-1794809348473-jb684",
+      "timestamp": "2026-11-16T06:09:08.473Z",
+      "event": "INTENTO_FALLIDO",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Contraseña incorrecta",
+      "actor": "ADMIN",
+      "device": "Chrome / Windows"
+    },
+    {
+      "id": "log-1794809338640-5h3e1",
+      "timestamp": "2026-11-16T06:08:58.640Z",
+      "event": "CIERRE_SESION",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Cierre de sesión manual",
+      "actor": "ADMIN",
+      "device": "Chrome / Windows"
+    },
+    {
+      "id": "log-1794809271021-ga3g3",
+      "timestamp": "2026-11-16T06:07:51.021Z",
+      "event": "CREAR_USUARIO",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Cuenta maestra inicial de administrador generada automáticamente",
+      "actor": "SISTEMA",
+      "device": "Chrome / Web"
+    },
+    {
+      "id": "log-1794809178175-foqqb",
+      "timestamp": "2026-11-16T06:06:18.175Z",
+      "event": "CAMBIO_CLAVE",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "El usuario actualizó su propia contraseña",
+      "actor": "ADMIN",
+      "device": "Chrome / Windows"
+    },
+    {
+      "id": "log-1794809139313-whfd9",
+      "timestamp": "2026-11-16T06:05:39.313Z",
+      "event": "INICIO_SESION",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Ingreso autorizado desde pantalla de inicio",
+      "actor": "ADMIN",
+      "device": "Chrome / Windows"
+    },
+    {
+      "id": "log-1794809075453-kwp8n",
+      "timestamp": "2026-11-16T06:04:35.453Z",
+      "event": "CREAR_USUARIO",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Cuenta maestra inicial de administrador generada automáticamente",
+      "actor": "SISTEMA",
+      "device": "Chrome / Windows"
+    }
+  ],
+  "updatedAt": "2026-11-16T06:23:59.798Z"
 }

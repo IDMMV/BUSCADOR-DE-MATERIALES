@@ -1,6 +1,7 @@
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
+import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -11,38 +12,250 @@ const PORT = 3000;
 
 const CONFIG_FILE = path.join(__dirname, 'data', 'server-config.json');
 const USERS_FILE = path.join(__dirname, 'data', 'users.json');
+const SECRET_FILE = path.join(__dirname, 'data', 'auth-secret.txt');
+const AUTH_COOKIE_NAME = 'bm_auth_token';
+const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
+const DRIVE_TIMEOUT_MS = 25000;
 
-function ensureDataDir(){
+function ensureDataDir() {
   const dir = path.join(__dirname, 'data');
-  if(!fs.existsSync(dir)){
+  if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
 }
 
-function mergeUsersLists(existingUsers = [], incomingUsers = [], deletedIds = []){
+function getSigningSecret() {
+  if (process.env.AUTH_SECRET && process.env.AUTH_SECRET.trim().length >= 16) {
+    return process.env.AUTH_SECRET.trim();
+  }
+  ensureDataDir();
+  if (fs.existsSync(SECRET_FILE)) {
+    const saved = fs.readFileSync(SECRET_FILE, 'utf8').trim();
+    if (saved.length >= 32) return saved;
+  }
+  const fresh = crypto.randomBytes(32).toString('hex');
+  try {
+    fs.writeFileSync(SECRET_FILE, fresh, { mode: 0o600, encoding: 'utf8' });
+  } catch (_) {}
+  return fresh;
+}
+
+const SIGNING_SECRET = getSigningSecret();
+
+function hashSecretServer(secret, salt) {
+  return crypto.createHash('sha256').update(`${String(salt || '')}::${String(secret || '')}`, 'utf8').digest('hex');
+}
+
+function makeSalt() {
+  return crypto.randomBytes(12).toString('hex');
+}
+
+function safeEqualHex(a, b) {
+  const sa = String(a || '');
+  const sb = String(b || '');
+  if (!sa || sa.length !== sb.length) return false;
+  try {
+    return crypto.timingSafeEqual(Buffer.from(sa, 'utf8'), Buffer.from(sb, 'utf8'));
+  } catch (_) {
+    return false;
+  }
+}
+
+function verifyPasswordServer(user, plainPass) {
+  if (!user || !plainPass) return false;
+  const pass = String(plainPass);
+  if (user.passwordHash) {
+    const computed = hashSecretServer(pass, user.passwordSalt || '');
+    if (safeEqualHex(computed, user.passwordHash)) return true;
+  }
+  if (user.provisionalHash) {
+    const computedProv = hashSecretServer(pass, user.provisionalSalt || '');
+    if (safeEqualHex(computedProv, user.provisionalHash)) return true;
+  }
+  return false;
+}
+
+function sanitizeUser(u) {
+  if (!u || typeof u !== 'object') return null;
+  const copy = { ...u };
+  copy.hasPassword = Boolean(u.passwordHash);
+  delete copy.passwordHash;
+  delete copy.passwordSalt;
+  delete copy.provisionalHash;
+  delete copy.provisionalSalt;
+  return copy;
+}
+
+function sanitizeUsersList(list) {
+  return (Array.isArray(list) ? list : []).map(sanitizeUser).filter(Boolean);
+}
+
+function signSessionToken(user) {
+  const now = Date.now();
+  const payload = {
+    id: String(user.id || ''),
+    username: String(user.username || '').trim().toUpperCase(),
+    role: user.role === 'admin' ? 'admin' : 'user',
+    iat: now,
+    exp: now + SESSION_TTL_MS
+  };
+  const bodyB64 = Buffer.from(JSON.stringify(payload), 'utf8').toString('base64url');
+  const sig = crypto.createHmac('sha256', SIGNING_SECRET).update(bodyB64).digest('base64url');
+  return `${bodyB64}.${sig}`;
+}
+
+function verifySessionToken(token) {
+  const raw = String(token || '').trim();
+  const dot = raw.indexOf('.');
+  if (dot <= 0) return null;
+  const bodyB64 = raw.slice(0, dot);
+  const sig = raw.slice(dot + 1);
+  const expectedSig = crypto.createHmac('sha256', SIGNING_SECRET).update(bodyB64).digest('base64url');
+  if (!safeEqualHex(sig, expectedSig)) return null;
+  try {
+    const payload = JSON.parse(Buffer.from(bodyB64, 'base64url').toString('utf8'));
+    if (!payload || !payload.username || !payload.exp || Date.now() > Number(payload.exp)) return null;
+    return payload;
+  } catch (_) {
+    return null;
+  }
+}
+
+function parseCookies(req) {
+  const out = {};
+  const header = String(req.headers?.cookie || '');
+  if (!header) return out;
+  header.split(';').forEach(part => {
+    const eq = part.indexOf('=');
+    if (eq > 0) {
+      const k = part.slice(0, eq).trim();
+      const v = part.slice(eq + 1).trim();
+      try { out[k] = decodeURIComponent(v); } catch (_) { out[k] = v; }
+    }
+  });
+  return out;
+}
+
+function extractTokenFromReq(req) {
+  const auth = String(req.headers?.authorization || '').trim();
+  if (/^Bearer\s+/i.test(auth)) {
+    return auth.replace(/^Bearer\s+/i, '').trim();
+  }
+  const cookies = parseCookies(req);
+  return cookies[AUTH_COOKIE_NAME] || '';
+}
+
+function setAuthCookie(res, req, token) {
+  const isHttps = Boolean(req.secure || String(req.headers?.['x-forwarded-proto'] || '').includes('https'));
+  const parts = [
+    `${AUTH_COOKIE_NAME}=${encodeURIComponent(token)}`,
+    'Path=/',
+    'HttpOnly',
+    `Max-Age=${Math.floor(SESSION_TTL_MS / 1000)}`,
+    isHttps ? 'SameSite=None' : 'SameSite=Lax'
+  ];
+  if (isHttps) parts.push('Secure');
+  res.setHeader('Set-Cookie', parts.join('; '));
+}
+
+function clearAuthCookie(res, req) {
+  const isHttps = Boolean(req.secure || String(req.headers?.['x-forwarded-proto'] || '').includes('https'));
+  const parts = [
+    `${AUTH_COOKIE_NAME}=`,
+    'Path=/',
+    'HttpOnly',
+    'Max-Age=0',
+    isHttps ? 'SameSite=None' : 'SameSite=Lax'
+  ];
+  if (isHttps) parts.push('Secure');
+  res.setHeader('Set-Cookie', parts.join('; '));
+}
+
+function getDeviceLabel(req) {
+  const ua = String(req.headers?.['user-agent'] || '');
+  const plat = /Android/i.test(ua) ? 'Android' : (/iPhone|iPad/i.test(ua) ? 'iOS' : (/Windows/i.test(ua) ? 'Windows' : (/Mac/i.test(ua) ? 'Mac' : 'Web')));
+  const br = /Edg\//i.test(ua) ? 'Edge' : (/Chrome\//i.test(ua) ? 'Chrome' : (/Firefox\//i.test(ua) ? 'Firefox' : (/Safari\//i.test(ua) ? 'Safari' : 'Browser')));
+  return `${br} / ${plat}`;
+}
+
+function getClientIp(req) {
+  const xf = String(req.headers?.['x-forwarded-for'] || '').split(',')[0].trim();
+  return xf || req.socket?.remoteAddress || 'local';
+}
+
+// Rate limiter en memoria contra fuerza bruta (máx 5 fallos / 10 min -> bloqueo 60s)
+const loginFailureMap = new Map();
+const MAX_FAILED_ATTEMPTS = 5;
+const FAILURE_WINDOW_MS = 10 * 60 * 1000;
+const LOCKOUT_MS = 60 * 1000;
+
+function getRateLimitStatus(ip, identifier) {
+  const key = `${ip}::${String(identifier || '').trim().toUpperCase()}`;
+  const rec = loginFailureMap.get(key);
+  if (!rec) return { blocked: false, key };
+  const now = Date.now();
+  if (rec.lockedUntil && now < rec.lockedUntil) {
+    return { blocked: true, key, remainingSec: Math.max(1, Math.ceil((rec.lockedUntil - now) / 1000)) };
+  }
+  if (now - rec.firstAttemptAt > FAILURE_WINDOW_MS) {
+    loginFailureMap.delete(key);
+    return { blocked: false, key };
+  }
+  return { blocked: false, key, rec };
+}
+
+function recordLoginFailure(key) {
+  const now = Date.now();
+  const prev = loginFailureMap.get(key);
+  if (!prev || now - prev.firstAttemptAt > FAILURE_WINDOW_MS) {
+    loginFailureMap.set(key, { count: 1, firstAttemptAt: now, lockedUntil: 0 });
+    return;
+  }
+  prev.count += 1;
+  if (prev.count >= MAX_FAILED_ATTEMPTS) {
+    prev.lockedUntil = now + LOCKOUT_MS;
+    prev.count = 0;
+  }
+  loginFailureMap.set(key, prev);
+}
+
+function clearLoginFailures(key) {
+  loginFailureMap.delete(key);
+}
+
+function mergeUsersLists(existingUsers = [], incomingUsers = [], deletedIds = []) {
   const deletedSet = new Set((Array.isArray(deletedIds) ? deletedIds : []).map(String));
   const byId = new Map();
   const byUsername = new Map();
 
   const applyUser = (u) => {
     if (!u || !u.username) return;
-    const id = String(u.id || ('usr-' + String(u.username).toUpperCase()));
+    const uname = String(u.username).trim().toUpperCase();
+    const id = String(u.id || ('usr-' + uname));
     if (deletedSet.has(id)) return;
-    const clean = { ...u, id, username: String(u.username).trim().toUpperCase() };
-    const prev = byId.get(id) || byUsername.get(clean.username);
-    if (!prev || String(clean.updatedAt || '') >= String(prev.updatedAt || '')) {
-      byId.delete(prev?.id || id);
-      byId.set(id, clean);
-      byUsername.set(clean.username, clean);
+    const prev = byId.get(id) || byUsername.get(uname);
+    if (!prev || String(u.updatedAt || '') >= String(prev.updatedAt || '')) {
+      const merged = {
+        ...(prev || {}),
+        ...u,
+        id,
+        username: uname,
+        email: String(u.email !== undefined ? u.email : (prev?.email || '')).trim().toLowerCase(),
+        passwordHash: u.passwordHash || prev?.passwordHash || '',
+        passwordSalt: u.passwordSalt || prev?.passwordSalt || ''
+      };
+      if (prev && prev.id !== id) byId.delete(prev.id);
+      byId.set(id, merged);
+      byUsername.set(uname, merged);
     }
   };
 
-  existingUsers.forEach(applyUser);
-  incomingUsers.forEach(applyUser);
+  (Array.isArray(existingUsers) ? existingUsers : []).forEach(applyUser);
+  (Array.isArray(incomingUsers) ? incomingUsers : []).forEach(applyUser);
   return Array.from(byId.values()).filter(u => !deletedSet.has(String(u.id)));
 }
 
-function mergeAuthLogs(existingLogs = [], incomingLogs = []){
+function mergeAuthLogs(existingLogs = [], incomingLogs = []) {
   const byId = new Map();
   [...(Array.isArray(existingLogs) ? existingLogs : []), ...(Array.isArray(incomingLogs) ? incomingLogs : [])]
     .forEach(log => {
@@ -55,25 +268,42 @@ function mergeAuthLogs(existingLogs = [], incomingLogs = []){
     .slice(0, 500);
 }
 
-function readSavedUsers(){
+function normalizeAuthSettings(rawAuth = {}, currentAuth = {}) {
+  const merged = { ...currentAuth, ...rawAuth };
+  const mins = Number(merged.sessionTimeoutMinutes);
+  return {
+    ...merged,
+    requireLogin: true,
+    allowGuest: false,
+    sessionTimeoutMinutes: Number.isFinite(mins) && mins >= 0 ? Math.min(480, mins) : 30
+  };
+}
+
+function readSavedUsers() {
   ensureDataDir();
-  if(fs.existsSync(USERS_FILE)){
-    try{
+  if (fs.existsSync(USERS_FILE)) {
+    try {
       const parsed = JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
-      const rawAuth = parsed?.authSettings && typeof parsed.authSettings === 'object' ? parsed.authSettings : {};
+      const authSettings = normalizeAuthSettings(parsed?.authSettings || {});
       return {
         userAccounts: Array.isArray(parsed?.userAccounts) ? parsed.userAccounts : [],
         deletedUserIds: Array.isArray(parsed?.deletedUserIds) ? parsed.deletedUserIds : [],
-        authSettings: { ...rawAuth, requireLogin: true, allowGuest: false },
+        authSettings,
         authLogs: Array.isArray(parsed?.authLogs) ? parsed.authLogs : [],
         updatedAt: parsed?.updatedAt || ''
       };
-    }catch(_){}
+    } catch (_) {}
   }
-  return { userAccounts: [], deletedUserIds: [], authSettings: { requireLogin: true, allowGuest: false }, authLogs: [], updatedAt: '' };
+  return {
+    userAccounts: [],
+    deletedUserIds: [],
+    authSettings: { requireLogin: true, allowGuest: false, sessionTimeoutMinutes: 30 },
+    authLogs: [],
+    updatedAt: ''
+  };
 }
 
-function writeSavedUsers(payload){
+function writeSavedUsers(payload) {
   ensureDataDir();
   const current = readSavedUsers();
   const incomingDeleted = Array.isArray(payload?.deletedUserIds) ? payload.deletedUserIds : [];
@@ -83,39 +313,106 @@ function writeSavedUsers(payload){
     ? incomingUsers.filter(u => u && !deletedUserIds.includes(String(u.id)))
     : mergeUsersLists(current.userAccounts, incomingUsers, deletedUserIds);
   const authLogs = mergeAuthLogs(current.authLogs, payload?.authLogs);
-  const rawAuth = payload?.authSettings && typeof payload.authSettings === 'object' ? payload.authSettings : {};
+  const authSettings = normalizeAuthSettings(payload?.authSettings || {}, current.authSettings);
   const data = {
     userAccounts,
     deletedUserIds,
-    authSettings: { ...current.authSettings, ...rawAuth, requireLogin: true, allowGuest: false },
+    authSettings,
     authLogs,
     updatedAt: new Date().toISOString()
   };
-  try{
+  try {
     fs.writeFileSync(USERS_FILE, JSON.stringify(data, null, 2), 'utf8');
-  }catch(e){
+  } catch (e) {
     console.warn('Could not save users file:', e.message);
   }
   return data;
 }
 
-function cleanConfigUrl(u){
+function appendServerAuditLog(dataObj, event, userOrName, detail = '', actor = '', req = null) {
+  const isObj = userOrName && typeof userOrName === 'object';
+  const username = String(isObj ? userOrName.username : (userOrName || '')).trim().toUpperCase();
+  const fullName = String(isObj ? (userOrName.fullName || username) : '').trim();
+  const role = String(isObj ? (userOrName.role || 'user') : '').trim();
+  const entry = {
+    id: 'log-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7),
+    timestamp: new Date().toISOString(),
+    event: String(event || 'EVENTO'),
+    username,
+    fullName,
+    role,
+    detail: String(detail || ''),
+    actor: String(actor || username || 'SISTEMA').toUpperCase(),
+    device: req ? getDeviceLabel(req) : 'Servidor'
+  };
+  const nextLogs = [entry, ...(Array.isArray(dataObj.authLogs) ? dataObj.authLogs : [])].slice(0, 500);
+  dataObj.authLogs = nextLogs;
+  return entry;
+}
+
+function ensureDefaultAdminInStore() {
+  const store = readSavedUsers();
+  const hasActiveAdmin = (store.userAccounts || []).some(u => u && u.active !== false && u.role === 'admin');
+  if (hasActiveAdmin) return store;
+  const salt = makeSalt();
+  const hash = hashSecretServer('1234', salt);
+  const now = new Date().toISOString();
+  const rootAdmin = {
+    id: 'usr-admin-root',
+    username: 'ADMIN',
+    email: '',
+    fullName: 'Administrador Principal',
+    role: 'admin',
+    active: true,
+    mustChangePassword: true,
+    isDefaultSeed: true,
+    defaultCenter: '',
+    defaultSupervisor: '',
+    passwordSalt: salt,
+    passwordHash: hash,
+    createdBy: 'SISTEMA',
+    createdAt: now,
+    updatedAt: now,
+    lastLoginAt: ''
+  };
+  const nextLogs = [...(store.authLogs || [])];
+  nextLogs.unshift({
+    id: 'log-seed-' + Date.now(),
+    timestamp: now,
+    event: 'CREAR_USUARIO',
+    username: 'ADMIN',
+    fullName: 'Administrador Principal',
+    role: 'admin',
+    detail: 'Cuenta maestra inicial generada automáticamente (requiere cambio de clave al ingresar)',
+    actor: 'SISTEMA',
+    device: 'Servidor'
+  });
+  return writeSavedUsers({
+    replaceAll: true,
+    userAccounts: [rootAdmin, ...(store.userAccounts || []).filter(u => u.id !== 'usr-admin-root' && u.username !== 'ADMIN')],
+    deletedUserIds: store.deletedUserIds.filter(id => id !== 'usr-admin-root'),
+    authSettings: store.authSettings,
+    authLogs: nextLogs
+  });
+}
+
+function cleanConfigUrl(u) {
   const s = String(u || '').trim();
-  if(!s || /TU_SCRIPT_ID/i.test(s)) return '';
+  if (!s || /TU_SCRIPT_ID/i.test(s)) return '';
   return s;
 }
 
-function cleanConfigToken(t){
+function cleanConfigToken(t) {
   const s = String(t || '').trim();
-  if(!s || /^TU_CLAVE_SECRETA_AQUI$/i.test(s)) return '';
+  if (!s || /^TU_CLAVE_SECRETA_AQUI$/i.test(s)) return '';
   return s;
 }
 
-function readSavedConfig(){
+function readSavedConfig() {
   ensureDataDir();
   let fileCfg = {};
-  if(fs.existsSync(CONFIG_FILE)){
-    try{ fileCfg = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8')) || {}; }catch(_){}
+  if (fs.existsSync(CONFIG_FILE)) {
+    try { fileCfg = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8')) || {}; } catch (_) {}
   }
   return {
     scriptUrl: cleanConfigUrl(process.env.GOOGLE_APPS_SCRIPT_URL) || cleanConfigUrl(fileCfg.scriptUrl),
@@ -123,41 +420,144 @@ function readSavedConfig(){
   };
 }
 
-function writeSavedConfig(url, token){
+function writeSavedConfig(url, token) {
   ensureDataDir();
   const cur = readSavedConfig();
   const nextUrl = cleanConfigUrl(url) || cur.scriptUrl || '';
   const nextToken = cleanConfigToken(token) || cur.scriptToken || '';
-  if(!nextUrl && !nextToken) return cur;
+  if (!nextUrl && !nextToken) return cur;
   const data = {
     scriptUrl: nextUrl,
     scriptToken: nextToken,
     updatedAt: new Date().toISOString()
   };
-  try{
+  try {
     fs.writeFileSync(CONFIG_FILE, JSON.stringify(data, null, 2), 'utf8');
-  }catch(e){
+  } catch (e) {
     console.warn('Could not save server config to file:', e.message);
   }
   return data;
 }
 
-const DRIVE_TIMEOUT_MS = 25000;
-function fetchWithTimeout(url, options={}, timeoutMs=DRIVE_TIMEOUT_MS){
-  const controller=new AbortController();
-  const timer=setTimeout(()=>controller.abort(),timeoutMs);
-  return fetch(url,{...options,signal:controller.signal}).finally(()=>clearTimeout(timer));
+function fetchWithTimeout(url, options = {}, timeoutMs = DRIVE_TIMEOUT_MS) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  return fetch(url, { ...options, signal: controller.signal }).finally(() => clearTimeout(timer));
+}
+
+let driveHydratedOnce = false;
+async function hydrateUsersFromDrive(force = false) {
+  const cur = readSavedUsers();
+  if (!force && driveHydratedOnce && cur.userAccounts && cur.userAccounts.length > 0) return cur;
+  const cfg = readSavedConfig();
+  if (!cfg.scriptUrl) {
+    driveHydratedOnce = true;
+    return ensureDefaultAdminInStore();
+  }
+
+  const cleanBase = cfg.scriptUrl.replace(/\?.*$/, '');
+  for (const action of ['getUsersAndAuth', 'getAll']) {
+    try {
+      const url = `${cleanBase}?action=${encodeURIComponent(action)}&token=${encodeURIComponent(cfg.scriptToken || '')}&_=${Date.now()}`;
+      const r = await fetchWithTimeout(url, { method: 'GET', headers: { Accept: 'application/json' }, redirect: 'follow' }, 10000);
+      const text = await r.text();
+      const json = JSON.parse(text);
+      if (json && json.ok) {
+        driveHydratedOnce = true;
+        const src = action === 'getAll' ? (json.data?.app || {}) : json;
+        if (Array.isArray(src.userAccounts) || Array.isArray(src.authLogs)) {
+          writeSavedUsers({
+            userAccounts: src.userAccounts || [],
+            deletedUserIds: src.deletedUserIds || [],
+            authSettings: src.authSettings || {},
+            authLogs: src.authLogs || []
+          });
+          return ensureDefaultAdminInStore();
+        }
+      }
+    } catch (_) {}
+  }
+  driveHydratedOnce = true;
+  return ensureDefaultAdminInStore();
+}
+
+async function syncUsersToDriveServer() {
+  const cfg = readSavedConfig();
+  if (!cfg.scriptUrl) return false;
+  const store = readSavedUsers();
+  const payload = {
+    action: 'syncUsersAndAuth',
+    token: cfg.scriptToken || '',
+    userAccounts: store.userAccounts,
+    deletedUserIds: store.deletedUserIds,
+    authSettings: store.authSettings,
+    authLogs: store.authLogs
+  };
+  try {
+    const response = await fetchWithTimeout(cfg.scriptUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload),
+      redirect: 'follow'
+    }, 15000);
+    const json = JSON.parse(await response.text());
+    if (json && json.ok) {
+      writeSavedUsers({
+        userAccounts: json.userAccounts || [],
+        deletedUserIds: json.deletedUserIds || [],
+        authSettings: json.authSettings || {},
+        authLogs: json.authLogs || []
+      });
+      return true;
+    }
+  } catch (_) {}
+  return false;
+}
+
+function attachAuthUser(req, _res, next) {
+  req.authUser = null;
+  const token = extractTokenFromReq(req);
+  if (!token) return next();
+  const payload = verifySessionToken(token);
+  if (!payload) return next();
+  const store = readSavedUsers();
+  const matched = (store.userAccounts || []).find(
+    u => u && u.active !== false && (u.id === payload.id || String(u.username || '').toUpperCase() === payload.username)
+  );
+  if (matched) {
+    req.authUser = matched;
+  }
+  next();
+}
+
+function requireAuth(req, res, next) {
+  if (!req.authUser) {
+    return res.status(401).json({ ok: false, error: 'Sesión requerida o expirada. Inicia sesión nuevamente.' });
+  }
+  next();
+}
+
+function requireAdmin(req, res, next) {
+  if (!req.authUser) {
+    return res.status(401).json({ ok: false, error: 'Sesión de administrador requerida.' });
+  }
+  if (req.authUser.role !== 'admin') {
+    return res.status(403).json({ ok: false, error: 'Permisos insuficientes. Se requiere rol de Administrador.' });
+  }
+  next();
 }
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(attachAuthUser);
+
 app.use(express.static(__dirname, {
   index: false,
   fallthrough: true,
   extensions: false,
   setHeaders: (res, filePath) => {
     if (/\.(js|mjs|css|json|webmanifest|png|jpe?g|gif|svg|ico|webp|xlsx|txt|map)$/i.test(filePath)) {
-      res.setHeader('Cache-Control','no-store, max-age=0');
+      res.setHeader('Cache-Control', 'no-store, max-age=0');
     }
   }
 }));
@@ -177,15 +577,370 @@ app.post('/api/config', (req, res) => {
   res.json({ ok: true, config: saved });
 });
 
-app.get('/api/users', (req, res) => {
-  res.json({ ok: true, ...readSavedUsers() });
+// =========================================================
+// AUTENTICACIÓN SEGURA EN SERVIDOR
+// =========================================================
+app.get('/api/auth/me', async (req, res) => {
+  if (!req.authUser) {
+    return res.json({ ok: false, authenticated: false });
+  }
+  const store = readSavedUsers();
+  return res.json({
+    ok: true,
+    authenticated: true,
+    user: sanitizeUser(req.authUser),
+    authSettings: store.authSettings
+  });
 });
 
-app.post('/api/users', (req, res) => {
-  const saved = writeSavedUsers(req.body || {});
-  res.json({ ok: true, ...saved });
+app.post('/api/auth/login', async (req, res) => {
+  const identifier = String(req.body?.identifier || req.body?.username || '').trim();
+  const password = String(req.body?.password || '');
+  if (!identifier || !password) {
+    return res.status(400).json({ ok: false, error: 'Ingresa tu usuario o correo y tu contraseña.' });
+  }
+
+  const clientIp = getClientIp(req);
+  const rl = getRateLimitStatus(clientIp, identifier);
+  if (rl.blocked) {
+    return res.status(429).json({
+      ok: false,
+      error: `Demasiados intentos fallidos. Espera ${rl.remainingSec} segundos antes de volver a intentar.`,
+      lockedSeconds: rl.remainingSec
+    });
+  }
+
+  let store = await hydrateUsersFromDrive(false);
+  const idUpper = identifier.toUpperCase();
+  const idLower = identifier.toLowerCase();
+
+  let user = (store.userAccounts || []).find(u =>
+    String(u.username || '').toUpperCase() === idUpper ||
+    (u.email && String(u.email).trim().toLowerCase() === idLower)
+  );
+
+  // Si no se encuentra localmente, consultar Drive forzadamente por si se creó en otro equipo
+  if (!user) {
+    store = await hydrateUsersFromDrive(true);
+    user = (store.userAccounts || []).find(u =>
+      String(u.username || '').toUpperCase() === idUpper ||
+      (u.email && String(u.email).trim().toLowerCase() === idLower)
+    );
+  }
+
+  if (!user) {
+    recordLoginFailure(rl.key);
+    appendServerAuditLog(store, 'INTENTO_FALLIDO', idUpper, 'Usuario no registrado', idUpper, req);
+    writeSavedUsers(store);
+    return res.status(401).json({ ok: false, error: 'Usuario o contraseña incorrectos.' });
+  }
+
+  if (user.active === false) {
+    recordLoginFailure(rl.key);
+    appendServerAuditLog(store, 'INTENTO_FALLIDO', user, 'Cuenta deshabilitada intentó ingresar', user.username, req);
+    writeSavedUsers(store);
+    return res.status(403).json({ ok: false, error: 'Esta cuenta está deshabilitada. Contacta al Administrador.' });
+  }
+
+  if (!verifyPasswordServer(user, password)) {
+    recordLoginFailure(rl.key);
+    appendServerAuditLog(store, 'INTENTO_FALLIDO', user, 'Contraseña incorrecta', user.username, req);
+    writeSavedUsers(store);
+    return res.status(401).json({ ok: false, error: 'Usuario o contraseña incorrectos.' });
+  }
+
+  clearLoginFailures(rl.key);
+  const now = new Date().toISOString();
+  user.lastLoginAt = now;
+  user.updatedAt = now;
+  appendServerAuditLog(store, 'INICIO_SESION', user, 'Ingreso autorizado desde pantalla de inicio', user.username, req);
+  const saved = writeSavedUsers(store);
+
+  const token = signSessionToken(user);
+  setAuthCookie(res, req, token);
+  syncUsersToDriveServer().catch(() => {});
+
+  return res.json({
+    ok: true,
+    user: sanitizeUser(user),
+    token,
+    authSettings: saved.authSettings,
+    authLogs: saved.authLogs
+  });
 });
 
+app.post('/api/auth/logout', (req, res) => {
+  const reason = String(req.body?.reason || 'manual');
+  if (req.authUser) {
+    const store = readSavedUsers();
+    const ev = reason === 'inactivity' ? 'CIERRE_INACTIVIDAD' : 'CIERRE_SESION';
+    const detail = reason === 'inactivity' ? 'Cierre automático por inactividad' : 'Cierre de sesión manual';
+    appendServerAuditLog(store, ev, req.authUser, detail, req.authUser.username, req);
+    writeSavedUsers(store);
+    syncUsersToDriveServer().catch(() => {});
+  }
+  clearAuthCookie(res, req);
+  return res.json({ ok: true });
+});
+
+app.post('/api/auth/change-password', requireAuth, (req, res) => {
+  const curPass = String(req.body?.currentPassword || '');
+  const newPass = String(req.body?.newPassword || '').trim();
+  if (newPass.length < 4) {
+    return res.status(400).json({ ok: false, error: 'La nueva contraseña debe tener al menos 4 caracteres.' });
+  }
+  const store = readSavedUsers();
+  const user = (store.userAccounts || []).find(
+    u => u.id === req.authUser.id || String(u.username || '').toUpperCase() === String(req.authUser.username).toUpperCase()
+  );
+  if (!user) {
+    return res.status(404).json({ ok: false, error: 'Usuario no encontrado.' });
+  }
+  if (!req.body?.forcedFirstChange || curPass) {
+    if (!verifyPasswordServer(user, curPass)) {
+      return res.status(401).json({ ok: false, error: 'La contraseña actual es incorrecta.' });
+    }
+  } else if (!user.mustChangePassword) {
+    return res.status(401).json({ ok: false, error: 'Ingresa tu contraseña actual.' });
+  }
+
+  const salt = makeSalt();
+  user.passwordSalt = salt;
+  user.passwordHash = hashSecretServer(newPass, salt);
+  user.mustChangePassword = false;
+  user.isDefaultSeed = false;
+  user.updatedAt = new Date().toISOString();
+
+  appendServerAuditLog(store, 'CAMBIO_CLAVE', user, 'El usuario actualizó su contraseña personal', user.username, req);
+  const saved = writeSavedUsers(store);
+  syncUsersToDriveServer().catch(() => {});
+
+  return res.json({
+    ok: true,
+    user: sanitizeUser(user),
+    userAccounts: sanitizeUsersList(saved.userAccounts),
+    authLogs: saved.authLogs
+  });
+});
+
+app.post('/api/auth/elevate-admin', requireAuth, (req, res) => {
+  const pass = String(req.body?.password || '').trim();
+  if (!pass) return res.json({ ok: false });
+  const store = readSavedUsers();
+  const admins = (store.userAccounts || []).filter(u => u && u.active !== false && u.role === 'admin');
+  const matched = admins.some(a => verifyPasswordServer(a, pass));
+  return res.json({ ok: matched });
+});
+
+// =========================================================
+// GESTIÓN DE USUARIOS (SIN EXPONER HASHES)
+// =========================================================
+app.get('/api/users', async (req, res) => {
+  const store = await hydrateUsersFromDrive(false);
+  const users = store.userAccounts || [];
+  const onlyRootSeed = users.length === 1 && users[0]?.username === 'ADMIN' && Boolean(users[0]?.isDefaultSeed);
+  res.json({
+    ok: true,
+    userAccounts: sanitizeUsersList(users),
+    deletedUserIds: store.deletedUserIds,
+    authSettings: store.authSettings,
+    authLogs: req.authUser ? store.authLogs : [],
+    onlyRootSeed,
+    updatedAt: store.updatedAt
+  });
+});
+
+app.post('/api/users', requireAdmin, (req, res) => {
+  const body = req.body || {};
+  const op = String(body.op || '').trim();
+  const store = readSavedUsers();
+  const actor = req.authUser.username;
+
+  if (op === 'create') {
+    const username = String(body.username || '').trim().toUpperCase();
+    const fullName = String(body.fullName || '').trim();
+    const email = String(body.email || '').trim().toLowerCase();
+    const pass = String(body.password || '').trim();
+    const role = body.role === 'admin' ? 'admin' : 'user';
+    const defaultCenter = ['1003', '1004'].includes(String(body.defaultCenter || '')) ? String(body.defaultCenter) : '';
+    const defaultSupervisor = String(body.defaultSupervisor || '').trim().toUpperCase();
+    const mustChangePassword = Boolean(body.mustChangePassword);
+
+    if (!username || !fullName) {
+      return res.status(400).json({ ok: false, error: 'Completa el Usuario y Nombre completo.' });
+    }
+    if (pass.length < 4) {
+      return res.status(400).json({ ok: false, error: 'Asigna una contraseña de al menos 4 caracteres.' });
+    }
+    if ((store.userAccounts || []).some(u => String(u.username || '').toUpperCase() === username || (email && u.email && String(u.email).toLowerCase() === email))) {
+      return res.status(409).json({ ok: false, error: 'Ya existe un usuario con ese código o correo.' });
+    }
+
+    const salt = makeSalt();
+    const now = new Date().toISOString();
+    const newUser = {
+      id: 'usr-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
+      username,
+      email,
+      fullName,
+      role,
+      active: true,
+      mustChangePassword,
+      isDefaultSeed: false,
+      defaultCenter,
+      defaultSupervisor,
+      passwordSalt: salt,
+      passwordHash: hashSecretServer(pass, salt),
+      createdBy: actor,
+      createdAt: now,
+      updatedAt: now,
+      lastLoginAt: ''
+    };
+    store.userAccounts.unshift(newUser);
+    appendServerAuditLog(store, 'CREAR_USUARIO', newUser, `Cuenta creada (${role === 'admin' ? 'Administrador' : 'Usuario estándar'})`, actor, req);
+    const saved = writeSavedUsers(store);
+    syncUsersToDriveServer().catch(() => {});
+    return res.json({
+      ok: true,
+      user: sanitizeUser(newUser),
+      userAccounts: sanitizeUsersList(saved.userAccounts),
+      deletedUserIds: saved.deletedUserIds,
+      authSettings: saved.authSettings,
+      authLogs: saved.authLogs
+    });
+  }
+
+  if (op === 'update') {
+    const uid = String(body.id || '');
+    const user = (store.userAccounts || []).find(u => u.id === uid);
+    if (!user) return res.status(404).json({ ok: false, error: 'Usuario no encontrado.' });
+    const fullName = String(body.fullName || '').trim();
+    const email = String(body.email || '').trim().toLowerCase();
+    const role = body.role === 'admin' ? 'admin' : 'user';
+    const newPass = String(body.password || '').trim();
+    const defaultCenter = ['1003', '1004'].includes(String(body.defaultCenter || '')) ? String(body.defaultCenter) : '';
+    const defaultSupervisor = String(body.defaultSupervisor || '').trim().toUpperCase();
+    const mustChangePassword = Boolean(body.mustChangePassword);
+
+    if (!fullName) return res.status(400).json({ ok: false, error: 'El nombre completo es obligatorio.' });
+    if (email && (store.userAccounts || []).some(u => u.id !== uid && u.email && String(u.email).toLowerCase() === email)) {
+      return res.status(409).json({ ok: false, error: 'Ese correo ya pertenece a otro usuario.' });
+    }
+    if (newPass && newPass.length < 4) {
+      return res.status(400).json({ ok: false, error: 'La nueva contraseña debe tener al menos 4 caracteres.' });
+    }
+    if (user.role === 'admin' && role !== 'admin') {
+      const otherAdmins = (store.userAccounts || []).filter(u => u.id !== uid && u.active !== false && u.role === 'admin');
+      if (!otherAdmins.length) {
+        return res.status(400).json({ ok: false, error: 'Debe existir al menos un Administrador activo en el sistema.' });
+      }
+    }
+
+    user.fullName = fullName;
+    user.email = email;
+    user.role = role;
+    user.defaultCenter = defaultCenter;
+    user.defaultSupervisor = defaultSupervisor;
+    user.mustChangePassword = mustChangePassword;
+    if (newPass) {
+      const salt = makeSalt();
+      user.passwordSalt = salt;
+      user.passwordHash = hashSecretServer(newPass, salt);
+      user.isDefaultSeed = false;
+    }
+    user.updatedAt = new Date().toISOString();
+    appendServerAuditLog(store, newPass ? 'CAMBIO_CLAVE' : 'ACTUALIZAR_USUARIO', user, newPass ? 'Administrador asignó nueva contraseña y actualizó cuenta' : 'Administrador actualizó datos/rol/perfil', actor, req);
+    const saved = writeSavedUsers(store);
+    syncUsersToDriveServer().catch(() => {});
+    return res.json({
+      ok: true,
+      user: sanitizeUser(user),
+      userAccounts: sanitizeUsersList(saved.userAccounts),
+      deletedUserIds: saved.deletedUserIds,
+      authSettings: saved.authSettings,
+      authLogs: saved.authLogs
+    });
+  }
+
+  if (op === 'toggle') {
+    const uid = String(body.id || '');
+    const user = (store.userAccounts || []).find(u => u.id === uid);
+    if (!user) return res.status(404).json({ ok: false, error: 'Usuario no encontrado.' });
+    const nextActive = user.active === false;
+    if (!nextActive && user.role === 'admin') {
+      const otherAdmins = (store.userAccounts || []).filter(u => u.id !== uid && u.active !== false && u.role === 'admin');
+      if (!otherAdmins.length) {
+        return res.status(400).json({ ok: false, error: 'No puedes desactivar al único Administrador activo.' });
+      }
+    }
+    user.active = nextActive;
+    user.updatedAt = new Date().toISOString();
+    appendServerAuditLog(store, 'ACTUALIZAR_USUARIO', user, nextActive ? 'Cuenta activada' : 'Cuenta deshabilitada', actor, req);
+    const saved = writeSavedUsers(store);
+    syncUsersToDriveServer().catch(() => {});
+    return res.json({
+      ok: true,
+      user: sanitizeUser(user),
+      userAccounts: sanitizeUsersList(saved.userAccounts),
+      deletedUserIds: saved.deletedUserIds,
+      authSettings: saved.authSettings,
+      authLogs: saved.authLogs
+    });
+  }
+
+  if (op === 'delete') {
+    const uid = String(body.id || '');
+    const user = (store.userAccounts || []).find(u => u.id === uid);
+    if (!user) return res.status(404).json({ ok: false, error: 'Usuario no encontrado.' });
+    if (user.role === 'admin') {
+      const otherAdmins = (store.userAccounts || []).filter(u => u.id !== uid && u.active !== false && u.role === 'admin');
+      if (!otherAdmins.length) {
+        return res.status(400).json({ ok: false, error: 'No puedes eliminar al único Administrador activo.' });
+      }
+    }
+    store.deletedUserIds = Array.from(new Set([...(store.deletedUserIds || []), uid])).slice(-200);
+    store.userAccounts = (store.userAccounts || []).filter(u => u.id !== uid);
+    appendServerAuditLog(store, 'ELIMINAR_USUARIO', user, 'Usuario eliminado por administrador', actor, req);
+    const saved = writeSavedUsers({ ...store, replaceAll: true });
+    syncUsersToDriveServer().catch(() => {});
+    return res.json({
+      ok: true,
+      userAccounts: sanitizeUsersList(saved.userAccounts),
+      deletedUserIds: saved.deletedUserIds,
+      authSettings: saved.authSettings,
+      authLogs: saved.authLogs
+    });
+  }
+
+  if (op === 'settings') {
+    const mins = Number(body.sessionTimeoutMinutes);
+    store.authSettings = normalizeAuthSettings({ sessionTimeoutMinutes: Number.isFinite(mins) ? mins : 30 }, store.authSettings);
+    appendServerAuditLog(store, 'CONFIG_SEGURIDAD', actor, `Tiempo de cierre por inactividad configurado a ${store.authSettings.sessionTimeoutMinutes} min`, actor, req);
+    const saved = writeSavedUsers(store);
+    syncUsersToDriveServer().catch(() => {});
+    return res.json({
+      ok: true,
+      userAccounts: sanitizeUsersList(saved.userAccounts),
+      deletedUserIds: saved.deletedUserIds,
+      authSettings: saved.authSettings,
+      authLogs: saved.authLogs
+    });
+  }
+
+  // Fallback legacy merge (preserves existing server hashes)
+  const saved = writeSavedUsers(body);
+  return res.json({
+    ok: true,
+    userAccounts: sanitizeUsersList(saved.userAccounts),
+    deletedUserIds: saved.deletedUserIds,
+    authSettings: saved.authSettings,
+    authLogs: saved.authLogs
+  });
+});
+
+// =========================================================
+// PROXY GOOGLE DRIVE (PRESERVA HASHES EN DRIVE SIN EXPONERLOS AL BROWSER)
+// =========================================================
 app.post('/api/drive/sync', async (req, res) => {
   try {
     const cfg = readSavedConfig();
@@ -204,6 +959,26 @@ app.post('/api/drive/sync', async (req, res) => {
     delete payload.targetUrl;
     delete payload.url;
 
+    // Preservar hashes autoritativos del servidor al enviar a Drive
+    const serverUsers = readSavedUsers();
+    if (payload.action === 'syncUsersAndAuth') {
+      payload.userAccounts = serverUsers.userAccounts;
+      payload.deletedUserIds = serverUsers.deletedUserIds;
+      payload.authSettings = serverUsers.authSettings;
+      payload.authLogs = mergeAuthLogs(serverUsers.authLogs, payload.authLogs);
+    } else if (payload.action === 'syncAll' && payload.data && payload.data.app) {
+      payload.data = {
+        ...payload.data,
+        app: {
+          ...payload.data.app,
+          userAccounts: serverUsers.userAccounts,
+          deletedUserIds: serverUsers.deletedUserIds,
+          authSettings: serverUsers.authSettings,
+          authLogs: mergeAuthLogs(serverUsers.authLogs, payload.data.app.authLogs)
+        }
+      };
+    }
+
     if (cfg.scriptToken) {
       payload.token = cfg.scriptToken;
     } else if (!payload.token && reqToken) {
@@ -212,9 +987,7 @@ app.post('/api/drive/sync', async (req, res) => {
 
     const response = await fetchWithTimeout(targetUrl, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'text/plain;charset=utf-8'
-      },
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(payload),
       redirect: 'follow'
     });
@@ -226,12 +999,28 @@ app.post('/api/drive/sync', async (req, res) => {
     } catch (_) {
       return res.status(502).json({ ok: false, error: 'Respuesta no válida de Google Apps Script: ' + text.slice(0, 200) });
     }
+
+    if (data && data.ok && Array.isArray(data.userAccounts)) {
+      const merged = writeSavedUsers({
+        userAccounts: data.userAccounts,
+        deletedUserIds: data.deletedUserIds,
+        authSettings: data.authSettings,
+        authLogs: data.authLogs
+      });
+      data.userAccounts = sanitizeUsersList(merged.userAccounts);
+      data.authLogs = merged.authLogs;
+      data.authSettings = merged.authSettings;
+    }
+
     return res.json(data);
   } catch (err) {
     console.error('Error in /api/drive/sync proxy:', err);
-    return res.status(err?.name==='AbortError'?504:500).json({ ok: false, error: err?.name==='AbortError'
-      ? `Google Apps Script no respondió en ${DRIVE_TIMEOUT_MS/1000} segundos.`
-      : 'Error de conexión con Google Apps Script: ' + (err?.message || err) });
+    return res.status(err?.name === 'AbortError' ? 504 : 500).json({
+      ok: false,
+      error: err?.name === 'AbortError'
+        ? `Google Apps Script no respondió en ${DRIVE_TIMEOUT_MS / 1000} segundos.`
+        : 'Error de conexión con Google Apps Script: ' + (err?.message || err)
+    });
   }
 });
 
@@ -258,7 +1047,7 @@ app.get('/api/drive/get', async (req, res) => {
 
     const response = await fetchWithTimeout(urlWithParams, {
       method: 'GET',
-      headers: { 'Accept': 'application/json' },
+      headers: { Accept: 'application/json' },
       redirect: 'follow'
     });
 
@@ -269,12 +1058,45 @@ app.get('/api/drive/get', async (req, res) => {
     } catch (_) {
       return res.status(502).json({ ok: false, error: 'Respuesta no válida de Google Apps Script: ' + text.slice(0, 200) });
     }
+
+    // Guardar usuarios/hashes entrantes en servidor y sanitizar respuesta al navegador
+    if (data && data.ok) {
+      if (action === 'getAll' && data.data && data.data.app) {
+        if (Array.isArray(data.data.app.userAccounts) || Array.isArray(data.data.app.authLogs)) {
+          const merged = writeSavedUsers({
+            userAccounts: data.data.app.userAccounts || [],
+            deletedUserIds: data.data.app.deletedUserIds || [],
+            authSettings: data.data.app.authSettings || {},
+            authLogs: data.data.app.authLogs || []
+          });
+          data.data.app.userAccounts = sanitizeUsersList(merged.userAccounts);
+          data.data.app.deletedUserIds = merged.deletedUserIds;
+          data.data.app.authSettings = merged.authSettings;
+          data.data.app.authLogs = req.authUser ? merged.authLogs : [];
+        }
+      } else if (action === 'getUsersAndAuth') {
+        const merged = writeSavedUsers({
+          userAccounts: data.userAccounts || [],
+          deletedUserIds: data.deletedUserIds || [],
+          authSettings: data.authSettings || {},
+          authLogs: data.authLogs || []
+        });
+        data.userAccounts = sanitizeUsersList(merged.userAccounts);
+        data.deletedUserIds = merged.deletedUserIds;
+        data.authSettings = merged.authSettings;
+        data.authLogs = req.authUser ? merged.authLogs : [];
+      }
+    }
+
     return res.json(data);
   } catch (err) {
     console.error('Error in /api/drive/get proxy:', err);
-    return res.status(err?.name==='AbortError'?504:500).json({ ok: false, error: err?.name==='AbortError'
-      ? `Google Apps Script no respondió en ${DRIVE_TIMEOUT_MS/1000} segundos.`
-      : 'Error al consultar Google Apps Script: ' + (err?.message || err) });
+    return res.status(err?.name === 'AbortError' ? 504 : 500).json({
+      ok: false,
+      error: err?.name === 'AbortError'
+        ? `Google Apps Script no respondió en ${DRIVE_TIMEOUT_MS / 1000} segundos.`
+        : 'Error al consultar Google Apps Script: ' + (err?.message || err)
+    });
   }
 });
 
@@ -283,7 +1105,7 @@ app.get('*', async (req, res) => {
     return res.status(404).type('text/plain').send('Recurso no encontrado: ' + req.path);
   }
   try {
-    res.setHeader('Cache-Control','no-store, max-age=0');
+    res.setHeader('Cache-Control', 'no-store, max-age=0');
     return res.sendFile(path.join(__dirname, 'index.html'));
   } catch (err) {
     console.error('Error sirviendo index.html:', err);
@@ -293,4 +1115,5 @@ app.get('*', async (req, res) => {
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on http://0.0.0.0:${PORT}`);
+  hydrateUsersFromDrive(true).catch(() => ensureDefaultAdminInStore());
 });

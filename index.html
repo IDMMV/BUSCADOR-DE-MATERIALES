@@ -4383,6 +4383,7 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
     const isRec = movement === 'RECUPERO';
     // Si es PEDIDO o RECUPERO, el campo de reserva siempre queda libre para tipearlo manualmente
     const reserva = isRes ? ($31('#reservaPedido')?.value.trim() || '') : '';
+    const op = typeof window.bmGetCurrentOperator === 'function' ? window.bmGetCurrentOperator() : { username: 'SISTEMA', fullName: 'Sistema' };
     const centers = [...new Set(allocs.map(x => String(x.CE || '').trim()).filter(Boolean))];
     return centers.map(center => {
       const rowsC = allocs.filter(x => String(x.CE || '').trim() === center), total = rowsC.reduce((a, x) => a + (Number(x.CANT) || 0), 0);
@@ -4390,6 +4391,8 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
         id: `${base}-${center}`,
         pedidoBase: base,
         supervisor: sup,
+        creadoPor: op.username,
+        creadoPorNombre: op.fullName,
         fecha: date,
         om,
         reserva: reserva,
@@ -5031,6 +5034,9 @@ html[data-theme="dark"] .v36-center-summary{color:#9fb8d4}
       const val = qtyCache[m.code] || '';
       const warnHtml = buildRowWarnHtml(m.code, val, rowCen, unit, isNoStockLimit);
       const showCancel = sel && !isMultiSearch;
+      const specHtml = typeof window.bmRenderMaterialSpecHtml === 'function' ? window.bmRenderMaterialSpecHtml(m) : '';
+      const crossAlert = !isNoStockLimit && typeof window.bmGetCrossStockAlert === 'function' ? window.bmGetCrossStockAlert(m.code, rowCen, val) : null;
+      const crossHtml = crossAlert ? `<div class="v47-cross-alert ${escv(crossAlert.level)}">${crossAlert.level === 'transfer' ? '⇄' : '⚠️'} ${escv(crossAlert.msg)}</div>` : '';
 
       const centerBtns = `
         <div class="v36-row-centers ${isDev ? 'cols-2' : ''}" role="group" aria-label="Almacén para ${escv(m.code)}">
@@ -5039,7 +5045,7 @@ html[data-theme="dark"] .v36-center-summary{color:#9fb8d4}
           ${isDev ? '' : `<button type="button" tabindex="-1" class="v36-row-cbtn both ${rowCen==='both'?'active':''}" data-v36-row-center="both" data-code="${escv(m.code)}" title="Combinar 1003 + 1004 (${s3+s4} ${escv(unit)} disp.)">Ambos</button>`}
         </div>`;
 
-      return `<tr class="${sel ? 'v36-selected-row' : ''} ${inCart ? 'v36-incart-row' : ''} ${isP ? 'v36-prio-p-row' : ''}" data-v36-mat-row="${escv(m.code)}"><td class="v42-material-image cursor-pointer" data-open-image="${escv(m.code)}">${img}</td><td class="v29-code cursor-pointer" data-copy-code="${escv(m.code)}" title="Tocar para copiar matrícula">${escv(m.code)}${isP ? '<br><span class="prio-p-badge">⚡ PRIORIDAD P</span>' : ''}</td><td><b>${escv(m.description)}</b>${inCart ? ` <span class="badge" style="background:#16a34a;color:#fff;font-size:10px;margin-left:6px;padding:2px 6px">${isDev ? '✓ En devoluciones' : '✓ Agregado'}</span>` : ''}<br><button type="button" tabindex="-1" class="v29-alias-link" data-quick-edit="${escv(m.code)}">Alias: ${aliases} · Ver/editar</button>${sel ? `<div class="v36-select-note">${isDev ? '📦 Devolución habilitada: elige almacén, ingresa la cantidad y confirma.' : 'Elige el almacén (1003, 1004 o Ambos), ingresa la cantidad y confirma.'}</div>` : ''}</td><td><span class="v29-stock-pill v36-pill-pick ${s3 > 0 ? 'good' : 'none'} ${rowCen==='1003'?'active-pill':''}" data-v36-pill-pick="${escv(m.code)}" data-v36-pill-center="1003" title="Tocar para usar almacén 1003">${s3} ${escv(unit)}</span></td><td><span class="v29-stock-pill v36-pill-pick ${s4 > 0 ? 'good' : 'none'} ${rowCen==='1004'?'active-pill':''}" data-v36-pill-pick="${escv(m.code)}" data-v36-pill-center="1004" title="Tocar para usar almacén 1004">${s4} ${escv(unit)}</span></td><td>${escv(unit)}</td><td>${showQtyBox ? `<div class="v36-select-box ${showCancel ? 'has-cancel' : ''}">${centerBtns}<div class="v36-select-row"><input type="number" min="0" step="any" placeholder="Cantidad" value="${escv(val)}" data-v36-qty="${escv(m.code)}" ${showCancel ? 'autofocus' : ''}><button type="button" ${isMultiSearch ? 'tabindex="-1"' : ''} class="btn primary v36-add-btn" data-v36-confirm="${escv(m.code)}">${isDev ? 'Devolver' : 'Agregar'}</button>${showCancel ? `<button type="button" class="btn secondary" data-v36-cancel>Cancelar</button>` : ''}</div><div data-v36-row-warn="${escv(m.code)}">${warnHtml}</div></div>` : `<button type="button" class="btn primary" data-v36-select="${escv(m.code)}">Seleccionar</button>`}</td></tr>`;
+      return `<tr class="${sel ? 'v36-selected-row' : ''} ${inCart ? 'v36-incart-row' : ''} ${isP ? 'v36-prio-p-row' : ''}" data-v36-mat-row="${escv(m.code)}"><td class="v42-material-image cursor-pointer" data-open-image="${escv(m.code)}">${img}</td><td class="v29-code cursor-pointer" data-copy-code="${escv(m.code)}" title="Tocar para copiar matrícula">${escv(m.code)}${isP ? '<br><span class="prio-p-badge">⚡ PRIORIDAD P</span>' : ''}</td><td><b>${escv(m.description)}</b>${inCart ? ` <span class="badge" style="background:#16a34a;color:#fff;font-size:10px;margin-left:6px;padding:2px 6px">${isDev ? '✓ En devoluciones' : '✓ Agregado'}</span>` : ''}${specHtml}${crossHtml}<br><button type="button" tabindex="-1" class="v29-alias-link" data-quick-edit="${escv(m.code)}">Alias: ${aliases} · Ver/editar</button>${sel ? `<div class="v36-select-note">${isDev ? '📦 Devolución habilitada: elige almacén, ingresa la cantidad y confirma.' : 'Elige el almacén (1003, 1004 o Ambos), ingresa la cantidad y confirma.'}</div>` : ''}</td><td><span class="v29-stock-pill v36-pill-pick ${s3 > 0 ? 'good' : 'none'} ${rowCen==='1003'?'active-pill':''}" data-v36-pill-pick="${escv(m.code)}" data-v36-pill-center="1003" title="Tocar para usar almacén 1003">${s3} ${escv(unit)}</span></td><td><span class="v29-stock-pill v36-pill-pick ${s4 > 0 ? 'good' : 'none'} ${rowCen==='1004'?'active-pill':''}" data-v36-pill-pick="${escv(m.code)}" data-v36-pill-center="1004" title="Tocar para usar almacén 1004">${s4} ${escv(unit)}</span></td><td>${escv(unit)}</td><td>${showQtyBox ? `<div class="v36-select-box ${showCancel ? 'has-cancel' : ''}">${centerBtns}<div class="v36-select-row"><input type="number" min="0" step="any" placeholder="Cantidad" value="${escv(val)}" data-v36-qty="${escv(m.code)}" ${showCancel ? 'autofocus' : ''}><button type="button" ${isMultiSearch ? 'tabindex="-1"' : ''} class="btn primary v36-add-btn" data-v36-confirm="${escv(m.code)}">${isDev ? 'Devolver' : 'Agregar'}</button>${showCancel ? `<button type="button" class="btn secondary" data-v36-cancel>Cancelar</button>` : ''}</div><div data-v36-row-warn="${escv(m.code)}">${warnHtml}</div></div>` : `<button type="button" class="btn primary" data-v36-select="${escv(m.code)}">Seleccionar</button>`}</td></tr>`;
     }).join('')}</tbody></table></div>`;
 
     if (results.innerHTML !== newHtml) {
@@ -5086,11 +5092,14 @@ html[data-theme="dark"] .v36-center-summary{color:#9fb8d4}
           const totalCount = Object.values(byCenter).reduce((a, arr) => a + arr.length, 0);
           if (totalCount > 0) {
             const base = `DEV-${date.replaceAll('-', '')}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+            const opDev = typeof window.bmGetCurrentOperator === 'function' ? window.bmGetCurrentOperator() : { username: 'SISTEMA', fullName: 'Sistema' };
             Object.entries(byCenter).forEach(([cen, itemsToAdd]) => {
               const devOrder = {
                 id: `${base}-${cen}`,
                 pedidoBase: base,
                 supervisor: sup,
+                creadoPor: opDev.username,
+                creadoPorNombre: opDev.fullName,
                 fecha: date,
                 om: om,
                 reserva: '',
@@ -5237,10 +5246,13 @@ html[data-theme="dark"] .v36-center-summary{color:#9fb8d4}
       const dist = String($v('#distritoPedido')?.value.trim() || state.defaults?.distrito || '').toUpperCase();
       const now = new Date().toISOString();
       const base = `DEV-${date.replaceAll('-', '')}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+      const opSingle = typeof window.bmGetCurrentOperator === 'function' ? window.bmGetCurrentOperator() : { username: 'SISTEMA', fullName: 'Sistema' };
       const devOrder = {
         id: `${base}-${chosenMode}`,
         pedidoBase: base,
         supervisor: sup,
+        creadoPor: opSingle.username,
+        creadoPorNombre: opSingle.fullName,
         fecha: date,
         om: om,
         reserva: '',
@@ -5340,7 +5352,9 @@ html[data-theme="dark"] .v36-center-summary{color:#9fb8d4}
       const isGood = qty>0 && (isNoStockLimit || p.missing===0);
       const isBad = !isNoStockLimit && p.missing>0;
       const summaryTxt = buildCartSummaryText(m, p, mode, isNoStockLimit);
-      return `<tr class="${isGood?'':'row-pending'}" data-cart-row="${i}"><td><b>${escv(m.code)}</b></td><td>${escv(m.description)}<span class="stock-info">${isDev?'Devolución (D) · Ingreso sin restricción de stock':`Disponible: 1003 San Juan (${s3}) · 1004 Vitarte (${s4}) ${escv(unit)}`}</span>${isBad?`<span class="stock-alt-note">Faltan <strong>${p.missing} ${escv(unit)}</strong>. Elige <b>1004</b> o <b>Ambos (1003+1004)</b> aquí mismo sin borrar nada.</span>`:''}</td><td class="v36-cart-qty"><input class="qty ${isGood?'ready':''} ${isBad?'insufficient':''}" type="number" min="0" step="any" value="${escv(m.qty||'')}" placeholder="0" data-qty="${i}"></td><td>${escv(unit)}</td><td><div class="v36-center-actions"><button type="button" tabindex="-1" class="v36-center-btn ${mode==='1003'?'active':''}" data-v36-mode="1003" data-v36-index="${i}" title="1003 San Juan: ${s3} ${escv(unit)}">1003 · ${s3}</button><button type="button" tabindex="-1" class="v36-center-btn ${mode==='1004'?'active':''}" data-v36-mode="1004" data-v36-index="${i}" title="1004 Vitarte: ${s4} ${escv(unit)}">1004 · ${s4}</button>${isDev?'':`<button type="button" tabindex="-1" class="v36-center-btn both ${mode==='both'?'active':''}" data-v36-mode="both" data-v36-index="${i}" title="Combinar 1003 + 1004 (${s3+s4} ${escv(unit)})">Ambos · ${s3+s4}</button>`}</div><span class="v36-center-summary" data-v36-summary="${i}">${escv(summaryTxt)}</span></td><td><button type="button" tabindex="-1" class="btn danger" data-rm="${i}">Quitar</button></td></tr>`;
+      const cartAlert = (!isNoStockLimit && !isBad && typeof window.bmGetCrossStockAlert === 'function') ? window.bmGetCrossStockAlert(m.code, mode, qty) : null;
+      const cartAlertHtml = cartAlert ? `<div class="v47-cross-alert ${escv(cartAlert.level)}">${cartAlert.level === 'transfer' ? '⇄' : '⚠️'} ${escv(cartAlert.msg)}</div>` : '';
+      return `<tr class="${isGood?'':'row-pending'}" data-cart-row="${i}"><td><b>${escv(m.code)}</b></td><td>${escv(m.description)}<span class="stock-info">${isDev?'Devolución (D) · Ingreso sin restricción de stock':`Disponible: 1003 San Juan (${s3}) · 1004 Vitarte (${s4}) ${escv(unit)}`}</span>${isBad?`<span class="stock-alt-note">Faltan <strong>${p.missing} ${escv(unit)}</strong>. Elige <b>1004</b> o <b>Ambos (1003+1004)</b> aquí mismo sin borrar nada.</span>`:cartAlertHtml}</td><td class="v36-cart-qty"><input class="qty ${isGood?'ready':''} ${isBad?'insufficient':''}" type="number" min="0" step="any" value="${escv(m.qty||'')}" placeholder="0" data-qty="${i}"></td><td>${escv(unit)}</td><td><div class="v36-center-actions"><button type="button" tabindex="-1" class="v36-center-btn ${mode==='1003'?'active':''}" data-v36-mode="1003" data-v36-index="${i}" title="1003 San Juan: ${s3} ${escv(unit)}">1003 · ${s3}</button><button type="button" tabindex="-1" class="v36-center-btn ${mode==='1004'?'active':''}" data-v36-mode="1004" data-v36-index="${i}" title="1004 Vitarte: ${s4} ${escv(unit)}">1004 · ${s4}</button>${isDev?'':`<button type="button" tabindex="-1" class="v36-center-btn both ${mode==='both'?'active':''}" data-v36-mode="both" data-v36-index="${i}" title="Combinar 1003 + 1004 (${s3+s4} ${escv(unit)})">Ambos · ${s3+s4}</button>`}</div><span class="v36-center-summary" data-v36-summary="${i}">${escv(summaryTxt)}</span></td><td><button type="button" tabindex="-1" class="btn danger" data-rm="${i}">Quitar</button></td></tr>`;
     }).join('');
     if(typeof renderSapPreview==='function')renderSapPreview();if(typeof renderSearchOrder==='function')renderSearchOrder();
   };
@@ -5682,6 +5696,8 @@ html[data-theme="dark"] .v36-center-summary{color:#9fb8d4}
           alimentador: String(order.alimentador || '').trim().toUpperCase(),
           distrito: String(order.distrito || '').trim().toUpperCase(),
           movimiento: rawMov,
+          creadoPor: order.creadoPor || order.guardadoPor || '',
+          creadoPorNombre: order.creadoPorNombre || '',
           createdAt: order.createdAt || ''
         });
       });
@@ -5729,6 +5745,8 @@ html[data-theme="dark"] .v36-center-summary{color:#9fb8d4}
         distrito: String(o.distrito || '').trim().toUpperCase(),
         status: edit.status !== undefined ? edit.status : defaultStatus,
         unidadRecupero: edit.unidadRecupero !== undefined ? edit.unidadRecupero : defaultRecupero,
+        creadoPor: o.creadoPor || '',
+        creadoPorNombre: o.creadoPorNombre || '',
         total: Number(o.total || 0),
         createdAt: o.createdAt || '',
         items: Array.isArray(o.items) ? o.items : []
@@ -5914,6 +5932,7 @@ html[data-theme="dark"] .v36-center-summary{color:#9fb8d4}
             ${(r.items||[]).map(i=>`<div><b>${esc(i.code)}</b> × ${esc(i.qty)} ${esc(i.unit||'UND')} <span style="color:var(--muted)">(${esc(i.description||'')})</span></div>`).join('')}
           </div>
         </td>
+        <td style="white-space:nowrap">${typeof window.bmFormatOperatorBadge === 'function' ? window.bmFormatOperatorBadge(r.creadoPor, r.creadoPorNombre) : esc(r.creadoPor || '---')}</td>
         <td style="text-align:center;min-width:90px">
           <button type="button" class="btn danger" data-rm-reserva="${esc(r.key)}" style="padding:5px 10px;font-size:12px;font-weight:700">🗑️ Quitar</button>
         </td>
@@ -5961,6 +5980,7 @@ html[data-theme="dark"] .v36-center-summary{color:#9fb8d4}
               <th style="background:#a9d08e!important;color:#111827!important">STATUS</th>
               <th style="background:#a9d08e!important;color:#111827!important">UNIDAD (RECUPERO)</th>
               <th>MATERIALES</th>
+              <th>USUARIO</th>
               <th style="text-align:center">ACCIONES</th>
             </tr>
           </thead>
@@ -5986,12 +6006,14 @@ html[data-theme="dark"] .v36-center-summary{color:#9fb8d4}
         syncControlDomToState(view);
 
         let savedCount = 0;
+        const opSave = typeof window.bmGetCurrentOperator === 'function' ? window.bmGetCurrentOperator() : null;
         (state.orderHistory||[]).forEach(o=>{
           const mov = String(o.movimiento||'PEDIDO').toUpperCase();
           if(mov !== 'DEVOLUCION' && !o.guardadoEnHistorial && !o.reservaGuardada){
             o.guardadoEnHistorial = true;
             o.reservaGuardada = true;
             o.fechaGuardadoHistorial = new Date().toISOString();
+            if(opSave && !o.guardadoPor) o.guardadoPor = opSave.username;
             const resCode = String(o.reserva||'').trim();
             if(Array.isArray(o.items)){
               o.items.forEach(it=>{ it.reserva = resCode; });
@@ -6115,7 +6137,7 @@ html[data-theme="dark"] .v36-center-summary{color:#9fb8d4}
 
       // General Search Query
       if (qSearch) {
-        const text = `${r.tipo} ${r.reserva} ${r.om} ${r.fecha} ${r.matricula} ${r.descripcion} ${r.supervisor} ${r.conductor} ${r.centro} ${r.almacen} ${r.lote} ${r.unidadRecojo} ${r.alimentador} ${r.distrito}`.toLowerCase();
+        const text = `${r.tipo} ${r.reserva} ${r.om} ${r.fecha} ${r.matricula} ${r.descripcion} ${r.supervisor} ${r.conductor} ${r.centro} ${r.almacen} ${r.lote} ${r.unidadRecojo} ${r.alimentador} ${r.distrito} ${r.creadoPor} ${r.creadoPorNombre}`.toLowerCase();
         if (!text.includes(qSearch)) return false;
       }
 
@@ -6140,13 +6162,14 @@ html[data-theme="dark"] .v36-center-summary{color:#9fb8d4}
       'ALMACÉN': r.almacen,
       'LOTE': r.lote,
       'UNIDAD DE RECOJO': r.unidadRecojo,
+      'REGISTRADO POR': r.creadoPor || '---',
       'FECHA DE REGISTRO': r.createdAt
     }));
     if(!data.length) return msg('No hay registros de historial para exportar con los filtros seleccionados.', true);
-    const headers = ['TIPO', 'RESERVA', 'OM', 'FECHA', 'MATRÍCULA', 'DESCRIPCIÓN', 'CANTIDAD', 'UNIDAD', 'SOLICITANTE / ENCARGADO', 'CONDUCTOR', 'CENTRO', 'ALMACÉN', 'LOTE', 'UNIDAD DE RECOJO', 'FECHA DE REGISTRO'];
+    const headers = ['TIPO', 'RESERVA', 'OM', 'FECHA', 'MATRÍCULA', 'DESCRIPCIÓN', 'CANTIDAD', 'UNIDAD', 'SOLICITANTE / ENCARGADO', 'CONDUCTOR', 'CENTRO', 'ALMACÉN', 'LOTE', 'UNIDAD DE RECOJO', 'REGISTRADO POR', 'FECHA DE REGISTRO'];
     const ws = XLSX.utils.json_to_sheet(data, { header: headers });
-    ws['!cols'] = [14, 16, 14, 12, 14, 42, 12, 10, 22, 18, 18, 14, 16, 18, 22].map(wch => ({ wch }));
-    ws['!autofilter'] = { ref: `A1:O${data.length + 1}` };
+    ws['!cols'] = [14, 16, 14, 12, 14, 42, 12, 10, 22, 18, 18, 14, 16, 18, 16, 22].map(wch => ({ wch }));
+    ws['!autofilter'] = { ref: `A1:P${data.length + 1}` };
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'HISTORIAL UNIFICADO');
     XLSX.writeFile(wb, `Historial_Unificado_Materiales_${new Date().toISOString().slice(0, 10)}.xlsx`);
@@ -6255,6 +6278,7 @@ html[data-theme="dark"] .v36-center-summary{color:#9fb8d4}
         <td>${esc(r.almacen || '---')}</td>
         <td>${esc(r.lote || '---')}</td>
         <td>${esc(r.unidadRecojo || '---')}</td>
+        <td>${typeof window.bmFormatOperatorBadge === 'function' ? window.bmFormatOperatorBadge(r.creadoPor, r.creadoPorNombre) : esc(r.creadoPor || '---')}</td>
       </tr>`;
     }).join('');
 
@@ -6349,6 +6373,7 @@ html[data-theme="dark"] .v36-center-summary{color:#9fb8d4}
               <th>ALMACÉN</th>
               <th>LOTE</th>
               <th>UNIDAD RECOJO</th>
+              <th>REGISTRADO POR</th>
             </tr>
           </thead>
           <tbody>${detailHtml}</tbody>
@@ -6489,6 +6514,8 @@ html[data-theme="dark"] .v36-center-summary{color:#9fb8d4}
           alimentador: String(order.alimentador || '').trim().toUpperCase(),
           distrito: String(order.distrito || '').trim().toUpperCase(),
           movimiento,
+          creadoPor: order.creadoPor || order.guardadoPor || '',
+          creadoPorNombre: order.creadoPorNombre || '',
           createdAt: order.createdAt || ''
         });
       });
@@ -6507,13 +6534,14 @@ html[data-theme="dark"] .v36-center-summary{color:#9fb8d4}
       'UNIDAD': r.unidad,
       'DEVUELTO POR': r.devueltoPor,
       'CENTRO': r.centro === '1003' ? '1003 - San Juan' : r.centro === '1004' ? '1004 - Vitarte' : r.centro,
-      'FECHA': r.fecha
+      'FECHA': r.fecha,
+      'REGISTRADO POR': r.creadoPor || '---'
     }));
     if(!data.length) return msg('Todavía no hay devoluciones registradas.', true);
-    const headers = ['OM', 'MATRÍCULA', 'DESCRIPCIÓN', 'CANTIDAD', 'UNIDAD', 'DEVUELTO POR', 'CENTRO', 'FECHA'];
+    const headers = ['OM', 'MATRÍCULA', 'DESCRIPCIÓN', 'CANTIDAD', 'UNIDAD', 'DEVUELTO POR', 'CENTRO', 'FECHA', 'REGISTRADO POR'];
     const ws = XLSX.utils.json_to_sheet(data, { header: headers });
-    ws['!cols'] = [14, 14, 42, 10, 10, 22, 18, 12].map(wch => ({ wch }));
-    ws['!autofilter'] = { ref: `A1:H${data.length + 1}` };
+    ws['!cols'] = [14, 14, 42, 10, 10, 22, 18, 12, 16].map(wch => ({ wch }));
+    ws['!autofilter'] = { ref: `A1:I${data.length + 1}` };
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'DEVOLUCIONES');
     XLSX.writeFile(wb, `Control_Devoluciones_${new Date().toISOString().slice(0, 10)}.xlsx`);
@@ -6580,7 +6608,7 @@ html[data-theme="dark"] .v36-center-summary{color:#9fb8d4}
     const filtered = all.filter(r => {
       if (devCenterFilter !== 'all' && r.centro !== devCenterFilter) return false;
       if (q) {
-        const text = `${r.om} ${r.matricula} ${r.descripcion} ${r.devueltoPor} ${r.centro} ${r.fecha}`.toLowerCase();
+        const text = `${r.om} ${r.matricula} ${r.descripcion} ${r.devueltoPor} ${r.centro} ${r.fecha} ${r.creadoPor} ${r.creadoPorNombre}`.toLowerCase();
         if (!text.includes(q)) return false;
       }
       return true;
@@ -6609,6 +6637,7 @@ html[data-theme="dark"] .v36-center-summary{color:#9fb8d4}
       <td>${esc(r.unidadRecojo || '---')}</td>
       <td>${esc(r.alimentador || '---')}</td>
       <td>${esc(r.distrito || '---')}</td>
+      <td>${typeof window.bmFormatOperatorBadge === 'function' ? window.bmFormatOperatorBadge(r.creadoPor, r.creadoPorNombre) : esc(r.creadoPor || '---')}</td>
       <td style="text-align:center">
         <button type="button" class="btn danger res-delete-btn" data-item-key="${esc(r.itemKey)}" data-order-key="${esc(r.orderKey)}" data-order-id="${esc(r.orderId)}" data-item-idx="${r.itemIdx}" data-mat="${esc(r.matricula)}" title="Eliminar registro de devolución" style="padding:4px 10px;font-size:12px;font-weight:700">🗑️ Quitar</button>
       </td>
@@ -6660,6 +6689,7 @@ html[data-theme="dark"] .v36-center-summary{color:#9fb8d4}
               <th>UNIDAD MÓVIL</th>
               <th>ALIM.</th>
               <th>DISTRITO</th>
+              <th>REGISTRADO POR</th>
               <th style="text-align:center">ACCIÓN</th>
             </tr>
           </thead>
@@ -8065,10 +8095,13 @@ html[data-theme="dark"] .admin-change-pass-box{background:#13263e;border-color:#
       const dist = String(document.getElementById('distritoPedido')?.value.trim() || state.defaults?.distrito || '').toUpperCase();
       const now = new Date().toISOString();
       const base = `DEV-${date.replaceAll('-','')}-${Date.now()}-${Math.random().toString(36).slice(2,6)}`;
+      const opImg = typeof window.bmGetCurrentOperator === 'function' ? window.bmGetCurrentOperator() : { username: 'SISTEMA', fullName: 'Sistema' };
       const devOrder = {
         id: `${base}-${selectedCen}`,
         pedidoBase: base,
         supervisor: sup,
+        creadoPor: opImg.username,
+        creadoPorNombre: opImg.fullName,
         fecha: date,
         om,
         reserva: '',
@@ -8346,6 +8379,21 @@ html[data-theme="dark"] .admin-change-pass-box{background:#13263e;border-color:#
   async function validateAdminPassword(inputPass){
     const p=String(inputPass||'').trim();
     if(!p)return false;
+    try{
+      const tok=sessionStorage.getItem('bm_auth_bearer_v1')||localStorage.getItem('bm_auth_bearer_v1')||'';
+      const headers={'Content-Type':'application/json'};
+      if(tok)headers['Authorization']='Bearer '+tok;
+      const r=await fetch('/api/auth/elevate-admin',{
+        method:'POST',
+        headers,
+        body:JSON.stringify({password:p})
+      });
+      if(r.ok){
+        const res=await r.json();
+        if(res&&res.ok)return true;
+        return false;
+      }
+    }catch(_){}
     if(typeof window.bmVerifyAnyAdminPassword==='function'){
       const matched = await window.bmVerifyAnyAdminPassword(p);
       if(matched) return true;
@@ -9773,7 +9821,112 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
   background:var(--bg);
   font-weight:800;
 }
+/* V47: diferenciación visual, alertas de quiebre, trazabilidad y seguridad */
+.v47-spec-chips{
+  display:flex;
+  flex-wrap:wrap;
+  gap:4px;
+  margin:4px 0 3px 0;
+}
+.v47-spec-chip{
+  display:inline-flex;
+  align-items:center;
+  padding:2px 7px;
+  border-radius:6px;
+  font-size:10.5px;
+  font-weight:800;
+  letter-spacing:.2px;
+  border:1px solid transparent;
+}
+.v47-spec-chip.tone-amber{background:#fef3c7;color:#92400e;border-color:#fcd34d}
+.v47-spec-chip.tone-blue{background:#dbeafe;color:#1e40af;border-color:#93c5fd}
+.v47-spec-chip.tone-teal{background:#ccfbf1;color:#115e59;border-color:#5eead4}
+.v47-spec-chip.tone-brown{background:#f5ebe0;color:#7c2d12;border-color:#d6bfa8}
+.v47-spec-chip.tone-slate{background:#e2e8f0;color:#1e293b;border-color:#cbd5e1}
+.v47-spec-chip.tone-purple{background:#f3e8ff;color:#6b21a8;border-color:#d8b4fe}
+.v47-spec-chip.tone-red{background:#fee2e2;color:#991b1b;border-color:#fca5a5}
+.v47-spec-chip.tone-green{background:#dcfce7;color:#166534;border-color:#86efac}
+.v47-spec-chip.tone-dark{background:#1e293b;color:#f8fafc;border-color:#0f172a}
+.v47-spec-chip.tone-light{background:#f8fafc;color:#334155;border-color:#cbd5e1}
+.v47-spec-chip.tone-neutral{background:#f1f5f9;color:#334155;border-color:#cbd5e1}
+html[data-theme="dark"] .v47-spec-chip.tone-amber{background:#451a03;color:#fde68a;border-color:#92400e}
+html[data-theme="dark"] .v47-spec-chip.tone-blue{background:#172554;color:#bfdbfe;border-color:#1d4ed8}
+html[data-theme="dark"] .v47-spec-chip.tone-teal{background:#134e4a;color:#99f6e4;border-color:#0f766e}
+html[data-theme="dark"] .v47-spec-chip.tone-brown{background:#431407;color:#fed7aa;border-color:#9a3412}
+html[data-theme="dark"] .v47-spec-chip.tone-slate{background:#1e293b;color:#e2e8f0;border-color:#475569}
+html[data-theme="dark"] .v47-spec-chip.tone-purple{background:#3b0764;color:#e9d5ff;border-color:#7e22ce}
+html[data-theme="dark"] .v47-spec-chip.tone-red{background:#450a0a;color:#fecaca;border-color:#b91c1c}
+html[data-theme="dark"] .v47-spec-chip.tone-green{background:#052e16;color:#bbf7d0;border-color:#15803d}
+html[data-theme="dark"] .v47-spec-chip.tone-light{background:#1e293b;color:#f1f5f9;border-color:#475569}
+.v47-cross-alert{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  margin:4px 0 2px 0;
+  padding:3px 8px;
+  border-radius:6px;
+  font-size:11px;
+  font-weight:700;
+}
+.v47-cross-alert.transfer{background:#fef3c7;color:#92400e;border:1px solid #f59e0b}
+.v47-cross-alert.out{background:#fee2e2;color:#991b1b;border:1px solid #ef4444}
+html[data-theme="dark"] .v47-cross-alert.transfer{background:#451a03;color:#fde68a;border-color:#b45309}
+html[data-theme="dark"] .v47-cross-alert.out{background:#450a0a;color:#fecaca;border-color:#dc2626}
+.v47-tpl-stock{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  padding:3px 8px;
+  border-radius:6px;
+  font-size:11px;
+  font-weight:700;
+  margin-top:4px;
+}
+.v47-tpl-stock.ok{background:#dcfce7;color:#166534;border:1px solid #86efac}
+.v47-tpl-stock.warn{background:#fef3c7;color:#92400e;border:1px solid #fcd34d}
+html[data-theme="dark"] .v47-tpl-stock.ok{background:#052e16;color:#bbf7d0;border-color:#15803d}
+html[data-theme="dark"] .v47-tpl-stock.warn{background:#451a03;color:#fde68a;border-color:#b45309}
+.v47-op-badge{
+  display:inline-flex;
+  align-items:center;
+  padding:2px 7px;
+  border-radius:6px;
+  font-size:11px;
+  font-weight:800;
+  background:#e0f2fe;
+  color:#0369a1;
+  border:1px solid #bae6fd;
+  white-space:nowrap;
+}
+html[data-theme="dark"] .v47-op-badge{background:#0c4a6e;color:#bae6fd;border-color:#0284c7}
+.v47-audit-filters{
+  display:grid;
+  grid-template-columns:2fr 1.2fr 1fr 1fr auto;
+  gap:8px;
+  margin-bottom:10px;
+}
+.v47-audit-filters input,.v47-audit-filters select{
+  padding:7px 9px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--bg);
+  color:var(--text);
+  font-size:12.5px;
+}
+@media(max-width:860px){.v47-audit-filters{grid-template-columns:1fr 1fr}}
+.v47-force-pw-box{
+  padding:12px 14px;
+  border-radius:10px;
+  border:1px solid #f59e0b;
+  background:#fffbeb;
+  color:#92400e;
+  font-size:12.5px;
+  margin-bottom:12px;
+}
+html[data-theme="dark"] .v47-force-pw-box{background:#451a03;color:#fde68a;border-color:#b45309}
 </style>
+<script src="/js/catalog-enhancements.js?v=470"></script>
+<script src="/js/traceability.js?v=470"></script>
 
 <script id="v46EnhancementsScript">
 (function(){
@@ -9875,6 +10028,7 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
 
   window.renderTemplateMatchesHtml = function(matches){
     if(!Array.isArray(matches) || !matches.length) return '';
+    const tplCen = typeof globalCen === 'function' ? globalCen() : (document.getElementById('centroGlobal')?.value || '1003');
     return `
       <div class="v46-tpl-search-box">
         <div class="v46-tpl-search-head">
@@ -9886,6 +10040,7 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
         <div class="v46-tpl-match-list">
           ${matches.map(tpl => {
             const items = Array.isArray(tpl.items) ? tpl.items : [];
+            const stockBadge = typeof window.bmSummarizeTemplateStock === 'function' ? window.bmSummarizeTemplateStock(tpl, tplCen) : '';
             return `
               <div class="v46-tpl-match-card">
                 <div class="v46-tpl-match-title">
@@ -9895,6 +10050,7 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
                   </div>
                   <span class="badge">${items.length} mat.</span>
                 </div>
+                ${stockBadge ? `<div>${stockBadge}</div>` : ''}
                 ${tpl.notes ? `<div class="small" style="color:var(--muted)">${escH(tpl.notes)}</div>` : ''}
                 <div class="v46-tpl-chips">
                   ${items.slice(0, 8).map(it => `<span class="v46-tpl-chip">${escH(it.code)} × ${escH(it.qty)}</span>`).join('')}
@@ -9921,11 +10077,14 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
       window.__v46TemplateQtyMap = null;
       return '';
     }
+    const tplCen = typeof globalCen === 'function' ? globalCen() : (document.getElementById('centroGlobal')?.value || '1003');
+    const stockBadge = typeof window.bmSummarizeTemplateStock === 'function' ? window.bmSummarizeTemplateStock(tpl, tplCen) : '';
     return `
       <div class="v46-active-tpl-banner">
         <div>
           <strong>📐 Plantilla cargada: ${escH(tpl.name)}</strong>
           ${tpl.jobType ? `<span class="v46-tpl-job-tag" style="margin-left:6px">${escH(tpl.jobType)}</span>` : ''}
+          ${stockBadge ? `<span style="margin-left:6px">${stockBadge}</span>` : ''}
           <div class="small" style="color:var(--muted);margin-top:2px">Se trajeron ${tpl.items.length} matrículas con sus cantidades prellenadas. Puedes ajustar almacén o cantidad antes de agregar.</div>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -10650,13 +10809,83 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
     return true;
   }
 
+  const BM_BEARER_KEY = 'bm_auth_bearer_v1';
+
+  function getAuthBearer(){
+    try{
+      return sessionStorage.getItem(BM_BEARER_KEY) || localStorage.getItem(BM_BEARER_KEY) || '';
+    }catch(_){
+      return '';
+    }
+  }
+
+  function setAuthBearer(token){
+    try{
+      if(token){
+        sessionStorage.setItem(BM_BEARER_KEY, String(token));
+        localStorage.setItem(BM_BEARER_KEY, String(token));
+      } else {
+        sessionStorage.removeItem(BM_BEARER_KEY);
+        localStorage.removeItem(BM_BEARER_KEY);
+      }
+    }catch(_){}
+  }
+
+  function authFetchHeaders(extra = {}){
+    const headers = { 'Content-Type': 'application/json', ...extra };
+    const tok = getAuthBearer();
+    if(tok) headers['Authorization'] = 'Bearer ' + tok;
+    return headers;
+  }
+
+  function applyUserDefaultsToOrderForm(user){
+    if(!user || typeof user !== 'object') return;
+    let touched = false;
+    if(user.defaultCenter && ['1003', '1004'].includes(String(user.defaultCenter))){
+      const c = String(user.defaultCenter);
+      const cg = document.getElementById('centroGlobal');
+      const ce = document.getElementById('ce');
+      if(cg && cg.value !== c){
+        cg.value = c;
+        cg.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      if(ce && ce.value !== c){
+        ce.value = c;
+        ce.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      if(state && state.defaults){ state.defaults.ce = c; touched = true; }
+    }
+    if(user.defaultSupervisor){
+      const sup = String(user.defaultSupervisor).trim().toUpperCase();
+      const dest = document.getElementById('dest');
+      if(dest && Array.from(dest.options).some(o => o.value === sup)){
+        dest.value = sup;
+        dest.dispatchEvent(new Event('change', { bubbles: true }));
+        if(state && state.defaults){ state.defaults.destinatario = sup; touched = true; }
+      }
+    }
+    if(touched && typeof save === 'function'){
+      try{ save(); }catch(_){}
+    }
+  }
+
+  function startInactivityWatcher(){
+    if(typeof window.bmConfigureInactivityWatcher !== 'function') return;
+    const rawMins = state?.authSettings?.sessionTimeoutMinutes;
+    const mins = Number.isFinite(Number(rawMins)) ? Number(rawMins) : 30;
+    window.bmConfigureInactivityWatcher(mins, () => {
+      logoutUserSession('inactivity');
+    });
+  }
+
   function updateLoginFirstAccessHint(){
     const noteEl = document.getElementById('entFirstAccessNote');
     if(!noteEl) return;
     const users = ensureUsersState();
     const rootAdmin = users.find(u => u.username === 'ADMIN' && u.isDefaultSeed);
-    if(rootAdmin && users.length === 1){
-      noteEl.innerHTML = 'Primer acceso de configuración: Usuario <b>ADMIN</b> · Contraseña inicial <b>1234</b>.<br>Luego cambia la clave y crea tus usuarios en <b>👥 Usuarios</b>.';
+    const isSeed = Boolean(window.__bmOnlyRootSeed) || (rootAdmin && users.length === 1) || users.length === 0;
+    if(isSeed){
+      noteEl.innerHTML = 'Primer acceso de configuración: Usuario <b>ADMIN</b> · Contraseña inicial <b>1234</b>.<br>Al ingresar se te pedirá cambiar la clave inicial por seguridad.';
       noteEl.classList.remove('hidden');
     } else {
       noteEl.classList.add('hidden');
@@ -10693,7 +10922,6 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
           return true;
         }
       }catch(err){
-        // Si Apps Script desplegado aún no tiene syncUsersAndAuth, usar respaldo completo syncAll
         if(/Acci[oó]n no reconocida/i.test(String(err?.message || ''))){
           const ok = await syncToDrive({ isManual: true, silentUi: true });
           if(ok){
@@ -10724,7 +10952,7 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
     try{
       const r = await fetch('/api/users', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authFetchHeaders(),
         body: JSON.stringify({
           userAccounts: state.userAccounts,
           deletedUserIds: state.deletedUserIds,
@@ -10746,16 +10974,33 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
 
   async function loadUsersFromServer(){
     try{
-      const r = await fetch('/api/users', { cache: 'no-store' });
+      const headers = {};
+      const tok = getAuthBearer();
+      if(tok) headers['Authorization'] = 'Bearer ' + tok;
+      const r = await fetch('/api/users', { cache: 'no-store', headers });
       if(!r.ok) return false;
       const data = await r.json();
       if(data && data.ok){
+        window.__bmOnlyRootSeed = Boolean(data.onlyRootSeed);
         mergeUsersAndLogsIntoState(data);
         localStorage.setItem(KEY, JSON.stringify(migrateState(state)));
         return true;
       }
     }catch(_){}
     return false;
+  }
+
+  async function fetchCurrentAuthMe(){
+    try{
+      const headers = {};
+      const tok = getAuthBearer();
+      if(tok) headers['Authorization'] = 'Bearer ' + tok;
+      const r = await fetch('/api/auth/me', { cache: 'no-store', headers });
+      if(!r.ok) return null;
+      return await r.json();
+    }catch(_){
+      return null;
+    }
   }
 
   async function loadAuthFromDriveOnBoot(){
@@ -10773,17 +11018,14 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
           updateDriveLoginPill('☁️ Sincronizado con Google Drive · Acceso autorizado');
           return true;
         }
-      }catch(err){
-        // Fallback para Code.gs anterior con getAll
-        if(/Acci[oó]n no reconocida/i.test(String(err?.message || '')) || true){
-          const resAll = await callGoogleScript('getAll', 'GET');
-          if(resAll && resAll.ok && resAll.data?.app){
-            mergeUsersAndLogsIntoState(resAll.data.app);
-            state.authSettings.lastDriveSyncAt = resAll.data.updatedAt || resAll.serverTime || new Date().toISOString();
-            localStorage.setItem(KEY, JSON.stringify(migrateState(state)));
-            updateDriveLoginPill('☁️ Sincronizado con Google Drive · Acceso autorizado');
-            return true;
-          }
+      }catch(_){
+        const resAll = await callGoogleScript('getAll', 'GET');
+        if(resAll && resAll.ok && resAll.data?.app){
+          mergeUsersAndLogsIntoState(resAll.data.app);
+          state.authSettings.lastDriveSyncAt = resAll.data.updatedAt || resAll.serverTime || new Date().toISOString();
+          localStorage.setItem(KEY, JSON.stringify(migrateState(state)));
+          updateDriveLoginPill('☁️ Sincronizado con Google Drive · Acceso autorizado');
+          return true;
         }
       }
     }catch(_){
@@ -10854,6 +11096,10 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
       email: user.email || '',
       fullName: user.fullName || user.username,
       role: user.role === 'admin' ? 'admin' : 'user',
+      mustChangePassword: Boolean(user.mustChangePassword),
+      isDefaultSeed: Boolean(user.isDefaultSeed),
+      defaultCenter: user.defaultCenter || '',
+      defaultSupervisor: user.defaultSupervisor || '',
       loggedInAt: new Date().toISOString()
     };
     try{
@@ -10862,6 +11108,7 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
     }catch(_){}
     applyAuthBodyState(payload);
     updateUserSessionUI();
+    startInactivityWatcher();
   }
 
   function updateUserSessionUI(){
@@ -10894,19 +11141,41 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
     }, 60);
   }
 
-  async function logoutUserSession(){
+  async function logoutUserSession(reason = 'manual'){
     const prev = getActiveUserSession();
+    try{
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        headers: authFetchHeaders(),
+        body: JSON.stringify({ reason })
+      });
+    }catch(_){}
     if(prev){
-      addAuthLog('CIERRE_SESION', prev, 'Cierre de sesión manual', prev.username);
-      persistUsersEverywhere({ syncDrive: true }).catch(() => {});
+      const ev = reason === 'inactivity' ? 'CIERRE_INACTIVIDAD' : 'CIERRE_SESION';
+      const detail = reason === 'inactivity' ? 'Cierre automático por inactividad' : 'Cierre de sesión manual';
+      addAuthLog(ev, prev, detail, prev.username);
     }
+    setAuthBearer('');
     setActiveUserSession(null);
+    closeUserAuthDialog(true);
     const activeView = document.querySelector('.view.active')?.id;
     if(['newMatView','supView','unitsView','historyView','usersView'].includes(activeView) && typeof showView === 'function'){
       showView('searchView');
     }
     focusEnterpriseLogin();
-    if(typeof msg === 'function') msg('Sesión cerrada correctamente.');
+    if(typeof msg === 'function'){
+      msg(reason === 'inactivity'
+        ? '🔒 Sesión cerrada automáticamente por inactividad.'
+        : 'Sesión cerrada correctamente.', reason === 'inactivity');
+    }
+  }
+
+  function renderSupervisorOptions(selectedSup){
+    const sups = Array.isArray(state?.supervisors) ? state.supervisors : [];
+    const cur = String(selectedSup || '').trim().toUpperCase();
+    const list = cur && !sups.includes(cur) ? [cur, ...sups] : sups;
+    return `<option value="">(Sin preferencia)</option>` +
+      list.map(s => `<option value="${escH(s)}" ${s === cur ? 'selected' : ''}>${escH(s)}</option>`).join('');
   }
 
   function renderAccountOrEditDialog(mode = 'account', targetUser = null){
@@ -10914,6 +11183,45 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
     const card = document.getElementById('v46AuthCard');
     if(!dlg || !card) return;
     const session = getActiveUserSession();
+
+    if(mode === 'forceChangePass'){
+      if(!session) return;
+      dlg.dataset.forceLock = '1';
+      card.innerHTML = `
+        <div class="v46-auth-head">
+          <div>
+            <div class="ey">SEGURIDAD OBLIGATORIA</div>
+            <h2 style="margin:4px 0 0">🔐 Cambiar contraseña inicial</h2>
+          </div>
+        </div>
+        <div class="v47-force-pw-box">
+          Por seguridad, la cuenta <b>${escH(session.username)}</b> requiere asignar una nueva contraseña personal antes de operar en el sistema.
+        </div>
+        <div style="display:grid;gap:10px;margin-bottom:12px">
+          <label class="v46-field">Nueva contraseña personal * (mín. 4 caracteres)
+            <div class="v46-pass-row">
+              <input id="v47ForceNewPass" type="password" autocomplete="new-password" placeholder="Ingresa tu nueva contraseña"/>
+              <button type="button" class="btn secondary" data-v46-eye="v47ForceNewPass">👁️</button>
+            </div>
+          </label>
+          <label class="v46-field">Confirmar nueva contraseña *
+            <div class="v46-pass-row">
+              <input id="v47ForceConfirmPass" type="password" autocomplete="new-password" placeholder="Repite tu nueva contraseña"/>
+              <button type="button" class="btn secondary" data-v46-eye="v47ForceConfirmPass">👁️</button>
+            </div>
+          </label>
+        </div>
+        <div id="v46AuthStatus" class="small" style="min-height:18px;margin-bottom:10px;font-weight:700"></div>
+        <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
+          <button type="button" class="btn secondary" id="v46LogoutUserBtn">🚪 Cerrar sesión</button>
+          <button type="button" class="btn success" id="v47ForceChangePassBtn" style="font-weight:800">💾 Guardar nueva contraseña</button>
+        </div>
+      `;
+      setTimeout(() => document.getElementById('v47ForceNewPass')?.focus(), 50);
+      return;
+    }
+
+    delete dlg.dataset.forceLock;
 
     if(mode === 'editUser' && targetUser){
       editingUserTargetId = targetUser.id;
@@ -10932,11 +11240,23 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
           <label class="v46-field">Correo electrónico (opcional)
             <input id="v46EditUserEmail" type="email" value="${escH(targetUser.email || '')}" placeholder="correo@empresa.com"/>
           </label>
-          <label class="v46-field">Rol de acceso
-            <select id="v46EditUserRole">
-              <option value="user" ${targetUser.role !== 'admin' ? 'selected' : ''}>👷 Usuario estándar (Pedidos / Plantillas)</option>
-              <option value="admin" ${targetUser.role === 'admin' ? 'selected' : ''}>🛡️ Administrador (Acceso total)</option>
-            </select>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <label class="v46-field">Rol de acceso
+              <select id="v46EditUserRole">
+                <option value="user" ${targetUser.role !== 'admin' ? 'selected' : ''}>👷 Usuario estándar</option>
+                <option value="admin" ${targetUser.role === 'admin' ? 'selected' : ''}>🛡️ Administrador</option>
+              </select>
+            </label>
+            <label class="v46-field">Almacén predeterminado
+              <select id="v47EditUserCenter">
+                <option value="" ${!targetUser.defaultCenter ? 'selected' : ''}>(Sin preferencia)</option>
+                <option value="1003" ${targetUser.defaultCenter === '1003' ? 'selected' : ''}>1003 - San Juan</option>
+                <option value="1004" ${targetUser.defaultCenter === '1004' ? 'selected' : ''}>1004 - Vitarte</option>
+              </select>
+            </label>
+          </div>
+          <label class="v46-field">Supervisor asignado por defecto
+            <select id="v47EditUserSup">${renderSupervisorOptions(targetUser.defaultSupervisor)}</select>
           </label>
           <label class="v46-field">Nueva contraseña (dejar vacío para conservar la actual)
             <div class="v46-pass-row">
@@ -10944,6 +11264,10 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
               <button type="button" class="btn secondary" data-v46-eye="v46EditUserPass">👁️</button>
               <button type="button" class="btn secondary" id="v46GenEditPassBtn" title="Sugerir contraseña">🎲</button>
             </div>
+          </label>
+          <label style="display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;cursor:pointer">
+            <input type="checkbox" id="v47EditUserForcePw" ${targetUser.mustChangePassword ? 'checked' : ''}/>
+            Obligar cambio de clave en el siguiente ingreso
           </label>
         </div>
         <div id="v46AuthStatus" class="small" style="min-height:18px;margin-bottom:10px;font-weight:700"></div>
@@ -10968,7 +11292,9 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
         <div><b>Usuario:</b> ${escH(session.username)}</div>
         ${session.email ? `<div><b>Correo:</b> ${escH(session.email)}</div>` : ''}
         <div><b>Rol:</b> ${session.role === 'admin' ? '🛡️ Administrador' : '👷 Usuario estándar'}</div>
-        <div class="small" style="color:var(--muted);margin-top:4px">Inicio de sesión respaldado en Google Drive.</div>
+        ${session.defaultCenter ? `<div><b>Almacén predeterminado:</b> ${escH(session.defaultCenter === '1003' ? '1003 - San Juan' : '1004 - Vitarte')}</div>` : ''}
+        ${session.defaultSupervisor ? `<div><b>Supervisor predeterminado:</b> ${escH(session.defaultSupervisor)}</div>` : ''}
+        <div class="small" style="color:var(--muted);margin-top:4px">Inicio de sesión validado en servidor y respaldado en Google Drive.</div>
       </div>
       <div class="v46-auth-lock-box">
         <div class="v46-auth-lock-title">🔑 CAMBIAR MI CONTRASEÑA</div>
@@ -11012,10 +11338,12 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
   }
   window.openUserAuthDialog = () => openAccountDialog('account');
 
-  function closeUserAuthDialog(){
-    editingUserTargetId = null;
+  function closeUserAuthDialog(force = false){
     const dlg = document.getElementById('userAuthDialog');
+    if(!force && dlg?.dataset?.forceLock === '1') return;
+    editingUserTargetId = null;
     if(!dlg) return;
+    delete dlg.dataset.forceLock;
     try{
       if(typeof dlg.close === 'function') dlg.close();
       else dlg.removeAttribute('open');
@@ -11023,6 +11351,11 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
       dlg.removeAttribute('open');
     }
   }
+
+  document.getElementById('userAuthDialog')?.addEventListener('cancel', e => {
+    const dlg = document.getElementById('userAuthDialog');
+    if(dlg?.dataset?.forceLock === '1') e.preventDefault();
+  });
 
   async function handleEnterpriseLoginSubmit(e){
     if(e) e.preventDefault();
@@ -11042,59 +11375,56 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
     }
 
     if(btn){ btn.disabled = true; btn.textContent = 'Validando...'; }
-    setStatus('Verificando credenciales...', '');
+    setStatus('Verificando credenciales en servidor...', '');
 
     try{
+      const r = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identifier, password: pass })
+      });
+      const data = await r.json().catch(() => ({}));
+      if(!r.ok || !data?.ok || !data?.user){
+        setStatus(data?.error || '❌ Usuario o contraseña incorrectos.', 'err');
+        return;
+      }
+
+      if(data.token) setAuthBearer(data.token);
+      window.__bmOnlyRootSeed = false;
+      mergeUsersAndLogsIntoState({
+        userAccounts: [data.user],
+        authSettings: data.authSettings || {},
+        authLogs: data.authLogs || []
+      });
+      localStorage.setItem(KEY, JSON.stringify(migrateState(state)));
+
+      setStatus('✅ Acceso concedido. Cargando sesión...', 'ok');
+      setActiveUserSession(data.user);
+      if(pInp) pInp.value = '';
+      applyUserDefaultsToOrderForm(data.user);
+      await loadUsersFromServer();
+      updateDriveLoginPill('☁️ Sesión validada en servidor y respaldada en Drive');
+      if(typeof msg === 'function') msg(`Bienvenido, ${data.user.fullName || data.user.username}.`);
+
+      if(data.user.mustChangePassword){
+        openAccountDialog('forceChangePass');
+      }
+    }catch(networkErr){
+      // Solo fallback offline cuando el servidor no responde en PWA sin red
       const idUpper = identifier.toUpperCase();
       const idLower = identifier.toLowerCase();
-
-      let users = ensureUsersState();
-      let user = users.find(u =>
+      const user = ensureUsersState().find(u =>
         String(u.username || '').toUpperCase() === idUpper ||
         (u.email && String(u.email).trim().toLowerCase() === idLower)
       );
-
-      // Si no se encuentra localmente, consultar Drive y servidor por si fue creado desde otra PC
-      if(!user && navigator.onLine){
-        await Promise.allSettled([loadUsersFromServer(), loadAuthFromDriveOnBoot()]);
-        users = ensureUsersState();
-        user = users.find(u =>
-          String(u.username || '').toUpperCase() === idUpper ||
-          (u.email && String(u.email).trim().toLowerCase() === idLower)
-        );
-      }
-
-      if(!user){
-        addAuthLog('INTENTO_FALLIDO', idUpper, 'Usuario no registrado', idUpper);
-        persistUsersEverywhere({ syncDrive: false }).catch(() => {});
-        setStatus('❌ Usuario o contraseña incorrectos.', 'err');
+      if(!user || user.active === false || !(await verifyUserPassword(user, pass))){
+        setStatus('❌ Sin conexión al servidor. No se pudo verificar el usuario.', 'err');
         return;
       }
-      if(user.active === false){
-        addAuthLog('INTENTO_FALLIDO', user, 'Cuenta deshabilitada intentó ingresar', user.username);
-        persistUsersEverywhere({ syncDrive: false }).catch(() => {});
-        setStatus('🚫 Esta cuenta está deshabilitada. Contacta al Administrador.', 'err');
-        return;
-      }
-
-      const valid = await verifyUserPassword(user, pass);
-      if(!valid){
-        addAuthLog('INTENTO_FALLIDO', user, 'Contraseña incorrecta', user.username);
-        persistUsersEverywhere({ syncDrive: false }).catch(() => {});
-        setStatus('❌ Usuario o contraseña incorrectos.', 'err');
-        return;
-      }
-
-      const now = new Date().toISOString();
-      user.lastLoginAt = now;
-      user.updatedAt = now;
-      addAuthLog('INICIO_SESION', user, 'Ingreso autorizado desde pantalla de inicio', user.username);
-
-      setStatus('✅ Acceso concedido. Guardando registro en Drive...', 'ok');
       setActiveUserSession(user);
       if(pInp) pInp.value = '';
-      await persistUsersEverywhere({ syncDrive: true });
-      if(typeof msg === 'function') msg(`Bienvenido, ${user.fullName || user.username}.`);
+      applyUserDefaultsToOrderForm(user);
+      if(typeof msg === 'function') msg(`Bienvenido (modo sin conexión), ${user.fullName || user.username}.`);
     }finally{
       if(btn){ btn.disabled = false; btn.textContent = 'Ingresar'; }
     }
@@ -11105,15 +11435,22 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
     if(!container) return;
     const users = ensureUsersState();
     const logs = Array.isArray(state?.authLogs) ? state.authLogs : [];
+    const timeoutMins = Number.isFinite(Number(state?.authSettings?.sessionTimeoutMinutes))
+      ? Number(state.authSettings.sessionTimeoutMinutes)
+      : 30;
     const lastDrive = state?.authSettings?.lastDriveSyncAt
       ? new Date(state.authSettings.lastDriveSyncAt).toLocaleString('es-PE')
       : 'Pendiente / Al sincronizar';
+
+    const auditHtml = typeof window.bmRenderAuditLogsSection === 'function'
+      ? window.bmRenderAuditLogsSection(logs)
+      : `<div class="v46-card-panel"><p class="small">Cargando visor de auditoría...</p></div>`;
 
     container.innerHTML = `
       <div class="v46-mod-head">
         <div>
           <h2>👥 Gestión de Usuarios y Accesos <span class="badge">${users.length}</span></h2>
-          <p class="small" style="margin:4px 0 0 0;color:var(--muted)">Crea usuarios con contraseña asignada, administra roles y consulta cada inicio de sesión respaldado en tu Google Drive. No se permite el acceso como invitado.</p>
+          <p class="small" style="margin:4px 0 0 0;color:var(--muted)">Crea usuarios con contraseña asignada, asigna almacén y supervisor predeterminado, y consulta cada acceso respaldado en Google Drive.</p>
         </div>
         <div class="v46-mod-actions">
           <button type="button" class="btn primary" id="v46SyncUsersDriveBtn" style="font-weight:700">☁️ Sincronizar usuarios con Drive</button>
@@ -11122,10 +11459,21 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
 
       <div class="v46-drive-sync-banner">
         <div>
-          <strong>☁️ Persistencia activa en Google Drive y Servidor</strong>
-          <span style="margin-left:8px;opacity:.9">Último respaldo de usuarios/accesos: <b>${escH(lastDrive)}</b></span>
+          <strong>🛡️ Autenticación en servidor + Google Drive</strong>
+          <span style="margin-left:8px;opacity:.9">Último respaldo: <b>${escH(lastDrive)}</b></span>
         </div>
-        <span>🔒 Acceso obligatorio (sin modo invitado)</span>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <label style="display:inline-flex;align-items:center;gap:6px;font-weight:700">⏳ Inactividad:
+            <select id="v47SessionTimeoutSelect" style="padding:4px 8px;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--text)">
+              <option value="0" ${timeoutMins === 0 ? 'selected' : ''}>Desactivado</option>
+              <option value="15" ${timeoutMins === 15 ? 'selected' : ''}>15 min</option>
+              <option value="30" ${timeoutMins === 30 ? 'selected' : ''}>30 min</option>
+              <option value="60" ${timeoutMins === 60 ? 'selected' : ''}>60 min</option>
+              <option value="120" ${timeoutMins === 120 ? 'selected' : ''}>120 min</option>
+            </select>
+          </label>
+          <button type="button" class="btn secondary" id="v47SaveSecuritySettingsBtn" style="padding:5px 10px;font-size:12px;font-weight:700">💾 Guardar tiempo</button>
+        </div>
       </div>
 
       <div class="v46-card-panel">
@@ -11141,7 +11489,7 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
             <input id="v46NewUserEmail" type="email" placeholder="Ej.: jperez@empresa.com" autocomplete="off"/>
           </label>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;align-items:end;margin-top:10px">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;align-items:end;margin-top:10px">
           <label class="v46-field">Contraseña asignada * (mín. 4 caracteres)
             <div class="v46-pass-row">
               <input id="v46NewUserPass" type="password" placeholder="Asigna una contraseña" autocomplete="new-password"/>
@@ -11151,13 +11499,27 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
           </label>
           <label class="v46-field">Rol de acceso
             <select id="v46NewUserRole">
-              <option value="user">👷 Usuario estándar (Operación y Pedidos)</option>
+              <option value="user">👷 Usuario estándar (Pedidos / Plantillas)</option>
               <option value="admin">🛡️ Administrador (Gestión total y Usuarios)</option>
             </select>
           </label>
-          <div style="display:flex;justify-content:flex-end">
-            <button type="button" class="btn success" id="v46CreateUserBtn" style="font-weight:800;height:38px;width:100%">👤 Crear usuario y guardar en Drive</button>
-          </div>
+          <label class="v46-field">Almacén predeterminado
+            <select id="v47NewUserCenter">
+              <option value="">(Sin preferencia)</option>
+              <option value="1003">1003 - San Juan</option>
+              <option value="1004">1004 - Vitarte</option>
+            </select>
+          </label>
+          <label class="v46-field">Supervisor asignado
+            <select id="v47NewUserSup">${renderSupervisorOptions('')}</select>
+          </label>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px">
+          <label style="display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;cursor:pointer">
+            <input type="checkbox" id="v47NewUserForcePw" checked/>
+            Obligar cambio de contraseña en su primer ingreso
+          </label>
+          <button type="button" class="btn success" id="v46CreateUserBtn" style="font-weight:800;height:38px;padding:0 18px">👤 Crear usuario y guardar en Drive</button>
         </div>
       </div>
 
@@ -11168,6 +11530,7 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
               <th>Usuario</th>
               <th>Nombre / Correo</th>
               <th>Rol</th>
+              <th>Preferencias</th>
               <th>Estado</th>
               <th>Último ingreso</th>
               <th>Acciones de administrador</th>
@@ -11178,10 +11541,14 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
               const isOff = u.active === false;
               const pill = isOff
                 ? '<span class="v46-status-pill off">🚫 Deshabilitado</span>'
-                : (u.isDefaultSeed
-                    ? '<span class="v46-status-pill warn">⚠️ Clave inicial (Cambiar)</span>'
+                : ((u.isDefaultSeed || u.mustChangePassword)
+                    ? '<span class="v46-status-pill warn">⚠️ Cambio de clave req.</span>'
                     : '<span class="v46-status-pill ok">✅ Activo</span>');
               const lastIn = u.lastLoginAt ? new Date(u.lastLoginAt).toLocaleString('es-PE') : 'Nunca';
+              const prefs = [
+                u.defaultCenter ? `Almacén ${escH(u.defaultCenter)}` : '',
+                u.defaultSupervisor ? `Sup: ${escH(u.defaultSupervisor)}` : ''
+              ].filter(Boolean).join(' · ') || '<span style="color:var(--muted)">---</span>';
               return `
                 <tr>
                   <td><strong>${escH(u.username)}</strong></td>
@@ -11190,69 +11557,40 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
                     ${u.email ? `<div class="small" style="color:var(--muted)">${escH(u.email)}</div>` : ''}
                   </td>
                   <td>${u.role === 'admin' ? '🛡️ Administrador' : '👷 Estándar'}</td>
+                  <td class="small">${prefs}</td>
                   <td>${pill}</td>
                   <td class="small" style="color:var(--muted)">${escH(lastIn)}</td>
                   <td>
                     <div style="display:flex;gap:6px;flex-wrap:wrap">
-                      <button type="button" class="btn primary" style="font-size:12px;padding:5px 9px;font-weight:700" data-v46-edit-user="${escH(u.id)}" title="Editar datos, rol o cambiar contraseña">🔑 Clave / Editar</button>
+                      <button type="button" class="btn primary" style="font-size:12px;padding:5px 9px;font-weight:700" data-v46-edit-user="${escH(u.id)}" title="Editar datos, preferencias, rol o cambiar contraseña">🔑 Editar</button>
                       <button type="button" class="btn secondary" style="font-size:12px;padding:5px 9px" data-v46-toggle-user="${escH(u.id)}">${isOff ? '▶ Activar' : '⏸ Desactivar'}</button>
                       <button type="button" class="btn danger" style="font-size:12px;padding:5px 9px" data-v46-del-user="${escH(u.id)}">🗑️</button>
                     </div>
                   </td>
                 </tr>
               `;
-            }).join('') : '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted)">No hay usuarios registrados.</td></tr>'}
+            }).join('') : '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted)">No hay usuarios registrados.</td></tr>'}
           </tbody>
         </table>
       </div>
 
-      <div class="v46-card-panel" style="margin-bottom:0">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">
-          <h3 style="margin:0">📜 Historial de Inicios de Sesión y Cambios (Google Drive) <span class="badge">${logs.length}</span></h3>
-        </div>
-        <div class="v46-users-table-wrap" style="max-height:320px;overflow-y:auto">
-          <table class="v46-users-table">
-            <thead>
-              <tr>
-                <th>Fecha y hora</th>
-                <th>Evento</th>
-                <th>Usuario</th>
-                <th>Detalle</th>
-                <th>Ejecutado por</th>
-                <th>Dispositivo</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${logs.length ? logs.slice(0, 80).map(l => {
-                const when = l.timestamp ? new Date(l.timestamp).toLocaleString('es-PE') : '';
-                const ev = String(l.event || '');
-                const evBadge = ev === 'INICIO_SESION'
-                  ? '<span class="v46-status-pill ok">🔓 INICIO SESIÓN</span>'
-                  : (ev === 'INTENTO_FALLIDO'
-                      ? '<span class="v46-status-pill off">⚠️ INTENTO FALLIDO</span>'
-                      : `<span class="v46-status-pill warn">📝 ${escH(ev)}</span>`);
-                return `
-                  <tr>
-                    <td class="small" style="white-space:nowrap">${escH(when)}</td>
-                    <td>${evBadge}</td>
-                    <td><strong>${escH(l.username || '')}</strong>${l.fullName ? `<div class="small" style="color:var(--muted)">${escH(l.fullName)}</div>` : ''}</td>
-                    <td class="small">${escH(l.detail || '')}</td>
-                    <td class="small">${escH(l.actor || '')}</td>
-                    <td class="small" style="color:var(--muted)">${escH(l.device || '')}</td>
-                  </tr>
-                `;
-              }).join('') : '<tr><td colspan="6" style="text-align:center;padding:18px;color:var(--muted)">Todavía no hay eventos registrados.</td></tr>'}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      ${auditHtml}
     `;
+
+    if(typeof window.bmBindAuditFilterEvents === 'function'){
+      window.bmBindAuditFilterEvents(() => renderUsersAdminView(), () => state.authLogs || []);
+    }
   };
 
   document.getElementById('entLoginForm')?.addEventListener('submit', handleEnterpriseLoginSubmit);
 
   document.addEventListener('keydown', e => {
     if(e.key === 'Enter' && document.getElementById('userAuthDialog')?.open){
+      if(document.getElementById('userAuthDialog')?.dataset?.forceLock === '1'){
+        e.preventDefault();
+        document.getElementById('v47ForceChangePassBtn')?.click();
+        return;
+      }
       if(editingUserTargetId){
         e.preventDefault();
         document.getElementById('v46SaveEditUserBtn')?.click();
@@ -11284,7 +11622,7 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
 
     if(e.target?.closest('#userSessionBtn')){ openAccountDialog('account'); return; }
     if(e.target?.closest('#v46AuthCloseBtn, #v46AuthCloseBtn2')){ closeUserAuthDialog(); return; }
-    if(e.target?.closest('#v46LogoutUserBtn')){ closeUserAuthDialog(); await logoutUserSession(); return; }
+    if(e.target?.closest('#v46LogoutUserBtn')){ closeUserAuthDialog(true); await logoutUserSession('manual'); return; }
 
     const eyeBtn = e.target?.closest('[data-v46-eye]');
     if(eyeBtn){
@@ -11312,12 +11650,66 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
       const b = document.getElementById('v46SyncUsersDriveBtn');
       if(b){ b.disabled = true; b.textContent = '☁️ Sincronizando...'; }
       try{
-        await persistUsersEverywhere({ syncDrive: true });
-        if(typeof msg === 'function') msg('✅ Usuarios y registros sincronizados con Google Drive.');
+        await loadUsersFromServer();
+        const ok = await syncAuthToDriveNow({ quiet: false });
+        if(typeof msg === 'function'){
+          msg(ok ? '✅ Usuarios y registros sincronizados con Google Drive.' : '⚠️ No se pudo conectar con Google Drive.', !ok);
+        }
       }finally{
         if(b){ b.disabled = false; b.textContent = '☁️ Sincronizar usuarios con Drive'; }
         renderUsersAdminView();
       }
+      return;
+    }
+
+    if(e.target?.closest('#v47SaveSecuritySettingsBtn')){
+      const mins = Number(document.getElementById('v47SessionTimeoutSelect')?.value || 30);
+      const r = await fetch('/api/users', {
+        method: 'POST',
+        headers: authFetchHeaders(),
+        body: JSON.stringify({ op: 'settings', sessionTimeoutMinutes: mins })
+      }).catch(() => null);
+      const data = r ? await r.json().catch(() => ({})) : {};
+      if(!r || !r.ok || !data.ok){
+        if(typeof msg === 'function') msg(data?.error || 'No se pudo actualizar la configuración.', true);
+        return;
+      }
+      mergeUsersAndLogsIntoState(data);
+      localStorage.setItem(KEY, JSON.stringify(migrateState(state)));
+      startInactivityWatcher();
+      renderUsersAdminView();
+      if(typeof msg === 'function') msg(`✅ Cierre por inactividad actualizado (${mins === 0 ? 'Desactivado' : mins + ' min'}).`);
+      return;
+    }
+
+    if(e.target?.closest('#v47ForceChangePassBtn')){
+      const st = document.getElementById('v46AuthStatus');
+      const setErr = (txt, ok=false) => { if(st){ st.textContent = txt; st.style.color = ok ? '#15803d' : '#dc2626'; } };
+      const newPass = String(document.getElementById('v47ForceNewPass')?.value || '').trim();
+      const confPass = String(document.getElementById('v47ForceConfirmPass')?.value || '').trim();
+      if(newPass.length < 4){ setErr('❌ La contraseña debe tener al menos 4 caracteres.'); return; }
+      if(newPass !== confPass){ setErr('❌ Las contraseñas no coinciden.'); return; }
+      if(newPass === '1234' && getActiveUserSession()?.isDefaultSeed){
+        setErr('❌ Elige una contraseña distinta a "1234".');
+        return;
+      }
+      setErr('Guardando en servidor y Google Drive...', true);
+      const r = await fetch('/api/auth/change-password', {
+        method: 'POST',
+        headers: authFetchHeaders(),
+        body: JSON.stringify({ newPassword: newPass, forcedFirstChange: true })
+      }).catch(() => null);
+      const data = r ? await r.json().catch(() => ({})) : {};
+      if(!r || !r.ok || !data.ok){
+        setErr(data?.error || '❌ No se pudo actualizar la contraseña.');
+        return;
+      }
+      mergeUsersAndLogsIntoState(data);
+      if(data.user) setActiveUserSession(data.user);
+      localStorage.setItem(KEY, JSON.stringify(migrateState(state)));
+      closeUserAuthDialog(true);
+      if(document.getElementById('usersView')?.classList.contains('active')) renderUsersAdminView();
+      if(typeof msg === 'function') msg('✅ Contraseña personal guardada y sincronizada con Google Drive.');
       return;
     }
 
@@ -11327,23 +11719,22 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
       const setErr = (txt, ok=false) => { if(st){ st.textContent = txt; st.style.color = ok ? '#15803d' : '#dc2626'; } };
       if(!session) return;
       const curPass = String(document.getElementById('v46SelfCurPass')?.value || '');
-      const newPass = String(document.getElementById('v46SelfNewPass')?.value || '');
+      const newPass = String(document.getElementById('v46SelfNewPass')?.value || '').trim();
       if(newPass.length < 4){ setErr('❌ La nueva contraseña debe tener al menos 4 caracteres.'); return; }
-      const user = ensureUsersState().find(u => u.id === session.id || String(u.username).toUpperCase() === String(session.username).toUpperCase());
-      if(!user){ setErr('❌ Usuario no encontrado.'); return; }
-      if(!(await verifyUserPassword(user, curPass))){
-        setErr('❌ La contraseña actual es incorrecta.');
+      setErr('Guardando en servidor y Google Drive...', true);
+      const r = await fetch('/api/auth/change-password', {
+        method: 'POST',
+        headers: authFetchHeaders(),
+        body: JSON.stringify({ currentPassword: curPass, newPassword: newPass })
+      }).catch(() => null);
+      const data = r ? await r.json().catch(() => ({})) : {};
+      if(!r || !r.ok || !data.ok){
+        setErr(data?.error || '❌ Error al actualizar contraseña.');
         return;
       }
-      const salt = makeSalt();
-      user.passwordSalt = salt;
-      user.passwordHash = await hashSecret(newPass, salt);
-      user.mustChangePassword = false;
-      user.isDefaultSeed = false;
-      user.updatedAt = new Date().toISOString();
-      addAuthLog('CAMBIO_CLAVE', user, 'El usuario actualizó su propia contraseña', user.username);
-      setErr('Guardando en Google Drive...', true);
-      await persistUsersEverywhere({ syncDrive: true });
+      mergeUsersAndLogsIntoState(data);
+      if(data.user) setActiveUserSession(data.user);
+      localStorage.setItem(KEY, JSON.stringify(migrateState(state)));
       setErr('✅ Contraseña actualizada y respaldada en Drive.', true);
       if(typeof msg === 'function') msg('Tu contraseña se actualizó y guardó en Drive.');
       return;
@@ -11353,49 +11744,42 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
       const username = (document.getElementById('v46NewUserCode')?.value || '').trim().toUpperCase();
       const fullName = (document.getElementById('v46NewUserName')?.value || '').trim();
       const email = (document.getElementById('v46NewUserEmail')?.value || '').trim().toLowerCase();
-      const pass = String(document.getElementById('v46NewUserPass')?.value || '').trim();
+      const password = String(document.getElementById('v46NewUserPass')?.value || '').trim();
       const role = document.getElementById('v46NewUserRole')?.value === 'admin' ? 'admin' : 'user';
-      if(!username || !fullName){
-        if(typeof msg === 'function') msg('Completa el Usuario y Nombre completo.', true);
-        return;
-      }
-      if(pass.length < 4){
-        if(typeof msg === 'function') msg('Asigna una contraseña de al menos 4 caracteres.', true);
-        return;
-      }
-      const users = ensureUsersState();
-      if(users.some(u => String(u.username || '').toUpperCase() === username || (email && u.email && String(u.email).toLowerCase() === email))){
-        if(typeof msg === 'function') msg(`Ya existe un usuario con ese código o correo.`, true);
-        return;
-      }
-      const salt = makeSalt();
-      const pHash = await hashSecret(pass, salt);
-      const now = new Date().toISOString();
-      const actor = getActiveUserSession()?.username || 'ADMIN';
-      const newUser = {
-        id: 'usr-' + Date.now() + '-' + Math.random().toString(36).slice(2,6),
-        username,
-        email,
-        fullName,
-        role,
-        active: true,
-        mustChangePassword: false,
-        isDefaultSeed: false,
-        passwordSalt: salt,
-        passwordHash: pHash,
-        createdBy: actor,
-        createdAt: now,
-        updatedAt: now,
-        lastLoginAt: ''
-      };
-      users.unshift(newUser);
-      addAuthLog('CREAR_USUARIO', newUser, `Cuenta creada (${role === 'admin' ? 'Administrador' : 'Usuario estándar'})`, actor);
+      const defaultCenter = document.getElementById('v47NewUserCenter')?.value || '';
+      const defaultSupervisor = document.getElementById('v47NewUserSup')?.value || '';
+      const mustChangePassword = Boolean(document.getElementById('v47NewUserForcePw')?.checked);
+
       const btn = document.getElementById('v46CreateUserBtn');
-      if(btn){ btn.disabled = true; btn.textContent = 'Guardando en Drive...'; }
+      if(btn){ btn.disabled = true; btn.textContent = 'Guardando en servidor y Drive...'; }
       try{
-        await persistUsersEverywhere({ syncDrive: true });
+        const r = await fetch('/api/users', {
+          method: 'POST',
+          headers: authFetchHeaders(),
+          body: JSON.stringify({
+            op: 'create',
+            username,
+            fullName,
+            email,
+            password,
+            role,
+            defaultCenter,
+            defaultSupervisor,
+            mustChangePassword
+          })
+        });
+        const data = await r.json().catch(() => ({}));
+        if(!r.ok || !data.ok){
+          if(typeof msg === 'function') msg(data?.error || 'No se pudo crear el usuario.', true);
+          return;
+        }
+        state.userAccounts = [];
+        mergeUsersAndLogsIntoState(data);
+        localStorage.setItem(KEY, JSON.stringify(migrateState(state)));
         renderUsersAdminView();
-        if(typeof msg === 'function') msg(`✅ Usuario ${username} creado y guardado en Google Drive.`);
+        if(typeof msg === 'function') msg(`✅ Usuario ${username} creado y respaldado en Google Drive.`);
+      }catch(err){
+        if(typeof msg === 'function') msg('Error de conexión al crear usuario.', true);
       }finally{
         const btn2 = document.getElementById('v46CreateUserBtn');
         if(btn2){ btn2.disabled = false; btn2.textContent = '👤 Crear usuario y guardar en Drive'; }
@@ -11414,72 +11798,67 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
     if(e.target?.closest('#v46SaveEditUserBtn')){
       const st = document.getElementById('v46AuthStatus');
       const setErr = (txt, ok=false) => { if(st){ st.textContent = txt; st.style.color = ok ? '#15803d' : '#dc2626'; } };
-      const user = ensureUsersState().find(u => u.id === editingUserTargetId);
-      if(!user){ setErr('❌ Usuario no encontrado.'); return; }
       const fullName = (document.getElementById('v46EditUserName')?.value || '').trim();
       const email = (document.getElementById('v46EditUserEmail')?.value || '').trim().toLowerCase();
       const role = document.getElementById('v46EditUserRole')?.value === 'admin' ? 'admin' : 'user';
-      const newPass = String(document.getElementById('v46EditUserPass')?.value || '').trim();
-      if(!fullName){ setErr('❌ El nombre completo es obligatorio.'); return; }
-      if(email && ensureUsersState().some(u => u.id !== user.id && u.email && String(u.email).trim().toLowerCase() === email)){
-        setErr('❌ Ese correo ya pertenece a otro usuario.');
+      const password = String(document.getElementById('v46EditUserPass')?.value || '').trim();
+      const defaultCenter = document.getElementById('v47EditUserCenter')?.value || '';
+      const defaultSupervisor = document.getElementById('v47EditUserSup')?.value || '';
+      const mustChangePassword = Boolean(document.getElementById('v47EditUserForcePw')?.checked);
+
+      setErr('Guardando cambios...', true);
+      const r = await fetch('/api/users', {
+        method: 'POST',
+        headers: authFetchHeaders(),
+        body: JSON.stringify({
+          op: 'update',
+          id: editingUserTargetId,
+          fullName,
+          email,
+          role,
+          password,
+          defaultCenter,
+          defaultSupervisor,
+          mustChangePassword
+        })
+      }).catch(() => null);
+      const data = r ? await r.json().catch(() => ({})) : {};
+      if(!r || !r.ok || !data.ok){
+        setErr(data?.error || '❌ Error al guardar cambios.');
         return;
       }
-      if(newPass && newPass.length < 4){ setErr('❌ La nueva contraseña debe tener al menos 4 caracteres.'); return; }
-
-      if(user.role === 'admin' && role !== 'admin'){
-        const otherAdmins = ensureUsersState().filter(u => u.id !== user.id && u.active !== false && u.role === 'admin');
-        if(!otherAdmins.length){
-          setErr('⚠️ Debe existir al menos un Administrador activo en el sistema.');
-          return;
-        }
-      }
-
-      const actor = getActiveUserSession()?.username || 'ADMIN';
-      user.fullName = fullName;
-      user.email = email;
-      user.role = role;
-      if(newPass){
-        const salt = makeSalt();
-        user.passwordSalt = salt;
-        user.passwordHash = await hashSecret(newPass, salt);
-        user.isDefaultSeed = false;
-        user.mustChangePassword = false;
-      }
-      user.updatedAt = new Date().toISOString();
-      addAuthLog(newPass ? 'CAMBIO_CLAVE' : 'ACTUALIZAR_USUARIO', user, newPass ? 'Administrador asignó nueva contraseña y actualizó cuenta' : 'Administrador actualizó datos/rol', actor);
-
+      state.userAccounts = [];
+      mergeUsersAndLogsIntoState(data);
       const curSess = getActiveUserSession();
-      if(curSess && curSess.id === user.id){
-        setActiveUserSession(user);
+      if(curSess && data.user && curSess.id === data.user.id){
+        setActiveUserSession(data.user);
+        applyUserDefaultsToOrderForm(data.user);
       }
-      setErr('Guardando en Drive...', true);
-      await persistUsersEverywhere({ syncDrive: true });
+      localStorage.setItem(KEY, JSON.stringify(migrateState(state)));
       closeUserAuthDialog();
       renderUsersAdminView();
-      if(typeof msg === 'function') msg(`✅ Usuario ${user.username} actualizado y guardado en Drive.`);
+      if(typeof msg === 'function') msg(`✅ Usuario ${data.user?.username || ''} actualizado y guardado en Drive.`);
       return;
     }
 
     const toggleBtn = e.target?.closest('[data-v46-toggle-user]');
     if(toggleBtn){
       const uid = toggleBtn.getAttribute('data-v46-toggle-user');
-      const user = ensureUsersState().find(u => u.id === uid);
-      if(!user) return;
-      const nextActive = user.active === false;
-      if(!nextActive && user.role === 'admin'){
-        const otherAdmins = ensureUsersState().filter(u => u.id !== uid && u.active !== false && u.role === 'admin');
-        if(!otherAdmins.length){
-          if(typeof msg === 'function') msg('No puedes desactivar al único Administrador activo.', true);
-          return;
-        }
+      const r = await fetch('/api/users', {
+        method: 'POST',
+        headers: authFetchHeaders(),
+        body: JSON.stringify({ op: 'toggle', id: uid })
+      }).catch(() => null);
+      const data = r ? await r.json().catch(() => ({})) : {};
+      if(!r || !r.ok || !data.ok){
+        if(typeof msg === 'function') msg(data?.error || 'No se pudo cambiar el estado.', true);
+        return;
       }
-      user.active = nextActive;
-      user.updatedAt = new Date().toISOString();
-      addAuthLog('ACTUALIZAR_USUARIO', user, nextActive ? 'Cuenta activada' : 'Cuenta deshabilitada', getActiveUserSession()?.username || 'ADMIN');
-      await persistUsersEverywhere({ syncDrive: true });
+      state.userAccounts = [];
+      mergeUsersAndLogsIntoState(data);
+      localStorage.setItem(KEY, JSON.stringify(migrateState(state)));
       renderUsersAdminView();
-      if(typeof msg === 'function') msg(`Usuario ${user.username} ${user.active ? 'activado' : 'deshabilitado'}.`);
+      if(typeof msg === 'function') msg(`Usuario ${data.user?.username || ''} ${data.user?.active ? 'activado' : 'deshabilitado'}.`);
       return;
     }
 
@@ -11488,19 +11867,24 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
       const uid = delUserBtn.getAttribute('data-v46-del-user');
       const user = ensureUsersState().find(u => u.id === uid);
       if(!user) return;
-      if(user.role === 'admin'){
-        const otherAdmins = ensureUsersState().filter(u => u.id !== uid && u.active !== false && u.role === 'admin');
-        if(!otherAdmins.length){
-          if(typeof msg === 'function') msg('No puedes eliminar al único Administrador activo.', true);
+      const doDel = async () => {
+        const r = await fetch('/api/users', {
+          method: 'POST',
+          headers: authFetchHeaders(),
+          body: JSON.stringify({ op: 'delete', id: uid })
+        }).catch(() => null);
+        const data = r ? await r.json().catch(() => ({})) : {};
+        if(!r || !r.ok || !data.ok){
+          if(typeof msg === 'function') msg(data?.error || 'No se pudo eliminar el usuario.', true);
           return;
         }
-      }
-      const doDel = async () => {
-        state.deletedUserIds = Array.from(new Set([...(state.deletedUserIds || []), String(uid)])).slice(-200);
-        state.userAccounts = ensureUsersState().filter(u => u.id !== uid);
-        addAuthLog('ELIMINAR_USUARIO', user, 'Usuario eliminado por administrador', getActiveUserSession()?.username || 'ADMIN');
-        if(getActiveUserSession()?.id === uid) setActiveUserSession(null);
-        await persistUsersEverywhere({ syncDrive: true });
+        state.userAccounts = [];
+        mergeUsersAndLogsIntoState(data);
+        localStorage.setItem(KEY, JSON.stringify(migrateState(state)));
+        if(getActiveUserSession()?.id === uid){
+          setAuthBearer('');
+          setActiveUserSession(null);
+        }
         renderUsersAdminView();
         if(typeof msg === 'function') msg(`Usuario ${user.username} eliminado.`);
       };
@@ -11530,26 +11914,27 @@ html[data-theme="dark"] .v46-status-pill.off{background:#450a0a;color:#fecaca}
     updateUserSessionUI();
     updateLoginFirstAccessHint();
 
-    // Cargar usuarios desde Servidor y Google Drive al iniciar
-    await Promise.allSettled([loadUsersFromServer(), loadAuthFromDriveOnBoot()]);
-    const seeded = await ensureDefaultAdminSeed();
-    if(seeded){
-      await persistUsersEverywhere({ syncDrive: navigator.onLine });
-    }
+    const [meRes] = await Promise.all([
+      fetchCurrentAuthMe(),
+      loadUsersFromServer()
+    ]);
 
-    // Revalidar sesión activa contra los usuarios reales sincronizados
-    const activeNow = getActiveUserSession();
-    if(activeNow){
-      const matched = ensureUsersState().find(u =>
-        u.id === activeNow.id ||
-        String(u.username || '').toUpperCase() === String(activeNow.username || '').toUpperCase()
-      );
-      if(matched && matched.active === false){
-        setActiveUserSession(null);
-        focusEnterpriseLogin();
-      } else if(matched){
-        setActiveUserSession(matched);
+    if(meRes && meRes.authenticated && meRes.user){
+      mergeUsersAndLogsIntoState({
+        userAccounts: [meRes.user],
+        authSettings: meRes.authSettings || {}
+      });
+      setActiveUserSession(meRes.user);
+      applyUserDefaultsToOrderForm(meRes.user);
+      if(meRes.user.mustChangePassword){
+        openAccountDialog('forceChangePass');
       }
+    } else if(meRes && meRes.authenticated === false){
+      setAuthBearer('');
+      setActiveUserSession(null);
+      focusEnterpriseLogin();
+    } else if(curSess){
+      startInactivityWatcher();
     } else {
       focusEnterpriseLogin();
     }
