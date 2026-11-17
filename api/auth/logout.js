@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     const detail = reason === 'inactivity' ? 'Cierre automático por inactividad' : 'Cierre de sesión manual';
     appendServerAuditLog(store, ev, authUser, detail, authUser.username, req);
     writeTmpUsers(store);
-    await syncUsersToDriveServer().catch(() => {});
+    syncUsersToDriveServer().catch(() => {});
   }
   clearAuthCookie(res, req);
   return res.status(200).json({ ok: true });

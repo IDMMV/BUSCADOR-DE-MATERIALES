@@ -483,39 +483,49 @@ function fetchWithTimeout(url, options = {}, timeoutMs = DRIVE_TIMEOUT_MS) {
 }
 
 let driveHydratedOnce = false;
-async function hydrateUsersFromDrive(force = false) {
+let hydrateInFlight = null;
+let lastDriveHydrateAt = 0;
+async function hydrateUsersFromDrive(force = false, timeoutMs = 10000) {
   const cur = readSavedUsers();
   if (!force && driveHydratedOnce && cur.userAccounts && cur.userAccounts.length > 0) return cur;
+  if (hydrateInFlight) return hydrateInFlight;
   const cfg = readSavedConfig();
   if (!cfg.scriptUrl) {
     driveHydratedOnce = true;
     return ensureDefaultAdminInStore();
   }
 
-  const cleanBase = cfg.scriptUrl.replace(/\?.*$/, '');
-  for (const action of ['getUsersAndAuth', 'getAll']) {
-    try {
-      const url = `${cleanBase}?action=${encodeURIComponent(action)}&token=${encodeURIComponent(cfg.scriptToken || '')}&_=${Date.now()}`;
-      const r = await fetchWithTimeout(url, { method: 'GET', headers: { Accept: 'application/json' }, redirect: 'follow' }, 10000);
-      const text = await r.text();
-      const json = JSON.parse(text);
-      if (json && json.ok) {
-        driveHydratedOnce = true;
-        const src = action === 'getAll' ? (json.data?.app || {}) : json;
-        if (Array.isArray(src.userAccounts) || Array.isArray(src.authLogs)) {
-          writeSavedUsers({
-            userAccounts: src.userAccounts || [],
-            deletedUserIds: src.deletedUserIds || [],
-            authSettings: src.authSettings || {},
-            authLogs: src.authLogs || []
-          });
-          return ensureDefaultAdminInStore();
+  hydrateInFlight = (async () => {
+    const cleanBase = cfg.scriptUrl.replace(/\?.*$/, '');
+    for (const action of ['getUsersAndAuth', 'getAll']) {
+      try {
+        const url = `${cleanBase}?action=${encodeURIComponent(action)}&token=${encodeURIComponent(cfg.scriptToken || '')}&_=${Date.now()}`;
+        const r = await fetchWithTimeout(url, { method: 'GET', headers: { Accept: 'application/json' }, redirect: 'follow' }, timeoutMs);
+        const text = await r.text();
+        const json = JSON.parse(text);
+        if (json && json.ok) {
+          driveHydratedOnce = true;
+          lastDriveHydrateAt = Date.now();
+          const src = action === 'getAll' ? (json.data?.app || {}) : json;
+          if (Array.isArray(src.userAccounts) || Array.isArray(src.authLogs)) {
+            writeSavedUsers({
+              userAccounts: src.userAccounts || [],
+              deletedUserIds: src.deletedUserIds || [],
+              authSettings: src.authSettings || {},
+              authLogs: src.authLogs || []
+            });
+            return ensureDefaultAdminInStore();
+          }
         }
-      }
-    } catch (_) {}
-  }
-  driveHydratedOnce = true;
-  return ensureDefaultAdminInStore();
+      } catch (_) {}
+    }
+    driveHydratedOnce = true;
+    return ensureDefaultAdminInStore();
+  })().finally(() => {
+    hydrateInFlight = null;
+  });
+
+  return hydrateInFlight;
 }
 
 let driveSyncQueue = Promise.resolve();
@@ -657,14 +667,24 @@ app.post('/api/auth/login', async (req, res) => {
     });
   }
 
-  let store = await hydrateUsersFromDrive(true);
+  let store = await hydrateUsersFromDrive(false);
   const idUpper = identifier.toUpperCase();
   const idLower = identifier.toLowerCase();
 
-  let user = (store.userAccounts || []).find(u =>
+  const findUserInStore = (st) => (st.userAccounts || []).find(u =>
     String(u.username || '').toUpperCase() === idUpper ||
     (u.email && String(u.email).trim().toLowerCase() === idLower)
   );
+
+  let user = findUserInStore(store);
+
+  // Solo consultar Drive de forma síncrona si no existe o no coincide la clave local (p.ej. clave cambiada desde otra PC)
+  if (!user || !verifyPasswordServer(user, password)) {
+    if (Date.now() - lastDriveHydrateAt > 5000) {
+      store = await hydrateUsersFromDrive(true, 4500);
+      user = findUserInStore(store);
+    }
+  }
 
   if (!user) {
     recordLoginFailure(rl.key);
@@ -695,7 +715,8 @@ app.post('/api/auth/login', async (req, res) => {
 
   const token = signSessionToken(user);
   setAuthCookie(res, req, token);
-  await syncUsersToDriveServer().catch(() => {});
+  // Respaldo a Drive en segundo plano para respuesta inmediata al usuario
+  syncUsersToDriveServer().catch(() => {});
 
   return res.json({
     ok: true,
@@ -714,7 +735,7 @@ app.post('/api/auth/logout', async (req, res) => {
     const detail = reason === 'inactivity' ? 'Cierre automático por inactividad' : 'Cierre de sesión manual';
     appendServerAuditLog(store, ev, req.authUser, detail, req.authUser.username, req);
     writeSavedUsers(store);
-    await syncUsersToDriveServer().catch(() => {});
+    syncUsersToDriveServer().catch(() => {});
   }
   clearAuthCookie(res, req);
   return res.json({ ok: true });

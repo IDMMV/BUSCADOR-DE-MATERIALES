@@ -37,14 +37,19 @@ export default async function handler(req, res) {
     });
   }
 
-  const store = await hydrateUsersFromDrive(true);
+  let store = await hydrateUsersFromDrive(false);
   const idUpper = identifier.toUpperCase();
   const idLower = identifier.toLowerCase();
 
-  const user = (store.userAccounts || []).find(u =>
+  const findUser = (st) => (st.userAccounts || []).find(u =>
     String(u.username || '').toUpperCase() === idUpper ||
     (u.email && String(u.email).trim().toLowerCase() === idLower)
   );
+  let user = findUser(store);
+  if (!user || !verifyPasswordServer(user, password)) {
+    store = await hydrateUsersFromDrive(true);
+    user = findUser(store);
+  }
 
   if (!user) {
     recordLoginFailure(rl.key);
@@ -75,7 +80,7 @@ export default async function handler(req, res) {
 
   const token = signSessionToken(user);
   setAuthCookie(res, req, token);
-  await syncUsersToDriveServer().catch(() => {});
+  syncUsersToDriveServer().catch(() => {});
 
   return res.status(200).json({
     ok: true,
