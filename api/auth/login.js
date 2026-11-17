@@ -37,22 +37,14 @@ export default async function handler(req, res) {
     });
   }
 
-  let store = await hydrateUsersFromDrive(false);
+  const store = await hydrateUsersFromDrive(true);
   const idUpper = identifier.toUpperCase();
   const idLower = identifier.toLowerCase();
 
-  let user = (store.userAccounts || []).find(u =>
+  const user = (store.userAccounts || []).find(u =>
     String(u.username || '').toUpperCase() === idUpper ||
     (u.email && String(u.email).trim().toLowerCase() === idLower)
   );
-
-  if (!user) {
-    store = await hydrateUsersFromDrive(true);
-    user = (store.userAccounts || []).find(u =>
-      String(u.username || '').toUpperCase() === idUpper ||
-      (u.email && String(u.email).trim().toLowerCase() === idLower)
-    );
-  }
 
   if (!user) {
     recordLoginFailure(rl.key);
@@ -78,7 +70,6 @@ export default async function handler(req, res) {
   clearLoginFailures(rl.key);
   const now = new Date().toISOString();
   user.lastLoginAt = now;
-  user.updatedAt = now;
   appendServerAuditLog(store, 'INICIO_SESION', user, 'Ingreso autorizado desde pantalla de inicio', user.username, req);
   const saved = writeTmpUsers(store);
 

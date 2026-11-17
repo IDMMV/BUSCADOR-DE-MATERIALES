@@ -1128,7 +1128,7 @@ body.bm-authenticated #enterpriseLoginOverlay {
       <div class="ent-login-fields">
         <label class="ent-field">
           <span>Usuario o Correo</span>
-          <input id="entLoginUser" name="username" type="text" autocomplete="username" placeholder="Ej.: ADMIN o correo corporativo" required/>
+          <input id="entLoginUser" name="username" type="text" autocomplete="username" placeholder="Ingresa tu usuario o correo" required/>
         </label>
         <label class="ent-field">
           <span>Contraseña</span>
@@ -1142,8 +1142,6 @@ body.bm-authenticated #enterpriseLoginOverlay {
       <div id="entLoginStatus" class="ent-login-status" aria-live="polite"></div>
 
       <button type="submit" class="ent-login-submit" id="entLoginSubmitBtn">Ingresar</button>
-
-      <div id="entFirstAccessNote" class="ent-first-access hidden"></div>
 
       <div class="ent-login-foot">
         <span class="ent-drive-pill" id="entDriveStateText">☁️ Sincronizado con Google Drive · Acceso autorizado</span>
@@ -1161,7 +1159,7 @@ body.bm-authenticated #enterpriseLoginOverlay {
     </div>
   </div>
 </div>
-<header class="top"><div class="brand"><img alt="Buscador de Materiales SAP" class="app-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230f2942'/%3E%3Crect x='6' y='6' width='88' height='88' rx='18' fill='none' stroke='%231d70b8' stroke-width='4'/%3E%3Cpath d='M30 38 L50 26 L70 38 L50 50 Z' fill='%23fef08a'/%3E%3Cpath d='M30 38 L50 50 L50 74 L30 62 Z' fill='%23f59e0b'/%3E%3Cpath d='M70 38 L50 50 L50 74 L70 62 Z' fill='%23d97706'/%3E%3C/svg%3E"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:var(--blue);vertical-align:middle;font-weight:700">V44.8</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn secondary v46-user-session-btn" id="userSessionBtn" type="button" title="Cuenta activa y cierre de sesión">👤 Cuenta</button><button class="btn admin-access-btn" id="adminAccessBtn" type="button">🔐 Administrador</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
+<header class="top"><div class="brand"><img alt="Buscador de Materiales SAP" class="app-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230f2942'/%3E%3Crect x='6' y='6' width='88' height='88' rx='18' fill='none' stroke='%231d70b8' stroke-width='4'/%3E%3Cpath d='M30 38 L50 26 L70 38 L50 50 Z' fill='%23fef08a'/%3E%3Cpath d='M30 38 L50 50 L50 74 L30 62 Z' fill='%23f59e0b'/%3E%3Cpath d='M70 38 L50 50 L50 74 L70 62 Z' fill='%23d97706'/%3E%3C/svg%3E"/><div><div class="ey">PEDIDO DE MATERIALES</div><h1>Buscador de Materiales SAP <span style="font-size:12px;color:var(--blue);vertical-align:middle;font-weight:700">V44.8</span></h1><p class="sub">Busca por matrícula, descripción o alias y prepara el pedido.</p></div></div><div class="top-actions"><button class="btn secondary mobile-menu-btn" id="mobileMenu">☰ Menú</button><a class="btn sap-btn" href="https://vhlsrws3wd01.sap.luzdelsur.com.pe:44380/sap/bc/ui2/flp#MaintenanceOrder-change?sap-ui-tech-hint=GUI" id="openSAP" rel="noopener noreferrer" target="_blank" title="Abrir SAP en una nueva pestaña">↗ Ir a SAP</a><button class="btn success hidden" id="installApp">⬇ Instalar app</button><button class="btn secondary theme-toggle" id="themeToggle">🌙 Modo nocturno</button><button class="btn secondary v46-user-session-btn" id="userSessionBtn" type="button" title="Mi cuenta, cambio de contraseña y cierre de sesión">👤 Mi cuenta</button><button class="btn admin-access-btn" id="adminAccessBtn" type="button">🔐 Administrador</button><button class="btn secondary hidden" id="config" aria-hidden="true" tabindex="-1">⚙ Configuración</button></div></header>
 <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 <div class="app-shell">
 <aside class="sidebar" id="sidebar">
@@ -1189,7 +1187,7 @@ body.bm-authenticated #enterpriseLoginOverlay {
 <button class="btn primary" id="loadStock">📥 Cargar y validar stock</button>
 <div class="stock-status stale" id="stockStatus">⚠ Stock no actualizado hoy. Carga el Excel diario de SAP.</div>
 <div class="stock-help">Columnas reconocidas: Material, Texto breve de material, Centro, Almacén, Lote, Libre utilización y Unidad medida base. ALIM, CE y LOTE se completan automáticamente al copiar o exportar.</div>
-</section><section class="panel"><div class="head"><h2>1. Buscar materiales</h2><div class="head-actions"><button class="btn secondary hidden" id="v46ToggleOrderDataBtn" type="button" title="Mostrar u ocultar los datos del pedido">📋 Mostrar datos del pedido</button><button class="btn secondary hidden" id="searchSyncDrivePhotosBtn" type="button" onclick="syncAllPhotosToDrive(this); return false;" title="Subir a Google Drive las imágenes del catálogo o editadas para conservarlas en cualquier PC">☁️ Guardar fotos en Drive</button><button class="btn primary" id="openImageCatalogBtn" type="button" title="Explorar y pedir materiales viendo su imagen y stock">🖼️ Buscar por imagen</button><button class="btn secondary" id="v439GoToOrder" type="button">📋 Ir a pedido seleccionado</button><span class="badge" id="count"></span></div></div><div class="search"><input id="q" placeholder="Buscar por matrícula, descripción, alias o nombre de plantilla..."/><button aria-label="Buscar por voz" class="mic" id="voiceSearch" title="Buscar por voz">🎤</button><button aria-label="Limpiar búsqueda" id="clear" title="Limpiar búsqueda">×</button></div><div class="results" id="results"></div></section></section>
+</section><section class="panel"><div class="head"><h2>1. Buscar materiales</h2><div class="head-actions"><button class="btn secondary hidden" id="v46ToggleOrderDataBtn" type="button" title="Mostrar u ocultar los datos del pedido">📋 Mostrar datos del pedido</button><button class="btn primary" id="openImageCatalogBtn" type="button" title="Explorar y pedir materiales viendo su imagen y stock">🖼️ Buscar por imagen</button><button class="btn secondary" id="v439GoToOrder" type="button">📋 Ir a pedido seleccionado</button><span class="badge" id="count"></span></div></div><div class="search"><input id="q" placeholder="Buscar por matrícula, descripción, alias o nombre de plantilla..."/><button aria-label="Buscar por voz" class="mic" id="voiceSearch" title="Buscar por voz">🎤</button><button aria-label="Limpiar búsqueda" id="clear" title="Limpiar búsqueda">×</button></div><div class="results" id="results"></div></section></section>
 <section class="view" id="orderView"><main class="layout"><section class="panel" id="orderPanel"><div class="head v39-history-head" style="margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px"><div><h2 style="margin:0;display:inline-flex;align-items:center;gap:10px" id="v45OrderTitleText">2. Pedido seleccionado <span class="badge" id="cartCount">0 materiales</span></h2><p class="small" style="margin:4px 0 0 0;color:var(--muted)" id="v45OrderSubtitleText">Verifica el supervisor, fecha y cantidades antes de grabar o imprimir tu pedido.</p></div><div class="v39-history-actions" id="orderHeaderActions" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button type="button" id="v31FinalizeOrder" class="btn success v31-finalize" style="font-weight:700;padding:8px 16px;display:inline-flex;align-items:center;gap:6px">💾 Grabar pedido</button><button type="button" id="v31PrintOrderTop" class="btn secondary" style="font-weight:700;padding:8px 16px;display:inline-flex;align-items:center;gap:6px" title="Imprimir documento de pedido">🖨️ Imprimir pedido</button><button type="button" id="v449ClearAllOrdersBtn" class="btn danger v449-clear-all" style="font-weight:700;padding:8px 16px;display:inline-flex;align-items:center;gap:6px">🗑️ Borrar pedidos</button></div></div><div class="v438-back-row" style="margin-bottom:14px"><button type="button" class="btn secondary v438-back-btn" id="v438BackToSearch">← Volver a buscar materiales</button></div><div class="fields-and-actions-row" style="margin:14px 0" id="v46OrderFieldsWrap"><div class="fields" style="width:100%;margin:0"><label class="field" id="v46TipoMovWrap">Tipo de movimiento<select id="puesto"><option value="PEDIDO">PEDIDO</option><option value="RESERVA">RESERVA</option><option value="RECUPERO">RECUPERO</option><option value="DEVOLUCION">DEVOLUCIÓN</option></select></label><label class="field" id="v45OmWrap">OM<input id="omPedido" inputmode="numeric" placeholder="Ej.: 6000021031"/></label><label class="field" id="v45DestWrap">Supervisor<select id="dest"></select></label><label class="field fg-reserva" id="fieldReserva" style="display:none">N° Reserva (SAP)<input id="reservaPedido" inputmode="numeric" placeholder="Ej.: 100045892"/></label><label class="field" id="v45FechaWrap">Fecha<input id="fechaPedido" type="date"/></label><label class="field" id="v45MovilWrap">Unidad móvil<select id="movil"></select></label><label class="field" id="v45AlimWrap">Alimentador<input id="alimentadorPedido" list="alimentadoresList" placeholder="Ej.: A-01" autocomplete="off"/><datalist id="alimentadoresList"></datalist></label><label class="field" id="v45DistWrap">Distrito<input id="distritoPedido" placeholder="Ej.: Vitarte"/></label></div></div><select class="hidden" id="ce"><option value="1003">1003 - San Juan</option><option value="1004">1004 - Vitarte</option></select><div class="auto-fields-note">El Centro se toma del selector superior. ALIM, CE y LOTE se completan automáticamente desde el Excel diario de stock SAP.</div><p class="small">La cantidad inicia en 0 (amarillo). Al colocar un valor mayor a 0 cambia a verde. Puedes dictar cantidades con el micrófono.</p><div class="tablewrap"><table><thead><tr><th>Matrícula</th><th>Descripción</th><th>Cant.</th><th>Unidad</th><th></th></tr></thead><tbody id="cart"></tbody></table><div class="empty" id="empty">Agrega materiales desde el buscador.</div></div><div class="sap-preview-wrap"><div class="sap-preview-title"><div><h3>Vista previa exacta para SAP / Excel</h3><p class="small">Muestra almacén, centro y lote de donde se obtiene cada cantidad.</p></div><span class="badge" id="previewRowsCount">0 filas</span></div><div class="sap-preview"><table><thead><tr><th>MATRÍCULA</th><th>DESCRIPCIÓN</th><th>C1</th><th>CANT</th><th>UNIDAD</th><th>TP</th><th>C2</th><th>C3</th><th>ALIM</th><th>CE</th><th>OPERACIÓN</th><th>LOTE</th><th>TIPO DE APROVISIONAMIENTO</th><th>POS</th><th>DESTINATARIO</th><th>PUESTO DE DESCARGA</th><th>UBICACIÓN FINAL</th></tr></thead><tbody id="sapPreviewBody"></tbody></table><div class="preview-empty" id="sapPreviewEmpty">Agrega materiales y completa sus cantidades para generar la vista previa.</div></div></div><div class="actions" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:16px"><button class="btn primary" id="copy" style="font-weight:700">📋 Copiar para SAP</button><button class="btn success" id="excel" style="font-weight:700">📊 Exportar Excel</button><button class="btn secondary" id="csv" style="font-weight:700">📄 Exportar CSV</button><button class="btn danger" id="clean" style="font-weight:700">🧹 Limpiar vista previa</button></div><div class="pending-panel hidden" id="pendingPanel"><div class="head"><h3>⏳ Pendientes por coordinar</h3><span class="badge" id="pendingCount">0</span></div><div id="pendingList"></div></div><p class="status" id="status"></p></section></main></section>
 
 <section class="view" id="stockView"><section class="stock-toolbar">
@@ -1202,7 +1200,7 @@ body.bm-authenticated #enterpriseLoginOverlay {
 <section class="view" id="controlView"><div class="module-placeholder"><h2>📑 Solicitud</h2></div></section>
 <section class="view" id="reservasView"><div class="module-placeholder"><h2>📑 Devoluciones</h2></div></section>
 <section class="view" id="historyView"><div class="module-placeholder"><h2>🕘 Historial</h2><p>Aquí se mostrarán los pedidos guardados y sincronizados con Google Drive.</p><div class="empty">Todavía no hay pedidos guardados.</div></div></section>
-<section class="view" id="newMatView"><section class="panel" style="padding:16px 20px"><section class="page active" id="p-new-mat"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--line)"><div><h2 style="margin:0;display:flex;align-items:center;gap:10px;font-size:20px;color:var(--navy);font-weight:800">📊 Base de Materiales <span style="font-size:14px;color:var(--muted);font-weight:600">(Modo Excel)</span> <span class="badge" id="matExcelCountBadge" style="background:var(--navy);color:#fff;font-size:12px;padding:3px 8px">0 materiales</span></h2><p class="small" style="margin:4px 0 0 0;color:var(--muted)">Visualiza todos los materiales en tabla editable tipo Excel. Haz clic en un alias o en ✎ para corregirlo, edita descripciones y sube fotos directamente a tu Google Drive.</p></div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button type="button" class="btn primary" id="matExcelAddNewBtn" style="font-weight:700;display:inline-flex;align-items:center;gap:6px" title="Agregar un nuevo material">➕ Nuevo material</button><button type="button" class="btn secondary" id="matExcelSyncPhotosBtn" onclick="syncAllPhotosToDrive(); return false;" title="Subir a Google Drive todas las fotos locales pendientes">☁️ Subir fotos a Drive</button><button type="button" class="btn secondary" onclick="exportMaterialBase(); return false;" title="Descargar base de materiales en Excel">📥 Descargar base de materiales</button><button type="button" class="btn secondary" onclick="document.getElementById('importMatFile').click(); return false;" title="Importar/Actualizar base de materiales">📤 Importar base de materiales</button><input type="file" id="importMatFile" accept=".csv,.tsv,.txt,.xlsx,.xls,.json" style="display:none" onchange="importMaterialBase(this)"/><button type="button" class="btn success" id="matExcelSaveAllBtn" onclick="saveAllExcelMaterials(); return false;" style="font-weight:800!important;padding:8px 18px!important">💾 Guardar cambios</button></div></div><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px;background:var(--bg);padding:10px 14px;border-radius:10px;border:1px solid var(--line)"><div style="display:flex;align-items:center;gap:6px;flex:1 1 280px;min-width:240px"><input id="matExcelSearch" type="text" placeholder="🔍 Buscar por matrícula, descripción o alias..." style="flex:1;padding:8px 12px;border:1px solid var(--line);border-radius:6px;font-size:13px;background:var(--panel);color:var(--text)"/><button type="button" class="btn secondary" id="matExcelClearSearch" style="padding:8px 12px" title="Limpiar búsqueda">✕</button></div><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap" id="matExcelFilterPills"><button type="button" class="btn secondary active mat-pill" data-mat-filter="all" style="padding:5px 10px;font-size:12px">Todos (<span id="cntAll">0</span>)</button><button type="button" class="btn secondary mat-pill" data-mat-filter="with-photo" style="padding:5px 10px;font-size:12px">📷 Con foto (<span id="cntWithPhoto">0</span>)</button><button type="button" class="btn secondary mat-pill" data-mat-filter="no-photo" style="padding:5px 10px;font-size:12px">🚫 Sin foto (<span id="cntNoPhoto">0</span>)</button><button type="button" class="btn secondary mat-pill" data-mat-filter="with-alias" style="padding:5px 10px;font-size:12px">🏷 Con alias (<span id="cntWithAlias">0</span>)</button><button type="button" class="btn secondary mat-pill" data-mat-filter="no-alias" style="padding:5px 10px;font-size:12px">Sin alias (<span id="cntNoAlias">0</span>)</button><button type="button" class="btn secondary mat-pill" data-mat-filter="prio" style="padding:5px 10px;font-size:12px">⚡ Prioridad P (<span id="cntPrio">0</span>)</button></div><div style="display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--text)"><label style="display:flex;align-items:center;gap:4px">Ver: <select id="matExcelPageSize" style="padding:4px 8px;border:1px solid var(--line);border-radius:4px;background:var(--panel);color:var(--text);font-size:12px"><option value="25">25</option><option value="50" selected>50</option><option value="100">100</option><option value="200">200</option><option value="all">Todos</option></select></label><button type="button" class="btn secondary" id="matExcelPrevPage" style="padding:4px 9px">◀</button><span id="matExcelPageInfo" style="font-weight:700;min-width:65px;text-align:center">1 / 1</span><button type="button" class="btn secondary" id="matExcelNextPage" style="padding:4px 9px">▶</button></div></div><input type="file" id="matExcelRowFileInput" accept="image/*" style="display:none"/><div class="mat-excel-container" id="matExcelContainer"><table class="mat-excel-grid"><thead><tr><th style="width:45px;text-align:center">#</th><th style="width:86px;text-align:center">FOTO</th><th style="width:115px">MATRÍCULA SAP</th><th style="min-width:260px">DESCRIPCIÓN OFICIAL</th><th style="width:80px;text-align:center">UNIDAD</th><th style="width:105px;text-align:center">PRIORIDAD</th><th style="min-width:340px">ALIAS (CLIC PARA CORREGIR O AGREGAR SINÓNIMOS)</th><th style="width:85px;text-align:center">ACCIONES</th></tr></thead><tbody id="matExcelTableBody"></tbody></table><div id="matExcelEmpty" style="display:none;padding:50px 20px;text-align:center;color:var(--muted);font-size:14px">No se encontraron materiales que coincidan con la búsqueda o filtro.</div></div></section></section></section>
+<section class="view" id="newMatView"><section class="panel" style="padding:16px 20px"><section class="page active" id="p-new-mat"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--line)"><div><h2 style="margin:0;display:flex;align-items:center;gap:10px;font-size:20px;color:var(--navy);font-weight:800">📊 Base de Materiales <span style="font-size:14px;color:var(--muted);font-weight:600">(Modo Excel)</span> <span class="badge" id="matExcelCountBadge" style="background:var(--navy);color:#fff;font-size:12px;padding:3px 8px">0 materiales</span></h2><p class="small" style="margin:4px 0 0 0;color:var(--muted)">Visualiza todos los materiales en tabla editable tipo Excel. Haz clic en un alias o en ✎ para corregirlo; cada foto que subas se guarda automáticamente en Google Drive.</p></div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button type="button" class="btn primary" id="matExcelAddNewBtn" style="font-weight:700;display:inline-flex;align-items:center;gap:6px" title="Agregar un nuevo material">➕ Nuevo material</button><button type="button" class="btn secondary" onclick="exportMaterialBase(); return false;" title="Descargar base de materiales en Excel">📥 Descargar base de materiales</button><button type="button" class="btn secondary" onclick="document.getElementById('importMatFile').click(); return false;" title="Importar/Actualizar base de materiales">📤 Importar base de materiales</button><input type="file" id="importMatFile" accept=".csv,.tsv,.txt,.xlsx,.xls,.json" style="display:none" onchange="importMaterialBase(this)"/><button type="button" class="btn success" id="matExcelSaveAllBtn" onclick="saveAllExcelMaterials(); return false;" style="font-weight:800!important;padding:8px 18px!important">💾 Guardar cambios</button></div></div><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px;background:var(--bg);padding:10px 14px;border-radius:10px;border:1px solid var(--line)"><div style="display:flex;align-items:center;gap:6px;flex:1 1 280px;min-width:240px"><input id="matExcelSearch" type="text" placeholder="🔍 Buscar por matrícula, descripción o alias..." style="flex:1;padding:8px 12px;border:1px solid var(--line);border-radius:6px;font-size:13px;background:var(--panel);color:var(--text)"/><button type="button" class="btn secondary" id="matExcelClearSearch" style="padding:8px 12px" title="Limpiar búsqueda">✕</button></div><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap" id="matExcelFilterPills"><button type="button" class="btn secondary active mat-pill" data-mat-filter="all" style="padding:5px 10px;font-size:12px">Todos (<span id="cntAll">0</span>)</button><button type="button" class="btn secondary mat-pill" data-mat-filter="with-photo" style="padding:5px 10px;font-size:12px">📷 Con foto (<span id="cntWithPhoto">0</span>)</button><button type="button" class="btn secondary mat-pill" data-mat-filter="no-photo" style="padding:5px 10px;font-size:12px">🚫 Sin foto (<span id="cntNoPhoto">0</span>)</button><button type="button" class="btn secondary mat-pill" data-mat-filter="with-alias" style="padding:5px 10px;font-size:12px">🏷 Con alias (<span id="cntWithAlias">0</span>)</button><button type="button" class="btn secondary mat-pill" data-mat-filter="no-alias" style="padding:5px 10px;font-size:12px">Sin alias (<span id="cntNoAlias">0</span>)</button><button type="button" class="btn secondary mat-pill" data-mat-filter="prio" style="padding:5px 10px;font-size:12px">⚡ Prioridad P (<span id="cntPrio">0</span>)</button></div><div style="display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--text)"><label style="display:flex;align-items:center;gap:4px">Ver: <select id="matExcelPageSize" style="padding:4px 8px;border:1px solid var(--line);border-radius:4px;background:var(--panel);color:var(--text);font-size:12px"><option value="25">25</option><option value="50" selected>50</option><option value="100">100</option><option value="200">200</option><option value="all">Todos</option></select></label><button type="button" class="btn secondary" id="matExcelPrevPage" style="padding:4px 9px">◀</button><span id="matExcelPageInfo" style="font-weight:700;min-width:65px;text-align:center">1 / 1</span><button type="button" class="btn secondary" id="matExcelNextPage" style="padding:4px 9px">▶</button></div></div><input type="file" id="matExcelRowFileInput" accept="image/*" style="display:none"/><div class="mat-excel-container" id="matExcelContainer"><table class="mat-excel-grid"><thead><tr><th style="width:45px;text-align:center">#</th><th style="width:86px;text-align:center">FOTO</th><th style="width:115px">MATRÍCULA SAP</th><th style="min-width:260px">DESCRIPCIÓN OFICIAL</th><th style="width:80px;text-align:center">UNIDAD</th><th style="width:105px;text-align:center">PRIORIDAD</th><th style="min-width:340px">ALIAS (CLIC PARA CORREGIR O AGREGAR SINÓNIMOS)</th><th style="width:85px;text-align:center">ACCIONES</th></tr></thead><tbody id="matExcelTableBody"></tbody></table><div id="matExcelEmpty" style="display:none;padding:50px 20px;text-align:center;color:var(--muted);font-size:14px">No se encontraron materiales que coincidan con la búsqueda o filtro.</div></div></section></section></section>
 <section class="view" id="supView"><section class="panel"><section class="page active" id="p-sup"><p class="small">Registra el nombre y las iniciales que SAP mostrará junto con la fecha, por ejemplo <b>SL 29/07</b>.</p><div class="supervisor-add admin"><div class="voice-wrap"><input id="newSup" placeholder="Nombre del supervisor"/><button class="voice-btn" data-voice="newSup">🎤</button></div><input id="newSupInitials" maxlength="4" placeholder="Iniciales"/><button class="btn primary" id="addSup">Agregar</button></div><div class="supervisor-list" id="supList"></div></section></section></section>
 <section class="view" id="unitsView"><section class="panel"><section class="page active" id="p-units"><div class="adminrow admin"><div class="voice-wrap"><input id="newUnit" placeholder="Ej.: F5X-999"/><button class="voice-btn" data-voice="newUnit">🎤</button></div><button class="btn primary" id="addUnit">Agregar</button></div><div class="chips" id="unitList"></div></section></section></section>
 <section class="view" id="driveView"><section class="panel"><section class="page active" id="p-github"><h3>Sincronización con Google Drive</h3><p>Configura la URL <b>/exec</b> de tu Google Apps Script. Los cambios se guardan primero en este dispositivo y se sincronizan cuando haya internet.</p><div class="labeled-form drive-grid"><label class="form-group">URL de Apps Script<input id="scriptUrl" placeholder="https://script.google.com/macros/s/.../exec"/></label><label class="form-group">Clave de acceso<input id="scriptToken" placeholder="Clave definida en Code.gs" type="password"/></label><label class="form-group">Estado<input id="syncState" readonly="" value="Sin configurar"/></label><label class="form-group">Última sincronización<input id="lastSync" readonly=""/></label></div><div class="actions"><button type="button" class="btn primary" id="saveScriptConfig" onclick="saveSyncConfig(); return false;">Guardar conexión</button><button type="button" class="btn success" id="syncNow" onclick="syncToDrive(); return false;">Sincronizar ahora</button><button type="button" class="btn secondary" id="restoreDrive" onclick="restoreFromDrive(); return false;">Recuperar desde Drive</button><a class="btn secondary" href="https://drive.google.com/drive/my-drive" id="openDriveLink" rel="noopener" target="_blank">☁ Abrir Google Drive</a><button class="btn secondary" id="downloadJson">Descargar respaldo JSON</button><button class="btn danger" id="reset">Restablecer datos originales</button></div><div class="drive-note"><b>Modo sin red:</b> alias, fotos, supervisores, unidades y pendientes se guardan localmente. Al volver internet, pulsa “Sincronizar ahora” o abre nuevamente la aplicación.</div></section></section></section>
@@ -1228,14 +1226,10 @@ body.bm-authenticated #enterpriseLoginOverlay {
       <label class="form-group" style="margin-top:14px;display:block">
         <span style="font-weight:600;display:block;margin-bottom:6px">Contraseña</span>
         <div style="display:flex;gap:6px;align-items:center">
-          <input id="adminPasswordInput" type="password" autocomplete="current-password" placeholder="Ingresa contraseña (ej. 1234)" style="flex:1" />
+          <input id="adminPasswordInput" type="password" autocomplete="current-password" placeholder="Ingresa tu contraseña de administrador" style="flex:1" />
           <button type="button" class="btn secondary" id="adminTogglePassword" style="padding:8px 12px" title="Mostrar/ocultar contraseña">👁️</button>
         </div>
       </label>
-      
-      <div class="admin-pass-hint">
-        💡 <b>Nota:</b> Contraseña predeterminada: <b>1234</b> (también acepta <b>admin</b> o <b>sap</b>).
-      </div>
 
       <p class="status" id="adminLoginStatus" style="margin:10px 0;min-height:20px"></p>
 
@@ -1249,7 +1243,7 @@ body.bm-authenticated #enterpriseLoginOverlay {
 <dialog id="userAuthDialog" aria-label="Gestión de cuenta y contraseña">
   <div class="v46-auth-card" id="v46AuthCard"></div>
 </dialog>
-<dialog id="materialImageViewer" aria-label="Catálogo de imágenes de materiales"><div class="image-viewer-shell"><div class="image-viewer-head"><div class="image-viewer-title"><span class="cat-counter" id="imageViewerCounter">1 / 1</span><div class="image-viewer-title-text"><b id="imageViewerCode">🖼️ Buscar por imagen</b><span id="imageViewerDesc">Selecciona un almacén y registra tu pedido</span></div></div><div class="image-viewer-search-wrap"><div class="image-viewer-search-box"><input type="search" id="imageViewerSearch" placeholder="🔍 Buscar por matrícula, descripción o alias..."/><button type="button" id="imageViewerSearchClear" class="image-viewer-search-clear hidden" title="Limpiar búsqueda" aria-label="Limpiar búsqueda">✕</button></div><label class="image-viewer-only-img"><input type="checkbox" id="imageViewerOnlyWithImg"/> Solo con foto</label><button type="button" class="btn image-viewer-close" id="imageViewerClose">✕ Cerrar</button></div></div><div class="image-viewer-body"><div class="image-viewer-stage"><button type="button" class="image-viewer-nav image-viewer-prev" id="imageViewerPrev" aria-label="Imagen anterior">‹</button><div class="image-viewer-img-wrap"><img id="imageViewerImg" alt="Imagen ampliada del material" referrerpolicy="no-referrer" title="Clic para ampliar o reducir"><div id="imageViewerNoImg" class="image-viewer-no-img hidden"><span style="font-size:46px">📦</span><p>Sin imagen registrada para este material</p></div></div><button type="button" class="image-viewer-zoom-btn" id="imageViewerZoomBtn" title="Ampliar o reducir imagen">🔍 Ampliar</button><button type="button" class="image-viewer-nav image-viewer-next" id="imageViewerNext" aria-label="Imagen siguiente">›</button></div><div class="image-viewer-foot" id="imageViewerFoot"><div class="cat-bottom-card"><div class="cat-bottom-top"><div class="cat-bottom-meta"><div class="cat-bottom-badges"><span class="cat-mat-badge">MATRÍCULA SAP: <strong id="imageViewerCodeFoot">---</strong></span><span class="cat-unit-badge" id="imageViewerUnitFoot">UND</span></div><div class="cat-bottom-desc" id="imageViewerDescFoot">---</div><div class="cat-photo-tools"><input type="file" id="viewerPhotoFileInput" accept="image/*" style="display:none"/><button type="button" class="cat-photo-btn" id="viewerUploadImgBtn" title="Subir nueva foto desde este equipo o pegar con Ctrl+V">📷 Cambiar foto</button><button type="button" class="cat-photo-btn" id="viewerUrlImgBtn" title="Pegar enlace (URL) de una imagen">🔗 Pegar URL</button><button type="button" class="cat-photo-btn hidden" id="viewerRestoreImgBtn" title="Volver a la imagen original del catálogo">🔄 Restaurar original</button><button type="button" class="cat-photo-btn danger-soft" id="viewerRemoveImgBtn" title="Quitar imagen de este material">✕ Quitar foto</button><button type="button" class="cat-photo-btn drive-sync-btn" id="viewerSyncDriveBtn" title="Guardar y sincronizar fotos con Google Drive">☁️ Sincronizar con Drive</button></div><div class="cat-url-box hidden" id="viewerUrlBox"><input type="url" id="viewerUrlInput" placeholder="https://... (pega enlace de imagen o usa Ctrl+V en el visor)"/><button type="button" class="btn primary" id="viewerUrlApplyBtn" style="padding:6px 11px;font-size:12px">Aplicar</button><button type="button" class="btn secondary" id="viewerUrlCancelBtn" style="padding:6px 10px;font-size:12px">Cancelar</button></div></div><span class="cat-in-cart-badge hidden" id="imageViewerInCartBadge">✓ En pedido</span></div><div class="cat-suppliers-box" id="imageViewerSuppliers"></div><div class="cat-warehouse-section"><div class="cat-section-label" id="imageViewerWarehouseLabel">1. Selecciona el almacén (haz clic en una tarjeta)</div><div class="cat-stock-grid" id="imageViewerStockGrid"></div></div><div class="cat-bottom-actions"><div class="cat-active-center-tag" id="imageViewerActiveCenterTag">📍 Almacén: 1003 San Juan</div><div class="cat-order-controls"><div class="cat-qty-group"><input type="number" id="imageViewerQty" class="cat-qty-input" min="0" step="any" placeholder="Cantidad"/><span class="cat-qty-unit-txt" id="imageViewerQtyUnit">UND</span></div><button type="button" class="btn success cat-save-btn" id="imageViewerSaveBtn">💾 Guardar en pedido</button><button type="button" class="btn cat-go-btn hidden" id="imageViewerGoOrderBtn">📋 Ver pedido</button></div></div><div class="cat-viewer-status" id="imageViewerStatus"></div></div></div></div></div></dialog>
+<dialog id="materialImageViewer" aria-label="Catálogo de imágenes de materiales"><div class="image-viewer-shell"><div class="image-viewer-head"><div class="image-viewer-title"><span class="cat-counter" id="imageViewerCounter">1 / 1</span><div class="image-viewer-title-text"><b id="imageViewerCode">🖼️ Buscar por imagen</b><span id="imageViewerDesc">Selecciona un almacén y registra tu pedido</span></div></div><div class="image-viewer-search-wrap"><div class="image-viewer-search-box"><input type="search" id="imageViewerSearch" placeholder="🔍 Buscar por matrícula, descripción o alias..."/><button type="button" id="imageViewerSearchClear" class="image-viewer-search-clear hidden" title="Limpiar búsqueda" aria-label="Limpiar búsqueda">✕</button></div><label class="image-viewer-only-img"><input type="checkbox" id="imageViewerOnlyWithImg"/> Solo con foto</label><button type="button" class="btn image-viewer-close" id="imageViewerClose">✕ Cerrar</button></div></div><div class="image-viewer-body"><div class="image-viewer-stage"><button type="button" class="image-viewer-nav image-viewer-prev" id="imageViewerPrev" aria-label="Imagen anterior">‹</button><div class="image-viewer-img-wrap"><img id="imageViewerImg" alt="Imagen ampliada del material" referrerpolicy="no-referrer" title="Clic para ampliar o reducir"><div id="imageViewerNoImg" class="image-viewer-no-img hidden"><span style="font-size:46px">📦</span><p>Sin imagen registrada para este material</p></div></div><button type="button" class="image-viewer-zoom-btn" id="imageViewerZoomBtn" title="Ampliar o reducir imagen">🔍 Ampliar</button><button type="button" class="image-viewer-nav image-viewer-next" id="imageViewerNext" aria-label="Imagen siguiente">›</button></div><div class="image-viewer-foot" id="imageViewerFoot"><div class="cat-bottom-card"><div class="cat-bottom-top"><div class="cat-bottom-meta"><div class="cat-bottom-badges"><span class="cat-mat-badge">MATRÍCULA SAP: <strong id="imageViewerCodeFoot">---</strong></span><span class="cat-unit-badge" id="imageViewerUnitFoot">UND</span></div><div class="cat-bottom-desc" id="imageViewerDescFoot">---</div><div class="cat-photo-tools"><input type="file" id="viewerPhotoFileInput" accept="image/*" style="display:none"/><button type="button" class="cat-photo-btn" id="viewerUploadImgBtn" title="Subir nueva foto (se guarda automáticamente en Drive) o pegar con Ctrl+V">📷 Cambiar foto</button><button type="button" class="cat-photo-btn" id="viewerUrlImgBtn" title="Pegar enlace (URL) de una imagen">🔗 Pegar URL</button><button type="button" class="cat-photo-btn hidden" id="viewerRestoreImgBtn" title="Volver a la imagen original del catálogo">🔄 Restaurar original</button><button type="button" class="cat-photo-btn danger-soft" id="viewerRemoveImgBtn" title="Quitar imagen de este material">✕ Quitar foto</button></div><div class="cat-url-box hidden" id="viewerUrlBox"><input type="url" id="viewerUrlInput" placeholder="https://... (pega enlace de imagen o usa Ctrl+V en el visor)"/><button type="button" class="btn primary" id="viewerUrlApplyBtn" style="padding:6px 11px;font-size:12px">Aplicar</button><button type="button" class="btn secondary" id="viewerUrlCancelBtn" style="padding:6px 10px;font-size:12px">Cancelar</button></div></div><span class="cat-in-cart-badge hidden" id="imageViewerInCartBadge">✓ En pedido</span></div><div class="cat-suppliers-box" id="imageViewerSuppliers"></div><div class="cat-warehouse-section"><div class="cat-section-label" id="imageViewerWarehouseLabel">1. Selecciona el almacén (haz clic en una tarjeta)</div><div class="cat-stock-grid" id="imageViewerStockGrid"></div></div><div class="cat-bottom-actions"><div class="cat-active-center-tag" id="imageViewerActiveCenterTag">📍 Almacén: 1003 San Juan</div><div class="cat-order-controls"><div class="cat-qty-group"><input type="number" id="imageViewerQty" class="cat-qty-input" min="0" step="any" placeholder="Cantidad"/><span class="cat-qty-unit-txt" id="imageViewerQtyUnit">UND</span></div><button type="button" class="btn success cat-save-btn" id="imageViewerSaveBtn">💾 Guardar en pedido</button><button type="button" class="btn cat-go-btn hidden" id="imageViewerGoOrderBtn">📋 Ver pedido</button></div></div><div class="cat-viewer-status" id="imageViewerStatus"></div></div></div></div></div></dialog>
 <dialog id="quickAliasDialog" aria-label="Corregir alias e imagen del material">
   <div class="qa-shell">
     <div class="qa-head">
@@ -1332,15 +1326,106 @@ const $=s=>document.querySelector(s);const norm=s=>String(s??'').normalize('NFD'
 function clone(x){return JSON.parse(JSON.stringify(x))}
 function normalizedUnit(material){let d=String(material.description||'').trim().toUpperCase();if(/^(CONDUCTOR|CABLE)\b/.test(d))return 'M';return String(material.unit||'UND').toUpperCase()==='M'?'M':'UND'}
 function deriveInitials(name){let known=DEFAULT_SUPERVISOR_INITIALS[String(name||'').toUpperCase()];if(known)return known;let parts=String(name||'').trim().toUpperCase().split(/\s+/).filter(Boolean);return (parts.length>1?(parts[0][0]+parts.at(-1)[0]):(parts[0]||'').slice(0,2)).toUpperCase()}
-function getMaterialImgSrc(m){if(!m||m._imageDeleted)return '';return String(m.image||m.driveUrl||'').trim();}
-window.getMaterialImgSrc=getMaterialImgSrc;
-function handleMatImgError(imgEl,code){
-  if(!imgEl||imgEl.dataset.fallbackDone==='1')return;
-  imgEl.dataset.fallbackDone='1';
-  const def=(typeof getDefaultBaseImage==='function'?getDefaultBaseImage(code):'')||EMBEDDED_IMAGE_BY_CODE.get(String(code))||'';
-  if(def&&imgEl.getAttribute('src')!==def){
-    imgEl.src=def;
+function extractDriveFileId(u){
+  const s=String(u||'').trim();
+  if(!s)return '';
+  const m1=s.match(/[?&]id=([A-Za-z0-9_-]{10,})/);
+  if(m1)return m1[1];
+  const m2=s.match(/\/file\/d\/([A-Za-z0-9_-]{10,})/);
+  if(m2)return m2[1];
+  const m3=s.match(/googleusercontent\.com\/d\/([A-Za-z0-9_-]{10,})/);
+  if(m3)return m3[1];
+  return '';
+}
+function normalizeDisplayImageUrl(u, driveFileId=''){
+  const s=String(u||'').trim();
+  const fid=extractDriveFileId(s)||String(driveFileId||'').trim();
+  if(fid && (/drive\.google\.com\/(file\/d\/|open\?|uc\?)/i.test(s) || !s)){
+    return `https://drive.google.com/thumbnail?id=${encodeURIComponent(fid)}&sz=w1000`;
   }
+  return s;
+}
+function getMaterialImgSrc(m){
+  if(!m||m._imageDeleted)return '';
+  const def=(typeof getDefaultBaseImage==='function'?getDefaultBaseImage(m.code):'')||(typeof EMBEDDED_IMAGE_BY_CODE!=='undefined'?EMBEDDED_IMAGE_BY_CODE.get(String(m.code)):'')||'';
+  const rawImg=String(m.image||'').trim();
+  const rawDrive=String(m.driveUrl||'').trim();
+  if(!m._imageCustom && def && (!rawImg || isBuiltInCatalogImg(rawImg) || (typeof isDriveImageUrl==='function' && isDriveImageUrl(rawImg)))){
+    return def;
+  }
+  return normalizeDisplayImageUrl(rawImg||rawDrive, m.driveFileId||'');
+}
+window.getMaterialImgSrc=getMaterialImgSrc;
+function buildMaterialImageCandidates(code, excludeSrc=''){
+  const key=String(code||'');
+  const mat=(typeof state!=='undefined'&&Array.isArray(state?.materials))?state.materials.find(x=>String(x.code)===key):null;
+  if(mat&&mat._imageDeleted)return [];
+  const rawList=[];
+  const push=u=>{const v=String(u||'').trim();if(v&&!rawList.includes(v))rawList.push(v);};
+  const fid=(mat&&mat.driveFileId)||extractDriveFileId(mat?.driveUrl)||extractDriveFileId(mat?.image)||'';
+  if(mat){
+    if(mat.image)push(normalizeDisplayImageUrl(mat.image, fid));
+    if(mat.driveUrl)push(normalizeDisplayImageUrl(mat.driveUrl, fid));
+  }
+  if(fid){
+    push(`https://drive.google.com/thumbnail?id=${encodeURIComponent(fid)}&sz=w1000`);
+    push(`https://lh3.googleusercontent.com/d/${encodeURIComponent(fid)}=w1000`);
+  }
+  const def=(typeof getDefaultBaseImage==='function'?getDefaultBaseImage(key):'')||(typeof EMBEDDED_IMAGE_BY_CODE!=='undefined'?EMBEDDED_IMAGE_BY_CODE.get(key):'')||'';
+  if(def)push(def);
+  const ex=String(excludeSrc||'').trim();
+  return rawList.filter(u=>u!==ex);
+}
+window.buildMaterialImageCandidates=buildMaterialImageCandidates;
+function showMatImgFallbackEmpty(imgEl, code){
+  if(!imgEl)return;
+  imgEl.onerror=null;
+  if(imgEl.id==='qaImgPreview'){
+    imgEl.classList.add('hidden');
+    document.getElementById('qaImgEmpty')?.classList.remove('hidden');
+    return;
+  }
+  if(imgEl.id==='imageViewerImg'){
+    imgEl.classList.add('hidden');
+    imgEl.style.display='none';
+    const noImg=document.getElementById('imageViewerNoImg');
+    if(noImg){noImg.classList.remove('hidden');noImg.style.display='flex';}
+    document.getElementById('imageViewerZoomBtn')?.classList.add('hidden');
+    return;
+  }
+  if(imgEl.classList.contains('mat-thumb-img')){
+    const ph=document.createElement('span');
+    ph.className='small mat-img-fallback-ph';
+    ph.style.cssText='display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border:1px dashed var(--line);border-radius:6px;color:var(--muted);font-size:10px;cursor:pointer';
+    ph.textContent='Sin foto';
+    ph.setAttribute('data-open-image',String(code||''));
+    imgEl.replaceWith(ph);
+    return;
+  }
+  const span=document.createElement('span');
+  span.className='cursor-pointer mat-img-fallback-ph';
+  span.setAttribute('data-open-image',String(code||''));
+  span.title='Abrir visor de material';
+  span.textContent='Sin foto';
+  imgEl.replaceWith(span);
+}
+function handleMatImgError(imgEl,code){
+  if(!imgEl)return;
+  let tried=[];
+  try{tried=JSON.parse(imgEl.dataset.imgTried||'[]');}catch(_){tried=[];}
+  const curAttr=String(imgEl.getAttribute('src')||'').trim();
+  if(curAttr&&!tried.includes(curAttr))tried.push(curAttr);
+  if(imgEl.src&&!tried.includes(imgEl.src))tried.push(imgEl.src);
+  const candidates=buildMaterialImageCandidates(code).filter(u=>!tried.includes(u));
+  if(candidates.length){
+    const nextUrl=candidates[0];
+    tried.push(nextUrl);
+    imgEl.dataset.imgTried=JSON.stringify(tried);
+    imgEl.src=nextUrl;
+    return;
+  }
+  imgEl.dataset.fallbackDone='1';
+  showMatImgFallbackEmpty(imgEl, code);
 }
 window.handleMatImgError=handleMatImgError;
 function migrateState(x){x=x&&Array.isArray(x.materials)?x:clone(BASE_DATA);let baseByCode=new Map(BASE_DATA.materials.map(m=>[String(m.code),m]));x.materials.forEach(m=>{m.unit=normalizedUnit(m);let b=baseByCode.get(String(m.code));let own=Array.isArray(m.aliases)?m.aliases:[];let fallbackImg=(b&&String(b.image||'').trim())||EMBEDDED_IMAGE_BY_CODE.get(String(m.code))||'';if(b){let fresh=Array.isArray(b.aliases)?b.aliases:[];let sourceAliases=m._aliasesEdited?own:[...own,...fresh];m.aliases=[...new Set(sourceAliases.map(a=>String(a).trim().toUpperCase()).filter(a=>a&&!['3','UND','UN','L','0','10','GG01'].includes(a)))];if(!m.description)m.description=b.description;}else{m.aliases=[...new Set(own.map(a=>String(a).trim().toUpperCase()).filter(Boolean))];}if(m._imageDeleted){m.image='';m.driveUrl='';m.driveFileId='';}else if(!m._imageCustom&&fallbackImg&&(/\?v=461$/i.test(fallbackImg)||(isBuiltInCatalogImg(m.image)&&(!String(m.driveUrl||'').trim()||/^\/material-images\//i.test(String(m.image||'')))))){if(m.image!==fallbackImg){m.image=fallbackImg;if(/\?v=461$/i.test(fallbackImg)){m.imageDriveUrl=fallbackImg;m.driveUrl='';}else{m._imagePendingDrive=true;}}}});for(let b of BASE_DATA.materials){if(!x.materials.some(m=>String(m.code)===String(b.code))){let nb=clone(b);if(!nb._imageDeleted&&!nb._imageCustom&&isBuiltInCatalogImg(nb.image)){const embImg=EMBEDDED_IMAGE_BY_CODE.get(String(nb.code));if(embImg&&nb.image!==embImg)nb.image=embImg;}x.materials.push(nb);}}x.supervisors=Array.isArray(x.supervisors)?x.supervisors:[];x.supervisorInitials={...DEFAULT_SUPERVISOR_INITIALS,...(x.supervisorInitials||{})};x.supervisors.forEach(n=>{if(!x.supervisorInitials[n])x.supervisorInitials[n]=deriveInitials(n)});x.templates=Array.isArray(x.templates)?x.templates:[];x.userAccounts=Array.isArray(x.userAccounts)?x.userAccounts:[];x.deletedUserIds=Array.isArray(x.deletedUserIds)?x.deletedUserIds:[];x.authLogs=Array.isArray(x.authLogs)?x.authLogs:[];x.authSettings={...(x.authSettings&&typeof x.authSettings==='object'?x.authSettings:{}),requireLogin:true,allowGuest:false};return x}
@@ -2075,15 +2160,17 @@ function saveNewMatricula(){
     state.materials[existingIndex]._aliasesEdited=true;
     if(state.materials[existingIndex].image!==newMatImage){
       state.materials[existingIndex].image=newMatImage;
+      state.materials[existingIndex]._imageCustom=Boolean(newMatImage && newMatImage!==getDefaultBaseImage(c));
+      state.materials[existingIndex]._imageDeleted=!newMatImage;
       state.materials[existingIndex]._imagePendingDrive=Boolean(newMatImage);
     }
     state.materials[existingIndex].source='MANUAL';
   }else{
-    state.materials.push({code:c,description:d,unit:u,aliases,_aliasesEdited:true,priority:p,image:newMatImage,_imagePendingDrive:Boolean(newMatImage),source:'MANUAL'});
+    state.materials.push({code:c,description:d,unit:u,aliases,_aliasesEdited:true,priority:p,image:newMatImage,_imageCustom:Boolean(newMatImage),_imageDeleted:!newMatImage,_imagePendingDrive:Boolean(newMatImage),source:'MANUAL'});
   }
   state.materials.sort((x,y)=>x.description.localeCompare(y.description,'es'));
   save();
-  if(newMatImage && newMatImage.startsWith('data:image/') && typeof uploadMaterialImageToDrive==='function'){
+  if(newMatImage && newMatImage !== getDefaultBaseImage(c) && typeof uploadMaterialImageToDrive==='function'){
     uploadMaterialImageToDrive(c, newMatImage).catch(()=>{});
   }
   renderResults();
@@ -2267,23 +2354,13 @@ function getDefaultBaseImage(code){
 function countPendingDrivePhotos(){
   return (state.materials || []).filter(m => {
     if(!m || m._imageDeleted) return false;
-    const src = getMaterialImgSrc(m);
-    if(!src) return false;
-    return !isDriveImageUrl(m.driveUrl) || !m.driveFileId || !!m._imagePendingDrive;
+    if(!m._imageCustom || !m._imagePendingDrive) return false;
+    return Boolean(getMaterialImgSrc(m));
   }).length;
 }
 
 function updateSearchPhotoSyncButton(){
-  const btn = document.getElementById('searchSyncDrivePhotosBtn');
-  if(!btn) return;
-  const cfg = typeof syncConfig === 'function' ? syncConfig() : {};
-  const pending = countPendingDrivePhotos();
-  if(cfg.url && pending > 0){
-    btn.classList.remove('hidden');
-    btn.textContent = `☁️ Guardar fotos en Drive (${pending})`;
-  }else{
-    btn.classList.add('hidden');
-  }
+  // Las fotos personalizadas se guardan automáticamente en Drive al subirlas; sin botón manual en UI.
 }
 window.updateSearchPhotoSyncButton = updateSearchPhotoSyncButton;
 
@@ -2295,11 +2372,18 @@ async function imageSrcToWebpDataUrl(src, maxDim = 600){
   let revokeUrl = '';
   try{
     if(!raw.startsWith('data:') && !raw.startsWith('blob:')){
+      const isSameOrigin = raw.startsWith('/') || raw.startsWith(window.location.origin);
       const resp = await fetch(raw, { mode: 'cors' }).catch(() => null);
-      if(resp && resp.ok){
+      if(resp){
+        if(!resp.ok){
+          if(isSameOrigin) return '';
+          throw new Error(`HTTP ${resp.status}`);
+        }
         const blob = await resp.blob();
         loadUrl = URL.createObjectURL(blob);
         revokeUrl = loadUrl;
+      } else if(isSameOrigin) {
+        return '';
       }
     }
     return await new Promise((resolve, reject) => {
@@ -2343,6 +2427,7 @@ window.imageSrcToWebpDataUrl = imageSrcToWebpDataUrl;
 
 async function uploadMaterialImageToDrive(code, dataUrlOrSrc, options = {}){
   const silent = !!options.silent;
+  const skipRender = !!options.skipRender;
   const mat = (state.materials || []).find(x => String(x.code) === String(code));
   const source = dataUrlOrSrc || getMaterialImgSrc(mat);
   if(!mat || !source || mat._imageDeleted) return false;
@@ -2360,7 +2445,7 @@ async function uploadMaterialImageToDrive(code, dataUrlOrSrc, options = {}){
     const uploadDataUrl = await imageSrcToWebpDataUrl(source, 600);
     if(!uploadDataUrl || !uploadDataUrl.startsWith('data:image/')){
       if(isDriveImageUrl(source) && !mat._imagePendingDrive) return true;
-      throw new Error('La URL externa no permite lectura directa; descarga y súbela como archivo.');
+      throw new Error('No se pudo leer la imagen origen para subirla a Drive.');
     }
     try{
       const j = await callGoogleScript('saveImage', 'POST', { action: 'saveImage', token: cfg.token, code: String(code), image: uploadDataUrl });
@@ -2370,9 +2455,11 @@ async function uploadMaterialImageToDrive(code, dataUrlOrSrc, options = {}){
       if(typeof _save === 'function') _save();
       else localStorage.setItem(KEY, JSON.stringify(state));
       updateSearchPhotoSyncButton();
-      if(typeof renderMaterialsExcelTable === 'function') renderMaterialsExcelTable();
-      if(typeof renderResults === 'function') renderResults();
-      if(typeof window.refreshOpenViewerPhoto === 'function') window.refreshOpenViewerPhoto(code);
+      if(!skipRender){
+        if(typeof renderMaterialsExcelTable === 'function') renderMaterialsExcelTable();
+        if(typeof renderResults === 'function') renderResults();
+        if(typeof window.refreshOpenViewerPhoto === 'function') window.refreshOpenViewerPhoto(code);
+      }
       if(!silent && typeof msg === 'function') msg(`☁️ Foto del material ${code} guardada en Google Drive.`);
       return true;
     }catch(saveImgErr){
@@ -2386,9 +2473,11 @@ async function uploadMaterialImageToDrive(code, dataUrlOrSrc, options = {}){
           if(typeof _save === 'function') _save();
           else localStorage.setItem(KEY, JSON.stringify(state));
           updateSearchPhotoSyncButton();
-          if(typeof renderMaterialsExcelTable === 'function') renderMaterialsExcelTable();
-          if(typeof renderResults === 'function') renderResults();
-          if(typeof window.refreshOpenViewerPhoto === 'function') window.refreshOpenViewerPhoto(code);
+          if(!skipRender){
+            if(typeof renderMaterialsExcelTable === 'function') renderMaterialsExcelTable();
+            if(typeof renderResults === 'function') renderResults();
+            if(typeof window.refreshOpenViewerPhoto === 'function') window.refreshOpenViewerPhoto(code);
+          }
           if(!silent && typeof msg === 'function') msg(`☁️ Foto del material ${code} guardada en tu Google Drive.`);
           return true;
         }
@@ -2401,8 +2490,10 @@ async function uploadMaterialImageToDrive(code, dataUrlOrSrc, options = {}){
     if(typeof _save === 'function') _save();
     else localStorage.setItem(KEY, JSON.stringify(state));
     updateSearchPhotoSyncButton();
-    if(typeof renderMaterialsExcelTable === 'function') renderMaterialsExcelTable();
-    if(typeof window.refreshOpenViewerPhoto === 'function') window.refreshOpenViewerPhoto(code);
+    if(!skipRender){
+      if(typeof renderMaterialsExcelTable === 'function') renderMaterialsExcelTable();
+      if(typeof window.refreshOpenViewerPhoto === 'function') window.refreshOpenViewerPhoto(code);
+    }
     if(!silent && typeof msg === 'function') msg(`⚠️ Foto guardada localmente. No se pudo subir a Drive aún (${err.message || err}).`, true);
     return false;
   }
@@ -2497,56 +2588,38 @@ function removeMaterialImage(code){
 }
 window.removeMaterialImage = removeMaterialImage;
 
-async function syncAllPhotosToDrive(triggerBtn = null){
-  const excelBtn = document.getElementById('matExcelSyncPhotosBtn');
-  const viewerBtn = document.getElementById('viewerSyncDriveBtn');
-  const searchBtn = document.getElementById('searchSyncDrivePhotosBtn');
-  const btns = [excelBtn, viewerBtn, searchBtn, triggerBtn].filter((b, i, arr) => b && arr.indexOf(b) === i);
+let _flushingPendingPhotos = false;
+async function flushPendingCustomPhotosToDrive(){
+  if(_flushingPendingPhotos || !navigator.onLine) return 0;
   if(typeof ensureConfigReady === 'function') await ensureConfigReady();
   const cfg = typeof syncConfig === 'function' ? syncConfig() : {};
-  if(!cfg.url){
-    return msg('Google Apps Script no está configurado todavía en Administración > Google Drive.', true);
-  }
-  if(!navigator.onLine){
-    return msg('No hay conexión a internet para subir fotos a Drive.', true);
-  }
+  if(!cfg.url) return 0;
   const toUpload = (state.materials || []).filter(m => {
     if(!m || m._imageDeleted) return false;
-    const src = getMaterialImgSrc(m);
-    if(!src) return false;
-    return !isDriveImageUrl(m.driveUrl) || !m.driveFileId || !!m._imagePendingDrive;
+    if(!m._imageCustom || !m._imagePendingDrive) return false;
+    return Boolean(getMaterialImgSrc(m));
   });
-  if(!toUpload.length){
-    await syncToDrive({ isManual: true });
-    updateSearchPhotoSyncButton();
-    if(typeof window.refreshOpenViewerPhoto === 'function') window.refreshOpenViewerPhoto();
-    return msg('☁️ Todas las fotos ya están sincronizadas con tu Google Drive.');
-  }
-  const origTexts = btns.map(b => b.textContent);
-  btns.forEach(b => { b.disabled = true; b.textContent = `Subiendo (0/${toUpload.length})...`; });
+  if(!toUpload.length) return 0;
+  _flushingPendingPhotos = true;
   let okCount = 0;
   try{
-    for(let i = 0; i < toUpload.length; i++){
-      const m = toUpload[i];
-      btns.forEach(b => { b.textContent = `Subiendo (${i+1}/${toUpload.length})...`; });
-      const ok = await uploadMaterialImageToDrive(m.code, getMaterialImgSrc(m), { silent: true });
+    for(const m of toUpload){
+      const ok = await uploadMaterialImageToDrive(m.code, getMaterialImgSrc(m), { silent: true, skipRender: true });
       if(ok) okCount++;
     }
     if(okCount > 0){
-      btns.forEach(b => { b.textContent = 'Actualizando respaldo en Drive...'; });
-      await syncToDrive({ isManual: true });
+      if(typeof syncToDrive === 'function') await syncToDrive({ isManual: false });
+      if(typeof renderMaterialsExcelTable === 'function') renderMaterialsExcelTable();
+      if(typeof renderResults === 'function') renderResults();
+      if(typeof window.refreshOpenViewerPhoto === 'function') window.refreshOpenViewerPhoto();
     }
-    updateSearchPhotoSyncButton();
-    if(typeof renderMaterialsExcelTable === 'function') renderMaterialsExcelTable();
-    if(typeof renderResults === 'function') renderResults();
-    if(typeof window.refreshOpenViewerPhoto === 'function') window.refreshOpenViewerPhoto();
-    msg(`☁️ ${okCount} de ${toUpload.length} foto(s) sincronizadas con Google Drive.`, okCount === 0);
+    return okCount;
   }finally{
-    btns.forEach((b, idx) => { b.disabled = false; b.textContent = origTexts[idx] || '☁️ Subir fotos a Drive'; });
-    updateSearchPhotoSyncButton();
+    _flushingPendingPhotos = false;
   }
 }
-window.syncAllPhotosToDrive = syncAllPhotosToDrive;
+window.flushPendingCustomPhotosToDrive = flushPendingCustomPhotosToDrive;
+window.syncAllPhotosToDrive = flushPendingCustomPhotosToDrive;
 
 function saveAllExcelMaterials(){
   state.materials = state.materials.filter(m => {
@@ -2650,6 +2723,10 @@ function renderMaterialsExcelTable(){
     const imgSrc = getMaterialImgSrc(m);
     const hasImg = !!(imgSrc && imgSrc.length > 5);
     const isDriveSynced = hasImg && !m._imagePendingDrive && (Boolean(m.driveFileId || m.driveUrl) || isDriveImageUrl(imgSrc));
+    const showPendingBadge = Boolean(hasImg && m._imageCustom && m._imagePendingDrive);
+    const photoStatusBadge = isDriveSynced
+      ? '<span class="mat-drive-badge synced">☁️ Drive</span>'
+      : (showPendingBadge ? '<span class="mat-drive-badge pending">⏳ En cola</span>' : '');
     const canRestoreDefault = Boolean((m._imageCustom || m._imageDeleted) && getDefaultBaseImage(m.code));
     const aliases = m.aliases || [];
     const isNew = !!m._isNew;
@@ -2657,9 +2734,9 @@ function renderMaterialsExcelTable(){
     const imgCell = hasImg
       ? `<div class="mat-photo-cell">
            <img class="mat-thumb-img" src="${esc(imgSrc)}" alt="${esc(m.code)}" referrerpolicy="no-referrer" onerror="handleMatImgError(this,'${esc(m.code)}')" data-open-image="${esc(m.code)}" title="Tocar para ver en grande"/>
-           <span class="mat-drive-badge ${isDriveSynced ? 'synced' : 'pending'}">${isDriveSynced ? '☁️ Drive' : '📱 Local'}</span>
+           ${photoStatusBadge}
            <div style="display:flex;gap:3px">
-             <button type="button" class="btn secondary" style="padding:2px 5px;font-size:10px;line-height:1" data-mat-upload="${esc(m.code)}" title="Cambiar foto">📷</button>
+             <button type="button" class="btn secondary" style="padding:2px 5px;font-size:10px;line-height:1" data-mat-upload="${esc(m.code)}" title="Cambiar foto (se guarda en Drive)">📷</button>
              ${canRestoreDefault ? `<button type="button" class="btn secondary" style="padding:2px 5px;font-size:10px;line-height:1" data-mat-restore-photo="${esc(m.code)}" title="Restaurar foto original">🔄</button>` : ''}
              <button type="button" class="btn danger" style="padding:2px 5px;font-size:10px;line-height:1" data-mat-remove-photo="${esc(m.code)}" title="Eliminar foto">✕</button>
            </div>
@@ -3047,11 +3124,21 @@ function renderQuickAliasPhoto(){
   if(!m) return;
   const src = getMaterialImgSrc(m);
   if(src){
-    if(imgEl){ imgEl.src = src; imgEl.classList.remove('hidden'); }
+    if(imgEl){
+      delete imgEl.dataset.imgTried;
+      delete imgEl.dataset.fallbackDone;
+      imgEl.onload = () => {
+        imgEl.classList.remove('hidden');
+        if(emptyEl) emptyEl.classList.add('hidden');
+      };
+      imgEl.onerror = () => handleMatImgError(imgEl, m.code);
+      imgEl.src = src;
+      imgEl.classList.remove('hidden');
+    }
     if(emptyEl) emptyEl.classList.add('hidden');
     if(removeBtn) removeBtn.classList.remove('hidden');
   }else{
-    if(imgEl) imgEl.classList.add('hidden');
+    if(imgEl){ imgEl.onerror = null; imgEl.removeAttribute('src'); imgEl.classList.add('hidden'); }
     if(emptyEl) emptyEl.classList.remove('hidden');
     if(removeBtn) removeBtn.classList.add('hidden');
   }
@@ -3060,7 +3147,8 @@ function renderQuickAliasPhoto(){
   if(urlInp) urlInp.value = /^https?:\/\//i.test(src) ? src : '';
   if(stateEl){
     const synced = src && !m._imagePendingDrive && (Boolean(m.driveFileId || m.driveUrl) || isDriveImageUrl(src));
-    stateEl.textContent = !src ? '' : (synced ? '· ☁️ En Drive' : '· 📱 Local (pendiente de Drive)');
+    const pendingCustom = src && m._imageCustom && m._imagePendingDrive;
+    stateEl.textContent = !src ? '' : (synced ? '· ☁️ Guardada en Drive' : (pendingCustom ? '· ⏳ Se guardará en Drive al reconectar' : ''));
   }
 }
 
@@ -3801,7 +3889,7 @@ async function restoreFromDrive(options={}){
 
 const _save=save;save=function(){_save();scheduleDriveSync(900,'app')}
 const _importStock=importStock;importStock=async function(){await _importStock()}
-window.addEventListener('online',()=>{renderSyncState();let cfg=syncConfig();if(cfg.pending&&cfg.url)syncToDrive({isManual:false})});window.addEventListener('offline',renderSyncState);
+window.addEventListener('online',()=>{renderSyncState();let cfg=syncConfig();if(cfg.pending&&cfg.url)syncToDrive({isManual:false});if(typeof flushPendingCustomPhotosToDrive==='function')flushPendingCustomPhotosToDrive();});window.addEventListener('offline',renderSyncState);
 
 setTimeout(async ()=>{
   await ensureConfigReady();
@@ -7602,7 +7690,7 @@ html[data-theme="dark"] .admin-change-pass-box{background:#13263e;border-color:#
   window.addEventListener('load',()=>setTimeout(reorderOrderFields,250));
 
   const viewer=qs('#materialImageViewer'),viewerImg=qs('#imageViewerImg'),viewerNoImg=qs('#imageViewerNoImg'),viewerZoomBtn=qs('#imageViewerZoomBtn'),viewerCode=qs('#imageViewerCode'),viewerDesc=qs('#imageViewerDesc'),viewerCodeFoot=qs('#imageViewerCodeFoot'),viewerDescFoot=qs('#imageViewerDescFoot'),viewerUnitFoot=qs('#imageViewerUnitFoot'),viewerCounter=qs('#imageViewerCounter'),viewerStockGrid=qs('#imageViewerStockGrid'),viewerInCartBadge=qs('#imageViewerInCartBadge'),viewerActiveCenterTag=qs('#imageViewerActiveCenterTag'),viewerWarehouseLabel=qs('#imageViewerWarehouseLabel'),viewerSuppliers=qs('#imageViewerSuppliers'),viewerQty=qs('#imageViewerQty'),viewerQtyUnit=qs('#imageViewerQtyUnit'),viewerSaveBtn=qs('#imageViewerSaveBtn'),viewerGoOrderBtn=qs('#imageViewerGoOrderBtn'),viewerStatus=qs('#imageViewerStatus'),viewerSearch=qs('#imageViewerSearch'),viewerSearchClear=qs('#imageViewerSearchClear'),viewerOnlyImg=qs('#imageViewerOnlyWithImg');
-  const viewerPhotoFileInput=qs('#viewerPhotoFileInput'),viewerUploadImgBtn=qs('#viewerUploadImgBtn'),viewerUrlImgBtn=qs('#viewerUrlImgBtn'),viewerRestoreImgBtn=qs('#viewerRestoreImgBtn'),viewerRemoveImgBtn=qs('#viewerRemoveImgBtn'),viewerSyncDriveBtn=qs('#viewerSyncDriveBtn'),viewerUrlBox=qs('#viewerUrlBox'),viewerUrlInput=qs('#viewerUrlInput'),viewerUrlApplyBtn=qs('#viewerUrlApplyBtn'),viewerUrlCancelBtn=qs('#viewerUrlCancelBtn');
+  const viewerPhotoFileInput=qs('#viewerPhotoFileInput'),viewerUploadImgBtn=qs('#viewerUploadImgBtn'),viewerUrlImgBtn=qs('#viewerUrlImgBtn'),viewerRestoreImgBtn=qs('#viewerRestoreImgBtn'),viewerRemoveImgBtn=qs('#viewerRemoveImgBtn'),viewerUrlBox=qs('#viewerUrlBox'),viewerUrlInput=qs('#viewerUrlInput'),viewerUrlApplyBtn=qs('#viewerUrlApplyBtn'),viewerUrlCancelBtn=qs('#viewerUrlCancelBtn');
   let gallery=[],galleryIndex=0,activeViewerCenter='1003';
 
   const SUPPLIERS_MT=[
@@ -7941,19 +8029,6 @@ html[data-theme="dark"] .admin-change-pass-box{background:#13263e;border-color:#
     const isModified = Boolean(mat && (mat._imageCustom || mat._imageDeleted));
     if(viewerRestoreImgBtn) viewerRestoreImgBtn.classList.toggle('hidden', !(hasDef && isModified));
     if(viewerRemoveImgBtn) viewerRemoveImgBtn.classList.toggle('hidden', !hasImg);
-    if(viewerSyncDriveBtn){
-      const cfg = typeof syncConfig === 'function' ? syncConfig() : {};
-      const pendingAll = typeof countPendingDrivePhotos === 'function' ? countPendingDrivePhotos() : 0;
-      const curSynced = hasImg && mat && !mat._imagePendingDrive && (Boolean(mat.driveFileId || mat.driveUrl) || (typeof isDriveImageUrl === 'function' && isDriveImageUrl(curImg)));
-      viewerSyncDriveBtn.classList.toggle('is-synced', Boolean(curSynced && pendingAll === 0));
-      if(!cfg.url){
-        viewerSyncDriveBtn.textContent = '☁️ Drive sin configurar';
-      }else if(pendingAll > 0){
-        viewerSyncDriveBtn.textContent = `☁️ Guardar fotos en Drive (${pendingAll})`;
-      }else{
-        viewerSyncDriveBtn.textContent = '☁️ Sincronizado en Drive';
-      }
-    }
   }
 
   window.refreshOpenViewerPhoto = function(code){
@@ -7989,18 +8064,34 @@ html[data-theme="dark"] .admin-change-pass-box{background:#13263e;border-color:#
     if(viewerUrlBox) viewerUrlBox.classList.add('hidden');
     if(m.image){
       if(viewerImg){
-        viewerImg.src=m.image;
-        viewerImg.classList.remove('hidden');
-        viewerImg.style.display='block';
-        viewerImg.onerror = () => {
-          const matObj = (state?.materials || []).find(x => String(x.code) === String(m.code));
-          const def = typeof getDefaultBaseImage === 'function' ? getDefaultBaseImage(m.code) : '';
-          if(matObj && matObj.image && viewerImg.src !== matObj.image && !matObj.image.startsWith('http')){
-            viewerImg.src = matObj.image;
-          } else if(def && viewerImg.src.indexOf(def) < 0 && !matObj?._imageCustom){
-            viewerImg.src = def;
+        delete viewerImg.dataset.imgTried;
+        delete viewerImg.dataset.fallbackDone;
+        viewerImg.onload = () => {
+          viewerImg.classList.remove('hidden');
+          viewerImg.style.display = 'block';
+          if(viewerZoomBtn) viewerZoomBtn.classList.remove('hidden');
+          if(viewerNoImg){
+            viewerNoImg.classList.add('hidden');
+            viewerNoImg.style.display = 'none';
           }
         };
+        viewerImg.onerror = () => {
+          if(typeof handleMatImgError === 'function'){
+            handleMatImgError(viewerImg, m.code);
+          }else{
+            viewerImg.onerror = null;
+            viewerImg.classList.add('hidden');
+            viewerImg.style.display = 'none';
+            if(viewerZoomBtn) viewerZoomBtn.classList.add('hidden');
+            if(viewerNoImg){
+              viewerNoImg.classList.remove('hidden');
+              viewerNoImg.style.display = 'flex';
+            }
+          }
+        };
+        viewerImg.src = m.image;
+        viewerImg.classList.remove('hidden');
+        viewerImg.style.display = 'block';
       }
       if(viewerZoomBtn) viewerZoomBtn.classList.remove('hidden');
       if(viewerNoImg){
@@ -8009,6 +8100,8 @@ html[data-theme="dark"] .admin-change-pass-box{background:#13263e;border-color:#
       }
     }else{
       if(viewerImg){
+        viewerImg.onerror = null;
+        viewerImg.removeAttribute('src');
         viewerImg.classList.add('hidden');
         viewerImg.style.display='none';
       }
@@ -8259,9 +8352,10 @@ html[data-theme="dark"] .admin-change-pass-box{background:#13263e;border-color:#
       return;
     }
     viewerUrlBox?.classList.add('hidden');
-    setViewerStatus(`⏳ Guardando imagen desde URL para ${m.code}...`, false);
+    setViewerStatus(`⏳ Guardando imagen desde URL en Google Drive para ${m.code}...`, false);
     await setMaterialCustomImage(m.code, url, { silent: true });
-    setViewerStatus(`✅ Imagen actualizada para ${m.code}.`, false);
+    const cfg = typeof syncConfig === 'function' ? syncConfig() : {};
+    setViewerStatus(cfg.url ? `✅ Imagen actualizada para ${m.code} y guardada en Drive.` : `✅ Imagen actualizada para ${m.code}.`, false);
   });
   viewerUrlInput?.addEventListener('keydown', e => {
     if(e.key === 'Enter'){ e.preventDefault(); viewerUrlApplyBtn?.click(); }
@@ -8278,10 +8372,6 @@ html[data-theme="dark"] .admin-change-pass-box{background:#13263e;border-color:#
     if(!m) return;
     removeMaterialImage(m.code);
     setViewerStatus(`✕ Foto quitada para ${m.code}. Puedes subir otra cuando quieras.`, false);
-  });
-  viewerSyncDriveBtn?.addEventListener('click', async () => {
-    await syncAllPhotosToDrive(viewerSyncDriveBtn);
-    if(gallery.length) updateViewerPhotoControls(gallery[galleryIndex]);
   });
   viewer?.addEventListener('paste', async e => {
     if(!viewer?.open || !gallery.length) return;
@@ -8437,14 +8527,22 @@ html[data-theme="dark"] .admin-change-pass-box{background:#13263e;border-color:#
 
   function applyAdminVisibility(){
     const admin=isAdmin();
+    const primaryAdmin=hasPrimaryAdminSession();
     document.body.classList.toggle('v439-admin-mode',admin);
     protectedElements().forEach(el=>el.classList.toggle('admin-only-hidden',!admin));
     const btn=qs('#adminAccessBtn');
     if(btn){
       btn.classList.toggle('active',admin);
-      btn.textContent=admin?'🔓 Administrador activo':'🔐 Administrador';
-      btn.title=hasPrimaryAdminSession()?'Cuenta con privilegios de Administrador activos. Haz clic para abrir Gestión de Usuarios.':'Modo Administrador activo. Haz clic para bloquear pestañas de administración.';
-      if(!admin)btn.title='Ingresar contraseña de administrador para desbloquear pestañas';
+      if(primaryAdmin){
+        btn.textContent='👥 Gestionar usuarios';
+        btn.title='Gestionar todos los usuarios, roles y permisos';
+      }else if(admin){
+        btn.textContent='🔓 Salir modo admin';
+        btn.title='Bloquear pestañas de administración';
+      }else{
+        btn.textContent='🔐 Administrador';
+        btn.title='Ingresar contraseña de administrador para desbloquear pestañas';
+      }
     }
   }
 
@@ -9319,14 +9417,14 @@ html[data-theme="dark"] .v45-op-card.active{background:#1e293b}
   font-weight:700!important;
 }
 .v46-user-session-btn.logged-in{
-  background:#ecfdf5!important;
-  color:#047857!important;
-  border-color:#6ee7b7!important;
+  background:#eef4fa!important;
+  color:var(--navy)!important;
+  border-color:#b8ceea!important;
 }
 html[data-theme="dark"] .v46-user-session-btn.logged-in{
-  background:#064e3b!important;
-  color:#a7f3d0!important;
-  border-color:#10b981!important;
+  background:#17324f!important;
+  color:#e2e8f0!important;
+  border-color:#31577c!important;
 }
 
 /* 2. Plantillas en buscador */
@@ -10880,14 +10978,7 @@ html[data-theme="dark"] .v47-force-pw-box{background:#451a03;color:#fde68a;borde
 
   function updateLoginFirstAccessHint(){
     const noteEl = document.getElementById('entFirstAccessNote');
-    if(!noteEl) return;
-    const users = ensureUsersState();
-    const rootAdmin = users.find(u => u.username === 'ADMIN' && u.isDefaultSeed);
-    const isSeed = Boolean(window.__bmOnlyRootSeed) || (rootAdmin && users.length === 1) || users.length === 0;
-    if(isSeed){
-      noteEl.innerHTML = 'Primer acceso de configuración: Usuario <b>ADMIN</b> · Contraseña inicial <b>1234</b>.<br>Al ingresar se te pedirá cambiar la clave inicial por seguridad.';
-      noteEl.classList.remove('hidden');
-    } else {
+    if(noteEl){
       noteEl.classList.add('hidden');
       noteEl.innerHTML = '';
     }
@@ -11064,7 +11155,8 @@ html[data-theme="dark"] .v47-force-pw-box{background:#451a03;color:#fde68a;borde
       const admBtn = document.getElementById('adminAccessBtn');
       if(admBtn){
         admBtn.classList.add('active');
-        admBtn.textContent = '🔓 Administrador activo';
+        admBtn.textContent = '👥 Gestionar usuarios';
+        admBtn.title = 'Gestionar todos los usuarios, roles y permisos';
       }
     }else{
       const elevated = sessionStorage.getItem(ADMIN_SESSION_KEY) === '1';
@@ -11073,7 +11165,8 @@ html[data-theme="dark"] .v47-force-pw-box{background:#451a03;color:#fde68a;borde
       const admBtn = document.getElementById('adminAccessBtn');
       if(admBtn){
         admBtn.classList.toggle('active', elevated);
-        admBtn.textContent = elevated ? '🔓 Administrador activo' : '🔐 Administrador';
+        admBtn.textContent = elevated ? '🔓 Salir modo admin' : '🔐 Administrador';
+        admBtn.title = elevated ? 'Bloquear pestañas de administración' : 'Ingresar contraseña de administrador para desbloquear pestañas';
       }
     }
   }
@@ -11117,8 +11210,8 @@ html[data-theme="dark"] .v47-force-pw-box{background:#451a03;color:#fde68a;borde
     const s = getActiveUserSession();
     if(s){
       btn.classList.add('logged-in');
-      btn.textContent = `${s.role === 'admin' ? '🛡️' : '👤'} ${s.username}`;
-      btn.title = `Sesión iniciada como ${s.fullName || s.username}. Clic para ver cuenta, cambiar contraseña o cerrar sesión.`;
+      btn.textContent = s.role === 'admin' ? '👤 Mi cuenta' : `👤 ${s.username}`;
+      btn.title = `Sesión iniciada como ${s.fullName || s.username}. Clic para ver tu perfil, cambiar contraseña o cerrar sesión.`;
     }else{
       btn.classList.remove('logged-in');
       btn.textContent = '🔒 Acceso requerido';
@@ -11141,32 +11234,41 @@ html[data-theme="dark"] .v47-force-pw-box{background:#451a03;color:#fde68a;borde
     }, 60);
   }
 
+  let __bmLogoutInFlight = false;
   async function logoutUserSession(reason = 'manual'){
-    const prev = getActiveUserSession();
+    if(__bmLogoutInFlight) return;
+    __bmLogoutInFlight = true;
     try{
-      await fetch('/api/auth/logout', {
-        method: 'POST',
-        headers: authFetchHeaders(),
-        body: JSON.stringify({ reason })
-      });
-    }catch(_){}
-    if(prev){
-      const ev = reason === 'inactivity' ? 'CIERRE_INACTIVIDAD' : 'CIERRE_SESION';
-      const detail = reason === 'inactivity' ? 'Cierre automático por inactividad' : 'Cierre de sesión manual';
-      addAuthLog(ev, prev, detail, prev.username);
-    }
-    setAuthBearer('');
-    setActiveUserSession(null);
-    closeUserAuthDialog(true);
-    const activeView = document.querySelector('.view.active')?.id;
-    if(['newMatView','supView','unitsView','historyView','usersView'].includes(activeView) && typeof showView === 'function'){
-      showView('searchView');
-    }
-    focusEnterpriseLogin();
-    if(typeof msg === 'function'){
-      msg(reason === 'inactivity'
-        ? '🔒 Sesión cerrada automáticamente por inactividad.'
-        : 'Sesión cerrada correctamente.', reason === 'inactivity');
+      const prev = getActiveUserSession();
+      let serverLogged = false;
+      try{
+        const r = await fetch('/api/auth/logout', {
+          method: 'POST',
+          headers: authFetchHeaders(),
+          body: JSON.stringify({ reason })
+        });
+        serverLogged = Boolean(r && r.ok);
+      }catch(_){}
+      if(prev && !serverLogged){
+        const ev = reason === 'inactivity' ? 'CIERRE_INACTIVIDAD' : 'CIERRE_SESION';
+        const detail = reason === 'inactivity' ? 'Cierre automático por inactividad' : 'Cierre de sesión manual';
+        addAuthLog(ev, prev, detail, prev.username);
+      }
+      setAuthBearer('');
+      setActiveUserSession(null);
+      closeUserAuthDialog(true);
+      const activeView = document.querySelector('.view.active')?.id;
+      if(['newMatView','supView','unitsView','historyView','usersView'].includes(activeView) && typeof showView === 'function'){
+        showView('searchView');
+      }
+      focusEnterpriseLogin();
+      if(typeof msg === 'function'){
+        msg(reason === 'inactivity'
+          ? '🔒 Sesión cerrada automáticamente por inactividad.'
+          : 'Sesión cerrada correctamente.', reason === 'inactivity');
+      }
+    }finally{
+      __bmLogoutInFlight = false;
     }
   }
 
@@ -11528,7 +11630,11 @@ html[data-theme="dark"] .v47-force-pw-box{background:#451a03;color:#fde68a;borde
         </div>
       </div>
 
-      <div class="v46-users-table-wrap" style="margin-bottom:18px">
+      <div class="v46-users-table-wrap" id="v46UsersTableWrap" style="margin-bottom:18px">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding:12px 14px 8px;border-bottom:1px solid var(--line);background:var(--panel)">
+          <h3 style="margin:0;font-size:15.5px;color:var(--navy)">📋 Usuarios creados (${users.length})</h3>
+          <span class="small" style="color:var(--muted)">Usa <b>🔑 Editar</b> en cualquier fila para cambiar contraseña, rol o almacén.</span>
+        </div>
         <table class="v46-users-table">
           <thead>
             <tr>
@@ -11689,59 +11795,87 @@ html[data-theme="dark"] .v47-force-pw-box{background:#451a03;color:#fde68a;borde
 
     if(e.target?.closest('#v47ForceChangePassBtn')){
       const st = document.getElementById('v46AuthStatus');
+      const saveBtn = document.getElementById('v47ForceChangePassBtn');
+      const logoutBtn = document.getElementById('v46LogoutUserBtn');
       const setErr = (txt, ok=false) => { if(st){ st.textContent = txt; st.style.color = ok ? '#15803d' : '#dc2626'; } };
-      const newPass = String(document.getElementById('v47ForceNewPass')?.value || '').trim();
-      const confPass = String(document.getElementById('v47ForceConfirmPass')?.value || '').trim();
-      if(newPass.length < 4){ setErr('❌ La contraseña debe tener al menos 4 caracteres.'); return; }
+      const newPass = String(document.getElementById('v47ForceNewPass')?.value || '');
+      const confPass = String(document.getElementById('v47ForceConfirmPass')?.value || '');
+      if(!newPass.trim() || newPass.length < 4){ setErr('❌ La contraseña debe tener al menos 4 caracteres.'); return; }
       if(newPass !== confPass){ setErr('❌ Las contraseñas no coinciden.'); return; }
       if(newPass === '1234' && getActiveUserSession()?.isDefaultSeed){
-        setErr('❌ Elige una contraseña distinta a "1234".');
+        setErr('❌ Elige una contraseña distinta a la inicial.');
         return;
       }
+      if(saveBtn){ saveBtn.disabled = true; saveBtn.textContent = '⏳ Guardando en Drive...'; }
+      if(logoutBtn) logoutBtn.disabled = true;
       setErr('Guardando en servidor y Google Drive...', true);
-      const r = await fetch('/api/auth/change-password', {
-        method: 'POST',
-        headers: authFetchHeaders(),
-        body: JSON.stringify({ newPassword: newPass, forcedFirstChange: true })
-      }).catch(() => null);
-      const data = r ? await r.json().catch(() => ({})) : {};
-      if(!r || !r.ok || !data.ok){
-        setErr(data?.error || '❌ No se pudo actualizar la contraseña.');
-        return;
+      try{
+        const r = await fetch('/api/auth/change-password', {
+          method: 'POST',
+          headers: authFetchHeaders(),
+          body: JSON.stringify({ newPassword: newPass, forcedFirstChange: true })
+        }).catch(() => null);
+        const data = r ? await r.json().catch(() => ({})) : {};
+        if(!r || !r.ok || !data.ok){
+          setErr(data?.error || '❌ No se pudo actualizar la contraseña.');
+          return;
+        }
+        if(data.token) setAuthBearer(data.token);
+        mergeUsersAndLogsIntoState(data);
+        if(data.user) setActiveUserSession(data.user);
+        localStorage.setItem(KEY, JSON.stringify(migrateState(state)));
+        closeUserAuthDialog(true);
+        if(document.getElementById('usersView')?.classList.contains('active')) renderUsersAdminView();
+        if(typeof msg === 'function') msg('✅ Contraseña personal guardada y sincronizada con Google Drive.');
+      }finally{
+        if(saveBtn){ saveBtn.disabled = false; saveBtn.textContent = '💾 Guardar nueva contraseña'; }
+        if(logoutBtn) logoutBtn.disabled = false;
       }
-      mergeUsersAndLogsIntoState(data);
-      if(data.user) setActiveUserSession(data.user);
-      localStorage.setItem(KEY, JSON.stringify(migrateState(state)));
-      closeUserAuthDialog(true);
-      if(document.getElementById('usersView')?.classList.contains('active')) renderUsersAdminView();
-      if(typeof msg === 'function') msg('✅ Contraseña personal guardada y sincronizada con Google Drive.');
       return;
     }
 
     if(e.target?.closest('#v46SelfChangePassBtn')){
       const session = getActiveUserSession();
       const st = document.getElementById('v46AuthStatus');
+      const saveBtn = document.getElementById('v46SelfChangePassBtn');
+      const logoutBtn = document.getElementById('v46LogoutUserBtn');
       const setErr = (txt, ok=false) => { if(st){ st.textContent = txt; st.style.color = ok ? '#15803d' : '#dc2626'; } };
       if(!session) return;
       const curPass = String(document.getElementById('v46SelfCurPass')?.value || '');
-      const newPass = String(document.getElementById('v46SelfNewPass')?.value || '').trim();
-      if(newPass.length < 4){ setErr('❌ La nueva contraseña debe tener al menos 4 caracteres.'); return; }
+      const newPass = String(document.getElementById('v46SelfNewPass')?.value || '');
+      if(!curPass){ setErr('❌ Ingresa tu contraseña actual.'); return; }
+      if(!newPass.trim() || newPass.length < 4){ setErr('❌ La nueva contraseña debe tener al menos 4 caracteres.'); return; }
+      if(saveBtn){ saveBtn.disabled = true; saveBtn.textContent = '⏳ Guardando y sincronizando con Drive...'; }
+      if(logoutBtn) logoutBtn.disabled = true;
       setErr('Guardando en servidor y Google Drive...', true);
-      const r = await fetch('/api/auth/change-password', {
-        method: 'POST',
-        headers: authFetchHeaders(),
-        body: JSON.stringify({ currentPassword: curPass, newPassword: newPass })
-      }).catch(() => null);
-      const data = r ? await r.json().catch(() => ({})) : {};
-      if(!r || !r.ok || !data.ok){
-        setErr(data?.error || '❌ Error al actualizar contraseña.');
-        return;
+      try{
+        const r = await fetch('/api/auth/change-password', {
+          method: 'POST',
+          headers: authFetchHeaders(),
+          body: JSON.stringify({ currentPassword: curPass, newPassword: newPass })
+        }).catch(() => null);
+        const data = r ? await r.json().catch(() => ({})) : {};
+        if(!r || !r.ok || !data.ok){
+          setErr(data?.error || '❌ Error al actualizar contraseña.');
+          return;
+        }
+        if(data.token) setAuthBearer(data.token);
+        mergeUsersAndLogsIntoState(data);
+        if(data.user) setActiveUserSession(data.user);
+        localStorage.setItem(KEY, JSON.stringify(migrateState(state)));
+        const curInp = document.getElementById('v46SelfCurPass');
+        const newInp = document.getElementById('v46SelfNewPass');
+        if(curInp) curInp.value = '';
+        if(newInp) newInp.value = '';
+        setErr(data.syncedToDrive
+          ? '✅ Contraseña actualizada y respaldada en Google Drive. Ya puedes usar la nueva clave al iniciar sesión.'
+          : '✅ Contraseña actualizada en servidor (respaldo en Drive pendiente).', true);
+        if(document.getElementById('usersView')?.classList.contains('active')) renderUsersAdminView();
+        if(typeof msg === 'function') msg('Tu contraseña se actualizó y guardó en Drive.');
+      }finally{
+        if(saveBtn){ saveBtn.disabled = false; saveBtn.textContent = '💾 Actualizar mi contraseña'; }
+        if(logoutBtn) logoutBtn.disabled = false;
       }
-      mergeUsersAndLogsIntoState(data);
-      if(data.user) setActiveUserSession(data.user);
-      localStorage.setItem(KEY, JSON.stringify(migrateState(state)));
-      setErr('✅ Contraseña actualizada y respaldada en Drive.', true);
-      if(typeof msg === 'function') msg('Tu contraseña se actualizó y guardó en Drive.');
       return;
     }
 
@@ -11749,7 +11883,7 @@ html[data-theme="dark"] .v47-force-pw-box{background:#451a03;color:#fde68a;borde
       const username = (document.getElementById('v46NewUserCode')?.value || '').trim().toUpperCase();
       const fullName = (document.getElementById('v46NewUserName')?.value || '').trim();
       const email = (document.getElementById('v46NewUserEmail')?.value || '').trim().toLowerCase();
-      const password = String(document.getElementById('v46NewUserPass')?.value || '').trim();
+      const password = String(document.getElementById('v46NewUserPass')?.value || '');
       const role = document.getElementById('v46NewUserRole')?.value === 'admin' ? 'admin' : 'user';
       const defaultCenter = document.getElementById('v47NewUserCenter')?.value || '';
       const defaultSupervisor = document.getElementById('v47NewUserSup')?.value || '';
@@ -11782,7 +11916,8 @@ html[data-theme="dark"] .v47-force-pw-box{background:#451a03;color:#fde68a;borde
         mergeUsersAndLogsIntoState(data);
         localStorage.setItem(KEY, JSON.stringify(migrateState(state)));
         renderUsersAdminView();
-        if(typeof msg === 'function') msg(`✅ Usuario ${username} creado y respaldado en Google Drive.`);
+        document.getElementById('v46UsersTableWrap')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        if(typeof msg === 'function') msg(`✅ Usuario ${username} creado — ya aparece en la tabla inferior "Usuarios creados" y en Drive.`);
       }catch(err){
         if(typeof msg === 'function') msg('Error de conexión al crear usuario.', true);
       }finally{
@@ -11806,7 +11941,7 @@ html[data-theme="dark"] .v47-force-pw-box{background:#451a03;color:#fde68a;borde
       const fullName = (document.getElementById('v46EditUserName')?.value || '').trim();
       const email = (document.getElementById('v46EditUserEmail')?.value || '').trim().toLowerCase();
       const role = document.getElementById('v46EditUserRole')?.value === 'admin' ? 'admin' : 'user';
-      const password = String(document.getElementById('v46EditUserPass')?.value || '').trim();
+      const password = String(document.getElementById('v46EditUserPass')?.value || '');
       const defaultCenter = document.getElementById('v47EditUserCenter')?.value || '';
       const defaultSupervisor = document.getElementById('v47EditUserSup')?.value || '';
       const mustChangePassword = Boolean(document.getElementById('v47EditUserForcePw')?.checked);

@@ -3,18 +3,23 @@
     {
       "id": "usr-admin-root",
       "username": "ADMIN",
-      "email": "",
+      "email": "tualiadoenusaforms@gmail.com",
       "fullName": "Administrador Principal",
       "role": "admin",
       "active": true,
       "mustChangePassword": false,
-      "isDefaultSeed": true,
-      "passwordSalt": "db26b922f3678f4a26bf82a0",
-      "passwordHash": "69eb0e9012d7d42ad6064d20747b58ce168852824ac41e17fe2cac742a11d45b",
+      "isDefaultSeed": false,
+      "passwordSalt": "6dad6d80d54554d23294f034",
+      "passwordHash": "89f371ad063d50fc87042020eb6597bab1bfced68a552c4db233e2af3b7a2648",
       "createdBy": "SISTEMA",
       "createdAt": "2026-11-16T06:16:41.010Z",
-      "updatedAt": "2026-11-17T05:17:37.864Z",
-      "lastLoginAt": "2026-11-17T05:17:37.864Z"
+      "updatedAt": "2026-11-17T05:42:12.708Z",
+      "lastLoginAt": "2026-11-17T05:42:12.708Z",
+      "defaultCenter": "",
+      "defaultSupervisor": "",
+      "provisionalHash": "",
+      "provisionalSalt": "",
+      "passwordUpdatedAt": ""
     }
   ],
   "deletedUserIds": [],
@@ -26,6 +31,215 @@
   },
   "authLogs": [
     {
+      "id": "log-1794894132708-y4lt2",
+      "timestamp": "2026-11-17T05:42:12.708Z",
+      "event": "INICIO_SESION",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Ingreso autorizado desde pantalla de inicio",
+      "actor": "ADMIN",
+      "device": "Chrome / Android"
+    },
+    {
+      "id": "log-1794893961459-a2hes",
+      "timestamp": "2026-11-17T05:39:21.459Z",
+      "event": "CIERRE_SESION",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Cierre de sesión manual",
+      "actor": "ADMIN",
+      "device": "Chrome / Windows"
+    },
+    {
+      "id": "log-1794893955523-kd1g5",
+      "timestamp": "2026-11-17T05:39:15.523Z",
+      "event": "CIERRE_SESION",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Cierre de sesión manual",
+      "actor": "ADMIN",
+      "device": "Chrome / Windows"
+    },
+    {
+      "id": "log-1794893932233-70cu7",
+      "timestamp": "2026-11-17T05:38:52.233Z",
+      "event": "CAMBIO_CLAVE",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Administrador asignó nueva contraseña y actualizó cuenta",
+      "actor": "ADMIN",
+      "device": "Chrome / Windows"
+    },
+    {
+      "id": "log-1794893454555-it11y",
+      "timestamp": "2026-11-17T05:30:54.555Z",
+      "event": "INICIO_SESION",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Ingreso autorizado desde pantalla de inicio",
+      "actor": "ADMIN",
+      "device": "Chrome / Windows"
+    },
+    {
+      "id": "log-1794893333994-2kibi",
+      "timestamp": "2026-11-17T05:28:53.994Z",
+      "event": "INTENTO_FALLIDO",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Contraseña incorrecta",
+      "actor": "ADMIN",
+      "device": "Chrome / Windows"
+    },
+    {
+      "id": "log-1794893332780-0gvmx",
+      "timestamp": "2026-11-17T05:28:52.780Z",
+      "event": "INTENTO_FALLIDO",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Contraseña incorrecta",
+      "actor": "ADMIN",
+      "device": "Chrome / Windows"
+    },
+    {
+      "id": "log-1794893330968-gfunq",
+      "timestamp": "2026-11-17T05:28:50.968Z",
+      "event": "INTENTO_FALLIDO",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Contraseña incorrecta",
+      "actor": "ADMIN",
+      "device": "Chrome / Windows"
+    },
+    {
+      "id": "log-1794893329868-b5nsu",
+      "timestamp": "2026-11-17T05:28:49.868Z",
+      "event": "INTENTO_FALLIDO",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Contraseña incorrecta",
+      "actor": "ADMIN",
+      "device": "Chrome / Windows"
+    },
+    {
+      "id": "log-1794893327911-5ff00",
+      "timestamp": "2026-11-17T05:28:47.911Z",
+      "event": "INTENTO_FALLIDO",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Contraseña incorrecta",
+      "actor": "ADMIN",
+      "device": "Chrome / Windows"
+    },
+    {
+      "id": "log-1794893316354-zmtse",
+      "timestamp": "2026-11-17T05:28:36.354Z",
+      "event": "CIERRE_SESION",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Cierre de sesión manual",
+      "actor": "ADMIN",
+      "device": "Chrome / Windows"
+    },
+    {
+      "id": "log-1794893310516-fgjiy",
+      "timestamp": "2026-11-17T05:28:30.516Z",
+      "event": "CIERRE_SESION",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Cierre de sesión manual",
+      "actor": "ADMIN",
+      "device": "Chrome / Windows"
+    },
+    {
+      "id": "log-1794893307735-zts0k",
+      "timestamp": "2026-11-17T05:28:27.735Z",
+      "event": "CIERRE_SESION",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Cierre de sesión manual",
+      "actor": "ADMIN",
+      "device": "Chrome / Windows"
+    },
+    {
+      "id": "log-1794893303802-luucm",
+      "timestamp": "2026-11-17T05:28:23.802Z",
+      "event": "CIERRE_SESION",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Cierre de sesión manual",
+      "actor": "ADMIN",
+      "device": "Chrome / Windows"
+    },
+    {
+      "id": "log-1794893290696-oh52a",
+      "timestamp": "2026-11-17T05:28:10.696Z",
+      "event": "CAMBIO_CLAVE",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "El usuario actualizó su contraseña personal",
+      "actor": "ADMIN",
+      "device": "Chrome / Windows"
+    },
+    {
+      "id": "log-1794893262831-xvgka",
+      "timestamp": "2026-11-17T05:27:42.831Z",
+      "event": "INICIO_SESION",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Ingreso autorizado desde pantalla de inicio",
+      "actor": "ADMIN",
+      "device": "Chrome / Windows"
+    },
+    {
+      "id": "log-1794893174884-5exqh",
+      "timestamp": "2026-11-17T05:26:14.884Z",
+      "event": "INICIO_SESION",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Ingreso autorizado desde pantalla de inicio",
+      "actor": "ADMIN",
+      "device": "Chrome / Windows"
+    },
+    {
+      "id": "log-1794893169341-y5jeh",
+      "timestamp": "2026-11-17T05:26:09.341Z",
+      "event": "CIERRE_SESION",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Cierre de sesión manual",
+      "actor": "ADMIN",
+      "device": "Chrome / Windows"
+    },
+    {
+      "id": "log-1794893168877-zyu5y",
+      "timestamp": "2026-11-17T05:26:08.877Z",
+      "event": "CIERRE_SESION",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Cierre de sesión manual",
+      "actor": "ADMIN",
+      "device": "Chrome / Windows"
+    },
+    {
       "id": "log-1794892657864-lnelo",
       "timestamp": "2026-11-17T05:17:37.865Z",
       "event": "INICIO_SESION",
@@ -35,6 +249,39 @@
       "detail": "Ingreso autorizado desde pantalla de inicio",
       "actor": "ADMIN",
       "device": "Browser / Web"
+    },
+    {
+      "id": "log-1794892395674-hamqd",
+      "timestamp": "2026-11-17T05:13:15.674Z",
+      "event": "CIERRE_SESION",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Cierre de sesión manual",
+      "actor": "ADMIN",
+      "device": "Chrome / Windows"
+    },
+    {
+      "id": "log-1794891379142-gyks4",
+      "timestamp": "2026-11-17T04:56:19.142Z",
+      "event": "INICIO_SESION",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Ingreso autorizado desde pantalla de inicio",
+      "actor": "ADMIN",
+      "device": "Chrome / Windows"
+    },
+    {
+      "id": "log-1794891364567-2ligg",
+      "timestamp": "2026-11-17T04:56:04.567Z",
+      "event": "INTENTO_FALLIDO",
+      "username": "TUALIADOENUSAFORMS@GMAIL.COM",
+      "fullName": "",
+      "role": "",
+      "detail": "Usuario no registrado",
+      "actor": "TUALIADOENUSAFORMS@GMAIL.COM",
+      "device": "Chrome / Windows"
     },
     {
       "id": "log-1794809801010-sevtz",
@@ -158,5 +405,5 @@
       "device": "Chrome / Windows"
     }
   ],
-  "updatedAt": "2026-11-17T05:17:37.865Z"
+  "updatedAt": "2026-11-17T05:59:48.009Z"
 }

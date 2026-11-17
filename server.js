@@ -228,26 +228,63 @@ function mergeUsersLists(existingUsers = [], incomingUsers = [], deletedIds = []
   const byId = new Map();
   const byUsername = new Map();
 
+  const pickCredsSource = (prev, u) => {
+    if (!prev) return u;
+    const prevSeed = Boolean(prev.isDefaultSeed);
+    const nextSeed = Boolean(u.isDefaultSeed);
+    if (!prevSeed && nextSeed) return prev;
+    if (prevSeed && !nextSeed) return u;
+    const prevCredTs = String(prev.passwordUpdatedAt || prev.updatedAt || '');
+    const nextCredTs = String(u.passwordUpdatedAt || u.updatedAt || '');
+    if (nextCredTs >= prevCredTs && (u.passwordHash || !prev.passwordHash)) return u;
+    if (!prev.passwordHash && u.passwordHash) return u;
+    return prev;
+  };
+
   const applyUser = (u) => {
     if (!u || !u.username) return;
     const uname = String(u.username).trim().toUpperCase();
     const id = String(u.id || ('usr-' + uname));
     if (deletedSet.has(id)) return;
     const prev = byId.get(id) || byUsername.get(uname);
-    if (!prev || String(u.updatedAt || '') >= String(prev.updatedAt || '')) {
-      const merged = {
-        ...(prev || {}),
+    if (!prev) {
+      const clean = {
         ...u,
         id,
         username: uname,
-        email: String(u.email !== undefined ? u.email : (prev?.email || '')).trim().toLowerCase(),
-        passwordHash: u.passwordHash || prev?.passwordHash || '',
-        passwordSalt: u.passwordSalt || prev?.passwordSalt || ''
+        email: String(u.email || '').trim().toLowerCase(),
+        passwordHash: u.passwordHash || '',
+        passwordSalt: u.passwordSalt || ''
       };
-      if (prev && prev.id !== id) byId.delete(prev.id);
-      byId.set(id, merged);
-      byUsername.set(uname, merged);
+      byId.set(id, clean);
+      byUsername.set(uname, clean);
+      return;
     }
+
+    const useNextProfile = String(u.updatedAt || '') >= String(prev.updatedAt || '');
+    const profileSrc = useNextProfile ? u : prev;
+    const credsSrc = pickCredsSource(prev, u);
+    const lastLoginA = String(prev.lastLoginAt || '');
+    const lastLoginB = String(u.lastLoginAt || '');
+
+    const merged = {
+      ...prev,
+      ...profileSrc,
+      id,
+      username: uname,
+      email: String(profileSrc.email !== undefined ? profileSrc.email : (prev.email || '')).trim().toLowerCase(),
+      passwordHash: credsSrc.passwordHash || prev.passwordHash || u.passwordHash || '',
+      passwordSalt: credsSrc.passwordSalt || prev.passwordSalt || u.passwordSalt || '',
+      provisionalHash: credsSrc.provisionalHash || '',
+      provisionalSalt: credsSrc.provisionalSalt || '',
+      passwordUpdatedAt: credsSrc.passwordUpdatedAt || prev.passwordUpdatedAt || u.passwordUpdatedAt || '',
+      isDefaultSeed: Boolean(credsSrc.isDefaultSeed),
+      mustChangePassword: Boolean(credsSrc.mustChangePassword),
+      lastLoginAt: lastLoginB > lastLoginA ? lastLoginB : lastLoginA
+    };
+    if (prev.id !== id) byId.delete(prev.id);
+    byId.set(id, merged);
+    byUsername.set(uname, merged);
   };
 
   (Array.isArray(existingUsers) ? existingUsers : []).forEach(applyUser);
@@ -481,37 +518,46 @@ async function hydrateUsersFromDrive(force = false) {
   return ensureDefaultAdminInStore();
 }
 
+let driveSyncQueue = Promise.resolve();
+function runSerializedDriveSync(fn) {
+  const next = driveSyncQueue.then(fn, fn);
+  driveSyncQueue = next.catch(() => false);
+  return next;
+}
+
 async function syncUsersToDriveServer() {
-  const cfg = readSavedConfig();
-  if (!cfg.scriptUrl) return false;
-  const store = readSavedUsers();
-  const payload = {
-    action: 'syncUsersAndAuth',
-    token: cfg.scriptToken || '',
-    userAccounts: store.userAccounts,
-    deletedUserIds: store.deletedUserIds,
-    authSettings: store.authSettings,
-    authLogs: store.authLogs
-  };
-  try {
-    const response = await fetchWithTimeout(cfg.scriptUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload),
-      redirect: 'follow'
-    }, 15000);
-    const json = JSON.parse(await response.text());
-    if (json && json.ok) {
-      writeSavedUsers({
-        userAccounts: json.userAccounts || [],
-        deletedUserIds: json.deletedUserIds || [],
-        authSettings: json.authSettings || {},
-        authLogs: json.authLogs || []
-      });
-      return true;
-    }
-  } catch (_) {}
-  return false;
+  return runSerializedDriveSync(async () => {
+    const cfg = readSavedConfig();
+    if (!cfg.scriptUrl) return false;
+    const store = readSavedUsers();
+    const payload = {
+      action: 'syncUsersAndAuth',
+      token: cfg.scriptToken || '',
+      userAccounts: store.userAccounts,
+      deletedUserIds: store.deletedUserIds,
+      authSettings: store.authSettings,
+      authLogs: store.authLogs
+    };
+    try {
+      const response = await fetchWithTimeout(cfg.scriptUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload),
+        redirect: 'follow'
+      }, 15000);
+      const json = JSON.parse(await response.text());
+      if (json && json.ok) {
+        writeSavedUsers({
+          userAccounts: json.userAccounts || [],
+          deletedUserIds: json.deletedUserIds || [],
+          authSettings: json.authSettings || {},
+          authLogs: json.authLogs || []
+        });
+        return true;
+      }
+    } catch (_) {}
+    return false;
+  });
 }
 
 function attachAuthUser(req, _res, next) {
@@ -551,6 +597,7 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(attachAuthUser);
 
+app.use('/data', (_req, res) => res.status(404).end());
 app.use(express.static(__dirname, {
   index: false,
   fallthrough: true,
@@ -610,7 +657,7 @@ app.post('/api/auth/login', async (req, res) => {
     });
   }
 
-  let store = await hydrateUsersFromDrive(false);
+  let store = await hydrateUsersFromDrive(true);
   const idUpper = identifier.toUpperCase();
   const idLower = identifier.toLowerCase();
 
@@ -618,15 +665,6 @@ app.post('/api/auth/login', async (req, res) => {
     String(u.username || '').toUpperCase() === idUpper ||
     (u.email && String(u.email).trim().toLowerCase() === idLower)
   );
-
-  // Si no se encuentra localmente, consultar Drive forzadamente por si se creó en otro equipo
-  if (!user) {
-    store = await hydrateUsersFromDrive(true);
-    user = (store.userAccounts || []).find(u =>
-      String(u.username || '').toUpperCase() === idUpper ||
-      (u.email && String(u.email).trim().toLowerCase() === idLower)
-    );
-  }
 
   if (!user) {
     recordLoginFailure(rl.key);
@@ -652,13 +690,12 @@ app.post('/api/auth/login', async (req, res) => {
   clearLoginFailures(rl.key);
   const now = new Date().toISOString();
   user.lastLoginAt = now;
-  user.updatedAt = now;
   appendServerAuditLog(store, 'INICIO_SESION', user, 'Ingreso autorizado desde pantalla de inicio', user.username, req);
   const saved = writeSavedUsers(store);
 
   const token = signSessionToken(user);
   setAuthCookie(res, req, token);
-  syncUsersToDriveServer().catch(() => {});
+  await syncUsersToDriveServer().catch(() => {});
 
   return res.json({
     ok: true,
@@ -669,7 +706,7 @@ app.post('/api/auth/login', async (req, res) => {
   });
 });
 
-app.post('/api/auth/logout', (req, res) => {
+app.post('/api/auth/logout', async (req, res) => {
   const reason = String(req.body?.reason || 'manual');
   if (req.authUser) {
     const store = readSavedUsers();
@@ -677,19 +714,19 @@ app.post('/api/auth/logout', (req, res) => {
     const detail = reason === 'inactivity' ? 'Cierre automático por inactividad' : 'Cierre de sesión manual';
     appendServerAuditLog(store, ev, req.authUser, detail, req.authUser.username, req);
     writeSavedUsers(store);
-    syncUsersToDriveServer().catch(() => {});
+    await syncUsersToDriveServer().catch(() => {});
   }
   clearAuthCookie(res, req);
   return res.json({ ok: true });
 });
 
-app.post('/api/auth/change-password', requireAuth, (req, res) => {
+app.post('/api/auth/change-password', requireAuth, async (req, res) => {
   const curPass = String(req.body?.currentPassword || '');
-  const newPass = String(req.body?.newPassword || '').trim();
-  if (newPass.length < 4) {
+  const newPass = String(req.body?.newPassword || '');
+  if (!newPass.trim() || newPass.length < 4) {
     return res.status(400).json({ ok: false, error: 'La nueva contraseña debe tener al menos 4 caracteres.' });
   }
-  const store = readSavedUsers();
+  const store = await hydrateUsersFromDrive(true);
   const user = (store.userAccounts || []).find(
     u => u.id === req.authUser.id || String(u.username || '').toUpperCase() === String(req.authUser.username).toUpperCase()
   );
@@ -704,29 +741,41 @@ app.post('/api/auth/change-password', requireAuth, (req, res) => {
     return res.status(401).json({ ok: false, error: 'Ingresa tu contraseña actual.' });
   }
 
+  const now = new Date().toISOString();
   const salt = makeSalt();
   user.passwordSalt = salt;
   user.passwordHash = hashSecretServer(newPass, salt);
+  user.provisionalHash = '';
+  user.provisionalSalt = '';
   user.mustChangePassword = false;
   user.isDefaultSeed = false;
-  user.updatedAt = new Date().toISOString();
+  user.passwordUpdatedAt = now;
+  user.updatedAt = now;
+
+  const clientIp = getClientIp(req);
+  clearLoginFailures(`${clientIp}::${String(user.username || '').trim().toUpperCase()}`);
+  if (user.email) clearLoginFailures(`${clientIp}::${String(user.email || '').trim().toUpperCase()}`);
 
   appendServerAuditLog(store, 'CAMBIO_CLAVE', user, 'El usuario actualizó su contraseña personal', user.username, req);
   const saved = writeSavedUsers(store);
-  syncUsersToDriveServer().catch(() => {});
+  const token = signSessionToken(user);
+  setAuthCookie(res, req, token);
+  const syncedToDrive = await syncUsersToDriveServer().catch(() => false);
 
   return res.json({
     ok: true,
+    syncedToDrive: Boolean(syncedToDrive),
+    token,
     user: sanitizeUser(user),
     userAccounts: sanitizeUsersList(saved.userAccounts),
     authLogs: saved.authLogs
   });
 });
 
-app.post('/api/auth/elevate-admin', requireAuth, (req, res) => {
-  const pass = String(req.body?.password || '').trim();
+app.post('/api/auth/elevate-admin', requireAuth, async (req, res) => {
+  const pass = String(req.body?.password || '');
   if (!pass) return res.json({ ok: false });
-  const store = readSavedUsers();
+  const store = await hydrateUsersFromDrive(true);
   const admins = (store.userAccounts || []).filter(u => u && u.active !== false && u.role === 'admin');
   const matched = admins.some(a => verifyPasswordServer(a, pass));
   return res.json({ ok: matched });
@@ -750,17 +799,17 @@ app.get('/api/users', async (req, res) => {
   });
 });
 
-app.post('/api/users', requireAdmin, (req, res) => {
+app.post('/api/users', requireAdmin, async (req, res) => {
   const body = req.body || {};
   const op = String(body.op || '').trim();
-  const store = readSavedUsers();
+  const store = await hydrateUsersFromDrive(true);
   const actor = req.authUser.username;
 
   if (op === 'create') {
     const username = String(body.username || '').trim().toUpperCase();
     const fullName = String(body.fullName || '').trim();
     const email = String(body.email || '').trim().toLowerCase();
-    const pass = String(body.password || '').trim();
+    const pass = String(body.password || '');
     const role = body.role === 'admin' ? 'admin' : 'user';
     const defaultCenter = ['1003', '1004'].includes(String(body.defaultCenter || '')) ? String(body.defaultCenter) : '';
     const defaultSupervisor = String(body.defaultSupervisor || '').trim().toUpperCase();
@@ -769,7 +818,7 @@ app.post('/api/users', requireAdmin, (req, res) => {
     if (!username || !fullName) {
       return res.status(400).json({ ok: false, error: 'Completa el Usuario y Nombre completo.' });
     }
-    if (pass.length < 4) {
+    if (!pass.trim() || pass.length < 4) {
       return res.status(400).json({ ok: false, error: 'Asigna una contraseña de al menos 4 caracteres.' });
     }
     if ((store.userAccounts || []).some(u => String(u.username || '').toUpperCase() === username || (email && u.email && String(u.email).toLowerCase() === email))) {
@@ -791,6 +840,7 @@ app.post('/api/users', requireAdmin, (req, res) => {
       defaultSupervisor,
       passwordSalt: salt,
       passwordHash: hashSecretServer(pass, salt),
+      passwordUpdatedAt: now,
       createdBy: actor,
       createdAt: now,
       updatedAt: now,
@@ -799,7 +849,7 @@ app.post('/api/users', requireAdmin, (req, res) => {
     store.userAccounts.unshift(newUser);
     appendServerAuditLog(store, 'CREAR_USUARIO', newUser, `Cuenta creada (${role === 'admin' ? 'Administrador' : 'Usuario estándar'})`, actor, req);
     const saved = writeSavedUsers(store);
-    syncUsersToDriveServer().catch(() => {});
+    await syncUsersToDriveServer().catch(() => {});
     return res.json({
       ok: true,
       user: sanitizeUser(newUser),
@@ -817,7 +867,7 @@ app.post('/api/users', requireAdmin, (req, res) => {
     const fullName = String(body.fullName || '').trim();
     const email = String(body.email || '').trim().toLowerCase();
     const role = body.role === 'admin' ? 'admin' : 'user';
-    const newPass = String(body.password || '').trim();
+    const newPass = String(body.password || '');
     const defaultCenter = ['1003', '1004'].includes(String(body.defaultCenter || '')) ? String(body.defaultCenter) : '';
     const defaultSupervisor = String(body.defaultSupervisor || '').trim().toUpperCase();
     const mustChangePassword = Boolean(body.mustChangePassword);
@@ -826,7 +876,7 @@ app.post('/api/users', requireAdmin, (req, res) => {
     if (email && (store.userAccounts || []).some(u => u.id !== uid && u.email && String(u.email).toLowerCase() === email)) {
       return res.status(409).json({ ok: false, error: 'Ese correo ya pertenece a otro usuario.' });
     }
-    if (newPass && newPass.length < 4) {
+    if (newPass && (!newPass.trim() || newPass.length < 4)) {
       return res.status(400).json({ ok: false, error: 'La nueva contraseña debe tener al menos 4 caracteres.' });
     }
     if (user.role === 'admin' && role !== 'admin') {
@@ -836,6 +886,7 @@ app.post('/api/users', requireAdmin, (req, res) => {
       }
     }
 
+    const now = new Date().toISOString();
     user.fullName = fullName;
     user.email = email;
     user.role = role;
@@ -846,14 +897,21 @@ app.post('/api/users', requireAdmin, (req, res) => {
       const salt = makeSalt();
       user.passwordSalt = salt;
       user.passwordHash = hashSecretServer(newPass, salt);
+      user.provisionalHash = '';
+      user.provisionalSalt = '';
       user.isDefaultSeed = false;
+      user.passwordUpdatedAt = now;
+      const clientIp = getClientIp(req);
+      clearLoginFailures(`${clientIp}::${String(user.username || '').trim().toUpperCase()}`);
+      if (user.email) clearLoginFailures(`${clientIp}::${String(user.email || '').trim().toUpperCase()}`);
     }
-    user.updatedAt = new Date().toISOString();
+    user.updatedAt = now;
     appendServerAuditLog(store, newPass ? 'CAMBIO_CLAVE' : 'ACTUALIZAR_USUARIO', user, newPass ? 'Administrador asignó nueva contraseña y actualizó cuenta' : 'Administrador actualizó datos/rol/perfil', actor, req);
     const saved = writeSavedUsers(store);
-    syncUsersToDriveServer().catch(() => {});
+    const syncedToDrive = await syncUsersToDriveServer().catch(() => false);
     return res.json({
       ok: true,
+      syncedToDrive: Boolean(syncedToDrive),
       user: sanitizeUser(user),
       userAccounts: sanitizeUsersList(saved.userAccounts),
       deletedUserIds: saved.deletedUserIds,
@@ -877,7 +935,7 @@ app.post('/api/users', requireAdmin, (req, res) => {
     user.updatedAt = new Date().toISOString();
     appendServerAuditLog(store, 'ACTUALIZAR_USUARIO', user, nextActive ? 'Cuenta activada' : 'Cuenta deshabilitada', actor, req);
     const saved = writeSavedUsers(store);
-    syncUsersToDriveServer().catch(() => {});
+    await syncUsersToDriveServer().catch(() => {});
     return res.json({
       ok: true,
       user: sanitizeUser(user),
@@ -902,7 +960,7 @@ app.post('/api/users', requireAdmin, (req, res) => {
     store.userAccounts = (store.userAccounts || []).filter(u => u.id !== uid);
     appendServerAuditLog(store, 'ELIMINAR_USUARIO', user, 'Usuario eliminado por administrador', actor, req);
     const saved = writeSavedUsers({ ...store, replaceAll: true });
-    syncUsersToDriveServer().catch(() => {});
+    await syncUsersToDriveServer().catch(() => {});
     return res.json({
       ok: true,
       userAccounts: sanitizeUsersList(saved.userAccounts),
@@ -917,7 +975,7 @@ app.post('/api/users', requireAdmin, (req, res) => {
     store.authSettings = normalizeAuthSettings({ sessionTimeoutMinutes: Number.isFinite(mins) ? mins : 30 }, store.authSettings);
     appendServerAuditLog(store, 'CONFIG_SEGURIDAD', actor, `Tiempo de cierre por inactividad configurado a ${store.authSettings.sessionTimeoutMinutes} min`, actor, req);
     const saved = writeSavedUsers(store);
-    syncUsersToDriveServer().catch(() => {});
+    await syncUsersToDriveServer().catch(() => {});
     return res.json({
       ok: true,
       userAccounts: sanitizeUsersList(saved.userAccounts),
@@ -959,8 +1017,8 @@ app.post('/api/drive/sync', async (req, res) => {
     delete payload.targetUrl;
     delete payload.url;
 
-    // Preservar hashes autoritativos del servidor al enviar a Drive
-    const serverUsers = readSavedUsers();
+    // Preservar hashes autoritativos hidratando desde Drive antes de enviar syncAll/syncUsersAndAuth
+    const serverUsers = await hydrateUsersFromDrive(true);
     if (payload.action === 'syncUsersAndAuth') {
       payload.userAccounts = serverUsers.userAccounts;
       payload.deletedUserIds = serverUsers.deletedUserIds;

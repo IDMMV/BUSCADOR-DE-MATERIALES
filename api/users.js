@@ -10,7 +10,9 @@ import {
   appendServerAuditLog,
   writeTmpUsers,
   normalizeAuthSettings,
-  syncUsersToDriveServer
+  syncUsersToDriveServer,
+  getClientIp,
+  clearLoginFailures
 } from './_auth-lib.js';
 
 export default async function handler(req, res) {
@@ -20,7 +22,7 @@ export default async function handler(req, res) {
   const authUser = await resolveAuthUser(req);
 
   if (req.method === 'GET') {
-    const store = await hydrateUsersFromDrive(false);
+    const store = await hydrateUsersFromDrive(true);
     const users = store.userAccounts || [];
     const onlyRootSeed = users.length === 1 && users[0]?.username === 'ADMIN' && Boolean(users[0]?.isDefaultSeed);
     return res.status(200).json({
@@ -47,14 +49,14 @@ export default async function handler(req, res) {
 
   const body = parseBody(req);
   const op = String(body.op || '').trim();
-  const store = await hydrateUsersFromDrive(false);
+  const store = await hydrateUsersFromDrive(true);
   const actor = authUser.username;
 
   if (op === 'create') {
     const username = String(body.username || '').trim().toUpperCase();
     const fullName = String(body.fullName || '').trim();
     const email = String(body.email || '').trim().toLowerCase();
-    const pass = String(body.password || '').trim();
+    const pass = String(body.password || '');
     const role = body.role === 'admin' ? 'admin' : 'user';
     const defaultCenter = ['1003', '1004'].includes(String(body.defaultCenter || '')) ? String(body.defaultCenter) : '';
     const defaultSupervisor = String(body.defaultSupervisor || '').trim().toUpperCase();
@@ -63,7 +65,7 @@ export default async function handler(req, res) {
     if (!username || !fullName) {
       return res.status(400).json({ ok: false, error: 'Completa el Usuario y Nombre completo.' });
     }
-    if (pass.length < 4) {
+    if (!pass.trim() || pass.length < 4) {
       return res.status(400).json({ ok: false, error: 'Asigna una contraseña de al menos 4 caracteres.' });
     }
     if ((store.userAccounts || []).some(u => String(u.username || '').toUpperCase() === username || (email && u.email && String(u.email).toLowerCase() === email))) {
@@ -85,6 +87,7 @@ export default async function handler(req, res) {
       defaultSupervisor,
       passwordSalt: salt,
       passwordHash: hashSecretServer(pass, salt),
+      passwordUpdatedAt: now,
       createdBy: actor,
       createdAt: now,
       updatedAt: now,
@@ -111,7 +114,7 @@ export default async function handler(req, res) {
     const fullName = String(body.fullName || '').trim();
     const email = String(body.email || '').trim().toLowerCase();
     const role = body.role === 'admin' ? 'admin' : 'user';
-    const newPass = String(body.password || '').trim();
+    const newPass = String(body.password || '');
     const defaultCenter = ['1003', '1004'].includes(String(body.defaultCenter || '')) ? String(body.defaultCenter) : '';
     const defaultSupervisor = String(body.defaultSupervisor || '').trim().toUpperCase();
     const mustChangePassword = Boolean(body.mustChangePassword);
@@ -120,7 +123,7 @@ export default async function handler(req, res) {
     if (email && (store.userAccounts || []).some(u => u.id !== uid && u.email && String(u.email).toLowerCase() === email)) {
       return res.status(409).json({ ok: false, error: 'Ese correo ya pertenece a otro usuario.' });
     }
-    if (newPass && newPass.length < 4) {
+    if (newPass && (!newPass.trim() || newPass.length < 4)) {
       return res.status(400).json({ ok: false, error: 'La nueva contraseña debe tener al menos 4 caracteres.' });
     }
     if (user.role === 'admin' && role !== 'admin') {
@@ -130,6 +133,7 @@ export default async function handler(req, res) {
       }
     }
 
+    const now = new Date().toISOString();
     user.fullName = fullName;
     user.email = email;
     user.role = role;
@@ -140,14 +144,21 @@ export default async function handler(req, res) {
       const salt = makeSalt();
       user.passwordSalt = salt;
       user.passwordHash = hashSecretServer(newPass, salt);
+      user.provisionalHash = '';
+      user.provisionalSalt = '';
       user.isDefaultSeed = false;
+      user.passwordUpdatedAt = now;
+      const clientIp = getClientIp(req);
+      clearLoginFailures(`${clientIp}::${String(user.username || '').trim().toUpperCase()}`);
+      if (user.email) clearLoginFailures(`${clientIp}::${String(user.email || '').trim().toUpperCase()}`);
     }
-    user.updatedAt = new Date().toISOString();
+    user.updatedAt = now;
     appendServerAuditLog(store, newPass ? 'CAMBIO_CLAVE' : 'ACTUALIZAR_USUARIO', user, newPass ? 'Administrador asignó nueva contraseña y actualizó cuenta' : 'Administrador actualizó datos/rol/perfil', actor, req);
     const saved = writeTmpUsers(store);
-    await syncUsersToDriveServer().catch(() => {});
+    const syncedToDrive = await syncUsersToDriveServer().catch(() => false);
     return res.status(200).json({
       ok: true,
+      syncedToDrive: Boolean(syncedToDrive),
       user: sanitizeUser(user),
       userAccounts: sanitizeUsersList(saved.userAccounts),
       deletedUserIds: saved.deletedUserIds,

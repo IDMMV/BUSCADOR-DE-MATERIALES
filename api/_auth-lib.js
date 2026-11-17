@@ -263,26 +263,63 @@ export function mergeUsersLists(existingUsers = [], incomingUsers = [], deletedI
   const byId = new Map();
   const byUsername = new Map();
 
+  const pickCredsSource = (prev, u) => {
+    if (!prev) return u;
+    const prevSeed = Boolean(prev.isDefaultSeed);
+    const nextSeed = Boolean(u.isDefaultSeed);
+    if (!prevSeed && nextSeed) return prev;
+    if (prevSeed && !nextSeed) return u;
+    const prevCredTs = String(prev.passwordUpdatedAt || prev.updatedAt || '');
+    const nextCredTs = String(u.passwordUpdatedAt || u.updatedAt || '');
+    if (nextCredTs >= prevCredTs && (u.passwordHash || !prev.passwordHash)) return u;
+    if (!prev.passwordHash && u.passwordHash) return u;
+    return prev;
+  };
+
   const applyUser = (u) => {
     if (!u || !u.username) return;
     const uname = String(u.username).trim().toUpperCase();
     const id = String(u.id || ('usr-' + uname));
     if (deletedSet.has(id)) return;
     const prev = byId.get(id) || byUsername.get(uname);
-    if (!prev || String(u.updatedAt || '') >= String(prev.updatedAt || '')) {
-      const merged = {
-        ...(prev || {}),
+    if (!prev) {
+      const clean = {
         ...u,
         id,
         username: uname,
-        email: String(u.email !== undefined ? u.email : (prev?.email || '')).trim().toLowerCase(),
-        passwordHash: u.passwordHash || prev?.passwordHash || '',
-        passwordSalt: u.passwordSalt || prev?.passwordSalt || ''
+        email: String(u.email || '').trim().toLowerCase(),
+        passwordHash: u.passwordHash || '',
+        passwordSalt: u.passwordSalt || ''
       };
-      if (prev && prev.id !== id) byId.delete(prev.id);
-      byId.set(id, merged);
-      byUsername.set(uname, merged);
+      byId.set(id, clean);
+      byUsername.set(uname, clean);
+      return;
     }
+
+    const useNextProfile = String(u.updatedAt || '') >= String(prev.updatedAt || '');
+    const profileSrc = useNextProfile ? u : prev;
+    const credsSrc = pickCredsSource(prev, u);
+    const lastLoginA = String(prev.lastLoginAt || '');
+    const lastLoginB = String(u.lastLoginAt || '');
+
+    const merged = {
+      ...prev,
+      ...profileSrc,
+      id,
+      username: uname,
+      email: String(profileSrc.email !== undefined ? profileSrc.email : (prev.email || '')).trim().toLowerCase(),
+      passwordHash: credsSrc.passwordHash || prev.passwordHash || u.passwordHash || '',
+      passwordSalt: credsSrc.passwordSalt || prev.passwordSalt || u.passwordSalt || '',
+      provisionalHash: credsSrc.provisionalHash || '',
+      provisionalSalt: credsSrc.provisionalSalt || '',
+      passwordUpdatedAt: credsSrc.passwordUpdatedAt || prev.passwordUpdatedAt || u.passwordUpdatedAt || '',
+      isDefaultSeed: Boolean(credsSrc.isDefaultSeed),
+      mustChangePassword: Boolean(credsSrc.mustChangePassword),
+      lastLoginAt: lastLoginB > lastLoginA ? lastLoginB : lastLoginA
+    };
+    if (prev.id !== id) byId.delete(prev.id);
+    byId.set(id, merged);
+    byUsername.set(uname, merged);
   };
 
   (Array.isArray(existingUsers) ? existingUsers : []).forEach(applyUser);
@@ -431,7 +468,7 @@ export function fetchWithTimeout(url, options = {}, timeoutMs = DRIVE_TIMEOUT_MS
   return fetch(url, { ...options, signal: controller.signal }).finally(() => clearTimeout(timer));
 }
 
-export async function hydrateUsersFromDrive(force = false) {
+export async function hydrateUsersFromDrive(force = true) {
   const cur = readTmpUsers();
   if (!force && cur.userAccounts && cur.userAccounts.length > 0) return cur;
   const cfg = getSavedConfig();
@@ -500,15 +537,9 @@ export async function resolveAuthUser(req) {
   if (!token) return null;
   const payload = verifySessionToken(token);
   if (!payload) return null;
-  let store = readTmpUsers();
-  let matched = (store.userAccounts || []).find(
+  const store = await hydrateUsersFromDrive(true);
+  const matched = (store.userAccounts || []).find(
     u => u && u.active !== false && (u.id === payload.id || String(u.username || '').toUpperCase() === payload.username)
   );
-  if (!matched) {
-    store = await hydrateUsersFromDrive(true);
-    matched = (store.userAccounts || []).find(
-      u => u && u.active !== false && (u.id === payload.id || String(u.username || '').toUpperCase() === payload.username)
-    );
-  }
   return matched || null;
 }

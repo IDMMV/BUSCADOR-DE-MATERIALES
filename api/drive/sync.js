@@ -41,7 +41,7 @@ export default async function handler(req, res) {
     delete payload.targetUrl;
     delete payload.url;
 
-    const serverUsers = await hydrateUsersFromDrive(false);
+    const serverUsers = await hydrateUsersFromDrive(true);
     if (payload.action === 'syncUsersAndAuth') {
       payload.userAccounts = serverUsers.userAccounts;
       payload.deletedUserIds = serverUsers.deletedUserIds;

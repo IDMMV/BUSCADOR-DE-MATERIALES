@@ -476,6 +476,18 @@ function mergeAuthData_(existingApp, incomingApp) {
 
   const byId = {};
   const idByUsername = {};
+  const pickCreds = function(prev, u) {
+    if (!prev) return u;
+    const prevSeed = Boolean(prev.isDefaultSeed);
+    const nextSeed = Boolean(u.isDefaultSeed);
+    if (!prevSeed && nextSeed) return prev;
+    if (prevSeed && !nextSeed) return u;
+    const prevTs = String(prev.passwordUpdatedAt || prev.updatedAt || '');
+    const nextTs = String(u.passwordUpdatedAt || u.updatedAt || '');
+    if (nextTs >= prevTs && (u.passwordHash || !prev.passwordHash)) return u;
+    if (!prev.passwordHash && u.passwordHash) return u;
+    return prev;
+  };
   const applyUser = function(u) {
     if (!u || !u.username) return;
     const uname = String(u.username).trim().toUpperCase();
@@ -483,12 +495,31 @@ function mergeAuthData_(existingApp, incomingApp) {
     if (delSet[id]) return;
     const prevId = idByUsername[uname];
     const prev = byId[id] || (prevId ? byId[prevId] : null);
-    if (!prev || String(u.updatedAt || '') >= String(prev.updatedAt || '')) {
-      if (prevId && prevId !== id) delete byId[prevId];
-      const copy = Object.assign({}, u, { id: id, username: uname });
-      byId[id] = copy;
+    if (!prev) {
+      byId[id] = Object.assign({}, u, { id: id, username: uname });
       idByUsername[uname] = id;
+      return;
     }
+    const useNextProfile = String(u.updatedAt || '') >= String(prev.updatedAt || '');
+    const profileSrc = useNextProfile ? u : prev;
+    const credsSrc = pickCreds(prev, u);
+    const lastA = String(prev.lastLoginAt || '');
+    const lastB = String(u.lastLoginAt || '');
+    if (prevId && prevId !== id) delete byId[prevId];
+    const copy = Object.assign({}, prev, profileSrc, {
+      id: id,
+      username: uname,
+      passwordHash: credsSrc.passwordHash || prev.passwordHash || u.passwordHash || '',
+      passwordSalt: credsSrc.passwordSalt || prev.passwordSalt || u.passwordSalt || '',
+      provisionalHash: credsSrc.provisionalHash || '',
+      provisionalSalt: credsSrc.provisionalSalt || '',
+      passwordUpdatedAt: credsSrc.passwordUpdatedAt || prev.passwordUpdatedAt || u.passwordUpdatedAt || '',
+      isDefaultSeed: Boolean(credsSrc.isDefaultSeed),
+      mustChangePassword: Boolean(credsSrc.mustChangePassword),
+      lastLoginAt: lastB > lastA ? lastB : lastA
+    });
+    byId[id] = copy;
+    idByUsername[uname] = id;
   };
   (Array.isArray(existing.userAccounts) ? existing.userAccounts : []).forEach(applyUser);
   (Array.isArray(incoming.userAccounts) ? incoming.userAccounts : []).forEach(applyUser);

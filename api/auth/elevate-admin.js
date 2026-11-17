@@ -17,10 +17,10 @@ export default async function handler(req, res) {
   }
 
   const body = parseBody(req);
-  const pass = String(body?.password || '').trim();
+  const pass = String(body?.password || '');
   if (!pass) return res.status(200).json({ ok: false });
 
-  const store = await hydrateUsersFromDrive(false);
+  const store = await hydrateUsersFromDrive(true);
   const admins = (store.userAccounts || []).filter(u => u && u.active !== false && u.role === 'admin');
   const matched = admins.some(a => verifyPasswordServer(a, pass));
   return res.status(200).json({ ok: matched });
