@@ -207,31 +207,41 @@ function doPost(e) {
 function setup() {
   const props = PropertiesService.getScriptProperties();
   const currentId = props.getProperty('SPREADSHEET_ID');
+  let ss = null;
+  let prefix = 'Base vinculada: ';
   if (currentId) {
     try {
-      const current = SpreadsheetApp.openById(currentId);
-      return 'Base vinculada: ' + current.getUrl();
+      ss = SpreadsheetApp.openById(currentId);
     } catch (_) {
       props.deleteProperty('SPREADSHEET_ID');
     }
   }
-  const folder = getFolder_();
-  const files = folder.getFilesByName(CONFIG.SPREADSHEET_NAME);
-  let chosen = null;
-  while (files.hasNext()) {
-    const file = files.next();
-    if (!chosen || file.getLastUpdated().getTime() > chosen.getLastUpdated().getTime()) chosen = file;
+  if (!ss) {
+    const folder = getFolder_();
+    const files = folder.getFilesByName(CONFIG.SPREADSHEET_NAME);
+    let chosen = null;
+    while (files.hasNext()) {
+      const file = files.next();
+      if (!chosen || file.getLastUpdated().getTime() > chosen.getLastUpdated().getTime()) chosen = file;
+    }
+    if (chosen) {
+      props.setProperty('SPREADSHEET_ID', chosen.getId());
+      ss = SpreadsheetApp.openById(chosen.getId());
+    } else {
+      ss = SpreadsheetApp.create(CONFIG.SPREADSHEET_NAME);
+      const file = DriveApp.getFileById(ss.getId());
+      folder.addFile(file);
+      try { DriveApp.getRootFolder().removeFile(file); } catch (_) {}
+      props.setProperty('SPREADSHEET_ID', ss.getId());
+      prefix = 'Configuración creada: ';
+    }
   }
-  if (chosen) {
-    props.setProperty('SPREADSHEET_ID', chosen.getId());
-    return 'Base vinculada: ' + SpreadsheetApp.openById(chosen.getId()).getUrl();
-  }
-  const ss = SpreadsheetApp.create(CONFIG.SPREADSHEET_NAME);
-  const file = DriveApp.getFileById(ss.getId());
-  folder.addFile(file);
-  try { DriveApp.getRootFolder().removeFile(file); } catch (_) {}
-  props.setProperty('SPREADSHEET_ID', ss.getId());
-  return 'Configuración creada: ' + ss.getUrl();
+  try {
+    if (!ss.getSheetByName('Usuarios') || !ss.getSheetByName('HistorialAccesos')) {
+      writeAuthSheets_(ss, readLatestBackup_() || {});
+    }
+  } catch (_) {}
+  return prefix + ss.getUrl();
 }
 
 function validateToken_(token) {

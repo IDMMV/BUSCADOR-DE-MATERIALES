@@ -1,42 +1,18 @@
-import fs from 'fs';
-
-const DRIVE_TIMEOUT_MS = 25000;
-const TMP_CONFIG_FILE = '/tmp/server-config.json';
-
-function fetchWithTimeout(url, options = {}, timeoutMs = DRIVE_TIMEOUT_MS) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
-  return fetch(url, { ...options, signal: controller.signal }).finally(() => clearTimeout(timer));
-}
-
-function getTmpConfig() {
-  let cfg = {};
-  if (fs.existsSync(TMP_CONFIG_FILE)) {
-    try { cfg = JSON.parse(fs.readFileSync(TMP_CONFIG_FILE, 'utf8')) || {}; } catch (_) {}
-  }
-  return {
-    url: (process.env.GOOGLE_APPS_SCRIPT_URL || cfg.scriptUrl || '').trim(),
-    token: (process.env.GOOGLE_APPS_SCRIPT_TOKEN || cfg.scriptToken || '').trim()
-  };
-}
-
-function saveTmpConfig(url, token) {
-  if (!url) return;
-  const cur = getTmpConfig();
-  const data = {
-    scriptUrl: url || cur.url,
-    scriptToken: token || cur.token,
-    updatedAt: new Date().toISOString()
-  };
-  try {
-    fs.writeFileSync(TMP_CONFIG_FILE, JSON.stringify(data, null, 2), 'utf8');
-  } catch (_) {}
-}
+import {
+  corsHeaders,
+  getSavedConfig,
+  saveConfig,
+  parseBody,
+  fetchWithTimeout,
+  DRIVE_TIMEOUT_MS,
+  hydrateUsersFromDrive,
+  mergeAuthLogs,
+  writeTmpUsers,
+  sanitizeUsersList
+} from '../_auth-lib.js';
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  corsHeaders(res, 'POST, OPTIONS');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -47,20 +23,16 @@ export default async function handler(req, res) {
   }
 
   try {
-    let body = req.body;
-    if (typeof body === 'string') {
-      try { body = JSON.parse(body); } catch (_) {}
-    }
-
-    const tmpCfg = getTmpConfig();
+    const body = parseBody(req);
+    const cfg = getSavedConfig();
     const reqUrl = (body?.targetUrl || body?.url || body?.scriptUrl || '').trim();
     const reqToken = (body?.token || body?.scriptToken || '').trim();
 
     if (reqUrl) {
-      saveTmpConfig(reqUrl, reqToken);
+      saveConfig(reqUrl, reqToken);
     }
 
-    const targetUrl = (tmpCfg.url || reqUrl).trim();
+    const targetUrl = (cfg.scriptUrl || reqUrl).trim();
     if (!targetUrl) {
       return res.status(400).json({ ok: false, error: 'URL de Google Apps Script no configurada en el servidor o en la app.' });
     }
@@ -69,17 +41,34 @@ export default async function handler(req, res) {
     delete payload.targetUrl;
     delete payload.url;
 
-    if (tmpCfg.token) {
-      payload.token = tmpCfg.token;
+    const serverUsers = await hydrateUsersFromDrive(false);
+    if (payload.action === 'syncUsersAndAuth') {
+      payload.userAccounts = serverUsers.userAccounts;
+      payload.deletedUserIds = serverUsers.deletedUserIds;
+      payload.authSettings = serverUsers.authSettings;
+      payload.authLogs = mergeAuthLogs(serverUsers.authLogs, payload.authLogs);
+    } else if (payload.action === 'syncAll' && payload.data && payload.data.app) {
+      payload.data = {
+        ...payload.data,
+        app: {
+          ...payload.data.app,
+          userAccounts: serverUsers.userAccounts,
+          deletedUserIds: serverUsers.deletedUserIds,
+          authSettings: serverUsers.authSettings,
+          authLogs: mergeAuthLogs(serverUsers.authLogs, payload.data.app.authLogs)
+        }
+      };
+    }
+
+    if (cfg.scriptToken) {
+      payload.token = cfg.scriptToken;
     } else if (!payload.token && reqToken) {
       payload.token = reqToken;
     }
 
     const response = await fetchWithTimeout(targetUrl, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'text/plain;charset=utf-8'
-      },
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(payload),
       redirect: 'follow'
     });
@@ -91,9 +80,27 @@ export default async function handler(req, res) {
     } catch (_) {
       return res.status(502).json({ ok: false, error: 'Respuesta no válida de Google Apps Script: ' + text.slice(0, 200) });
     }
+
+    if (data && data.ok && Array.isArray(data.userAccounts)) {
+      const merged = writeTmpUsers({
+        userAccounts: data.userAccounts,
+        deletedUserIds: data.deletedUserIds,
+        authSettings: data.authSettings,
+        authLogs: data.authLogs
+      });
+      data.userAccounts = sanitizeUsersList(merged.userAccounts);
+      data.authLogs = merged.authLogs;
+      data.authSettings = merged.authSettings;
+    }
+
     return res.status(200).json(data);
   } catch (err) {
     console.error('Error in /api/drive/sync serverless function:', err);
-    return res.status(err?.name==='AbortError'?504:500).json({ ok: false, error: err?.name==='AbortError' ? `Google Apps Script no respondió en ${DRIVE_TIMEOUT_MS/1000} segundos.` : 'Error de conexión con Google Apps Script: ' + (err?.message || err) });
+    return res.status(err?.name === 'AbortError' ? 504 : 500).json({
+      ok: false,
+      error: err?.name === 'AbortError'
+        ? `Google Apps Script no respondió en ${DRIVE_TIMEOUT_MS / 1000} segundos.`
+        : 'Error de conexión con Google Apps Script: ' + (err?.message || err)
+    });
   }
 }

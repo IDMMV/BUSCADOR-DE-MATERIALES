@@ -1,5 +1,5 @@
 // Service Worker for Buscador de Materiales SAP PWA
-const CACHE_NAME = 'materiales-sap-v9';
+const CACHE_NAME = 'materiales-sap-v10';
 const PRECACHE_ASSETS = [
   '/',
   '/index.html',

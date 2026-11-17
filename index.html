@@ -11383,9 +11383,14 @@ html[data-theme="dark"] .v47-force-pw-box{background:#451a03;color:#fde68a;borde
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ identifier, password: pass })
       });
-      const data = await r.json().catch(() => ({}));
+      const rawText = await r.text().catch(() => '');
+      let data = {};
+      try { data = rawText ? JSON.parse(rawText) : {}; } catch (_) { data = {}; }
       if(!r.ok || !data?.ok || !data?.user){
-        setStatus(data?.error || '❌ Usuario o contraseña incorrectos.', 'err');
+        const fallbackMsg = (r.status === 404 || r.status >= 500 || !data || typeof data.error !== 'string')
+          ? `❌ Error de servidor (${r.status || 'red'}): el endpoint de acceso no respondió JSON válido.`
+          : data.error;
+        setStatus(data?.error || fallbackMsg, 'err');
         return;
       }
 

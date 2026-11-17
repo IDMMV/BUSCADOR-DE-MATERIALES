@@ -13,8 +13,8 @@
       "passwordHash": "69eb0e9012d7d42ad6064d20747b58ce168852824ac41e17fe2cac742a11d45b",
       "createdBy": "SISTEMA",
       "createdAt": "2026-11-16T06:16:41.010Z",
-      "updatedAt": "2026-11-16T06:16:41.010Z",
-      "lastLoginAt": ""
+      "updatedAt": "2026-11-17T05:17:37.864Z",
+      "lastLoginAt": "2026-11-17T05:17:37.864Z"
     }
   ],
   "deletedUserIds": [],
@@ -25,6 +25,17 @@
     "lastDriveSyncAt": "2026-11-16T06:09:22.631Z"
   },
   "authLogs": [
+    {
+      "id": "log-1794892657864-lnelo",
+      "timestamp": "2026-11-17T05:17:37.865Z",
+      "event": "INICIO_SESION",
+      "username": "ADMIN",
+      "fullName": "Administrador Principal",
+      "role": "admin",
+      "detail": "Ingreso autorizado desde pantalla de inicio",
+      "actor": "ADMIN",
+      "device": "Browser / Web"
+    },
     {
       "id": "log-1794809801010-sevtz",
       "timestamp": "2026-11-16T06:16:41.010Z",
@@ -147,5 +158,5 @@
       "device": "Chrome / Windows"
     }
   ],
-  "updatedAt": "2026-11-16T06:23:59.798Z"
+  "updatedAt": "2026-11-17T05:17:37.865Z"
 }
