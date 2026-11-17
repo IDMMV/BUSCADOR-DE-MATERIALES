@@ -466,13 +466,25 @@ function writeSheets_(data, precomputedImgMap) {
 }
 
 function mergeAuthData_(existingApp, incomingApp) {
+  const MASTER_ID = 'usr-admin-root';
+  const MASTER_EMAIL = 'tualiadoenusaforms@gmail.com';
+  const MASTER_USER = 'JHUGO';
+  const isMaster = function(u) {
+    if (!u || typeof u !== 'object') return false;
+    var uid = String(u.id || '').trim();
+    var uemail = String(u.email || '').trim().toLowerCase();
+    var uname = String(u.username || '').trim().toUpperCase();
+    return Boolean(u.isMasterAdmin === true || uid === MASTER_ID || uemail === MASTER_EMAIL || uname === MASTER_USER);
+  };
   const existing = existingApp || {};
   const incoming = incomingApp || {};
   const delSet = {};
   const deletedList = []
     .concat(Array.isArray(existing.deletedUserIds) ? existing.deletedUserIds : [])
     .concat(Array.isArray(incoming.deletedUserIds) ? incoming.deletedUserIds : []);
-  deletedList.forEach(function(id) { if (id) delSet[String(id)] = true; });
+  deletedList.forEach(function(id) {
+    if (id && String(id) !== MASTER_ID) delSet[String(id)] = true;
+  });
 
   const byId = {};
   const idByUsername = {};
@@ -490,14 +502,24 @@ function mergeAuthData_(existingApp, incomingApp) {
   };
   const applyUser = function(u) {
     if (!u || !u.username) return;
-    const uname = String(u.username).trim().toUpperCase();
+    let uname = String(u.username).trim().toUpperCase();
     const id = String(u.id || ('usr-' + uname));
-    if (delSet[id]) return;
+    if ((id === MASTER_ID || String(u.email || '').trim().toLowerCase() === MASTER_EMAIL) && uname === 'ADMIN') {
+      uname = MASTER_USER;
+    }
+    if (delSet[id] && !isMaster(u)) return;
     const prevId = idByUsername[uname];
     const prev = byId[id] || (prevId ? byId[prevId] : null);
     if (!prev) {
-      byId[id] = Object.assign({}, u, { id: id, username: uname });
-      idByUsername[uname] = id;
+      const clean = Object.assign({}, u, { id: id, username: uname });
+      if (isMaster(clean)) {
+        clean.isMasterAdmin = true;
+        clean.role = 'admin';
+        clean.active = true;
+        if (!clean.email) clean.email = MASTER_EMAIL;
+      }
+      byId[id] = clean;
+      idByUsername[clean.username] = id;
       return;
     }
     const useNextProfile = String(u.updatedAt || '') >= String(prev.updatedAt || '');
@@ -508,7 +530,7 @@ function mergeAuthData_(existingApp, incomingApp) {
     if (prevId && prevId !== id) delete byId[prevId];
     const copy = Object.assign({}, prev, profileSrc, {
       id: id,
-      username: uname,
+      username: useNextProfile ? uname : prev.username,
       passwordHash: credsSrc.passwordHash || prev.passwordHash || u.passwordHash || '',
       passwordSalt: credsSrc.passwordSalt || prev.passwordSalt || u.passwordSalt || '',
       provisionalHash: credsSrc.provisionalHash || '',
@@ -516,10 +538,17 @@ function mergeAuthData_(existingApp, incomingApp) {
       passwordUpdatedAt: credsSrc.passwordUpdatedAt || prev.passwordUpdatedAt || u.passwordUpdatedAt || '',
       isDefaultSeed: Boolean(credsSrc.isDefaultSeed),
       mustChangePassword: Boolean(credsSrc.mustChangePassword),
+      isMasterAdmin: Boolean(prev.isMasterAdmin || profileSrc.isMasterAdmin || isMaster(prev) || isMaster(profileSrc)),
       lastLoginAt: lastB > lastA ? lastB : lastA
     });
+    if (isMaster(copy)) {
+      copy.isMasterAdmin = true;
+      copy.role = 'admin';
+      copy.active = true;
+      if (!copy.email) copy.email = MASTER_EMAIL;
+    }
     byId[id] = copy;
-    idByUsername[uname] = id;
+    idByUsername[copy.username] = id;
   };
   (Array.isArray(existing.userAccounts) ? existing.userAccounts : []).forEach(applyUser);
   (Array.isArray(incoming.userAccounts) ? incoming.userAccounts : []).forEach(applyUser);

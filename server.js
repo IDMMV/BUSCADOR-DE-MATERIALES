@@ -223,8 +223,46 @@ function clearLoginFailures(key) {
   loginFailureMap.delete(key);
 }
 
+const MASTER_ADMIN_ID = 'usr-admin-root';
+const MASTER_ADMIN_EMAIL = 'tualiadoenusaforms@gmail.com';
+const MASTER_ADMIN_USERNAME = 'JHUGO';
+
+function isProtectedMasterAdmin(user) {
+  if (!user || typeof user !== 'object') return false;
+  const id = String(user.id || '').trim();
+  const email = String(user.email || '').trim().toLowerCase();
+  const uname = String(user.username || '').trim().toUpperCase();
+  return Boolean(
+    user.isMasterAdmin === true ||
+    id === MASTER_ADMIN_ID ||
+    email === MASTER_ADMIN_EMAIL ||
+    uname === MASTER_ADMIN_USERNAME
+  );
+}
+
+function normalizeMasterAdminFields(u) {
+  if (!isProtectedMasterAdmin(u)) return u;
+  const next = { ...u };
+  if (next.id === MASTER_ADMIN_ID || String(next.email || '').trim().toLowerCase() === MASTER_ADMIN_EMAIL) {
+    if (!next.username || String(next.username).trim().toUpperCase() === 'ADMIN') {
+      next.username = MASTER_ADMIN_USERNAME;
+    }
+    if (!next.email) {
+      next.email = MASTER_ADMIN_EMAIL;
+    }
+  }
+  next.isMasterAdmin = true;
+  next.role = 'admin';
+  next.active = true;
+  return next;
+}
+
 function mergeUsersLists(existingUsers = [], incomingUsers = [], deletedIds = []) {
-  const deletedSet = new Set((Array.isArray(deletedIds) ? deletedIds : []).map(String));
+  const deletedSet = new Set(
+    (Array.isArray(deletedIds) ? deletedIds : [])
+      .map(String)
+      .filter(id => id && id !== MASTER_ADMIN_ID)
+  );
   const byId = new Map();
   const byUsername = new Map();
 
@@ -243,21 +281,24 @@ function mergeUsersLists(existingUsers = [], incomingUsers = [], deletedIds = []
 
   const applyUser = (u) => {
     if (!u || !u.username) return;
-    const uname = String(u.username).trim().toUpperCase();
+    let uname = String(u.username).trim().toUpperCase();
     const id = String(u.id || ('usr-' + uname));
-    if (deletedSet.has(id)) return;
+    if (id === MASTER_ADMIN_ID || String(u.email || '').trim().toLowerCase() === MASTER_ADMIN_EMAIL) {
+      if (uname === 'ADMIN') uname = MASTER_ADMIN_USERNAME;
+    }
+    if (deletedSet.has(id) && !isProtectedMasterAdmin(u)) return;
     const prev = byId.get(id) || byUsername.get(uname);
     if (!prev) {
-      const clean = {
+      const clean = normalizeMasterAdminFields({
         ...u,
         id,
         username: uname,
         email: String(u.email || '').trim().toLowerCase(),
         passwordHash: u.passwordHash || '',
         passwordSalt: u.passwordSalt || ''
-      };
+      });
       byId.set(id, clean);
-      byUsername.set(uname, clean);
+      byUsername.set(clean.username, clean);
       return;
     }
 
@@ -267,11 +308,11 @@ function mergeUsersLists(existingUsers = [], incomingUsers = [], deletedIds = []
     const lastLoginA = String(prev.lastLoginAt || '');
     const lastLoginB = String(u.lastLoginAt || '');
 
-    const merged = {
+    const merged = normalizeMasterAdminFields({
       ...prev,
       ...profileSrc,
       id,
-      username: uname,
+      username: useNextProfile ? uname : prev.username,
       email: String(profileSrc.email !== undefined ? profileSrc.email : (prev.email || '')).trim().toLowerCase(),
       passwordHash: credsSrc.passwordHash || prev.passwordHash || u.passwordHash || '',
       passwordSalt: credsSrc.passwordSalt || prev.passwordSalt || u.passwordSalt || '',
@@ -280,16 +321,18 @@ function mergeUsersLists(existingUsers = [], incomingUsers = [], deletedIds = []
       passwordUpdatedAt: credsSrc.passwordUpdatedAt || prev.passwordUpdatedAt || u.passwordUpdatedAt || '',
       isDefaultSeed: Boolean(credsSrc.isDefaultSeed),
       mustChangePassword: Boolean(credsSrc.mustChangePassword),
+      isMasterAdmin: Boolean(prev.isMasterAdmin || profileSrc.isMasterAdmin || isProtectedMasterAdmin(prev) || isProtectedMasterAdmin(profileSrc)),
       lastLoginAt: lastLoginB > lastLoginA ? lastLoginB : lastLoginA
-    };
+    });
     if (prev.id !== id) byId.delete(prev.id);
+    if (prev.username && prev.username !== merged.username) byUsername.delete(prev.username);
     byId.set(id, merged);
-    byUsername.set(uname, merged);
+    byUsername.set(merged.username, merged);
   };
 
   (Array.isArray(existingUsers) ? existingUsers : []).forEach(applyUser);
   (Array.isArray(incomingUsers) ? incomingUsers : []).forEach(applyUser);
-  return Array.from(byId.values()).filter(u => !deletedSet.has(String(u.id)));
+  return Array.from(byId.values()).filter(u => isProtectedMasterAdmin(u) || !deletedSet.has(String(u.id)));
 }
 
 function mergeAuthLogs(existingLogs = [], incomingLogs = []) {
@@ -322,9 +365,13 @@ function readSavedUsers() {
     try {
       const parsed = JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
       const authSettings = normalizeAuthSettings(parsed?.authSettings || {});
+      const rawUsers = Array.isArray(parsed?.userAccounts) ? parsed.userAccounts.map(normalizeMasterAdminFields) : [];
+      const protectedIds = new Set(rawUsers.filter(isProtectedMasterAdmin).map(u => String(u.id)));
+      protectedIds.add(MASTER_ADMIN_ID);
+      const rawDeleted = (Array.isArray(parsed?.deletedUserIds) ? parsed.deletedUserIds : []).filter(id => !protectedIds.has(String(id)));
       return {
-        userAccounts: Array.isArray(parsed?.userAccounts) ? parsed.userAccounts : [],
-        deletedUserIds: Array.isArray(parsed?.deletedUserIds) ? parsed.deletedUserIds : [],
+        userAccounts: rawUsers,
+        deletedUserIds: rawDeleted,
         authSettings,
         authLogs: Array.isArray(parsed?.authLogs) ? parsed.authLogs : [],
         updatedAt: parsed?.updatedAt || ''
@@ -343,12 +390,25 @@ function readSavedUsers() {
 function writeSavedUsers(payload) {
   ensureDataDir();
   const current = readSavedUsers();
+  const protectedIds = new Set(
+    [...(current.userAccounts || []), ...(Array.isArray(payload?.userAccounts) ? payload.userAccounts : [])]
+      .filter(isProtectedMasterAdmin)
+      .map(u => String(u.id))
+  );
+  protectedIds.add(MASTER_ADMIN_ID);
   const incomingDeleted = Array.isArray(payload?.deletedUserIds) ? payload.deletedUserIds : [];
-  const deletedUserIds = Array.from(new Set([...(current.deletedUserIds || []), ...incomingDeleted].map(String))).slice(-200);
+  const deletedUserIds = Array.from(new Set([...(current.deletedUserIds || []), ...incomingDeleted].map(String)))
+    .filter(id => !protectedIds.has(id))
+    .slice(-200);
   const incomingUsers = Array.isArray(payload?.userAccounts) ? payload.userAccounts : [];
-  const userAccounts = payload?.replaceAll
-    ? incomingUsers.filter(u => u && !deletedUserIds.includes(String(u.id)))
+  let userAccounts = payload?.replaceAll
+    ? incomingUsers.map(normalizeMasterAdminFields).filter(u => u && (isProtectedMasterAdmin(u) || !deletedUserIds.includes(String(u.id))))
     : mergeUsersLists(current.userAccounts, incomingUsers, deletedUserIds);
+  // Garantizar que la cuenta de Administrador Principal nunca desaparezca por replaceAll accidental
+  const currentMaster = (current.userAccounts || []).find(isProtectedMasterAdmin);
+  if (currentMaster && !userAccounts.some(isProtectedMasterAdmin)) {
+    userAccounts.unshift(normalizeMasterAdminFields(currentMaster));
+  }
   const authLogs = mergeAuthLogs(current.authLogs, payload?.authLogs);
   const authSettings = normalizeAuthSettings(payload?.authSettings || {}, current.authSettings);
   const data = {
@@ -395,12 +455,13 @@ function ensureDefaultAdminInStore() {
   const hash = hashSecretServer('1234', salt);
   const now = new Date().toISOString();
   const rootAdmin = {
-    id: 'usr-admin-root',
-    username: 'ADMIN',
-    email: '',
+    id: MASTER_ADMIN_ID,
+    username: MASTER_ADMIN_USERNAME,
+    email: MASTER_ADMIN_EMAIL,
     fullName: 'Administrador Principal',
     role: 'admin',
     active: true,
+    isMasterAdmin: true,
     mustChangePassword: true,
     isDefaultSeed: true,
     defaultCenter: '',
@@ -417,7 +478,7 @@ function ensureDefaultAdminInStore() {
     id: 'log-seed-' + Date.now(),
     timestamp: now,
     event: 'CREAR_USUARIO',
-    username: 'ADMIN',
+    username: MASTER_ADMIN_USERNAME,
     fullName: 'Administrador Principal',
     role: 'admin',
     detail: 'Cuenta maestra inicial generada automáticamente (requiere cambio de clave al ingresar)',
@@ -426,8 +487,8 @@ function ensureDefaultAdminInStore() {
   });
   return writeSavedUsers({
     replaceAll: true,
-    userAccounts: [rootAdmin, ...(store.userAccounts || []).filter(u => u.id !== 'usr-admin-root' && u.username !== 'ADMIN')],
-    deletedUserIds: store.deletedUserIds.filter(id => id !== 'usr-admin-root'),
+    userAccounts: [rootAdmin, ...(store.userAccounts || []).filter(u => u.id !== MASTER_ADMIN_ID && u.username !== 'ADMIN' && u.username !== MASTER_ADMIN_USERNAME)],
+    deletedUserIds: store.deletedUserIds.filter(id => id !== MASTER_ADMIN_ID),
     authSettings: store.authSettings,
     authLogs: nextLogs
   });
@@ -808,7 +869,7 @@ app.post('/api/auth/elevate-admin', requireAuth, async (req, res) => {
 app.get('/api/users', async (req, res) => {
   const store = await hydrateUsersFromDrive(false);
   const users = store.userAccounts || [];
-  const onlyRootSeed = users.length === 1 && users[0]?.username === 'ADMIN' && Boolean(users[0]?.isDefaultSeed);
+  const onlyRootSeed = users.length === 1 && (users[0]?.id === MASTER_ADMIN_ID || users[0]?.username === 'ADMIN' || users[0]?.username === MASTER_ADMIN_USERNAME) && Boolean(users[0]?.isDefaultSeed);
   res.json({
     ok: true,
     userAccounts: sanitizeUsersList(users),
@@ -885,13 +946,23 @@ app.post('/api/users', requireAdmin, async (req, res) => {
     const uid = String(body.id || '');
     const user = (store.userAccounts || []).find(u => u.id === uid);
     if (!user) return res.status(404).json({ ok: false, error: 'Usuario no encontrado.' });
+    const targetIsMaster = isProtectedMasterAdmin(user);
+    const actorIsMaster = isProtectedMasterAdmin(req.authUser);
+
+    if (targetIsMaster && !actorIsMaster) {
+      return res.status(403).json({
+        ok: false,
+        error: `La cuenta del Administrador Principal (${MASTER_ADMIN_USERNAME}) está protegida y solo puede ser modificada por su titular.`
+      });
+    }
+
     const fullName = String(body.fullName || '').trim();
-    const email = String(body.email || '').trim().toLowerCase();
-    const role = body.role === 'admin' ? 'admin' : 'user';
+    const email = targetIsMaster ? (user.email || MASTER_ADMIN_EMAIL) : String(body.email || '').trim().toLowerCase();
+    const role = targetIsMaster ? 'admin' : (body.role === 'admin' ? 'admin' : 'user');
     const newPass = String(body.password || '');
     const defaultCenter = ['1003', '1004'].includes(String(body.defaultCenter || '')) ? String(body.defaultCenter) : '';
     const defaultSupervisor = String(body.defaultSupervisor || '').trim().toUpperCase();
-    const mustChangePassword = Boolean(body.mustChangePassword);
+    const mustChangePassword = targetIsMaster ? false : Boolean(body.mustChangePassword);
 
     if (!fullName) return res.status(400).json({ ok: false, error: 'El nombre completo es obligatorio.' });
     if (email && (store.userAccounts || []).some(u => u.id !== uid && u.email && String(u.email).toLowerCase() === email)) {
@@ -911,6 +982,10 @@ app.post('/api/users', requireAdmin, async (req, res) => {
     user.fullName = fullName;
     user.email = email;
     user.role = role;
+    if (targetIsMaster) {
+      user.isMasterAdmin = true;
+      user.active = true;
+    }
     user.defaultCenter = defaultCenter;
     user.defaultSupervisor = defaultSupervisor;
     user.mustChangePassword = mustChangePassword;
@@ -945,6 +1020,12 @@ app.post('/api/users', requireAdmin, async (req, res) => {
     const uid = String(body.id || '');
     const user = (store.userAccounts || []).find(u => u.id === uid);
     if (!user) return res.status(404).json({ ok: false, error: 'Usuario no encontrado.' });
+    if (isProtectedMasterAdmin(user)) {
+      return res.status(403).json({
+        ok: false,
+        error: `La cuenta del Administrador Principal (${user.username || MASTER_ADMIN_USERNAME}) está protegida y no puede ser deshabilitada.`
+      });
+    }
     const nextActive = user.active === false;
     if (!nextActive && user.role === 'admin') {
       const otherAdmins = (store.userAccounts || []).filter(u => u.id !== uid && u.active !== false && u.role === 'admin');
@@ -971,6 +1052,12 @@ app.post('/api/users', requireAdmin, async (req, res) => {
     const uid = String(body.id || '');
     const user = (store.userAccounts || []).find(u => u.id === uid);
     if (!user) return res.status(404).json({ ok: false, error: 'Usuario no encontrado.' });
+    if (isProtectedMasterAdmin(user)) {
+      return res.status(403).json({
+        ok: false,
+        error: `La cuenta del Administrador Principal (${user.username || MASTER_ADMIN_USERNAME}) está protegida y ningún usuario puede eliminarla.`
+      });
+    }
     if (user.role === 'admin') {
       const otherAdmins = (store.userAccounts || []).filter(u => u.id !== uid && u.active !== false && u.role === 'admin');
       if (!otherAdmins.length) {

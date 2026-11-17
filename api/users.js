@@ -12,7 +12,11 @@ import {
   normalizeAuthSettings,
   syncUsersToDriveServer,
   getClientIp,
-  clearLoginFailures
+  clearLoginFailures,
+  MASTER_ADMIN_ID,
+  MASTER_ADMIN_EMAIL,
+  MASTER_ADMIN_USERNAME,
+  isProtectedMasterAdmin
 } from './_auth-lib.js';
 
 export default async function handler(req, res) {
@@ -24,7 +28,7 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     const store = await hydrateUsersFromDrive(true);
     const users = store.userAccounts || [];
-    const onlyRootSeed = users.length === 1 && users[0]?.username === 'ADMIN' && Boolean(users[0]?.isDefaultSeed);
+    const onlyRootSeed = users.length === 1 && (users[0]?.id === MASTER_ADMIN_ID || users[0]?.username === 'ADMIN' || users[0]?.username === MASTER_ADMIN_USERNAME) && Boolean(users[0]?.isDefaultSeed);
     return res.status(200).json({
       ok: true,
       userAccounts: sanitizeUsersList(users),
@@ -111,13 +115,23 @@ export default async function handler(req, res) {
     const uid = String(body.id || '');
     const user = (store.userAccounts || []).find(u => u.id === uid);
     if (!user) return res.status(404).json({ ok: false, error: 'Usuario no encontrado.' });
+    const targetIsMaster = isProtectedMasterAdmin(user);
+    const actorIsMaster = isProtectedMasterAdmin(authUser);
+
+    if (targetIsMaster && !actorIsMaster) {
+      return res.status(403).json({
+        ok: false,
+        error: `La cuenta del Administrador Principal (${MASTER_ADMIN_USERNAME}) está protegida y solo puede ser modificada por su titular.`
+      });
+    }
+
     const fullName = String(body.fullName || '').trim();
-    const email = String(body.email || '').trim().toLowerCase();
-    const role = body.role === 'admin' ? 'admin' : 'user';
+    const email = targetIsMaster ? (user.email || MASTER_ADMIN_EMAIL) : String(body.email || '').trim().toLowerCase();
+    const role = targetIsMaster ? 'admin' : (body.role === 'admin' ? 'admin' : 'user');
     const newPass = String(body.password || '');
     const defaultCenter = ['1003', '1004'].includes(String(body.defaultCenter || '')) ? String(body.defaultCenter) : '';
     const defaultSupervisor = String(body.defaultSupervisor || '').trim().toUpperCase();
-    const mustChangePassword = Boolean(body.mustChangePassword);
+    const mustChangePassword = targetIsMaster ? false : Boolean(body.mustChangePassword);
 
     if (!fullName) return res.status(400).json({ ok: false, error: 'El nombre completo es obligatorio.' });
     if (email && (store.userAccounts || []).some(u => u.id !== uid && u.email && String(u.email).toLowerCase() === email)) {
@@ -137,6 +151,10 @@ export default async function handler(req, res) {
     user.fullName = fullName;
     user.email = email;
     user.role = role;
+    if (targetIsMaster) {
+      user.isMasterAdmin = true;
+      user.active = true;
+    }
     user.defaultCenter = defaultCenter;
     user.defaultSupervisor = defaultSupervisor;
     user.mustChangePassword = mustChangePassword;
@@ -171,6 +189,12 @@ export default async function handler(req, res) {
     const uid = String(body.id || '');
     const user = (store.userAccounts || []).find(u => u.id === uid);
     if (!user) return res.status(404).json({ ok: false, error: 'Usuario no encontrado.' });
+    if (isProtectedMasterAdmin(user)) {
+      return res.status(403).json({
+        ok: false,
+        error: `La cuenta del Administrador Principal (${user.username || MASTER_ADMIN_USERNAME}) está protegida y no puede ser deshabilitada.`
+      });
+    }
     const nextActive = user.active === false;
     if (!nextActive && user.role === 'admin') {
       const otherAdmins = (store.userAccounts || []).filter(u => u.id !== uid && u.active !== false && u.role === 'admin');
@@ -197,6 +221,12 @@ export default async function handler(req, res) {
     const uid = String(body.id || '');
     const user = (store.userAccounts || []).find(u => u.id === uid);
     if (!user) return res.status(404).json({ ok: false, error: 'Usuario no encontrado.' });
+    if (isProtectedMasterAdmin(user)) {
+      return res.status(403).json({
+        ok: false,
+        error: `La cuenta del Administrador Principal (${user.username || MASTER_ADMIN_USERNAME}) está protegida y ningún usuario puede eliminarla.`
+      });
+    }
     if (user.role === 'admin') {
       const otherAdmins = (store.userAccounts || []).filter(u => u.id !== uid && u.active !== false && u.role === 'admin');
       if (!otherAdmins.length) {

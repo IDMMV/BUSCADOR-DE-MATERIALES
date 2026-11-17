@@ -258,8 +258,46 @@ export function clearLoginFailures(key) {
   loginFailureMap.delete(key);
 }
 
+export const MASTER_ADMIN_ID = 'usr-admin-root';
+export const MASTER_ADMIN_EMAIL = 'tualiadoenusaforms@gmail.com';
+export const MASTER_ADMIN_USERNAME = 'JHUGO';
+
+export function isProtectedMasterAdmin(user) {
+  if (!user || typeof user !== 'object') return false;
+  const id = String(user.id || '').trim();
+  const email = String(user.email || '').trim().toLowerCase();
+  const uname = String(user.username || '').trim().toUpperCase();
+  return Boolean(
+    user.isMasterAdmin === true ||
+    id === MASTER_ADMIN_ID ||
+    email === MASTER_ADMIN_EMAIL ||
+    uname === MASTER_ADMIN_USERNAME
+  );
+}
+
+export function normalizeMasterAdminFields(u) {
+  if (!isProtectedMasterAdmin(u)) return u;
+  const next = { ...u };
+  if (next.id === MASTER_ADMIN_ID || String(next.email || '').trim().toLowerCase() === MASTER_ADMIN_EMAIL) {
+    if (!next.username || String(next.username).trim().toUpperCase() === 'ADMIN') {
+      next.username = MASTER_ADMIN_USERNAME;
+    }
+    if (!next.email) {
+      next.email = MASTER_ADMIN_EMAIL;
+    }
+  }
+  next.isMasterAdmin = true;
+  next.role = 'admin';
+  next.active = true;
+  return next;
+}
+
 export function mergeUsersLists(existingUsers = [], incomingUsers = [], deletedIds = []) {
-  const deletedSet = new Set((Array.isArray(deletedIds) ? deletedIds : []).map(String));
+  const deletedSet = new Set(
+    (Array.isArray(deletedIds) ? deletedIds : [])
+      .map(String)
+      .filter(id => id && id !== MASTER_ADMIN_ID)
+  );
   const byId = new Map();
   const byUsername = new Map();
 
@@ -278,21 +316,24 @@ export function mergeUsersLists(existingUsers = [], incomingUsers = [], deletedI
 
   const applyUser = (u) => {
     if (!u || !u.username) return;
-    const uname = String(u.username).trim().toUpperCase();
+    let uname = String(u.username).trim().toUpperCase();
     const id = String(u.id || ('usr-' + uname));
-    if (deletedSet.has(id)) return;
+    if (id === MASTER_ADMIN_ID || String(u.email || '').trim().toLowerCase() === MASTER_ADMIN_EMAIL) {
+      if (uname === 'ADMIN') uname = MASTER_ADMIN_USERNAME;
+    }
+    if (deletedSet.has(id) && !isProtectedMasterAdmin(u)) return;
     const prev = byId.get(id) || byUsername.get(uname);
     if (!prev) {
-      const clean = {
+      const clean = normalizeMasterAdminFields({
         ...u,
         id,
         username: uname,
         email: String(u.email || '').trim().toLowerCase(),
         passwordHash: u.passwordHash || '',
         passwordSalt: u.passwordSalt || ''
-      };
+      });
       byId.set(id, clean);
-      byUsername.set(uname, clean);
+      byUsername.set(clean.username, clean);
       return;
     }
 
@@ -302,11 +343,11 @@ export function mergeUsersLists(existingUsers = [], incomingUsers = [], deletedI
     const lastLoginA = String(prev.lastLoginAt || '');
     const lastLoginB = String(u.lastLoginAt || '');
 
-    const merged = {
+    const merged = normalizeMasterAdminFields({
       ...prev,
       ...profileSrc,
       id,
-      username: uname,
+      username: useNextProfile ? uname : prev.username,
       email: String(profileSrc.email !== undefined ? profileSrc.email : (prev.email || '')).trim().toLowerCase(),
       passwordHash: credsSrc.passwordHash || prev.passwordHash || u.passwordHash || '',
       passwordSalt: credsSrc.passwordSalt || prev.passwordSalt || u.passwordSalt || '',
@@ -315,16 +356,18 @@ export function mergeUsersLists(existingUsers = [], incomingUsers = [], deletedI
       passwordUpdatedAt: credsSrc.passwordUpdatedAt || prev.passwordUpdatedAt || u.passwordUpdatedAt || '',
       isDefaultSeed: Boolean(credsSrc.isDefaultSeed),
       mustChangePassword: Boolean(credsSrc.mustChangePassword),
+      isMasterAdmin: Boolean(prev.isMasterAdmin || profileSrc.isMasterAdmin || isProtectedMasterAdmin(prev) || isProtectedMasterAdmin(profileSrc)),
       lastLoginAt: lastLoginB > lastLoginA ? lastLoginB : lastLoginA
-    };
+    });
     if (prev.id !== id) byId.delete(prev.id);
+    if (prev.username && prev.username !== merged.username) byUsername.delete(prev.username);
     byId.set(id, merged);
-    byUsername.set(uname, merged);
+    byUsername.set(merged.username, merged);
   };
 
   (Array.isArray(existingUsers) ? existingUsers : []).forEach(applyUser);
   (Array.isArray(incomingUsers) ? incomingUsers : []).forEach(applyUser);
-  return Array.from(byId.values()).filter(u => !deletedSet.has(String(u.id)));
+  return Array.from(byId.values()).filter(u => isProtectedMasterAdmin(u) || !deletedSet.has(String(u.id)));
 }
 
 export function mergeAuthLogs(existingLogs = [], incomingLogs = []) {
@@ -355,9 +398,13 @@ export function readTmpUsers() {
   if (fs.existsSync(TMP_USERS_FILE)) {
     try {
       const parsed = JSON.parse(fs.readFileSync(TMP_USERS_FILE, 'utf8'));
+      const rawUsers = Array.isArray(parsed?.userAccounts) ? parsed.userAccounts.map(normalizeMasterAdminFields) : [];
+      const protectedIds = new Set(rawUsers.filter(isProtectedMasterAdmin).map(u => String(u.id)));
+      protectedIds.add(MASTER_ADMIN_ID);
+      const rawDeleted = (Array.isArray(parsed?.deletedUserIds) ? parsed.deletedUserIds : []).filter(id => !protectedIds.has(String(id)));
       return {
-        userAccounts: Array.isArray(parsed?.userAccounts) ? parsed.userAccounts : [],
-        deletedUserIds: Array.isArray(parsed?.deletedUserIds) ? parsed.deletedUserIds : [],
+        userAccounts: rawUsers,
+        deletedUserIds: rawDeleted,
         authSettings: normalizeAuthSettings(parsed?.authSettings || {}),
         authLogs: Array.isArray(parsed?.authLogs) ? parsed.authLogs : [],
         updatedAt: parsed?.updatedAt || ''
@@ -375,12 +422,24 @@ export function readTmpUsers() {
 
 export function writeTmpUsers(payload) {
   const current = readTmpUsers();
+  const protectedIds = new Set(
+    [...(current.userAccounts || []), ...(Array.isArray(payload?.userAccounts) ? payload.userAccounts : [])]
+      .filter(isProtectedMasterAdmin)
+      .map(u => String(u.id))
+  );
+  protectedIds.add(MASTER_ADMIN_ID);
   const incomingDeleted = Array.isArray(payload?.deletedUserIds) ? payload.deletedUserIds : [];
-  const deletedUserIds = Array.from(new Set([...(current.deletedUserIds || []), ...incomingDeleted].map(String))).slice(-200);
+  const deletedUserIds = Array.from(new Set([...(current.deletedUserIds || []), ...incomingDeleted].map(String)))
+    .filter(id => !protectedIds.has(id))
+    .slice(-200);
   const incomingUsers = Array.isArray(payload?.userAccounts) ? payload.userAccounts : [];
-  const userAccounts = payload?.replaceAll
-    ? incomingUsers.filter(u => u && !deletedUserIds.includes(String(u.id)))
+  let userAccounts = payload?.replaceAll
+    ? incomingUsers.map(normalizeMasterAdminFields).filter(u => u && (isProtectedMasterAdmin(u) || !deletedUserIds.includes(String(u.id))))
     : mergeUsersLists(current.userAccounts, incomingUsers, deletedUserIds);
+  const currentMaster = (current.userAccounts || []).find(isProtectedMasterAdmin);
+  if (currentMaster && !userAccounts.some(isProtectedMasterAdmin)) {
+    userAccounts.unshift(normalizeMasterAdminFields(currentMaster));
+  }
   const authLogs = mergeAuthLogs(current.authLogs, payload?.authLogs);
   const authSettings = normalizeAuthSettings(payload?.authSettings || {}, current.authSettings);
   const data = {
@@ -424,12 +483,13 @@ export function ensureDefaultAdminInStore() {
   const hash = hashSecretServer('1234', salt);
   const now = new Date().toISOString();
   const rootAdmin = {
-    id: 'usr-admin-root',
-    username: 'ADMIN',
-    email: '',
+    id: MASTER_ADMIN_ID,
+    username: MASTER_ADMIN_USERNAME,
+    email: MASTER_ADMIN_EMAIL,
     fullName: 'Administrador Principal',
     role: 'admin',
     active: true,
+    isMasterAdmin: true,
     mustChangePassword: true,
     isDefaultSeed: true,
     defaultCenter: '',
@@ -446,7 +506,7 @@ export function ensureDefaultAdminInStore() {
     id: 'log-seed-' + Date.now(),
     timestamp: now,
     event: 'CREAR_USUARIO',
-    username: 'ADMIN',
+    username: MASTER_ADMIN_USERNAME,
     fullName: 'Administrador Principal',
     role: 'admin',
     detail: 'Cuenta maestra inicial generada automáticamente (requiere cambio de clave al ingresar)',
@@ -455,8 +515,8 @@ export function ensureDefaultAdminInStore() {
   });
   return writeTmpUsers({
     replaceAll: true,
-    userAccounts: [rootAdmin, ...(store.userAccounts || []).filter(u => u.id !== 'usr-admin-root' && u.username !== 'ADMIN')],
-    deletedUserIds: store.deletedUserIds.filter(id => id !== 'usr-admin-root'),
+    userAccounts: [rootAdmin, ...(store.userAccounts || []).filter(u => u.id !== MASTER_ADMIN_ID && u.username !== 'ADMIN' && u.username !== MASTER_ADMIN_USERNAME)],
+    deletedUserIds: store.deletedUserIds.filter(id => id !== MASTER_ADMIN_ID),
     authSettings: store.authSettings,
     authLogs: nextLogs
   });
