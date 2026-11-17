@@ -770,13 +770,14 @@ body.bm-authenticated #enterpriseLoginOverlay {
   display: none;
 }
 #v452SilentPrintFrame {
-  position: absolute;
-  top: -9999px;
-  left: -9999px;
-  width: 1px;
-  height: 1px;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  width: 0;
+  height: 0;
   border: 0;
-  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
 }
 .v452-print-modal {
   position: fixed;
@@ -1004,14 +1005,15 @@ body.bm-authenticated #enterpriseLoginOverlay {
   print-color-adjust: exact !important;
 }
 .print-table td {
-  background: #ffffff !important;
+  background: #ffffff;
+  color: #0f172a;
   border: 1px solid #cbd5e1 !important;
   padding: 4px 6px;
   vertical-align: middle;
   word-break: break-word;
 }
 .print-table tr:nth-child(even) td {
-  background: #f8fafc !important;
+  background: #f8fafc;
   -webkit-print-color-adjust: exact !important;
   print-color-adjust: exact !important;
 }
@@ -1020,6 +1022,7 @@ body.bm-authenticated #enterpriseLoginOverlay {
   justify-content: space-between;
   font-size: 9pt;
   font-weight: bold;
+  color: #0f172a;
   margin-top: 6px;
   margin-bottom: 18px;
   padding: 6px 12px;
@@ -1082,7 +1085,8 @@ body.bm-authenticated #enterpriseLoginOverlay {
   .stock-toolbar, .search, #clear, .mic, .voice-btn, .theme-toggle, 
   .mobile-menu-btn, .admin-access-btn, #v449ConfirmModal, .v452-print-modal, dialog,
   #v26SaveRow, .order-save-row, .v36-select-box, .v29-alias-link, .v34-alias-link,
-  .v39-history-actions, .v41-control-note, #v444CancelOrder, #v439GoToOrder {
+  .v39-history-actions, .v41-control-note, #v444CancelOrder, #v439GoToOrder,
+  .app-toast, #enterpriseLoginOverlay {
     display: none !important;
   }
   
@@ -1713,7 +1717,7 @@ function generateOrderDocumentHtml(tableType = 'sap') {
         <div class="print-meta-item"><strong>Supervisor / Solicitante</strong>${esc(sup)}</div>
         <div class="print-meta-item"><strong>Fecha de Pedido</strong>${esc(date)}</div>
         <div class="print-meta-item"><strong>Orden Mant. (OM)</strong>${esc(om)}</div>
-        <div class="print-meta-item"><strong>Puesto Descarga / Mov.</strong>${esc(puesto)}</div>
+        <div class="print-meta-item"><strong>Movimiento${puesto === 'RESERVA' ? ' / N° Reserva' : ''}</strong>${esc(puesto)}${puesto === 'RESERVA' && (document.querySelector('#reservaPedido')?.value || '').trim() ? ` (${esc(document.querySelector('#reservaPedido').value.trim())})` : ''}</div>
         <div class="print-meta-item"><strong>Unidad Móvil (Recojo)</strong>${esc(movil)}</div>
         <div class="print-meta-item"><strong>Centro de Trabajo</strong>${esc(primaryCenterName)}</div>
         <div class="print-meta-item"><strong>Alimentador</strong>${esc(alim)}</div>
@@ -1754,12 +1758,28 @@ function generateOrderDocumentHtml(tableType = 'sap') {
   `;
 }
 
-function getStandalonePrintPage(contentHtml, title) {
+function getStandalonePrintPage(contentHtml, title, autoPrint = false) {
+  const safeTitle = esc(title || 'Documento de Impresión');
+  const autoPrintScript = autoPrint ? `
+  <script>
+    (function() {
+      var printed = false;
+      function triggerPrint() {
+        if (printed) return;
+        printed = true;
+        try { window.focus(); } catch(e) {}
+        try { window.print(); } catch(e) {}
+      }
+      window.addEventListener('load', function() {
+        setTimeout(triggerPrint, 250);
+      });
+    })();
+  <\/script>` : '';
   return `<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <title>${title}</title>
+  <title>${safeTitle}</title>
   <style>
     @page { size: A4 portrait; margin: 8mm 8mm 8mm 8mm; }
     html, body { background:#ffffff!important; color:#000000!important; font-family:Arial,Helvetica,sans-serif!important; font-size:10pt!important; margin:0!important; padding:12px!important; -webkit-print-color-adjust:exact!important; print-color-adjust:exact!important; }
@@ -1772,9 +1792,9 @@ function getStandalonePrintPage(contentHtml, title) {
     .print-meta-item strong { display:block; font-size:7pt; color:#64748b; text-transform:uppercase; margin-bottom:2px; font-weight:700; }
     .print-table { width:100%; border-collapse:collapse; margin-bottom:10px; font-size:8pt; table-layout:auto; }
     .print-table th { background:#0f2942!important; color:#ffffff!important; border:1px solid #0f2942!important; padding:5px 6px; font-size:7.5pt; font-weight:700; text-align:left; }
-    .print-table td { border:1px solid #cbd5e1!important; padding:4px 6px; vertical-align:middle; word-break:break-word; }
-    .print-table tr:nth-child(even) td { background:#f8fafc!important; }
-    .print-summary { display:flex; justify-content:space-between; font-size:9pt; font-weight:bold; margin-bottom:18px; padding:6px 12px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:6px; }
+    .print-table td { border:1px solid #cbd5e1!important; padding:4px 6px; vertical-align:middle; word-break:break-word; color:#0f172a; }
+    .print-table tr:nth-child(even) td { background:#f8fafc; }
+    .print-summary { display:flex; justify-content:space-between; font-size:9pt; font-weight:bold; color:#0f172a; margin-bottom:18px; padding:6px 12px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:6px; }
     .print-signatures { display:grid!important; grid-template-columns:repeat(3, 1fr)!important; gap:16px!important; margin-top:22px!important; text-align:center!important; page-break-inside:avoid!important; width:100%!important; }
     .print-signatures > div { display:flex!important; flex-direction:column!important; align-items:center!important; justify-content:flex-end!important; min-height:60px!important; }
     .print-sig-line { width:85%!important; border-top:1px dashed #475569!important; padding-top:5px!important; font-size:8pt!important; color:#1e293b!important; font-weight:700!important; text-align:center!important; margin:0 auto!important; }
@@ -1783,15 +1803,7 @@ function getStandalonePrintPage(contentHtml, title) {
   </style>
 </head>
 <body>
-  ${contentHtml}
-  <script>
-    window.addEventListener('load', function() {
-      setTimeout(function() {
-        window.focus();
-        try { window.print(); } catch(e) {}
-      }, 350);
-    });
-  <\/script>
+  ${contentHtml}${autoPrintScript}
 </body>
 </html>`;
 }
@@ -1803,30 +1815,46 @@ function executeSilentPrint(fullHtml) {
     frame.id = 'v452SilentPrintFrame';
     document.body.appendChild(frame);
   }
-  
+
+  let printed = false;
+  const triggerFramePrint = () => {
+    if (printed) return;
+    printed = true;
+    try {
+      frame.contentWindow.focus();
+      frame.contentWindow.print();
+    } catch (e) {
+      try { window.print(); } catch (_) {}
+    }
+  };
+
   try {
+    frame.onload = () => setTimeout(triggerFramePrint, 120);
     const doc = frame.contentWindow.document;
     doc.open();
     doc.write(fullHtml);
     doc.close();
-    
-    setTimeout(() => {
-      try {
-        frame.contentWindow.focus();
-        frame.contentWindow.print();
-      } catch (e) {
-        window.print();
-      }
-    }, 400);
+    setTimeout(triggerFramePrint, 450);
   } catch (err) {
-    window.print();
+    try { window.print(); } catch (_) {}
   }
 }
 
 let currentPrintTableType = 'sap';
+let currentPrintCustomDoc = null;
 
-function openPrintModal(initialType = 'sap') {
-  currentPrintTableType = initialType;
+function openPrintModal(initialTypeOrTitle = 'sap', customHtml = null, customFileName = '') {
+  const isCustomMode = typeof customHtml === 'string' && customHtml.trim().length > 0;
+  if (isCustomMode) {
+    currentPrintCustomDoc = {
+      title: String(initialTypeOrTitle || 'Documento para Imprimir').trim(),
+      html: customHtml,
+      fileName: String(customFileName || '').trim()
+    };
+  } else {
+    currentPrintCustomDoc = null;
+    currentPrintTableType = (initialTypeOrTitle === 'selected') ? 'selected' : 'sap';
+  }
 
   let modal = document.getElementById('documentPrintModal');
   if (!modal) {
@@ -1848,7 +1876,7 @@ function openPrintModal(initialType = 'sap') {
             <button type="button" class="btn danger" id="v452ClosePrintModal">✕ Cerrar</button>
           </div>
         </div>
-        <div class="v452-print-selector-bar">
+        <div class="v452-print-selector-bar" id="v452PrintSelectorBar">
           <span class="v452-selector-label">📄 Seleccionar formato de tabla a imprimir:</span>
           <div class="v452-selector-options">
             <button type="button" class="v452-table-choice" id="v452ChoiceSap" data-table="sap">
@@ -1868,17 +1896,69 @@ function openPrintModal(initialType = 'sap') {
   }
 
   const paper = modal.querySelector('#v452PrintPaper');
+  const selectorBar = modal.querySelector('#v452PrintSelectorBar') || modal.querySelector('.v452-print-selector-bar');
+  const titleEl = modal.querySelector('#v452PrintModalTitle');
+  const subEl = modal.querySelector('#v452PrintModalSub');
   const sapBtn = modal.querySelector('#v452ChoiceSap');
   const selBtn = modal.querySelector('#v452ChoiceSelected');
 
-  function updateView(type) {
-    currentPrintTableType = type;
-    if (sapBtn && selBtn) {
-      sapBtn.classList.toggle('active', type === 'sap');
-      selBtn.classList.toggle('active', type === 'selected');
+  function ensurePrintViewNode(html) {
+    let printView = document.getElementById('documentPrintView');
+    if (!printView) {
+      printView = document.createElement('div');
+      printView.id = 'documentPrintView';
+      document.body.appendChild(printView);
     }
-    const html = generateOrderDocumentHtml(type);
-    if (paper) paper.innerHTML = html;
+    printView.innerHTML = html;
+    return printView;
+  }
+
+  function getActivePrintPayload() {
+    if (currentPrintCustomDoc) {
+      const safeBase = currentPrintCustomDoc.title.replace(/[^\w\sáéíóúÁÉÍÓÚñÑ-]/g, '').trim().replace(/\s+/g, '_') || 'Documento';
+      let fName = currentPrintCustomDoc.fileName || `${safeBase}_${todayKey()}.html`;
+      if (!fName.toLowerCase().endsWith('.html')) fName += '.html';
+      return {
+        docHtml: currentPrintCustomDoc.html,
+        docTitle: currentPrintCustomDoc.title,
+        fileName: fName
+      };
+    }
+    const om = (document.querySelector('#omPedido')?.value || '').trim() || 'SIN_OM';
+    const date = $('#fechaPedido')?.value || todayKey();
+    const suffix = om !== 'SIN_OM' ? om : date;
+    const prefixTitle = currentPrintTableType === 'sap' ? '⚡ PEDIDO SAP - ' : '📋 PEDIDO SELECCIONADO - ';
+    const prefixFile = currentPrintTableType === 'sap' ? 'Pedido_SAP_' : 'Pedido_Seleccionado_';
+    return {
+      docHtml: generateOrderDocumentHtml(currentPrintTableType),
+      docTitle: prefixTitle + suffix,
+      fileName: `${prefixFile}${suffix}.html`.replace(/[^a-zA-Z0-9_.-]/g, '_')
+    };
+  }
+
+  function updateView(type) {
+    if (!currentPrintCustomDoc) {
+      currentPrintTableType = (type === 'selected') ? 'selected' : 'sap';
+    }
+    if (selectorBar) selectorBar.style.display = currentPrintCustomDoc ? 'none' : '';
+    if (titleEl) {
+      titleEl.textContent = currentPrintCustomDoc
+        ? `🖨️ ${currentPrintCustomDoc.title}`
+        : '🖨️ Vista de Impresión del Documento';
+    }
+    if (subEl) {
+      subEl.textContent = currentPrintCustomDoc
+        ? 'Vista previa del reporte. Haz clic en Imprimir para elegir tu impresora o guardar en PDF.'
+        : 'Elige qué tabla deseas imprimir. Al hacer clic en Imprimir, tu sistema te permitirá elegir tu impresora de destino o guardar en PDF.';
+    }
+    if (sapBtn && selBtn) {
+      sapBtn.classList.toggle('active', currentPrintTableType === 'sap');
+      selBtn.classList.toggle('active', currentPrintTableType === 'selected');
+    }
+    const payload = getActivePrintPayload();
+    if (paper) paper.innerHTML = payload.docHtml;
+    ensurePrintViewNode(payload.docHtml);
+    document.body.classList.add('printing-doc');
   }
 
   if (sapBtn) sapBtn.onclick = () => updateView('sap');
@@ -1887,58 +1967,53 @@ function openPrintModal(initialType = 'sap') {
   updateView(currentPrintTableType);
   modal.style.display = 'flex';
 
-  const close = () => { modal.style.display = 'none'; };
+  const close = () => {
+    modal.style.display = 'none';
+    document.body.classList.remove('printing-doc');
+  };
   modal.querySelector('#v452ClosePrintModal').onclick = close;
   modal.querySelector('#v452Backdrop').onclick = close;
 
   modal.querySelector('#v452DirectPrintBtn').onclick = () => {
-    const html = generateOrderDocumentHtml(currentPrintTableType);
-    const om = document.querySelector('#omPedido')?.value.trim() || 'SIN_OM';
-    const date = $('#fechaPedido')?.value || todayKey();
-    const title = (currentPrintTableType === 'sap' ? '⚡ PEDIDO SAP - ' : '📋 PEDIDO SELECCIONADO - ') + (om !== 'SIN_OM' ? om : date);
-    const fullPage = getStandalonePrintPage(html, title);
-    
-    let printView = document.getElementById('documentPrintView');
-    if (!printView) {
-      printView = document.createElement('div');
-      printView.id = 'documentPrintView';
-      document.body.appendChild(printView);
-    }
-    printView.innerHTML = html;
+    const payload = getActivePrintPayload();
+    const printView = ensurePrintViewNode(payload.docHtml);
     document.body.classList.add('printing-doc');
-    
-    // Abre directamente el selector nativo de impresoras del navegador
-    setTimeout(() => {
-      try {
-        window.print();
-      } catch (e) {
-        executeSilentPrint(fullPage);
-      }
-      setTimeout(() => {
+    void printView.offsetHeight;
+
+    let cleaned = false;
+    const finishPrint = () => {
+      if (cleaned) return;
+      cleaned = true;
+      if (modal.style.display === 'none') {
         document.body.classList.remove('printing-doc');
-      }, 1000);
-    }, 100);
+      }
+    };
+    window.addEventListener('afterprint', finishPrint, { once: true });
+
+    try {
+      window.print();
+    } catch (e) {
+      const fullPage = getStandalonePrintPage(payload.docHtml, payload.docTitle, false);
+      executeSilentPrint(fullPage);
+    }
+    setTimeout(finishPrint, 3000);
   };
 
   modal.querySelector('#v452NewTabPrintBtn').onclick = () => {
     try {
-      const html = generateOrderDocumentHtml(currentPrintTableType);
-      const om = document.querySelector('#omPedido')?.value.trim() || 'SIN_OM';
-      const date = $('#fechaPedido')?.value || todayKey();
-      const title = (currentPrintTableType === 'sap' ? '⚡ PEDIDO SAP - ' : '📋 PEDIDO SELECCIONADO - ') + (om !== 'SIN_OM' ? om : date);
-      const fullPage = getStandalonePrintPage(html, title);
+      const payload = getActivePrintPayload();
+      const fullPage = getStandalonePrintPage(payload.docHtml, payload.docTitle, true);
       const blob = new Blob([fullPage], { type: 'text/html;charset=utf-8' });
       const blobUrl = URL.createObjectURL(blob);
-      const win = window.open(blobUrl, '_blank');
-      if (!win) {
-        const a = document.createElement('a');
-        a.href = blobUrl;
-        a.target = '_blank';
-        a.rel = 'noopener';
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-      }
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
       msg('Se abrió el documento en una pestaña nueva para imprimir.');
     } catch(err) {
       msg('Usa el botón Imprimir documento o Descargar.', true);
@@ -1946,12 +2021,9 @@ function openPrintModal(initialType = 'sap') {
   };
 
   modal.querySelector('#v452DownloadHtmlBtn').onclick = () => {
-    const html = generateOrderDocumentHtml(currentPrintTableType);
-    const om = document.querySelector('#omPedido')?.value.trim() || 'SIN_OM';
-    const date = $('#fechaPedido')?.value || todayKey();
-    const title = (currentPrintTableType === 'sap' ? 'Pedido_SAP_' : 'Pedido_Seleccionado_') + (om !== 'SIN_OM' ? om : date);
-    const fullPage = getStandalonePrintPage(html, title);
-    dl(fullPage, `${title}.html`, 'text/html;charset=utf-8');
+    const payload = getActivePrintPayload();
+    const fullPage = getStandalonePrintPage(payload.docHtml, payload.docTitle, false);
+    dl(fullPage, payload.fileName, 'text/html;charset=utf-8');
     msg('Documento descargado. Ábrelo en tu navegador para imprimir.');
   };
 }
@@ -3372,6 +3444,7 @@ function bind(){
   if($('#csv')) $('#csv').onclick=()=>valid()&&dl(csvText(),'Pedido_Materiales.csv','text/csv;charset=utf-8');
   if($('#excel')) $('#excel').onclick=excel;
   if($('#printDocBtn')) $('#printDocBtn').onclick=printOrderDocument;
+  if($('#v31PrintOrderTop')) $('#v31PrintOrderTop').onclick=printOrderDocument;
   if($('#clean')) $('#clean').onclick=()=>{if(confirm('¿Limpiar el pedido?')){cart=[];renderCart()}};
   if($('#config')) $('#config').onclick=()=>{setMaterialMode('config');$('#dlg')?.showModal()};
   if($('#newMaterialTop')) $('#newMaterialTop').onclick=openNewMaterial;
@@ -3983,7 +4056,7 @@ html[data-theme="dark"] .alias-v23-table th{background:#263951;color:#e9f2ff}htm
 })();
 </script>
 <style id="v24-fixes">
-.app-toast{position:fixed;right:22px;bottom:22px;z-index:9999;max-width:min(420px,calc(100vw - 30px));padding:13px 16px;border-radius:12px;font-weight:800;box-shadow:0 12px 30px #0003;opacity:0;transform:translateY(16px);pointer-events:none;transition:.2s ease;background:#173254;color:#fff}.app-toast.show{opacity:1;transform:none}.app-toast.success{background:#148447}.app-toast.error{background:#c62828}.sidebar.collapsed{visibility:hidden}.sidebar-expand-v23{box-shadow:0 8px 20px #0003}.app-shell.sidebar-collapsed .app-content{grid-column:1/-1}@media(max-width:800px){.app-toast{left:15px;right:15px;bottom:18px}.sidebar-expand-v23{top:76px}}
+.app-toast{position:fixed;right:22px;bottom:22px;z-index:1000001;max-width:min(420px,calc(100vw - 30px));padding:13px 16px;border-radius:12px;font-weight:800;box-shadow:0 12px 30px #0003;opacity:0;transform:translateY(16px);pointer-events:none;transition:.2s ease;background:#173254;color:#fff}.app-toast.show{opacity:1;transform:none}.app-toast.success{background:#148447}.app-toast.error{background:#c62828}.sidebar.collapsed{visibility:hidden}.sidebar-expand-v23{box-shadow:0 8px 20px #0003}.app-shell.sidebar-collapsed .app-content{grid-column:1/-1}@media(max-width:800px){.app-toast{left:15px;right:15px;bottom:18px}.sidebar-expand-v23{top:76px}}
 </style>
 <style id="v26-fixes">
 .side-title{display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:0;background:var(--navy);z-index:8;padding:4px 2px 12px}
@@ -4671,7 +4744,11 @@ html[data-theme="dark"] .stock-alt-note{background:#473b16;color:#ffe39a;border-
       headerActions.appendChild(printBtn);
     }
     printBtn.onclick = function(){
-      document.getElementById('printDocBtn')?.click();
+      if (typeof window.printOrderDocument === 'function') {
+        window.printOrderDocument();
+      } else {
+        document.getElementById('printDocBtn')?.click();
+      }
     };
 
     let clearBtn = $31('#v449ClearAllOrdersBtn');
@@ -6025,7 +6102,7 @@ html[data-theme="dark"] .v36-center-summary{color:#9fb8d4}
             ${data.map(r=>`
               <tr>
                 <td><b>${esc(r.reserva||'')}</b></td>
-                <td style="text-align:center;font-weight:bold;background:${r.almacenCode==='1004'?'#ffff00':(r.almacenCode==='1003'?'#ffc000':'transparent')};color:#000">${esc(r.almacenCode||'')}</td>
+                <td style="text-align:center;font-weight:bold;${r.almacenCode==='1004'?'background:#ffff00!important;':(r.almacenCode==='1003'?'background:#ffc000!important;':'')}color:#000">${esc(r.almacenCode||'')}</td>
                 <td>${esc(r.encargado||'')}</td>
                 <td><b>${esc(r.om||'')}</b></td>
                 <td>${esc(r.fechaPedido||'')}</td>
@@ -6044,9 +6121,13 @@ html[data-theme="dark"] .v36-center-summary{color:#9fb8d4}
         </div>
       </div>
     `;
-    const fullPage = typeof getStandalonePrintPage === 'function' ? getStandalonePrintPage(docHtml, 'CONTROL PEDIDOS') : docHtml;
-    if(typeof executeSilentPrint === 'function') executeSilentPrint(fullPage);
-    else window.print();
+    if(typeof openPrintModal === 'function'){
+      openPrintModal('📑 CONTROL PEDIDOS Y RESERVAS', docHtml, `Control_Pedidos_Reservas_${new Date().toISOString().slice(0,10)}.html`);
+    } else {
+      const fullPage = typeof getStandalonePrintPage === 'function' ? getStandalonePrintPage(docHtml, 'CONTROL PEDIDOS', false) : docHtml;
+      if(typeof executeSilentPrint === 'function') executeSilentPrint(fullPage);
+      else window.print();
+    }
   }
   window.printControlDocument = printControlDocument;
 
